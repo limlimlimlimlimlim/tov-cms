@@ -41,7 +41,7 @@ const items: MenuItem[] = [
     "schedule",
     <CalendarOutlined />
   ),
-  getItem(<Link href="/posts/list">게시물</Link>, "posts", <FormOutlined />),
+  getItem(<Link href="/post/list">게시물</Link>, "posts", <FormOutlined />),
   getItem("지도 관리", "map", <EnvironmentOutlined />, [
     getItem(<Link href="/map/floor/list">층별 지도</Link>, "/map/floor/list"),
     getItem(<Link href="/map/info/list">지도 정보</Link>, "/map/info/list"),

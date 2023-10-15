@@ -41,7 +41,10 @@ const items: MenuItem[] = [
     "schedule",
     <CalendarOutlined />
   ),
-  getItem(<Link href="/post/list">게시물</Link>, "posts", <FormOutlined />),
+  getItem("게시물", "post", <FormOutlined />, [
+    getItem(<Link href="/notice/list">공지사항</Link>, "/notice/list"),
+    getItem(<Link href="/event/list">이벤트</Link>, "/event/list"),
+  ]),
   getItem("지도 관리", "map", <EnvironmentOutlined />, [
     getItem(<Link href="/map/floor/list">층별 지도</Link>, "/map/floor/list"),
     getItem(<Link href="/map/info/list">지도 정보</Link>, "/map/info/list"),
@@ -67,7 +70,7 @@ export default function AppSider({ collapsed }) {
         mode="inline"
         items={items}
         defaultSelectedKeys={["/account/list"]}
-        defaultOpenKeys={["account", "map"]}
+        defaultOpenKeys={["account", "post", "map"]}
       />
     </Sider>
   );

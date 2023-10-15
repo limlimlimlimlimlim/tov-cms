@@ -51,7 +51,7 @@ const columns: ColumnsType<NoticeItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/account/edit/${(value as any).no}`}>
+        <Link href={`/notice/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -116,7 +116,7 @@ export default function AccountList() {
           >
             삭제
           </Button>
-          <Link href="/account/register">
+          <Link href="/notice/register">
             <Button type="primary">등록</Button>
           </Link>
 

@@ -27,7 +27,7 @@ const columns: ColumnsType<ScheduleItem> = [
     width: 120,
   },
   {
-    title: "스케쥴명",
+    title: "스케줄명",
     dataIndex: "name",
     width: 150,
   },
@@ -83,7 +83,7 @@ const columns: ColumnsType<ScheduleItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/account/edit/${(value as any).no}`}>
+        <Link href={`/schedule/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -105,7 +105,7 @@ export default function ScheduleList() {
         key: i,
         no: i,
         order: i,
-        name: `스케쥴명 ${i}`,
+        name: `스케줄명 ${i}`,
         kiosk: `키오스크 ${i}`,
         type: "이미지",
         status: "정상",
@@ -124,12 +124,12 @@ export default function ScheduleList() {
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "스케쥴 삭제 확인",
+      title: "스케줄 삭제 확인",
       okText: "확인",
       cancelText: "취소",
-      content: "선택된 스케쥴을 삭제하시겠습니까?",
+      content: "선택된 스케줄을 삭제하시겠습니까?",
       onOk() {
-        void message.success("선택된 스케쥴이 삭제됐습니다.");
+        void message.success("선택된 스케줄이 삭제됐습니다.");
       },
     });
   }, []);
@@ -182,7 +182,7 @@ export default function ScheduleList() {
           >
             삭제
           </Button>
-          <Link href="/account/register">
+          <Link href="/schedule/register">
             <Button type="primary">등록</Button>
           </Link>
 

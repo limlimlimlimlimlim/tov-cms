@@ -37,7 +37,7 @@ const items: MenuItem[] = [
     getItem(<Link href="/permission/list">권한 관리</Link>, "/permission/list"),
   ]),
   getItem(
-    <Link href="/schedule/list">스케쥴</Link>,
+    <Link href="/schedule/list">스케줄</Link>,
     "schedule",
     <CalendarOutlined />
   ),

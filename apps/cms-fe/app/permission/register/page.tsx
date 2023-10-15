@@ -10,11 +10,12 @@ import {
   message,
 } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const layout = {
-  labelCol: { span: 2 },
-  wrapperCol: { span: 22 },
+  labelCol: { span: 3 },
+  wrapperCol: { span: 21 },
 };
 
 const defaultDataSource = [
@@ -38,7 +39,7 @@ const defaultDataSource = [
   },
   {
     key: "3",
-    depth1: "스케쥴",
+    depth1: "스케줄",
     depth2: "",
     read: false,
     write: false,
@@ -93,6 +94,7 @@ const defaultDataSource = [
 ];
 
 export default function PermissionRegister() {
+  const router = useRouter();
   const [dataSource, setDataSource] = useState(defaultDataSource);
   const [currentSelectedRowKeys, setCurrentSelectedRowKeys] = useState<
     React.Key[]
@@ -177,9 +179,14 @@ export default function PermissionRegister() {
     },
   ];
 
-  const onFinish = (values: any) => {
-    void message.success("권한이 생성됐습니다.");
-  };
+  const onFinish = useCallback(
+    (values: any) => {
+      console.log("@@@@@@");
+      void message.success("권한이 생성됐습니다.");
+      router.push("/permission/list");
+    },
+    [router]
+  );
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[]) => {
@@ -213,7 +220,7 @@ export default function PermissionRegister() {
             <Link href="/account/list">
               <Button>취소</Button>
             </Link>
-            <Button type="primary" htmlType="submit" onClick={onFinish}>
+            <Button type="primary" htmlType="submit">
               등록
             </Button>
           </Flex>

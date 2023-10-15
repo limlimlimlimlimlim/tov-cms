@@ -17,8 +17,8 @@ import { useCallback, useState } from "react";
 const { confirm } = Modal;
 
 const layout = {
-  labelCol: { span: 2 },
-  wrapperCol: { span: 22 },
+  labelCol: { span: 3 },
+  wrapperCol: { span: 21 },
 };
 
 const defaultDataSource = [
@@ -42,7 +42,7 @@ const defaultDataSource = [
   },
   {
     key: "3",
-    depth1: "스케쥴",
+    depth1: "스케줄",
     depth2: "",
     read: false,
     write: false,
@@ -183,9 +183,13 @@ export default function PermissionEdit() {
     },
   ];
 
-  const onFinish = (values: any) => {
-    void message.success("권한이 수정됐습니다.");
-  };
+  const onFinish = useCallback(
+    (values: any) => {
+      void message.success("권한이 수정됐습니다.");
+      router.push("/permission/list");
+    },
+    [router]
+  );
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -235,7 +239,7 @@ export default function PermissionEdit() {
             <Link href="/account/list">
               <Button>취소</Button>
             </Link>
-            <Button type="primary" htmlType="submit" onClick={onFinish}>
+            <Button type="primary" htmlType="submit">
               수정
             </Button>
           </Flex>

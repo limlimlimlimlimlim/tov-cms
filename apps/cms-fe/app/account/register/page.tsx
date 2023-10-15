@@ -1,10 +1,12 @@
 "use client";
 import { Button, Divider, Flex, Form, Input, Select, message } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 5 },
+  wrapperCol: { span: 21 },
 };
 
 const { Option } = Select;
@@ -19,9 +21,15 @@ const validateMessages = {
 };
 
 export default function AccountRegister() {
-  const onFinish = (values: any) => {
-    void message.success("계정이 생성됐습니다.");
-  };
+  const router = useRouter();
+
+  const onFinish = useCallback(
+    (values: any) => {
+      void message.success("계정이 생성됐습니다.");
+      router.push("/account/list");
+    },
+    [router]
+  );
 
   return (
     <Flex vertical gap="middle">

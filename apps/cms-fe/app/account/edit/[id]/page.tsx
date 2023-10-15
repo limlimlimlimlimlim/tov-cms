@@ -14,8 +14,8 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 5 },
+  wrapperCol: { span: 21 },
 };
 
 const { Option } = Select;
@@ -37,9 +37,13 @@ interface PageProps {
 export default function AccountEdit({ params }: PageProps) {
   const router = useRouter();
 
-  const onFinish = (values: any) => {
-    void message.success("계정이 수정됐습니다.");
-  };
+  const onFinish = useCallback(
+    (values: any) => {
+      void message.success("계정이 수정됐습니다.");
+      router.push("/account/list");
+    },
+    [router]
+  );
 
   const confirmChangePassword = useCallback(() => {
     confirm({

@@ -52,7 +52,7 @@ const columns: ColumnsType<KioskItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/schedule/edit/${(value as any).no}`}>
+        <Link href={`/kiosk/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -145,8 +145,8 @@ export default function KioskList() {
           >
             삭제
           </Button>
-          <Link href="/schedule/register">
-            <Button type="primary">등록</Button>
+          <Link href="/kiosk/register">
+            <Button type="primary">수정</Button>
           </Link>
 
           <span>Total : {count}</span>

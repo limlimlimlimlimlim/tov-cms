@@ -23,7 +23,7 @@ const layout = {
 };
 
 const { RangePicker } = DatePicker;
-const { warn } = Modal;
+const { confirm } = Modal;
 
 const validateMessages = {
   required: "필수 값을 입력해주세요",
@@ -45,7 +45,7 @@ export default function EventEdit() {
   );
 
   const onClickDeleteEvent = useCallback(() => {
-    warn({
+    confirm({
       title: "삭제 확인",
       okText: "확인",
       cancelText: "취소",

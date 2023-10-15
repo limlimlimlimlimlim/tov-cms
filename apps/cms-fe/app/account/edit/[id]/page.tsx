@@ -19,7 +19,7 @@ const layout = {
 };
 
 const { Option } = Select;
-const { confirm, info, error, warn } = Modal;
+const { confirm, info, error } = Modal;
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -83,7 +83,7 @@ export default function AccountEdit({ params }: PageProps) {
   }, [confirmChangePassword]);
 
   const onClickDeleteAccount = useCallback(() => {
-    warn({
+    confirm({
       title: "삭제 확인",
       okText: "확인",
       cancelText: "취소",

@@ -5,12 +5,12 @@ import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import { EditOutlined } from "@ant-design/icons";
-import type { NoticeItem } from "../../../interface/notice";
+import type { EventItem } from "../../../interface/event";
 
 const { Search } = Input;
 const { confirm } = Modal;
 
-const columns: ColumnsType<NoticeItem> = [
+const columns: ColumnsType<EventItem> = [
   {
     title: "번호",
     dataIndex: "no",
@@ -19,16 +19,6 @@ const columns: ColumnsType<NoticeItem> = [
   {
     title: "제목",
     dataIndex: "title",
-  },
-  {
-    title: "구분",
-    dataIndex: "type",
-    width: 80,
-  },
-  {
-    title: "인트로 사용",
-    dataIndex: "useIntro",
-    width: 100,
   },
   {
     title: "상태",
@@ -52,7 +42,7 @@ const columns: ColumnsType<NoticeItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/notice/edit/${(value as any).no}`}>
+        <Link href={`/event/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -64,18 +54,16 @@ const columns: ColumnsType<NoticeItem> = [
 
 export default function AccountList() {
   const [count, setCount] = useState(17);
-  const [data, setData] = useState<NoticeItem[]>([]);
-  const [selectedData, setSelectedData] = useState<NoticeItem[]>([]);
+  const [data, setData] = useState<EventItem[]>([]);
+  const [selectedData, setSelectedData] = useState<EventItem[]>([]);
 
   useEffect(() => {
-    const temp: NoticeItem[] = [];
+    const temp: EventItem[] = [];
     for (let i = 0; i < 100; i++) {
       temp.push({
         key: i,
         no: i,
         title: `제목 ${i}`,
-        type: "기본",
-        useIntro: true,
         status: "normal",
         createDate: new Date(),
         modifiedDate: new Date(),
@@ -90,18 +78,18 @@ export default function AccountList() {
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "공지 삭제 확인",
+      title: "이벤트 삭제 확인",
       okText: "확인",
       cancelText: "취소",
-      content: "선택된 공지를 삭제하시겠습니까?",
+      content: "선택된 이벤트를 삭제하시겠습니까?",
       onOk() {
-        void message.success("선택된 공지가 삭제됐습니다.");
+        void message.success("선택된 이벤트가 삭제됐습니다.");
       },
     });
   }, []);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: NoticeItem[]) => {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: EventItem[]) => {
       setSelectedData(selectedRows);
     },
   };

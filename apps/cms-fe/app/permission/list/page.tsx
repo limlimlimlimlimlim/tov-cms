@@ -27,8 +27,8 @@ const columns: ColumnsType<PermissionItem> = [
   {
     title: "최종 수정일",
     dataIndex: "modifiedDate",
+    width: 180,
     render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
-    width: 200,
   },
   {
     title: "",

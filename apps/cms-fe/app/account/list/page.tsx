@@ -19,7 +19,6 @@ const columns: ColumnsType<AccountItem> = [
   {
     title: "이름",
     dataIndex: "name",
-    width: 150,
   },
   {
     title: "아이디",
@@ -28,16 +27,19 @@ const columns: ColumnsType<AccountItem> = [
   },
   {
     title: "권한",
+    width: 150,
     dataIndex: "permission",
   },
   {
     title: "등록일",
     dataIndex: "createDate",
+    width: 180,
     render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
   },
   {
     title: "최종 수정일",
     dataIndex: "modifiedDate",
+    width: 180,
     render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
   },
   {

@@ -42,6 +42,8 @@ module.exports = {
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "no-console": "off",
     "react/jsx-sort-props": "off",
     "react/function-component-definition": [
       2,

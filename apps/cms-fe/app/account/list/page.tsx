@@ -3,6 +3,7 @@ import { Button, Flex, Input, Table } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
+import Link from "next/link";
 import type { AccountItem } from "../../../interface/account";
 
 const { Search } = Input;
@@ -82,7 +83,10 @@ export default function AccountList() {
       <Flex justify="space-between">
         <Flex gap="small" align="center">
           <Button danger>삭제</Button>
-          <Button type="primary">등록</Button>
+          <Link href="/account/register">
+            <Button type="primary">등록</Button>
+          </Link>
+
           <span>Total : {count}</span>
         </Flex>
         <Flex>

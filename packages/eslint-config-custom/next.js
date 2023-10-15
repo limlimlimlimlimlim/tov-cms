@@ -44,6 +44,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "no-console": "off",
+    "eslint-comments/require-description": "off",
     "react/jsx-sort-props": "off",
     "react/function-component-definition": [
       2,

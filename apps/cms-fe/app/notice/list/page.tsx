@@ -62,7 +62,7 @@ const columns: ColumnsType<NoticeItem> = [
   },
 ];
 
-export default function AccountList() {
+export default function NoticeList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<NoticeItem[]>([]);
   const [selectedData, setSelectedData] = useState<NoticeItem[]>([]);

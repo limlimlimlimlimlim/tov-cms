@@ -52,7 +52,7 @@ const columns: ColumnsType<EventItem> = [
   },
 ];
 
-export default function AccountList() {
+export default function EventList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<EventItem[]>([]);
   const [selectedData, setSelectedData] = useState<EventItem[]>([]);

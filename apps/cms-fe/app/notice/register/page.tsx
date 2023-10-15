@@ -33,7 +33,7 @@ const validateMessages = {
   },
 };
 
-export default function AccountRegister() {
+export default function NoticeRegister() {
   const router = useRouter();
 
   const onFinish = useCallback(

@@ -25,7 +25,7 @@ const layout = {
 };
 
 const { RangePicker } = DatePicker;
-const { confirm, info, error, warn } = Modal;
+const { warn } = Modal;
 
 const validateMessages = {
   required: "필수 값을 입력해주세요",
@@ -35,7 +35,7 @@ const validateMessages = {
   },
 };
 
-export default function AccountRegister() {
+export default function NoticeEdit() {
   const router = useRouter();
 
   const onFinish = useCallback(

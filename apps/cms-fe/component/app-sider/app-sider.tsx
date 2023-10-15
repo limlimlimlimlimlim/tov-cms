@@ -66,6 +66,7 @@ export default function AppSider({ collapsed }) {
         theme="dark"
         mode="inline"
         items={items}
+        defaultSelectedKeys={["/account/list"]}
         defaultOpenKeys={["account", "map"]}
       />
     </Sider>

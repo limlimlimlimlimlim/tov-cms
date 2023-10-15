@@ -57,6 +57,7 @@ const columns: ColumnsType<AccountItem> = [
 export default function AccountList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<AccountItem[]>([]);
+  const [selectedData, setSelectedData] = useState<AccountItem[]>([]);
 
   useEffect(() => {
     const temp: AccountItem[] = [];
@@ -80,11 +81,7 @@ export default function AccountList() {
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: AccountItem[]) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      setSelectedData(selectedRows);
     },
     getCheckboxProps: (record: AccountItem) => ({
       disabled: record.name === "Disabled User", // Column configuration not to be checked
@@ -96,7 +93,9 @@ export default function AccountList() {
     <Flex vertical gap="middle">
       <Flex justify="space-between">
         <Flex gap="small" align="center">
-          <Button danger>삭제</Button>
+          <Button danger disabled={selectedData.length === 0}>
+            삭제
+          </Button>
           <Link href="/account/register">
             <Button type="primary">등록</Button>
           </Link>

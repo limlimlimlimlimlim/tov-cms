@@ -9,7 +9,6 @@ import {
   Form,
   Input,
   Modal,
-  Select,
   Switch,
   message,
 } from "antd";
@@ -23,7 +22,6 @@ const layout = {
   wrapperCol: { span: 21 },
 };
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { warn } = Modal;
 
@@ -40,22 +38,21 @@ export default function AccountRegister() {
 
   const onFinish = useCallback(
     (values: any) => {
-      void message.success("스케줄이 수정됐습니다.");
+      void message.success("이벤트가 수정됐습니다.");
       router.push("/schedule/list");
     },
     [router]
   );
 
-  const onClickDeleteSchedule = useCallback(() => {
+  const onClickDeleteEvent = useCallback(() => {
     warn({
       title: "삭제 확인",
       okText: "확인",
       cancelText: "취소",
-      content: "스케줄을 삭제하겠습니까?",
+      content: "이벤트를 삭제하겠습니까?",
       onOk() {
-        // alertSuperadmin();
-        void message.success("스케줄이 삭제 됐습니다.");
-        router.push("/schedule/list");
+        void message.success("이벤트가 삭제 됐습니다.");
+        router.push("/event/list");
       },
     });
   }, [router]);
@@ -70,34 +67,15 @@ export default function AccountRegister() {
       >
         <Flex style={{ width: "100%" }}>
           <Flex vertical style={{ width: "100%" }}>
-            <Form.Item name="kiosk" label="키오스크 선택" initialValue="all">
-              <Select style={{ width: 300 }}>
-                <Option key="all" value="all">
-                  전체
-                </Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="name"
-              label="콘텐츠명"
-              rules={[{ required: true }]}
-            >
+            <Form.Item name="title" label="제목" rules={[{ required: true }]}>
               <Input style={{ width: 300 }} />
             </Form.Item>
-            <Form.Item
-              name="contents"
-              label={
-                <Flex vertical>
-                  <div>콘텐츠</div>
-                  <div style={{ color: "#888", fontSize: 12 }}>
-                    (영상 및 이미지)
-                  </div>
-                </Flex>
-              }
-            >
-              <ContentsUploader />
+            <Form.Item name="contents" label="내용">
+              <Flex vertical gap="middle">
+                <ContentsUploader />
+                <Input.TextArea style={{ width: 500, height: 300 }} />
+              </Flex>
             </Form.Item>
-
             <Form.Item label="기간">
               <Flex gap="middle" align="center">
                 <RangePicker />
@@ -107,8 +85,8 @@ export default function AccountRegister() {
             <Form.Item name="status" label="상태">
               <Switch checked={true} />
             </Form.Item>
-            <Form.Item name="description" label="메모">
-              <Input.TextArea style={{ height: 300 }} />
+            <Form.Item name="useIntro" label="인트로 콘텐츠 노출">
+              <Switch checked={true} />
             </Form.Item>
           </Flex>
         </Flex>
@@ -116,7 +94,7 @@ export default function AccountRegister() {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            <Button danger onClick={onClickDeleteSchedule}>
+            <Button danger onClick={onClickDeleteEvent}>
               삭제
             </Button>
             <Link href="/schedule/list">

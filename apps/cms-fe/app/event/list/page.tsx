@@ -105,7 +105,7 @@ export default function AccountList() {
           >
             삭제
           </Button>
-          <Link href="/notice/register">
+          <Link href="/event/register">
             <Button type="primary">등록</Button>
           </Link>
 

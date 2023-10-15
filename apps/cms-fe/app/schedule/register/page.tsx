@@ -1,5 +1,5 @@
 "use client";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+
 import {
   Button,
   Checkbox,
@@ -10,13 +10,12 @@ import {
   Input,
   Select,
   Switch,
-  Upload,
   message,
 } from "antd";
-import type { RcFile, UploadChangeParam, UploadProps } from "antd/es/upload";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import ContentsUploader from "../../../component/contents-uploader/contentes-uploader";
 
 const layout = {
   labelCol: { span: 3 },
@@ -25,12 +24,6 @@ const layout = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
 
 const validateMessages = {
   required: "필수 값을 입력해주세요",
@@ -42,8 +35,6 @@ const validateMessages = {
 
 export default function AccountRegister() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
 
   const onFinish = useCallback(
     (values: any) => {
@@ -51,39 +42,6 @@ export default function AccountRegister() {
       router.push("/schedule/list");
     },
     [router]
-  );
-
-  const beforeUpload = useCallback((file: RcFile) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      void message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      void message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  }, []);
-
-  const handleChange: UploadProps["onChange"] = (info: UploadChangeParam) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj!, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
-  };
-
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
   );
 
   return (
@@ -121,24 +79,7 @@ export default function AccountRegister() {
                 </Flex>
               }
             >
-              <Upload
-                name="avatar"
-                listType="picture-card"
-                style={{ width: 200 }}
-                showUploadList={false}
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </Form.Item>
-            <Form.Item name="fileName" label="피일명">
-              <Input disabled style={{ width: 300 }} />
+              <ContentsUploader />
             </Form.Item>
             <Form.Item label="기간">
               <Flex gap="middle" align="center">
@@ -147,7 +88,7 @@ export default function AccountRegister() {
               </Flex>
             </Form.Item>
             <Form.Item name="status" label="상태">
-              <Switch checked={true}></Switch>
+              <Switch checked={true} />
             </Form.Item>
             <Form.Item name="description" label="메모">
               <Input.TextArea style={{ height: 300 }} />

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import type { AccountItem } from "../../../interface/account";
+import { EditOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
 
@@ -37,6 +38,19 @@ const columns: ColumnsType<AccountItem> = [
     title: "최종 수정일",
     dataIndex: "modifiedDate",
     render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+  },
+  {
+    title: "",
+    width: 80,
+    render: (value: any) => {
+      return (
+        <Link href={`/account/edit/${(value as any).no}`}>
+          <Button size="small" type="text">
+            <EditOutlined />
+          </Button>
+        </Link>
+      );
+    },
   },
 ];
 

@@ -1,6 +1,17 @@
 "use client";
-import { Button, Divider, Flex, Form, Input, Select } from "antd";
+import {
+  Button,
+  Divider,
+  Flex,
+  Form,
+  Input,
+  Select,
+  Modal,
+  message,
+} from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 const layout = {
   labelCol: { span: 6 },
@@ -8,6 +19,7 @@ const layout = {
 };
 
 const { Option } = Select;
+const { confirm, info, error, warn } = Modal;
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -18,10 +30,67 @@ const validateMessages = {
   },
 };
 
-export default function AccountRegister() {
+interface PageProps {
+  params: { id: string };
+}
+
+export default function AccountEdit({ params }: PageProps) {
+  const router = useRouter();
+
   const onFinish = (values: any) => {
     console.log(values);
   };
+
+  const confirmChangePassword = useCallback(() => {
+    confirm({
+      title: "비밀번호 변경 확인",
+      okText: "확인",
+      cancelText: "취소",
+      content: "새로 등록한 비밀번호로 변경하시겠습니까?",
+      onOk() {
+        void message.success("비밀번호가 변경 됐습니다.");
+      },
+    });
+  }, []);
+
+  const alertSuperadmin = useCallback(() => {
+    error({
+      title: "삭제확인",
+      okText: "확인",
+      content: "Super admin 계정은 삭제가 불가능합니다.",
+    });
+  }, []);
+
+  const onClickChangePassword = useCallback(() => {
+    info({
+      title: "비밀번호 변경",
+      okText: "확인",
+      cancelText: "취소",
+      content: (
+        <Flex vertical gap="middle">
+          새로운 비밀번호를 입력해주세요.
+          <Input type="password"></Input>
+        </Flex>
+      ),
+      onOk() {
+        confirmChangePassword();
+      },
+    });
+  }, [confirmChangePassword]);
+
+  const onClickDeleteAccount = useCallback(() => {
+    warn({
+      title: "삭제 확인",
+      okText: "확인",
+      cancelText: "취소",
+      content: "삭제된 계정은 복구할 수 없습니다. \n 정말 삭제하겠습니까?",
+      onOk() {
+        // alertSuperadmin();
+        void message.success("계정이 삭제 됐습니다.");
+        router.push("/account/list");
+      },
+    });
+  }, [router]);
 
   return (
     <Flex vertical gap="middle">
@@ -34,21 +103,17 @@ export default function AccountRegister() {
         <Flex style={{ width: "100%" }}>
           <Flex vertical style={{ width: "100%" }}>
             <Form.Item name="id" label="아이디" rules={[{ required: true }]}>
-              <Input />
+              <Input disabled />
             </Form.Item>
             <Form.Item
               name="password"
               label="비밀번호"
               rules={[{ required: true }]}
             >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="passwordConfirm"
-              label="비밀번호 확인"
-              rules={[{ required: true }]}
-            >
-              <Input />
+              <Flex gap="middle">
+                <Input disabled />
+                <Button onClick={onClickChangePassword}>비밀번호 변경</Button>
+              </Flex>
             </Form.Item>
             <Form.Item name="name" label="이름" rules={[{ required: true }]}>
               <Input />
@@ -106,11 +171,14 @@ export default function AccountRegister() {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
+            <Button danger onClick={onClickDeleteAccount}>
+              삭제
+            </Button>
             <Link href="/account/list">
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">
-              등록
+              수정
             </Button>
           </Flex>
         </Form.Item>

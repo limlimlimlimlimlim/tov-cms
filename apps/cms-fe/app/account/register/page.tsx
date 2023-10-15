@@ -1,5 +1,5 @@
 "use client";
-import { Button, Divider, Flex, Form, Input, Select } from "antd";
+import { Button, Divider, Flex, Form, Input, Select, message } from "antd";
 import Link from "next/link";
 
 const layout = {
@@ -20,7 +20,7 @@ const validateMessages = {
 
 export default function AccountRegister() {
   const onFinish = (values: any) => {
-    console.log(values);
+    void message.success("계정이 생성됐습니다.");
   };
 
   return (

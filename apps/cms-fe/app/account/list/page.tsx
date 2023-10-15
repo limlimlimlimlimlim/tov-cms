@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex, Input, Table } from "antd";
+import { Button, Flex, Input, Modal, Table, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
@@ -8,6 +8,7 @@ import type { AccountItem } from "../../../interface/account";
 import { EditOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
+const { confirm } = Modal;
 
 const columns: ColumnsType<AccountItem> = [
   {
@@ -79,21 +80,33 @@ export default function AccountList() {
     console.log("on search");
   }, []);
 
+  const onClickDelete = useCallback(() => {
+    confirm({
+      title: "계정 삭제 확인",
+      okText: "확인",
+      cancelText: "취소",
+      content: "선택된 계정을 삭제하시겠습니까?",
+      onOk() {
+        void message.success("선택된 계정이 삭제됐습니다.");
+      },
+    });
+  }, []);
+
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: AccountItem[]) => {
       setSelectedData(selectedRows);
     },
-    getCheckboxProps: (record: AccountItem) => ({
-      disabled: record.name === "Disabled User", // Column configuration not to be checked
-      name: record.name,
-    }),
   };
 
   return (
     <Flex vertical gap="middle">
       <Flex justify="space-between">
         <Flex gap="small" align="center">
-          <Button danger disabled={selectedData.length === 0}>
+          <Button
+            danger
+            disabled={selectedData.length === 0}
+            onClick={onClickDelete}
+          >
             삭제
           </Button>
           <Link href="/account/register">

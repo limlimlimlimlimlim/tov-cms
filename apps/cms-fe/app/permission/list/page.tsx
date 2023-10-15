@@ -1,11 +1,13 @@
 "use client";
-import { Button, Flex, Table } from "antd";
-import { useEffect, useState } from "react";
+import { Button, Flex, Table, Modal, message } from "antd";
+import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import { EditOutlined } from "@ant-design/icons";
-import type { AccountItem, PermissionItem } from "../../../interface/account";
+import type { PermissionItem } from "../../../interface/account";
+
+const { confirm } = Modal;
 
 const columns: ColumnsType<PermissionItem> = [
   {
@@ -33,7 +35,7 @@ const columns: ColumnsType<PermissionItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/account/edit/${(value as any).no}`}>
+        <Link href={`/permission/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -62,6 +64,18 @@ export default function PermissionList() {
     setData(temp);
   }, []);
 
+  const onClickDelete = useCallback(() => {
+    confirm({
+      title: "권한 삭제 확인",
+      okText: "확인",
+      cancelText: "취소",
+      content: "선택된 권한을 삭제하시겠습니까?",
+      onOk() {
+        void message.success("선택된 권한이 삭제됐습니다.");
+      },
+    });
+  }, []);
+
   const rowSelection = {
     onChange: (
       selectedRowKeys: React.Key[],
@@ -69,20 +83,20 @@ export default function PermissionList() {
     ) => {
       setSelectedData(selectedRows);
     },
-    getCheckboxProps: (record: AccountItem) => ({
-      disabled: record.name === "Disabled User", // Column configuration not to be checked
-      name: record.name,
-    }),
   };
 
   return (
     <Flex vertical gap="middle">
       <Flex justify="space-between">
         <Flex gap="small" align="center">
-          <Button danger disabled={selectedData.length === 0}>
+          <Button
+            danger
+            disabled={selectedData.length === 0}
+            onClick={onClickDelete}
+          >
             삭제
           </Button>
-          <Link href="/account/register">
+          <Link href="/permission/register">
             <Button type="primary">등록</Button>
           </Link>
 

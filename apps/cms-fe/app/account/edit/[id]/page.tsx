@@ -38,7 +38,7 @@ export default function AccountEdit({ params }: PageProps) {
   const router = useRouter();
 
   const onFinish = (values: any) => {
-    console.log(values);
+    void message.success("계정이 수정됐습니다.");
   };
 
   const confirmChangePassword = useCallback(() => {

@@ -146,7 +146,7 @@ export default function KioskList() {
             삭제
           </Button>
           <Link href="/kiosk/register">
-            <Button type="primary">수정</Button>
+            <Button type="primary">등록</Button>
           </Link>
 
           <span>Total : {count}</span>

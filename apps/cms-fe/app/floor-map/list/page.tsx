@@ -64,7 +64,7 @@ const columns: ColumnsType<FloorMapItem> = [
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/kiosk/edit/${(value as any).no}`}>
+        <Link href={`/floor-map/edit/${(value as any).no}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -120,11 +120,6 @@ export default function KioskList() {
     },
   };
 
-  const onClickOkUpdateBuildingInfoData = useCallback(() => {
-    void message.success("건물 정보가 수정됐습니다.");
-    setIsBuildingManagementModalOpen(false);
-  }, []);
-
   return (
     <>
       <Flex vertical gap="middle">
@@ -175,8 +170,8 @@ export default function KioskList() {
             >
               삭제
             </Button>
-            <Link href="/kiosk/register">
-              <Button type="primary">수정</Button>
+            <Link href="/floor-map/register">
+              <Button type="primary">등록</Button>
             </Link>
 
             <span>Total : {count}</span>

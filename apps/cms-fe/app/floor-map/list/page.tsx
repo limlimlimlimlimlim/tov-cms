@@ -6,80 +6,91 @@ import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import { EditOutlined } from "@ant-design/icons";
 import type { FloorMapItem } from "../../../interface/floor-map";
-import BuldingInfoManagementModal from "../../../component/building-info-management-modal/building-info-management-modal";
+import BuldingInfoManagementModal from "../../../component/building-info-management/building-info-management-modal";
+import MapAreaEditorModal from "../../../component/map-area-editor/map-area-editor-modal";
 
 const { Search } = Input;
 const { confirm } = Modal;
 const { Option } = Select;
 
-const columns: ColumnsType<FloorMapItem> = [
-  {
-    title: "번호",
-    dataIndex: "no",
-    width: 80,
-  },
-  {
-    title: "층",
-    dataIndex: "floor",
-    width: 100,
-  },
-  {
-    title: "동",
-    dataIndex: "building",
-    width: 100,
-  },
-  {
-    title: "지도명",
-    dataIndex: "name",
-  },
-  {
-    title: "상태",
-    dataIndex: "status",
-    width: 100,
-  },
-  {
-    title: "미리보기",
-    width: 100,
-    render: () => <Button size="small">미리보기</Button>,
-  },
-  {
-    title: "등록일",
-    dataIndex: "createDate",
-    width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
-  },
-  {
-    title: "최종 수정일",
-    dataIndex: "modifiedDate",
-    width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
-  },
-  {
-    title: "구역설정",
-    width: 100,
-    render: () => <Button size="small">구역설정</Button>,
-  },
-  {
-    title: "",
-    width: 80,
-    render: (value: any) => {
-      return (
-        <Link href={`/floor-map/edit/${(value as any).no}`}>
-          <Button size="small" type="text">
-            <EditOutlined />
-          </Button>
-        </Link>
-      );
-    },
-  },
-];
-
 export default function KioskList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<FloorMapItem[]>([]);
   const [selectedData, setSelectedData] = useState<FloorMapItem[]>([]);
-  const [isBuildingManagementModalOpen, setIsBuildingManagementModalOpen] =
+  const [isBuildingManagementModalOpen, setIsOpenBuildingManagementModal] =
     useState(false);
+  const [isOpenMapAreaModal, setIsOpenMapAreaModal] = useState(false);
+
+  const columns: ColumnsType<FloorMapItem> = [
+    {
+      title: "번호",
+      dataIndex: "no",
+      width: 80,
+    },
+    {
+      title: "층",
+      dataIndex: "floor",
+      width: 100,
+    },
+    {
+      title: "동",
+      dataIndex: "building",
+      width: 100,
+    },
+    {
+      title: "지도명",
+      dataIndex: "name",
+    },
+    {
+      title: "상태",
+      dataIndex: "status",
+      width: 100,
+    },
+    {
+      title: "미리보기",
+      width: 100,
+      render: () => <Button size="small">미리보기</Button>,
+    },
+    {
+      title: "등록일",
+      dataIndex: "createDate",
+      width: 180,
+      render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    },
+    {
+      title: "최종 수정일",
+      dataIndex: "modifiedDate",
+      width: 180,
+      render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    },
+    {
+      title: "구역설정",
+      width: 100,
+      render: () => (
+        <Button
+          size="small"
+          onClick={() => {
+            setIsOpenMapAreaModal(true);
+          }}
+        >
+          설정
+        </Button>
+      ),
+    },
+    {
+      title: "",
+      width: 80,
+      render: (value: any) => {
+        return (
+          <Link href={`/floor-map/edit/${(value as any).no}`}>
+            <Button size="small" type="text">
+              <EditOutlined />
+            </Button>
+          </Link>
+        );
+      },
+    },
+  ];
 
   useEffect(() => {
     const temp: FloorMapItem[] = [];
@@ -120,6 +131,15 @@ export default function KioskList() {
     },
   };
 
+  const onOkMapAreaModal = useCallback(() => {
+    void message.success("구역이 설정됐습니다.");
+    setIsOpenMapAreaModal(false);
+  }, []);
+
+  const onCancelMapAreaModal = useCallback(() => {
+    setIsOpenMapAreaModal(false);
+  }, []);
+
   return (
     <>
       <Flex vertical gap="middle">
@@ -154,7 +174,7 @@ export default function KioskList() {
           </Flex>
           <Button
             onClick={() => {
-              setIsBuildingManagementModalOpen(true);
+              setIsOpenBuildingManagementModal(true);
             }}
           >
             건물 정보 관리
@@ -198,8 +218,14 @@ export default function KioskList() {
       <BuldingInfoManagementModal
         open={isBuildingManagementModalOpen}
         onCancel={() => {
-          setIsBuildingManagementModalOpen(false);
+          setIsOpenBuildingManagementModal(false);
         }}
+      />
+      <MapAreaEditorModal
+        id="test"
+        open={isOpenMapAreaModal}
+        onOk={onOkMapAreaModal}
+        onCancel={onCancelMapAreaModal}
       />
     </>
   );

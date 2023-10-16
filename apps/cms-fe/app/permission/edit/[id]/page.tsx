@@ -240,7 +240,7 @@ export default function PermissionEdit() {
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">
-              수정
+              저장
             </Button>
           </Flex>
         </Form.Item>

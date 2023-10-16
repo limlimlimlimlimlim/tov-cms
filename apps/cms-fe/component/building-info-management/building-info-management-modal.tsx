@@ -18,7 +18,7 @@ export default function BuldingInfoManagementModal({
     <Modal
       title="건물 정보 관리"
       open={open}
-      okText="수정"
+      okText="저장"
       cancelText="취소"
       onOk={updateBuildingInfoData}
       onCancel={() => {

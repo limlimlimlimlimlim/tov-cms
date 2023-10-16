@@ -181,7 +181,6 @@ export default function PermissionRegister() {
 
   const onFinish = useCallback(
     (values: any) => {
-      console.log("@@@@@@");
       void message.success("권한이 생성됐습니다.");
       router.push("/permission/list");
     },

@@ -33,7 +33,7 @@ const validateMessages = {
   },
 };
 
-export default function FloorMapRegister() {
+export default function FloorMapEdit() {
   const router = useRouter();
   const [isOpenMapAreaModal, setIsOpenMapAreaModal] = useState(false);
 

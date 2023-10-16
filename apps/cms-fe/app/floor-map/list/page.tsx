@@ -13,7 +13,7 @@ const { Search } = Input;
 const { confirm } = Modal;
 const { Option } = Select;
 
-export default function KioskList() {
+export default function FloorMapList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<FloorMapItem[]>([]);
   const [selectedData, setSelectedData] = useState<FloorMapItem[]>([]);

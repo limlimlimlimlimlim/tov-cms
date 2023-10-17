@@ -113,12 +113,12 @@ export default function NoticeEdit() {
 
   const items: TabsProps["items"] = [
     {
-      key: "1",
+      key: "ko",
       label: "한글",
       children: getForm(),
     },
     {
-      key: "2",
+      key: "en",
       label: "영어",
       children: getForm(),
     },

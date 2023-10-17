@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex, Form, Input, Select, Table } from "antd";
+import { Button, Flex, Form, Input, Modal, Select, Table } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
@@ -10,10 +10,12 @@ import CategoryManagementManagementModal from "../../../component/category-manag
 
 const { Search } = Input;
 const { Option } = Select;
+const { confirm } = Modal;
 
 export default function FacilityList() {
   const [count, setCount] = useState(17);
   const [data, setData] = useState<FacilityItem[]>([]);
+  const [selectedData, setSelectedData] = useState<FacilityItem[]>([]);
   const [isCategoryManagementModalOpen, setIsOpenCategoryManagementModal] =
     useState(false);
 
@@ -26,7 +28,7 @@ export default function FacilityList() {
     {
       title: "층",
       dataIndex: "floor",
-      width: 100,
+      width: 80,
     },
     {
       title: "동",
@@ -46,6 +48,7 @@ export default function FacilityList() {
     {
       title: "시설명",
       dataIndex: "name",
+      width: 200,
     },
     {
       title: "위치설정",
@@ -107,6 +110,24 @@ export default function FacilityList() {
     console.log("on search");
   }, []);
 
+  const onClickDelete = useCallback(() => {
+    confirm({
+      title: "시설 삭제 확인",
+      okText: "확인",
+      cancelText: "취소",
+      content: "선택된 시설을 삭제하시겠습니까?",
+      onOk() {
+        void message.success("선택된 시설이 삭제됐습니다.");
+      },
+    });
+  }, []);
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: NoticeItem[]) => {
+      setSelectedData(selectedRows);
+    },
+  };
+
   return (
     <>
       <Flex vertical gap="middle">
@@ -162,18 +183,37 @@ export default function FacilityList() {
         </Flex>
 
         <Flex justify="space-between">
-          <span>Total : {count}</span>
-          <Search
-            placeholder="검색어를 입력해주세요."
-            onSearch={onSearch}
-            style={{ width: 300 }}
-          />
+          <Flex gap="small" align="center">
+            <Button
+              danger
+              disabled={selectedData.length === 0}
+              onClick={onClickDelete}
+            >
+              삭제
+            </Button>
+            <Link href="/facility/register">
+              <Button type="primary">등록</Button>
+            </Link>
+
+            <span>Total : {count}</span>
+          </Flex>
+          <Flex>
+            <Search
+              placeholder="검색어를 입력해주세요."
+              onSearch={onSearch}
+              style={{ width: 300 }}
+            />
+          </Flex>
         </Flex>
         <Table
           columns={columns}
           dataSource={data}
           pagination={{ pageSize: 50 }}
           scroll={{ y: 750 }}
+          rowSelection={{
+            type: "checkbox",
+            ...rowSelection,
+          }}
         />
       </Flex>
       <CategoryManagementManagementModal

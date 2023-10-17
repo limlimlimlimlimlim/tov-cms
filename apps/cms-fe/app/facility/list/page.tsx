@@ -1,5 +1,5 @@
 "use client";
-import { Button, Flex, Form, Input, Modal, Select, Table } from "antd";
+import { Button, Flex, Form, Input, Modal, Select, Table, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { ColumnsType } from "antd/es/table";
@@ -77,7 +77,7 @@ export default function FacilityList() {
       width: 80,
       render: (value: any) => {
         return (
-          <Link href={`/floor-map/edit/${(value as any).no}`}>
+          <Link href={`/facility/edit/${(value as any).no}`}>
             <Button size="small" type="text">
               <EditOutlined />
             </Button>
@@ -123,7 +123,7 @@ export default function FacilityList() {
   }, []);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: NoticeItem[]) => {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: FacilityItem[]) => {
       setSelectedData(selectedRows);
     },
   };

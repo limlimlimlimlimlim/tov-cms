@@ -6,7 +6,7 @@ import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import { EditOutlined } from "@ant-design/icons";
 import type { FacilityItem } from "../../../interface/facility";
-import BuldingInfoManagementModal from "../../../component/building-info-management/building-info-management-modal";
+import CategoryManagementManagementModal from "../../../component/category-management/category-management-modal";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -176,7 +176,7 @@ export default function FacilityList() {
           scroll={{ y: 750 }}
         />
       </Flex>
-      <BuldingInfoManagementModal
+      <CategoryManagementManagementModal
         open={isCategoryManagementModalOpen}
         onCancel={() => {
           setIsOpenCategoryManagementModal(false);

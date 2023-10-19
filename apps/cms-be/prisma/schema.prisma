@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  Int @default(autoincrement()) @id
+  user_id String  @unique
+  password String 
+  name String
+  phone String?
+  description String?
+  permission_id Int
+  facility_category_id Int?
+  facility_sub_category_id Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission{
+  id Int @default(autoincrement()) @id
+  name String
+  description String
+  read_account Boolean @default(false)
+  write_account Boolean @default(false)
+  edit_account Boolean @default(false)
+  delete_account Boolean @default(false)
+  read_permission Boolean @default(false)
+  write_permission Boolean @default(false)
+  edit_permission Boolean @default(false)
+  delete_permission Boolean @default(false)
+  read_schedule Boolean @default(false)
+  write_schedule Boolean @default(false)
+  edit_schedule Boolean @default(false)
+  delete_schedule Boolean @default(false)
+  read_post Boolean @default(false)
+  write_post Boolean @default(false)
+  edit_post Boolean @default(false)
+  delete_post Boolean @default(false)
+  read_floor_map Boolean @default(false)
+  write_floor_map Boolean @default(false)
+  edit_floor_map Boolean @default(false)
+  delete_floor_map Boolean @default(false)
+  read_map_info Boolean @default(false)
+  write_map_info Boolean @default(false)
+  edit_map_info Boolean @default(false)
+  delete_map_info Boolean @default(false)
+  read_facility Boolean @default(false)
+  write_facility Boolean @default(false)
+  edit_facility Boolean @default(false)
+  delete_facility Boolean @default(false)
+  read_kiosk Boolean @default(false)
+  write_kiosk Boolean @default(false)
+  edit_kiosk Boolean @default(false)
+  delete_kiosk Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Floor{
+  id Int @default(autoincrement()) @id
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Building{
+  id Int @default(autoincrement()) @id
+  name String
+  floor_id Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FloorArea{
+  id Int @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FacilityCategory{
+  id Int @default(autoincrement()) @id
+  name String
+  category_id Int
+  sub_categories FacilitySubCategory[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FacilitySubCategory{
+  id Int @default(autoincrement()) @id
+  name String
+  parent_id Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  category FacilityCategory @relation(fields: [category_id], references: [id])
+  category_id  Int
+}
+
+model Facility{
+  id Int @default(autoincrement()) @id
+  name String
+  floor_id Int
+  building_id Int
+  position Boolean
+  initial String
+  fnb_id Int
+  phone String
+  address String
+  operation String
+  img String
+  icon_id Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FacilityPosition{
+  id Int @default(autoincrement()) @id
+  facility_id Int
+  x Int
+  y Int
+  status String
+}

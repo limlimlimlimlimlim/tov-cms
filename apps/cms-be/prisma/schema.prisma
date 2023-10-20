@@ -11,120 +11,120 @@ datasource db {
 }
 
 model User {
-  id  Int @default(autoincrement()) @id
-  user_id String  @unique
-  password String 
-  name String
-  phone String?
-  description String?
-  permission_id Int
-  facility_category_id Int?
-  facility_sub_category_id Int?
+  id               Int      @default(autoincrement()) @id
+  userId           String   @unique
+  password         String
+  name             String
+  phone            String?
+  description      String?
+  permissionId     Int
+  facilityCategoryId Int?
+  facilitySubCategoryId Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Permission {
+  id             Int      @default(autoincrement()) @id
+  name           String
+  description    String
+  readAccount    Boolean @default(false)
+  writeAccount   Boolean @default(false)
+  editAccount    Boolean @default(false)
+  deleteAccount  Boolean @default(false)
+  readPermission Boolean @default(false)
+  writePermission Boolean @default(false)
+  editPermission  Boolean @default(false)
+  deletePermission Boolean @default(false)
+  readSchedule   Boolean @default(false)
+  writeSchedule  Boolean @default(false)
+  editSchedule   Boolean @default(false)
+  deleteSchedule Boolean @default(false)
+  readPost       Boolean @default(false)
+  writePost      Boolean @default(false)
+  editPost       Boolean @default(false)
+  deletePost     Boolean @default(false)
+  readFloorMap   Boolean @default(false)
+  writeFloorMap  Boolean @default(false)
+  editFloorMap   Boolean @default(false)
+  deleteFloorMap Boolean @default(false)
+  readMapInfo    Boolean @default(false)
+  writeMapInfo   Boolean @default(false)
+  editMapInfo    Boolean @default(false)
+  deleteMapInfo  Boolean @default(false)
+  readFacility   Boolean @default(false)
+  writeFacility  Boolean @default(false)
+  editFacility   Boolean @default(false)
+  deleteFacility  Boolean @default(false)
+  readKiosk      Boolean @default(false)
+  writeKiosk     Boolean @default(false)
+  editKiosk      Boolean @default(false)
+  deleteKiosk    Boolean @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Floor {
+  id       Int      @default(autoincrement()) @id
+  name     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Permission{
-  id Int @default(autoincrement()) @id
-  name String
-  description String
-  read_account Boolean @default(false)
-  write_account Boolean @default(false)
-  edit_account Boolean @default(false)
-  delete_account Boolean @default(false)
-  read_permission Boolean @default(false)
-  write_permission Boolean @default(false)
-  edit_permission Boolean @default(false)
-  delete_permission Boolean @default(false)
-  read_schedule Boolean @default(false)
-  write_schedule Boolean @default(false)
-  edit_schedule Boolean @default(false)
-  delete_schedule Boolean @default(false)
-  read_post Boolean @default(false)
-  write_post Boolean @default(false)
-  edit_post Boolean @default(false)
-  delete_post Boolean @default(false)
-  read_floor_map Boolean @default(false)
-  write_floor_map Boolean @default(false)
-  edit_floor_map Boolean @default(false)
-  delete_floor_map Boolean @default(false)
-  read_map_info Boolean @default(false)
-  write_map_info Boolean @default(false)
-  edit_map_info Boolean @default(false)
-  delete_map_info Boolean @default(false)
-  read_facility Boolean @default(false)
-  write_facility Boolean @default(false)
-  edit_facility Boolean @default(false)
-  delete_facility Boolean @default(false)
-  read_kiosk Boolean @default(false)
-  write_kiosk Boolean @default(false)
-  edit_kiosk Boolean @default(false)
-  delete_kiosk Boolean @default(false)
+model Building {
+  id         Int      @default(autoincrement()) @id
+  name       String
+  floorId    Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model FloorArea {
+  id       Int      @default(autoincrement()) @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Floor{
-  id Int @default(autoincrement()) @id
-  name String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model FacilityCategory {
+  id          Int      @default(autoincrement()) @id
+  name        String
+  categoryId   Int
+  subCategories FacilitySubCategory[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Building{
-  id Int @default(autoincrement()) @id
-  name String
-  floor_id Int
+model FacilitySubCategory {
+  id      Int      @default(autoincrement()) @id
+  name    String
+  parentId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  category FacilityCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }
 
-model FloorArea{
-  id Int @default(autoincrement()) @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Facility {
+  id          Int      @default(autoincrement()) @id
+  name        String
+  floorId     Int
+  buildingId  Int
+  position    Boolean
+  initial     String
+  fnbId       Int
+  phone       String
+  address     String
+  operation   String
+  img         String
+  iconId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model FacilityCategory{
-  id Int @default(autoincrement()) @id
-  name String
-  category_id Int
-  sub_categories FacilitySubCategory[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model FacilitySubCategory{
-  id Int @default(autoincrement()) @id
-  name String
-  parent_id Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  category FacilityCategory @relation(fields: [category_id], references: [id])
-  category_id  Int
-}
-
-model Facility{
-  id Int @default(autoincrement()) @id
-  name String
-  floor_id Int
-  building_id Int
-  position Boolean
-  initial String
-  fnb_id Int
-  phone String
-  address String
-  operation String
-  img String
-  icon_id Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model FacilityPosition{
-  id Int @default(autoincrement()) @id
-  facility_id Int
-  x Int
-  y Int
-  status String
+model FacilityPosition {
+  id         Int      @default(autoincrement()) @id
+  facilityId Int
+  x          Int
+  y          Int
+  status     String
 }

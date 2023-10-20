@@ -14,19 +14,19 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findOne(userId: string) {
+    return this.prisma.user.findUnique({ where: { userId } });
   }
 
-  async update(params: { id: number; data: Prisma.UserUpdateInput }) {
-    const { id, data } = params;
+  async update(params: { userId: string; data: Prisma.UserUpdateInput }) {
+    const { userId, data } = params;
     return this.prisma.user.update({
       data,
-      where: { id },
+      where: { userId },
     });
   }
 
-  async remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+  async remove(userId: string) {
+    return this.prisma.user.delete({ where: { userId } });
   }
 }

@@ -88,8 +88,6 @@ model FloorArea {
 model FacilityCategory {
   id          Int      @default(autoincrement()) @id
   name        String
-  categoryId   Int
-  subCategories FacilitySubCategory[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -100,8 +98,6 @@ model FacilitySubCategory {
   parentId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  category FacilityCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
 }
 
 model Facility {

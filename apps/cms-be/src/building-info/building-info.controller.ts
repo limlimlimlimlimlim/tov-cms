@@ -8,6 +8,7 @@ import {
   Param,
   ConflictException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { BuildingInfoService } from './building-info.service';
 import { Prisma } from '@prisma/client';
@@ -22,6 +23,8 @@ export class BuildingInfoController {
     if (sameFloor) {
       throw new ConflictException('Data already exists.');
     }
+    const count = await this.buildingInfoService.getFloorCount();
+    data.order = count;
     return await this.buildingInfoService.createFloor(data);
   }
 
@@ -31,6 +34,10 @@ export class BuildingInfoController {
     if (sameBuilding && sameBuilding.floorId === +data.floorId) {
       throw new ConflictException('Data already exists.');
     }
+    const count = await this.buildingInfoService.getBuildingCountByFoorId(
+      +data.floorId,
+    );
+    data.order = count;
     return await this.buildingInfoService.createBuilding(data);
   }
 
@@ -105,6 +112,38 @@ export class BuildingInfoController {
       throw new NotFoundException('Data not found.');
     }
     return this.buildingInfoService.updateBuilding(+id, data);
+  }
+
+  @Patch('floor/swap/:id1/:id2')
+  async swapFloor(@Param('id1') id1: number, @Param('id2') id2: number) {
+    const floor1 = await this.getFloorById(+id1);
+
+    console.log(id1, id2);
+    if (!floor1) {
+      throw new NotFoundException('Data not found.');
+    }
+    const floor2 = await this.getFloorById(+id2);
+    if (!floor2) {
+      throw new NotFoundException('Data not found.');
+    }
+    return this.buildingInfoService.swapFloor(+id1, +id2);
+  }
+
+  @Patch('building/swap/:id1/:id2')
+  async swapBuilding(@Param('id1') id1: number, @Param('id2') id2: number) {
+    const building1 = await this.getBuildingById(+id1);
+    if (!building1) {
+      throw new NotFoundException('Data not found.');
+    }
+    const building2 = await this.getBuildingById(+id2);
+    if (!building2) {
+      throw new NotFoundException('Data not found.');
+    }
+
+    if (building1.floorId !== building2.floorId) {
+      throw new BadRequestException('Invalid data input.');
+    }
+    return this.buildingInfoService.swapBuilding(+id1, +id2);
   }
 
   @Delete('floor/:id')

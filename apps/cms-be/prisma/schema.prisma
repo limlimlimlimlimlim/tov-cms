@@ -66,6 +66,8 @@ model Permission {
 model Floor {
   id       Int      @default(autoincrement()) @id
   name     String
+  nameEn   String?
+  order    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -73,7 +75,9 @@ model Floor {
 model Building {
   id         Int      @default(autoincrement()) @id
   name       String
+  nameEn     String?
   floorId    Int
+  order      Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

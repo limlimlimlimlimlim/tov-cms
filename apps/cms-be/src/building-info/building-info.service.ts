@@ -42,6 +42,14 @@ export class BuildingInfoService {
     return this.prisma.building.findFirst({ where: { name } });
   }
 
+  async getFloorCount() {
+    return this.prisma.floor.count();
+  }
+
+  async getBuildingCountByFoorId(id: number) {
+    return this.prisma.building.count({ where: { floorId: id } });
+  }
+
   async updateFloor(id: number, data: Prisma.FloorUpdateInput) {
     return this.prisma.floor.update({ where: { id }, data });
   }
@@ -56,5 +64,38 @@ export class BuildingInfoService {
 
   async deleteBuilding(id: number) {
     return this.prisma.building.delete({ where: { id } });
+  }
+
+  async swapFloor(id1: number, id2: number) {
+    const floor1 = await this.getFloorById(id1);
+    const floor2 = await this.getFloorById(id2);
+    const tempOrder = (await floor1).order;
+    return Promise.all([
+      this.prisma.floor.update({
+        where: { id: id1 },
+        data: { order: floor2.order },
+      }),
+      this.prisma.floor.update({
+        where: { id: id2 },
+        data: { order: tempOrder },
+      }),
+    ]);
+  }
+
+  async swapBuilding(id1: number, id2: number) {
+    const building1 = await this.getBuildingById(id1);
+    const building2 = await this.getBuildingById(id2);
+    const tempOrder = (await building1).order;
+
+    return Promise.all([
+      this.prisma.building.update({
+        where: { id: id1 },
+        data: { order: building2.order },
+      }),
+      this.prisma.building.update({
+        where: { id: id2 },
+        data: { order: tempOrder },
+      }),
+    ]);
   }
 }

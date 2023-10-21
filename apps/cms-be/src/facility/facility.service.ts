@@ -24,6 +24,12 @@ export class FacilityService {
     return this.prisma.facilitySubCategory.findMany();
   }
 
+  async getSubCategoriesByCategoryId(categoryId: number) {
+    return this.prisma.facilitySubCategory.findMany({
+      where: { parentId: categoryId },
+    });
+  }
+
   async getCategoryById(id: number) {
     return this.prisma.facilityCategory.findUnique({ where: { id } });
   }

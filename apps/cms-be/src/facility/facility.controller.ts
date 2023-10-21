@@ -20,7 +20,6 @@ export class FacilityController {
   @Post('category')
   async createCategory(@Body() data: { name: string }) {
     const sameCategory = await this.getCategoryByName(data.name);
-    console.log(sameCategory);
     if (sameCategory) {
       throw new ConflictException('Data already exist.');
     }
@@ -36,12 +35,12 @@ export class FacilityController {
     return await this.facilityService.createSubCategory(data);
   }
 
-  @Get('categories')
-  async getAllCategories() {
+  @Get('category-tree')
+  async getAllCategorTree() {
     const categories = await this.facilityService.getAllCategories();
     const subCategories = await this.facilityService.getAllSubCategories();
     const result = categories.map((category) => {
-      const childCategories = subCategories.find((subCategory) => {
+      const childCategories = subCategories.filter((subCategory) => {
         return subCategory.parentId === category.id;
       });
       return { ...category, child: childCategories || [] };
@@ -49,9 +48,19 @@ export class FacilityController {
     return result;
   }
 
+  @Get('categories')
+  async getAllCategories() {
+    return await this.facilityService.getAllCategories();
+  }
+
   @Get('sub-categories')
   async getAllSubCategories() {
     return this.facilityService.getAllSubCategories();
+  }
+
+  @Get('sub-categories/:categoryId')
+  async getSubCategoriesByCategoryId(@Param('categoryId') categoryId: number) {
+    return await this.facilityService.getSubCategoriesByCategoryId(+categoryId);
   }
 
   @Get('category/:id')

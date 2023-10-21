@@ -1,5 +1,3 @@
-// src/facility/facility.controller.ts
-
 import {
   Controller,
   Get,
@@ -12,13 +10,14 @@ import {
   Patch,
 } from '@nestjs/common';
 import { FacilityService } from './facility.service';
+import { Prisma } from '@prisma/client';
 
 @Controller('facility')
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
 
   @Post('category')
-  async createCategory(@Body() data: { name: string }) {
+  async createCategory(@Body() data: Prisma.FacilityCategoryCreateInput) {
     const sameCategory = await this.getCategoryByName(data.name);
     if (sameCategory) {
       throw new ConflictException('Data already exist.');
@@ -27,7 +26,7 @@ export class FacilityController {
   }
 
   @Post('sub-category')
-  async createSubCategory(@Body() data: { name: string; parentId: number }) {
+  async createSubCategory(@Body() data: Prisma.FacilitySubCategoryCreateInput) {
     const sameCategory = await this.getSubCategoryByName(data.name);
     if (sameCategory && sameCategory.parentId == +data.parentId) {
       throw new ConflictException('Data already exist.');
@@ -86,33 +85,45 @@ export class FacilityController {
   @Patch('category/:id')
   async updateCategory(
     @Param('id') id: number,
-    @Body() data: { name: string },
+    @Body() data: Prisma.FacilityCategoryUpdateInput,
   ) {
     const sameCategory = await this.getCategoryById(+id);
+
     if (!sameCategory) {
       throw new NotFoundException('Data not found.');
     }
+
     return this.facilityService.updateCategory(+id, data);
   }
 
   @Patch('sub-category/:id')
   async updateSubCategory(
     @Param('id') id: number,
-    @Body() data: { name: string; parentId: number },
+    @Body() data: Prisma.FacilitySubCategoryUpdateInput,
   ) {
     const sameCategory = await this.getSubCategoryById(+id);
+
     if (!sameCategory) {
       throw new NotFoundException('Data not found.');
     }
+
     return this.facilityService.updateSubCategory(+id, data);
   }
 
   @Delete('category/:id')
   async deleteCategory(@Param('id') id: number) {
     const sameCategory = await this.getCategoryById(+id);
+
     if (!sameCategory) {
       throw new NotFoundException('Data not found.');
     }
+
+    const child = await this.getSubCategoriesByCategoryId(+id);
+
+    if (child && child.length > 0) {
+      throw new ConflictException('Data deletion failed due to dependencies.');
+    }
+
     return this.facilityService.deleteCategory(+id);
   }
 

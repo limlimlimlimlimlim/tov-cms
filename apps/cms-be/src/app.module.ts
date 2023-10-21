@@ -7,9 +7,10 @@ import { AuthController } from './auth/auth.controller';
 import { UsersService } from './users/users.service';
 import { FacilityModule } from './facility/facility.module';
 import { PermissionModule } from './permission/permission.module';
+import { BuildingInfoModule } from './building-info/building-info.module';
 
 @Module({
-  imports: [UsersModule, FacilityModule, PermissionModule],
+  imports: [UsersModule, FacilityModule, PermissionModule, BuildingInfoModule],
   controllers: [AppController, AuthController],
   providers: [AppService, PrismaService, UsersService],
 })

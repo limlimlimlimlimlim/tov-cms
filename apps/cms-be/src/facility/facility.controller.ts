@@ -29,7 +29,7 @@ export class FacilityController {
   @Post('sub-category')
   async createSubCategory(@Body() data: { name: string; parentId: number }) {
     const sameCategory = await this.getSubCategoryByName(data.name);
-    if (sameCategory && sameCategory.parentId == data.parentId) {
+    if (sameCategory && sameCategory.parentId == +data.parentId) {
       throw new ConflictException('Data already exist.');
     }
     return await this.facilityService.createSubCategory(data);

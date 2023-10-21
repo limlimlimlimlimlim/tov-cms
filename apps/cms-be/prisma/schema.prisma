@@ -82,12 +82,6 @@ model Building {
   updatedAt  DateTime @updatedAt
 }
 
-model FloorArea {
-  id       Int      @default(autoincrement()) @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model FacilityCategory {
   id          Int      @default(autoincrement()) @id
   name        String
@@ -126,4 +120,30 @@ model FacilityPosition {
   x          Int
   y          Int
   status     String
+}
+
+model Map {
+  id          Int      @default(autoincrement()) @id
+  floorId     Int
+  buildingId  Int
+  name        String
+  mapImage    String
+  isUse       Boolean 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MapArea {
+  id        Int      @default(autoincrement()) @id
+  mapId     Int
+  groupId   Int?
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MapAreaGroup {
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

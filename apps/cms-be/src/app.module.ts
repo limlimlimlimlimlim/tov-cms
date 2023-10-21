@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -10,9 +11,7 @@ import { FacilityModule } from './facility/facility.module';
 import { PermissionModule } from './permission/permission.module';
 import { BuildingInfoModule } from './building-info/building-info.module';
 import { FileUploadController } from './files-upload/files-upload.controller';
-import { join } from 'path';
-
-console.log(join(__dirname, '..', 'files'));
+import { MapModule } from './map/map.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -23,6 +22,7 @@ console.log(join(__dirname, '..', 'files'));
     FacilityModule,
     PermissionModule,
     BuildingInfoModule,
+    MapModule,
   ],
   controllers: [AppController, AuthController, FileUploadController],
   providers: [AppService, PrismaService, UsersService],

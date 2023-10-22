@@ -5,6 +5,6 @@ export interface NoticeItem {
   type: string;
   useIntro: boolean;
   status: string;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

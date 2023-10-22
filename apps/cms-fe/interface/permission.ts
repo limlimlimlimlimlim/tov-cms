@@ -3,5 +3,5 @@ export interface PermissionItem {
   no: number;
   name: string;
   description: string;
-  modifiedDate: Date;
+  updatedAt: Date;
 }

@@ -1,15 +1,15 @@
-"use client";
-import { Button, Flex, Form, Input, Modal, Select, Table, message } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { format } from "date-fns";
-import type { ColumnsType } from "antd/es/table";
-import Link from "next/link";
+'use client';
+import { Button, Flex, Form, Input, Modal, Select, Table, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import type { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
 import {
   CaretDownOutlined,
   CaretUpOutlined,
   EditOutlined,
-} from "@ant-design/icons";
-import type { ScheduleItem } from "../../../interface/schedule";
+} from '@ant-design/icons';
+import type { ScheduleItem } from '../../../interface/schedule';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -17,43 +17,43 @@ const { Option } = Select;
 
 const columns: ColumnsType<ScheduleItem> = [
   {
-    title: "번호",
-    dataIndex: "no",
+    title: '번호',
+    dataIndex: 'no',
     width: 80,
   },
   {
-    title: "키오스크",
-    dataIndex: "kiosk",
+    title: '키오스크',
+    dataIndex: 'kiosk',
     width: 120,
   },
   {
-    title: "스케줄명",
-    dataIndex: "name",
+    title: '스케줄명',
+    dataIndex: 'name',
     width: 150,
   },
   {
-    title: "종류",
-    dataIndex: "type",
+    title: '종류',
+    dataIndex: 'type',
     width: 100,
   },
   {
-    title: "상태",
-    dataIndex: "status",
+    title: '상태',
+    dataIndex: 'status',
     width: 100,
   },
   {
-    title: "기간",
+    title: '기간',
     render: (value: ScheduleItem) => (
       <>
-        {format(value.startDate, "yyyy-MM-dd")} ~
-        {format(value.endDate, "yyyy-MM-dd")}
+        {format(value.startDate, 'yyyy-MM-dd')} ~
+        {format(value.endDate, 'yyyy-MM-dd')}
       </>
     ),
     width: 250,
   },
   {
-    title: "순서변경",
-    dataIndex: "order",
+    title: '순서변경',
+    dataIndex: 'order',
     width: 100,
     render: (order: number) => (
       <Flex>
@@ -67,19 +67,19 @@ const columns: ColumnsType<ScheduleItem> = [
     ),
   },
   {
-    title: "등록일",
-    dataIndex: "createDate",
+    title: '등록일',
+    dataIndex: 'createdAt',
     width: 130,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "최종 수정일",
-    dataIndex: "modifiedDate",
+    title: '최종 수정일',
+    dataIndex: 'updatedAt',
     width: 130,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "",
+    title: '',
     width: 80,
     render: (value: any) => {
       return (
@@ -107,29 +107,29 @@ export default function ScheduleList() {
         order: i,
         name: `스케줄명 ${i}`,
         kiosk: `키오스크 ${i}`,
-        type: "이미지",
-        status: "정상",
+        type: '이미지',
+        status: '정상',
         startDate: new Date(),
         endDate: new Date(),
-        createDate: new Date(),
-        modifiedDate: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     setData(temp);
   }, []);
 
   const onSearch = useCallback(() => {
-    console.log("on search");
+    console.log('on search');
   }, []);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "스케줄 삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "선택된 스케줄을 삭제하시겠습니까?",
+      title: '스케줄 삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '선택된 스케줄을 삭제하시겠습니까?',
       onOk() {
-        void message.success("선택된 스케줄이 삭제됐습니다.");
+        void message.success('선택된 스케줄이 삭제됐습니다.');
       },
     });
   }, []);
@@ -202,7 +202,7 @@ export default function ScheduleList() {
         pagination={{ pageSize: 50 }}
         scroll={{ y: 750 }}
         rowSelection={{
-          type: "checkbox",
+          type: 'checkbox',
           ...rowSelection,
         }}
       />

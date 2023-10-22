@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Floor, Map, Prisma } from '@prisma/client';
 
+interface MapWithFloorName extends Map {
+  floor: Floor;
+}
 @Injectable()
 export class MapService {
   constructor(private prisma: PrismaService) {}
@@ -22,7 +25,6 @@ export class MapService {
     const group = await this.prisma.mapAreaGroup.create({ data: {} });
     return Promise.all(
       data.map((id) => {
-        console.log(id);
         return this.updateMapArea(id, { groupId: group.id });
       }),
     );
@@ -37,11 +39,59 @@ export class MapService {
     return await this.prisma.mapAreaGroup.delete({ where: { id } });
   }
 
-  async getAllMaps() {
-    return this.prisma.map.findMany();
+  async getMaps(
+    keyword: string = '',
+    page: string,
+    count: string,
+    floor: string,
+    building: string,
+  ) {
+    const where = {
+      AND: [],
+    };
+    if (keyword) {
+      where.AND.push({ name: { contains: keyword } });
+    }
+    if (floor) {
+      where.AND.push({ floorId: +floor });
+    }
+    if (building) {
+      where.AND.push({ buildingId: +building });
+    }
+
+    const total = await this.prisma.map.count({ where });
+
+    const data = await this.prisma.map.findMany({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        image: true,
+        isUse: true,
+        floor: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        building: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+      },
+      where: where,
+      skip: (+page - 1) * +count,
+      take: +count,
+    });
+    return { total, data, page, count };
   }
 
-  async getAllMapAreas() {
+  async getAllMapAreas(): Promise<any[]> {
     return this.prisma.mapArea.findMany();
   }
 

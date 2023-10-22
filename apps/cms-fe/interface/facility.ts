@@ -7,6 +7,6 @@ export interface FacilityItem {
   type: string;
   detailType: string;
   position: string;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

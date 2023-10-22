@@ -1,20 +1,20 @@
-import { UploadOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import { Button, Flex, Image, Upload, message } from "antd";
-import { useMemo } from "react";
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+import { Button, Flex, Image, Upload, message } from 'antd';
+import { useMemo } from 'react';
 
 export default function ContentsUploader() {
   const uploadProps: UploadProps = useMemo(() => {
     return {
-      name: "file",
+      name: 'file',
       beforeUpload: () => false,
       onChange(info) {
-        if (info.file.status !== "uploading") {
+        if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
         }
-        if (info.file.status === "done") {
+        if (info.file.status === 'done') {
           void message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === "error") {
+        } else if (info.file.status === 'error') {
           void message.error(`${info.file.name} file upload failed.`);
         }
       },

@@ -18,7 +18,6 @@ export class FacilityController {
 
   @Post()
   async createFacility(@Body() data: Prisma.FacilityCreateInput) {
-    console.log('@@@');
     const sameFacility = await this.facilityService.getFacilityByName(
       data.name,
     );

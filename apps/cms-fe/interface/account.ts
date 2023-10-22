@@ -4,6 +4,6 @@ export interface AccountItem {
   name: string;
   id: string;
   permission: string;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

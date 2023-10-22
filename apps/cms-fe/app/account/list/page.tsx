@@ -1,49 +1,49 @@
-"use client";
-import { Button, Flex, Input, Modal, Table, message } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { format } from "date-fns";
-import type { ColumnsType } from "antd/es/table";
-import Link from "next/link";
-import type { AccountItem } from "../../../interface/account";
-import { EditOutlined } from "@ant-design/icons";
+'use client';
+import { Button, Flex, Input, Modal, Table, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import type { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
+import type { AccountItem } from '../../../interface/account';
+import { EditOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 const { confirm } = Modal;
 
 const columns: ColumnsType<AccountItem> = [
   {
-    title: "번호",
-    dataIndex: "no",
+    title: '번호',
+    dataIndex: 'no',
     width: 80,
   },
   {
-    title: "이름",
-    dataIndex: "name",
+    title: '이름',
+    dataIndex: 'name',
   },
   {
-    title: "아이디",
-    dataIndex: "id",
+    title: '아이디',
+    dataIndex: 'id',
     width: 150,
   },
   {
-    title: "권한",
+    title: '권한',
     width: 150,
-    dataIndex: "permission",
+    dataIndex: 'permission',
   },
   {
-    title: "등록일",
-    dataIndex: "createDate",
+    title: '등록일',
+    dataIndex: 'createdAt',
     width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "최종 수정일",
-    dataIndex: "modifiedDate",
+    title: '최종 수정일',
+    dataIndex: 'updatedAt',
     width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "",
+    title: '',
     width: 80,
     render: (value: any) => {
       return (
@@ -71,25 +71,25 @@ export default function AccountList() {
         name: `Edward King ${i}`,
         id: `id-${i}`,
         permission: `admin`,
-        createDate: new Date(),
-        modifiedDate: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     setData(temp);
   }, []);
 
   const onSearch = useCallback(() => {
-    console.log("on search");
+    console.log('on search');
   }, []);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "계정 삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "선택된 계정을 삭제하시겠습니까?",
+      title: '계정 삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '선택된 계정을 삭제하시겠습니까?',
       onOk() {
-        void message.success("선택된 계정이 삭제됐습니다.");
+        void message.success('선택된 계정이 삭제됐습니다.');
       },
     });
   }, []);
@@ -131,7 +131,7 @@ export default function AccountList() {
         pagination={{ pageSize: 50 }}
         scroll={{ y: 750 }}
         rowSelection={{
-          type: "checkbox",
+          type: 'checkbox',
           ...rowSelection,
         }}
       />

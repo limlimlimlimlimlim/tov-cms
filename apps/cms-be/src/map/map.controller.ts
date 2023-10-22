@@ -1,4 +1,3 @@
-// map/map.controller.ts
 import {
   Controller,
   Get,
@@ -9,6 +8,7 @@ import {
   ConflictException,
   NotFoundException,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { MapService } from './map.service';
 import { Prisma } from '@prisma/client';
@@ -19,13 +19,6 @@ export class MapController {
 
   @Post()
   async createMap(@Body() data: Prisma.MapCreateInput) {
-    const isExist = await this.mapService.existMapByFloorAndBuildning(
-      data.floorId,
-      data.buildingId,
-    );
-    if (isExist) {
-      throw new ConflictException('Map already exists.');
-    }
     return await this.mapService.createMap(data);
   }
 
@@ -42,7 +35,6 @@ export class MapController {
 
   @Post('area-group/merge')
   async mergeMapArea(@Body() data: { areas: number[] }) {
-    console.log(data);
     return await this.mapService.mergeMapAreaGroup(data.areas);
   }
 
@@ -52,8 +44,14 @@ export class MapController {
   }
 
   @Get()
-  async getAllMaps() {
-    return await this.mapService.getAllMaps();
+  async getMaps(
+    @Query('keyword') keyword: string,
+    @Query('page') page: string = '1',
+    @Query('count') count: string = '50',
+    @Query('floor') floor: string,
+    @Query('building') building: string,
+  ) {
+    return await this.mapService.getMaps(keyword, page, count, floor, building);
   }
 
   @Get('area/:mapId')

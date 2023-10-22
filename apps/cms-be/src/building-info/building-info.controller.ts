@@ -71,7 +71,6 @@ export class BuildingInfoController {
 
   @Get('floor/:id/buildings')
   async getBuildingsByFloor(@Param('id') id: number) {
-    console.log('@@@');
     return await this.buildingInfoService.getBuildingsByFloor(+id);
   }
 
@@ -118,7 +117,6 @@ export class BuildingInfoController {
   async swapFloor(@Param('id1') id1: number, @Param('id2') id2: number) {
     const floor1 = await this.getFloorById(+id1);
 
-    console.log(id1, id2);
     if (!floor1) {
       throw new NotFoundException('Data not found.');
     }

@@ -6,6 +6,6 @@ export interface MapInfoItem {
   name: string;
   areaNum: number;
   facilityNum: number;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

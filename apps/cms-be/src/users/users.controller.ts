@@ -20,9 +20,7 @@ export class UsersController {
 
   @Post()
   async create(@Body() user: Prisma.UserCreateInput) {
-    console.log(user);
     const sameUser = await this.usersService.findOne(user.userId);
-    console.log(sameUser);
     if (sameUser) {
       throw new ConflictException('Data already exist.');
     }

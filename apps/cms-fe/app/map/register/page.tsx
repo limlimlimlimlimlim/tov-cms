@@ -36,7 +36,7 @@ export default function FloorMapRegister() {
   const onFinish = useCallback(
     (values: any) => {
       void message.success("층별 지도가 생성됐습니다.");
-      router.push("/floor-map/list");
+      router.push("/map/list");
     },
     [router]
   );
@@ -89,7 +89,7 @@ export default function FloorMapRegister() {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            <Link href="/floor-map/list">
+            <Link href="/map/list">
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">

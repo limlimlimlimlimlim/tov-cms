@@ -70,6 +70,7 @@ model Floor {
   order    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  maps      Map[]
 }
 
 model Building {
@@ -80,6 +81,7 @@ model Building {
   order      Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  maps      Map[]
 }
 
 model FacilityCategory {
@@ -124,6 +126,8 @@ model Map {
   isUse       Boolean 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  floor       Floor @relation(fields: [floorId], references: [id] )
+  building     Building @relation(fields: [buildingId], references: [id] )
 }
 
 model MapArea {

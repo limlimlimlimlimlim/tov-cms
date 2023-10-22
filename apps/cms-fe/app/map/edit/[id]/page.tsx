@@ -40,7 +40,7 @@ export default function FloorMapEdit() {
   const onFinish = useCallback(
     (values: any) => {
       void message.success("층별 지도가 수정됐습니다.");
-      router.push("/floor-map/list");
+      router.push("/map/list");
     },
     [router]
   );
@@ -53,7 +53,7 @@ export default function FloorMapEdit() {
       content: "층별 지도를 삭제하겠습니까?",
       onOk() {
         void message.success("층별 지도가 삭제 됐습니다.");
-        router.push("/floor-map/list");
+        router.push("/map/list");
       },
     });
   }, [router]);
@@ -128,7 +128,7 @@ export default function FloorMapEdit() {
               <Button danger onClick={onClickDeleteMap}>
                 삭제
               </Button>
-              <Link href="/floor-map/list">
+              <Link href="/map/list">
                 <Button>취소</Button>
               </Link>
               <Button type="primary" htmlType="submit">

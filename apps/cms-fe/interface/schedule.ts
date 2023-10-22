@@ -8,6 +8,6 @@ export interface ScheduleItem {
   startDate: Date;
   endDate: Date;
   order: number;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

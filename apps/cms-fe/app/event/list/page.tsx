@@ -1,44 +1,44 @@
-"use client";
-import { Button, Flex, Input, Modal, Table, message } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { format } from "date-fns";
-import type { ColumnsType } from "antd/es/table";
-import Link from "next/link";
-import { EditOutlined } from "@ant-design/icons";
-import type { EventItem } from "../../../interface/event";
+'use client';
+import { Button, Flex, Input, Modal, Table, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import type { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
+import { EditOutlined } from '@ant-design/icons';
+import type { EventItem } from '../../../interface/event';
 
 const { Search } = Input;
 const { confirm } = Modal;
 
 const columns: ColumnsType<EventItem> = [
   {
-    title: "번호",
-    dataIndex: "no",
+    title: '번호',
+    dataIndex: 'no',
     width: 80,
   },
   {
-    title: "제목",
-    dataIndex: "title",
+    title: '제목',
+    dataIndex: 'title',
   },
   {
-    title: "상태",
-    dataIndex: "status",
+    title: '상태',
+    dataIndex: 'status',
     width: 80,
   },
   {
-    title: "등록일",
-    dataIndex: "createDate",
+    title: '등록일',
+    dataIndex: 'createdAt',
     width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "최종 수정일",
-    dataIndex: "modifiedDate",
+    title: '최종 수정일',
+    dataIndex: 'updatedAt',
     width: 180,
-    render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
   },
   {
-    title: "",
+    title: '',
     width: 80,
     render: (value: any) => {
       return (
@@ -64,26 +64,26 @@ export default function EventList() {
         key: i,
         no: i,
         title: `제목 ${i}`,
-        status: "normal",
-        createDate: new Date(),
-        modifiedDate: new Date(),
+        status: 'normal',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     setData(temp);
   }, []);
 
   const onSearch = useCallback(() => {
-    console.log("on search");
+    console.log('on search');
   }, []);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "이벤트 삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "선택된 이벤트를 삭제하시겠습니까?",
+      title: '이벤트 삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '선택된 이벤트를 삭제하시겠습니까?',
       onOk() {
-        void message.success("선택된 이벤트가 삭제됐습니다.");
+        void message.success('선택된 이벤트가 삭제됐습니다.');
       },
     });
   }, []);
@@ -125,7 +125,7 @@ export default function EventList() {
         pagination={{ pageSize: 50 }}
         scroll={{ y: 750 }}
         rowSelection={{
-          type: "checkbox",
+          type: 'checkbox',
           ...rowSelection,
         }}
       />

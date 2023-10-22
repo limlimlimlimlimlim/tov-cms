@@ -1,12 +1,12 @@
-"use client";
-import { Button, Flex, Form, Input, Modal, Select, Table, message } from "antd";
-import { useCallback, useEffect, useState } from "react";
-import { format } from "date-fns";
-import type { ColumnsType } from "antd/es/table";
-import Link from "next/link";
-import { EditOutlined } from "@ant-design/icons";
-import type { FacilityItem } from "../../../interface/facility";
-import CategoryManagementManagementModal from "../../../component/category-management/category-management-modal";
+'use client';
+import { Button, Flex, Form, Input, Modal, Select, Table, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import type { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
+import { EditOutlined } from '@ant-design/icons';
+import type { FacilityItem } from '../../../interface/facility';
+import CategoryManagementManagementModal from '../../../component/category-management/category-management-modal';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -21,59 +21,59 @@ export default function FacilityList() {
 
   const columns: ColumnsType<FacilityItem> = [
     {
-      title: "번호",
-      dataIndex: "no",
+      title: '번호',
+      dataIndex: 'no',
       width: 80,
     },
     {
-      title: "층",
-      dataIndex: "floor",
+      title: '층',
+      dataIndex: 'floor',
       width: 80,
     },
     {
-      title: "동",
-      dataIndex: "building",
+      title: '동',
+      dataIndex: 'building',
       width: 100,
     },
     {
-      title: "구분",
-      dataIndex: "type",
+      title: '구분',
+      dataIndex: 'type',
       width: 120,
     },
     {
-      title: "구분상세",
-      dataIndex: "detailType",
+      title: '구분상세',
+      dataIndex: 'detailType',
       width: 120,
     },
     {
-      title: "시설명",
-      dataIndex: "name",
+      title: '시설명',
+      dataIndex: 'name',
       width: 200,
     },
     {
-      title: "위치설정",
-      dataIndex: "position",
+      title: '위치설정',
+      dataIndex: 'position',
       width: 100,
     },
     {
-      title: "미리보기",
+      title: '미리보기',
       width: 100,
       render: () => <Button size="small">미리보기</Button>,
     },
     {
-      title: "등록일",
-      dataIndex: "createDate",
+      title: '등록일',
+      dataIndex: 'createdAt',
       width: 180,
-      render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+      render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
     },
     {
-      title: "최종 수정일",
-      dataIndex: "modifiedDate",
+      title: '최종 수정일',
+      dataIndex: 'updatedAt',
       width: 180,
-      render: (date: Date) => format(date, "yyyy-MM-dd hh:mm:ss"),
+      render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
     },
     {
-      title: "",
+      title: '',
       width: 80,
       render: (value: any) => {
         return (
@@ -93,31 +93,31 @@ export default function FacilityList() {
       temp.push({
         key: i,
         no: i,
-        building: "중앙",
-        floor: "1",
-        name: "name",
-        type: "부대시설",
-        detailType: "키오스크",
-        position: "완료",
-        createDate: new Date(),
-        modifiedDate: new Date(),
+        building: '중앙',
+        floor: '1',
+        name: 'name',
+        type: '부대시설',
+        detailType: '키오스크',
+        position: '완료',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     setData(temp);
   }, []);
 
   const onSearch = useCallback(() => {
-    console.log("on search");
+    console.log('on search');
   }, []);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "시설 삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "선택된 시설을 삭제하시겠습니까?",
+      title: '시설 삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '선택된 시설을 삭제하시겠습니까?',
       onOk() {
-        void message.success("선택된 시설이 삭제됐습니다.");
+        void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
   }, []);
@@ -211,7 +211,7 @@ export default function FacilityList() {
           pagination={{ pageSize: 50 }}
           scroll={{ y: 750 }}
           rowSelection={{
-            type: "checkbox",
+            type: 'checkbox',
             ...rowSelection,
           }}
         />

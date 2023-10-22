@@ -5,6 +5,6 @@ export interface KioskItem {
   floor: string;
   code: string;
   name: string;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

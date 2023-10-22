@@ -3,6 +3,6 @@ export interface EventItem {
   no: number;
   title: string;
   status: string;
-  createDate: Date;
-  modifiedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

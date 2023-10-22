@@ -16,6 +16,54 @@ import { Prisma } from '@prisma/client';
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
 
+  @Post()
+  async createFacility(@Body() data: Prisma.FacilityCreateInput) {
+    console.log('@@@');
+    const sameFacility = await this.facilityService.getFacilityByName(
+      data.name,
+    );
+    if (sameFacility) {
+      throw new ConflictException('Facility already exists.');
+    }
+
+    return await this.facilityService.createFacility(data);
+  }
+
+  @Get()
+  async getAllFacilities() {
+    return this.facilityService.getAllFacilities();
+  }
+
+  @Get(':id')
+  async getFacilityById(@Param('id') id: number) {
+    const facility = await this.facilityService.getFacilityById(+id);
+    if (!facility) {
+      throw new NotFoundException('Facility not found.');
+    }
+    return facility;
+  }
+
+  @Patch(':id')
+  async updateFacility(
+    @Param('id') id: number,
+    @Body() data: Prisma.FacilityUpdateInput,
+  ) {
+    const sameFacility = await this.facilityService.getFacilityById(+id);
+    if (!sameFacility) {
+      throw new NotFoundException('Facility not found.');
+    }
+    return this.facilityService.updateFacility(+id, data);
+  }
+
+  @Delete(':id')
+  async deleteFacility(@Param('id') id: number) {
+    const sameFacility = await this.facilityService.getFacilityById(+id);
+    if (!sameFacility) {
+      throw new NotFoundException('Facility not found.');
+    }
+    return this.facilityService.deleteFacility(+id);
+  }
+
   @Post('category')
   async createCategory(@Body() data: Prisma.FacilityCategoryCreateInput) {
     const sameCategory = await this.getCategoryByName(data.name);

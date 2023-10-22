@@ -6,6 +6,38 @@ import { Prisma } from '@prisma/client';
 export class FacilityService {
   constructor(private prisma: PrismaService) {}
 
+  async createFacility(data: Prisma.FacilityCreateInput) {
+    return this.prisma.facility.create({ data });
+  }
+
+  async getAllFacilities() {
+    return this.prisma.facility.findMany();
+  }
+
+  async getFacilityById(id: number) {
+    return this.prisma.facility.findUnique({ where: { id } });
+  }
+
+  async getFacilityByName(name: string) {
+    return this.prisma.facility.findFirst({ where: { name } });
+  }
+
+  async updateFacility(id: number, data: Prisma.FacilityUpdateInput) {
+    return this.prisma.facility.update({ where: { id }, data });
+  }
+
+  async deleteFacility(id: number) {
+    return this.prisma.facility.delete({ where: { id } });
+  }
+
+  async createFacilityPosition(data: Prisma.FacilityPositionCreateInput) {
+    return this.prisma.facilityPosition.create({ data });
+  }
+
+  async getFacilityPositionById(id: number) {
+    return this.prisma.facilityPosition.findUnique({ where: { id } });
+  }
+
   async createCategory(data: Prisma.FacilityCategoryCreateInput) {
     return this.prisma.facilityCategory.create({ data });
   }

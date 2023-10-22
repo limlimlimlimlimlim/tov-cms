@@ -5,19 +5,22 @@ import {
   UploadedFile,
   HttpException,
   HttpStatus,
-  Get,
-  Res,
-  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs'; // fs 모듈 추가
 
 const options: MulterOptions = {
   storage: diskStorage({
     destination: (req, file, callback) => {
-      callback(null, './uploads/');
+      const uploadDirectory = './files/upload/'; // 업로드 폴더 경로
+
+      if (!fs.existsSync(uploadDirectory)) {
+        fs.mkdirSync(uploadDirectory, { recursive: true });
+      }
+      callback(null, uploadDirectory);
     },
     filename: (req, file, callback) => {
       const uniqueSuffix = Date.now() + '-' + uuidv4();

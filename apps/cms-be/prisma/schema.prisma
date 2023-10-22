@@ -102,24 +102,17 @@ model Facility {
   name        String
   floorId     Int
   buildingId  Int
-  position    Boolean
   initial     String
   fnbId       Int
   phone       String
   address     String
   operation   String
-  img         String
+  image       String
   iconId      Int
+  x          Int?
+  y          Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-model FacilityPosition {
-  id         Int      @default(autoincrement()) @id
-  facilityId Int
-  x          Int
-  y          Int
-  status     String
 }
 
 model Map {

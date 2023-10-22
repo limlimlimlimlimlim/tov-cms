@@ -8,7 +8,7 @@ import { EditOutlined } from '@ant-design/icons';
 import type { MapItem } from '../../../interface/map';
 import BuldingInfoManagementModal from '../../../component/building-info-management/building-info-management-modal';
 import MapAreaEditorModal from '../../../component/map-area-editor/map-area-editor-modal';
-import { getMaps } from '../../../api/map';
+import { deleteMap, getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import BuildingSelect from '../../../component/building-select/building-select';
 
@@ -123,18 +123,20 @@ export default function MapList() {
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: '층별 지도 확인',
+      title: '지도 삭제 확인',
       okText: '확인',
       cancelText: '취소',
-      content: '선택된 층별 지도를 삭제하시겠습니까?',
-      onOk() {
-        void message.success('선택된 층별 지도가 삭제됐습니다.');
+      content: '선택된 지도를 삭제하시겠습니까?',
+      async onOk() {
+        await Promise.all(selectedData.map((row) => deleteMap(row.id)));
+        fetchData({ keyword, page, count, floor, building });
+        void message.success('선택된 지도가 삭제됐습니다.');
       },
     });
-  }, []);
+  }, [keyword, page, count, floor, building, selectedData]);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
+    onChange: async (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
       setSelectedData(selectedRows);
     },
   };

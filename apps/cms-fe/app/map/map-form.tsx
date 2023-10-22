@@ -1,12 +1,23 @@
 'use client';
-import { Button, Divider, Flex, Form, Input, Switch, message } from 'antd';
+import {
+  Button,
+  Divider,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Switch,
+  message,
+} from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import ContentsUploader from '../../component/contents-uploader/contentes-uploader';
 import FloorSelect from '../../component/floor-select/floor-select';
 import BuildingSelect from '../../component/building-select/building-select';
-import { createMap, updateMap } from '../../api/map';
+import { createMap, deleteMap, updateMap } from '../../api/map';
+
+const { confirm } = Modal;
 
 const layout = {
   labelCol: { span: 4 },
@@ -91,6 +102,20 @@ export default function MapForm({ data }) {
     setIsUse(value);
   }, []);
 
+  const onClickDeleteMap = useCallback(() => {
+    confirm({
+      title: '삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '지도를 삭제하겠습니까?',
+      async onOk() {
+        await deleteMap(data.id);
+        void message.success('지도가 삭제됐습니다.');
+        router.push('/map/list');
+      },
+    });
+  }, [router, data]);
+
   return (
     <Flex vertical gap="middle">
       <Form
@@ -133,6 +158,12 @@ export default function MapForm({ data }) {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
+            {isEdit && (
+              <Button danger onClick={onClickDeleteMap}>
+                삭제
+              </Button>
+            )}
+
             <Link href="/map/list">
               <Button>취소</Button>
             </Link>

@@ -87,6 +87,9 @@ export class MapService {
       where: where,
       skip: (+page - 1) * +count,
       take: +count,
+      orderBy: {
+        id: 'desc',
+      },
     });
     return { total, data, page, count };
   }

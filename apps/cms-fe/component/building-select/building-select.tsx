@@ -6,24 +6,26 @@ const { Option } = Select;
 
 interface ComponentProps {
   floorId;
+  buildingId?;
   style?;
   onChange?: (buildingId) => void;
 }
 
 export default function BuildingSelect({
   floorId,
+  buildingId,
   style,
   onChange,
 }: ComponentProps) {
   const [buildings, setBuildings] = useState([]);
-  const [building, setBuilding] = useState('');
 
   useEffect(() => {
-    setBuilding('');
-    setBuildings([]);
-    if (onChange) onChange('');
-    if (floorId === '') return;
-    fetchData(floorId);
+    if (floorId) {
+      fetchData(floorId);
+    } else {
+      setBuildings([]);
+      if (onChange) onChange('');
+    }
   }, [floorId]);
 
   const fetchData = async (id) => {
@@ -39,19 +41,20 @@ export default function BuildingSelect({
     ));
   }, [buildings]);
   return (
-    <Select
-      style={style}
-      value={building}
-      onChange={(value, ww) => {
-        setBuilding(value);
-        if (!onChange) return;
-        onChange(value);
-      }}
-    >
-      <Option key="all" value="">
-        전체
-      </Option>
-      {createOptions()}
-    </Select>
+    <>
+      <Select
+        style={style}
+        value={buildingId}
+        onChange={(value) => {
+          if (!onChange) return;
+          onChange(value);
+        }}
+      >
+        <Option key="all" value="">
+          전체
+        </Option>
+        {createOptions()}
+      </Select>
+    </>
   );
 }

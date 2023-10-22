@@ -5,11 +5,16 @@ import { getFloors } from '../../api/building-info';
 const { Option } = Select;
 
 interface ComponentProps {
+  floorId?: string;
   style?: any;
   onChange?: (floorId) => void;
 }
 
-export default function FloorSelect({ style, onChange }: ComponentProps) {
+export default function FloorSelect({
+  floorId,
+  style,
+  onChange,
+}: ComponentProps) {
   const [floors, setFloors] = useState([]);
 
   useEffect(() => {
@@ -19,6 +24,7 @@ export default function FloorSelect({ style, onChange }: ComponentProps) {
     };
     fetchData();
   }, []);
+
   const createOptions = useCallback(() => {
     return floors.map((floor: any) => (
       <Option key={floor.id} value={floor.id}>
@@ -29,7 +35,7 @@ export default function FloorSelect({ style, onChange }: ComponentProps) {
   return (
     <Select
       style={style}
-      defaultValue=""
+      value={floorId}
       onChange={(value) => {
         if (!onChange) return;
         onChange(value);

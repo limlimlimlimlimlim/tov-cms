@@ -12,6 +12,10 @@ export const getMaps = async (param: {
   );
 };
 
+export const getMapDetail = async (id) => {
+  return await axiosClient.get(`/maps/${id}`);
+};
+
 export const createMap = async (data) => {
   return await axiosClient.post('/maps', data);
 };

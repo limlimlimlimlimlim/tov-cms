@@ -1,15 +1,24 @@
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, Flex, Image, Upload, message } from 'antd';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 
 interface ComponentProps {
+  image?: string;
   onComplete?: ({ fileName }) => void;
 }
 
-export default function ContentsUploader({ onComplete }: ComponentProps) {
+export default function ContentsUploader({
+  image,
+  onComplete,
+}: ComponentProps) {
   const [src, setSrc] = useState('');
+
+  useEffect(() => {
+    setSrc(`${baseURL}/files/upload/${image}`);
+  }, [image]);
+
   const uploadProps: UploadProps = useMemo(() => {
     return {
       action: `${baseURL}/files/upload`,

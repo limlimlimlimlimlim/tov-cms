@@ -15,7 +15,7 @@ import BuildingSelect from '../../../component/building-select/building-select';
 const { Search } = Input;
 const { confirm } = Modal;
 
-export default function FloorMapList() {
+export default function MapList() {
   const [total, setTotal] = useState(17);
   const [data, setData] = useState<MapItem[]>([]);
   const [keyword, setKeyword] = useState('');
@@ -104,7 +104,7 @@ export default function FloorMapList() {
       width: 80,
       render: (value: any) => {
         return (
-          <Link href={`/map/edit/${(value as any).no}`}>
+          <Link href={`/map/edit/${(value as any).id}`}>
             <Button size="small" type="text">
               <EditOutlined />
             </Button>

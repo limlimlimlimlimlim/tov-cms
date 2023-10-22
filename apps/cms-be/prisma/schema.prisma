@@ -120,7 +120,7 @@ model Map {
   floorId     Int
   buildingId  Int
   name        String
-  mapImage    String
+  image    String
   isUse       Boolean 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -137,6 +137,19 @@ model MapArea {
 
 model MapAreaGroup {
   id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id        Int      @default(autoincrement()) @id
+  title     String
+  image     String?
+  description String
+  startDate   DateTime?
+  endDate   DateTime?
+  noPeriod  Boolean?
+  useIntro  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

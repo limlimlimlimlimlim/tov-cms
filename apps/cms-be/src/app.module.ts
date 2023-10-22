@@ -12,6 +12,7 @@ import { PermissionModule } from './permission/permission.module';
 import { BuildingInfoModule } from './building-info/building-info.module';
 import { FileUploadController } from './files-upload/files-upload.controller';
 import { MapModule } from './map/map.module';
+import { EventModule } from './event/event.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -23,6 +24,7 @@ import { MapModule } from './map/map.module';
     PermissionModule,
     BuildingInfoModule,
     MapModule,
+    EventModule,
   ],
   controllers: [AppController, AuthController, FileUploadController],
   providers: [AppService, PrismaService, UsersService],

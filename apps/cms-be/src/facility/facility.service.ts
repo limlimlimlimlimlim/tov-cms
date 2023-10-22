@@ -30,14 +30,6 @@ export class FacilityService {
     return this.prisma.facility.delete({ where: { id } });
   }
 
-  async createFacilityPosition(data: Prisma.FacilityPositionCreateInput) {
-    return this.prisma.facilityPosition.create({ data });
-  }
-
-  async getFacilityPositionById(id: number) {
-    return this.prisma.facilityPosition.findUnique({ where: { id } });
-  }
-
   async createCategory(data: Prisma.FacilityCategoryCreateInput) {
     return this.prisma.facilityCategory.create({ data });
   }

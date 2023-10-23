@@ -16,7 +16,9 @@ export default function ContentsUploader({
   const [src, setSrc] = useState('');
 
   useEffect(() => {
-    setSrc(`${baseURL}/files/upload/${image}`);
+    if (image) {
+      setSrc(`${baseURL}/files/upload/${image}`);
+    }
   }, [image]);
 
   const uploadProps: UploadProps = useMemo(() => {

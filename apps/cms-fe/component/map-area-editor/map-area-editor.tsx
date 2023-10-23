@@ -1,12 +1,20 @@
-import { HighlightOutlined } from "@ant-design/icons";
-import { Button, Flex } from "antd";
-import Image from "next/image";
+import { HighlightOutlined } from '@ant-design/icons';
+import { Button, Flex } from 'antd';
+import Image from 'next/image';
+import { baseURL } from '../../util/axios-client';
+import { useEffect, useState } from 'react';
 
 interface ComponentProps {
-  id: string;
+  map: any;
 }
 
-export default function MapAreaEditor({ id }: ComponentProps) {
+export default function MapAreaEditor({ map }: ComponentProps) {
+  const [imgSrc, setImgSrc] = useState('');
+
+  useEffect(() => {
+    setImgSrc(`${baseURL}/files/upload/${map.image}`);
+  }, [map]);
+
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
       <Flex justify="space-between">
@@ -20,7 +28,7 @@ export default function MapAreaEditor({ id }: ComponentProps) {
         </Flex>
       </Flex>
       <Flex justify="center">
-        <Image alt="map" width="1200" height="674" src="/map.png" />
+        {imgSrc && <Image alt="map" width="1200" height="674" src={imgSrc} />}
       </Flex>
     </Flex>
   );

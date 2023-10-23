@@ -1,15 +1,15 @@
-import Modal from "antd/es/modal/Modal";
-import MapAreaEditor from "./map-area-editor";
+import Modal from 'antd/es/modal/Modal';
+import MapAreaEditor from './map-area-editor';
 
 interface ComponentProps {
-  id: string;
+  map: any;
   open: boolean;
   onOk: (data: any) => void;
   onCancel: () => void;
 }
 
 export default function MapAreaEditorModal({
-  id,
+  map,
   open,
   onOk,
   onCancel,
@@ -26,7 +26,7 @@ export default function MapAreaEditorModal({
       }}
       onCancel={onCancel}
     >
-      <MapAreaEditor id={id} />
+      <MapAreaEditor map={map} />
     </Modal>
   );
 }

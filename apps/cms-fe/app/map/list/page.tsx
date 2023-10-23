@@ -27,6 +27,7 @@ export default function MapList() {
   const [isBuildingManagementModalOpen, setIsOpenBuildingManagementModal] =
     useState(false);
   const [isOpenMapAreaModal, setIsOpenMapAreaModal] = useState(false);
+  const [currentMap, setCurrentMap] = useState(null);
 
   useEffect(() => {
     setPage(1);
@@ -88,10 +89,11 @@ export default function MapList() {
     {
       title: '구역설정',
       width: 100,
-      render: () => (
+      render: (map) => (
         <Button
           size="small"
           onClick={() => {
+            setCurrentMap(map);
             setIsOpenMapAreaModal(true);
           }}
         >
@@ -144,10 +146,12 @@ export default function MapList() {
   const onOkMapAreaModal = useCallback(() => {
     void message.success('구역이 설정됐습니다.');
     setIsOpenMapAreaModal(false);
+    setCurrentMap(null);
   }, []);
 
   const onCancelMapAreaModal = useCallback(() => {
     setIsOpenMapAreaModal(false);
+    setCurrentMap(null);
   }, []);
 
   const onChangeFloor = useCallback((floor) => {
@@ -231,7 +235,7 @@ export default function MapList() {
         }}
       />
       <MapAreaEditorModal
-        id="test"
+        map={currentMap}
         open={isOpenMapAreaModal}
         onOk={onOkMapAreaModal}
         onCancel={onCancelMapAreaModal}

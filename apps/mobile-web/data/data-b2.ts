@@ -1,5 +1,5 @@
 const data = {
-  id: 6å,
+  id: 6,
   floorName: 'b2',
   maps: [
     {

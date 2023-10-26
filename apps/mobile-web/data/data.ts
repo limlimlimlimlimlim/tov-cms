@@ -5,11 +5,4 @@ import data5f from './data-5f';
 import datab1 from './data-b1';
 import datab2 from './data-b2';
 
-export default {
-  ['1f']: data1f,
-  ['2f']: data2f,
-  ['3f']: data3f,
-  ['5f']: data5f,
-  ['b1']: datab1,
-  ['b2']: datab2,
-};
+export default [data5f, data3f, data2f, data1f, datab1, datab2];

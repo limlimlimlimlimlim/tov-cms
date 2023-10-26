@@ -1,9 +1,47 @@
-import Image from "next/image";
+'use client';
+import { useCallback, useEffect, useState } from 'react';
+import dummyData from '../../data/data';
+import { useRouter } from 'next/navigation';
 
 export default function Main() {
+  const router = useRouter();
+  const [data, setData] = useState([]);
+  const [isShowPopup, setIsShowPopup] = useState(false);
+
+  useEffect(() => {
+    setData(dummyData as any);
+  }, []);
+
+  const createItems = useCallback(() => {
+    return data.map((item: any, i) => {
+      return (
+        <li key={i}>
+          <a href="BD-list.html">
+            <p>
+              {item.floorName}
+              <i className="ic_arrow_right"></i>
+            </p>
+          </a>
+        </li>
+      );
+    });
+  }, [data]);
+
+  const onClickSearch = useCallback(() => {
+    console.log('@@');
+    router.push('/search');
+  }, []);
+
+  const onClickShowPopup = useCallback(() => {
+    setIsShowPopup(true);
+  }, []);
+
+  const onClickHidePopup = useCallback(() => {
+    setIsShowPopup(false);
+  }, []);
+
   return (
     <>
-      {/* <!-- header --> */}
       <header className="header">
         <div>
           <button className="btn-back"></button>
@@ -19,67 +57,20 @@ export default function Main() {
           type="button"
           className="ip-srchForm"
           value="초성만 입력해도 검색이 가능합니다."
-          //   onclick="location.href='./BD-search.html'"
+          onClick={onClickSearch}
         />
       </section>
 
-      {/* <!-- 메인 내용 --> */}
       <section className="content">
         <div className="list-floor">
-          <ul>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  5F<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  3F<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  2F<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  1F<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  B1<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  B2<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-            <li>
-              <a href="BD-list.html">
-                <p>
-                  B3<i className="ic_arrow_right"></i>
-                </p>
-              </a>
-            </li>
-          </ul>
+          <ul>{createItems()}</ul>
         </div>
 
-        <button className="btn-popup twinIntro" data-target=".pop-twinIntro">
+        <button
+          className="btn-popup twinIntro"
+          data-target=".pop-twinIntro"
+          onClick={onClickShowPopup}
+        >
           LG 트윈타워 소개
         </button>
 
@@ -95,7 +86,9 @@ export default function Main() {
       </section>
 
       {/* <!-- popup 트윈타워 소개 --> */}
-      <section className="popup-wrap pop-twinIntro">
+      <section
+        className={`popup-wrap pop-twinIntro ${isShowPopup ? 'on' : ''}`}
+      >
         <div className="popup-layer">
           <h3>LG 트윈타워 소개</h3>
           {/* <!-- <button className="btn-close"></button> --> */}
@@ -104,7 +97,9 @@ export default function Main() {
               <img src="/images/img-popupContent.jpg" alt="" />
             </div>
           </div>
-          <button className="btn-ok">확인</button>
+          <button className="btn-ok" onClick={onClickHidePopup}>
+            확인
+          </button>
         </div>
       </section>
     </>

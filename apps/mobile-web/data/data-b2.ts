@@ -1,6 +1,6 @@
 const data = {
   id: 6,
-  floorName: 'b2',
+  floorName: 'B2',
   maps: [
     {
       id: 0,

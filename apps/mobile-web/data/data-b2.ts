@@ -1,11 +1,11 @@
 const data = {
-  id: 6,
+  id: 7,
   floorName: 'B2',
   maps: [
     {
       id: 0,
       name: '전체',
-      image: '/images/sample/231024_B1_A.png',
+      image: '/images/sample/map/231024_B1_A.png',
       facility: [
         {
           id: 13,

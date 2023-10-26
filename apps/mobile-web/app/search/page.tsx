@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import dummyData from '../../data/data';
+import { useRouter } from 'next/navigation';
 
 export default function Search() {
+  const router = useRouter();
   const [data, setData] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
   const [keyword, setKeyword] = useState('');
@@ -60,20 +62,15 @@ export default function Search() {
   }, [data, keyword]);
   return (
     <>
-      {/* <!-- header --> */}
       <header className="header">
         <div>
-          <button
-            className="btn-back"
-            //   onclick="history.back();"
-          ></button>
+          <button className="btn-back" onClick={router.back}></button>
           <h2>검색</h2>
           <button className="btn-home"></button>
           <button className="btn-menu"></button>
         </div>
       </header>
 
-      {/* <!-- 검색 폼 --> */}
       <section className="form-search">
         <input
           type="search"
@@ -84,7 +81,6 @@ export default function Search() {
         <span className="btn-delete"></span>
       </section>
 
-      {/* <!-- 메인 내용 --> */}
       <section className="content">
         <div className="list-search">
           {searchItem.length === 0 && (
@@ -94,7 +90,6 @@ export default function Search() {
             </div>
           )}
 
-          {/* <!-- 검색 내용 입력 후 --> */}
           {keyword.length > 0 && searchItem.length > 0 && <ul>{searchItem}</ul>}
         </div>
       </section>

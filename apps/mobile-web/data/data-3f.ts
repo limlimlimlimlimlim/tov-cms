@@ -5,7 +5,7 @@ const data = {
     {
       id: 0,
       name: '전체',
-      image: '/images/sample/231024_3F_A.png',
+      image: '/images/sample/map/231024_3F_A.png',
       facility: [
         {
           id: 5,

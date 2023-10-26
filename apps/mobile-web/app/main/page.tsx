@@ -50,7 +50,6 @@ export default function Main() {
         </div>
       </header>
 
-      {/* <!-- 검색 폼 - 검색 페이지로 이동 버튼 --> */}
       <section className="form-search">
         <input
           type="button"

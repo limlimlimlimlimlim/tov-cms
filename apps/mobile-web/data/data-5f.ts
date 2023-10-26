@@ -5,7 +5,7 @@ const data = {
     {
       id: 5,
       name: '전체',
-      image: '/images/sample/231024_5F_A.png',
+      image: '/images/sample/map/231024_5F_A.png',
       facility: [
         {
           id: 1,
@@ -60,7 +60,7 @@ const data = {
     {
       id: 1,
       name: '서관',
-      image: '/images/sample/231024_5F_A.png',
+      image: '/images/sample/map/231024_5F_A.png',
       facility: [
         {
           id: 1,
@@ -79,7 +79,7 @@ const data = {
     {
       id: 2,
       name: '동관',
-      image: '/images/sample/231024_5F_A.png',
+      image: '/images/sample/map/231024_5F_A.png',
       facility: [
         {
           id: 2,

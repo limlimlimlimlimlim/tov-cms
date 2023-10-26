@@ -16,6 +16,8 @@ const data = {
           description: '아이들에게 보다 안전한 세상을 만들어주는 어린이집!',
           openingHours: '07:30 ~ 19:30',
           initial: 'ㅇㄹㅇㅈ',
+          floor: '3F',
+          building: '',
         },
       ],
     },

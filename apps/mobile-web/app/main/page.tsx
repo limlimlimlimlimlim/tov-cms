@@ -9,7 +9,7 @@ export default function Main() {
   const [isShowPopup, setIsShowPopup] = useState(false);
 
   useEffect(() => {
-    setData(dummyData as any);
+    setData(dummyData.tree as any);
   }, []);
 
   const createItems = useCallback(() => {
@@ -28,7 +28,6 @@ export default function Main() {
   }, [data]);
 
   const onClickSearch = useCallback(() => {
-    console.log('@@');
     router.push('/search');
   }, []);
 

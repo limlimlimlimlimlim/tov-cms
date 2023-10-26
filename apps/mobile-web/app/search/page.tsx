@@ -1,4 +1,63 @@
+'use client';
+
+import { useCallback, useEffect, useState } from 'react';
+import dummyData from '../../data/data';
+
 export default function Search() {
+  const [data, setData] = useState([]);
+  const [searchItem, setSearchItem] = useState([]);
+  const [keyword, setKeyword] = useState('');
+
+  useEffect(() => {
+    setData(dummyData.facility as any);
+  }, []);
+
+  const onChangeKeyword = useCallback((e: any) => {
+    setKeyword(e.target.value);
+  }, []);
+
+  useEffect(() => {
+    if (keyword.trim() === '') {
+      setSearchItem([]);
+      return;
+    }
+
+    const includeTag = (values: string[], keyword: string) => {
+      return values.some((value) => {
+        return value.trim().indexOf(keyword) === 0;
+      });
+    };
+
+    const filtered = data.filter((item: any) => {
+      return (
+        (item.name as string).indexOf(keyword) === 0 ||
+        includeTag((item.initial as string).split(','), keyword)
+      );
+    });
+
+    setSearchItem(
+      filtered.map((item: any, index) => {
+        return (
+          <li key={index}>
+            <div className="text-box">
+              <span className="tag">{item.floor}</span>
+              <span className="area">{item.building}</span>
+              <p>{item.name}</p>
+              <i>{item.phone}</i>
+            </div>
+            <div className="link-box">
+              <button
+                type="button"
+                //   onclick="location.href='BD-detailView.html'"
+              >
+                <span></span>위치안내
+              </button>
+            </div>
+          </li>
+        );
+      }) as any,
+    );
+  }, [data, keyword]);
   return (
     <>
       {/* <!-- header --> */}
@@ -16,7 +75,11 @@ export default function Search() {
 
       {/* <!-- 검색 폼 --> */}
       <section className="form-search">
-        <input type="search" placeholder="초성만 입력해도 검색이 가능합니다." />
+        <input
+          type="search"
+          placeholder="초성만 입력해도 검색이 가능합니다."
+          onChange={onChangeKeyword}
+        />
         <button type="button" className="btn-search"></button>
         <span className="btn-delete"></span>
       </section>
@@ -24,79 +87,15 @@ export default function Search() {
       {/* <!-- 메인 내용 --> */}
       <section className="content">
         <div className="list-search">
-          {/* <!-- 검색 내용 입력 전 --> */}
-          {/* <div className="noSearch">
-            <img src="/images/ic_character_gray.svg" alt="" />
-            <p>찾으실 내용을 입력해주세요.</p>
-          </div> */}
+          {searchItem.length === 0 && (
+            <div className="noSearch">
+              <img src="/images/ic_character_gray.svg" alt="" />
+              <p>찾으실 내용을 입력해주세요.</p>
+            </div>
+          )}
 
           {/* <!-- 검색 내용 입력 후 --> */}
-          <ul>
-            <li>
-              <div className="text-box">
-                <span className="tag">5F</span>
-                <span className="area">서관</span>
-                <p>LG사랑 사내 어린이집</p>
-                <i>02-0000-0000</i>
-              </div>
-              <div className="link-box">
-                <button
-                  type="button"
-                  //   onclick="location.href='BD-detailView.html'"
-                >
-                  <span></span>위치안내
-                </button>
-              </div>
-            </li>
-            <li>
-              <div className="text-box">
-                <span className="tag">2F</span>
-                <span className="area">서관</span>
-                <p>사내 약국</p>
-                <i>02-0000-0000</i>
-              </div>
-              <div className="link-box">
-                <button
-                  type="button"
-                  //   onclick="location.href='BD-detailView.html'"
-                >
-                  <span></span>위치안내
-                </button>
-              </div>
-            </li>
-            <li>
-              <div className="text-box">
-                <span className="tag">5F</span>
-                <span className="area">동관</span>
-                <p>사내 병원</p>
-                <i>02-0000-0000</i>
-              </div>
-              <div className="link-box">
-                <button
-                  type="button"
-                  // onclick=""
-                >
-                  <span></span>위치안내
-                </button>
-              </div>
-            </li>
-            <li>
-              <div className="text-box">
-                <span className="tag">5F</span>
-                <span className="area">중앙</span>
-                <p>사내 약국</p>
-                <i>02-0000-0000</i>
-              </div>
-              <div className="link-box">
-                <button
-                  type="button"
-                  // onclick=""
-                >
-                  <span></span>위치안내
-                </button>
-              </div>
-            </li>
-          </ul>
+          {keyword.length > 0 && searchItem.length > 0 && <ul>{searchItem}</ul>}
         </div>
       </section>
     </>

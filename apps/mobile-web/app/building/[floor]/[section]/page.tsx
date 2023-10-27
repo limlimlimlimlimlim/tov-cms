@@ -1,7 +1,7 @@
 'use client';
 import { useBuildingContext } from '@/app/context/building';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export default function SectionPage() {
   const { floor, setFacility, section }: any = useBuildingContext();

@@ -16,6 +16,7 @@ export default function SectionLayout({ params, children }: any) {
   );
 
   useEffect(() => {
+    if (!floor) return;
     setCurrentSection(params.section);
   }, [floor]);
 

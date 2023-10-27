@@ -18,6 +18,8 @@ const data = {
           initial: 'ㅇㄹㅇㅈ',
           floor: '3F',
           building: '',
+          floorId: 3,
+          buildingId: 0,
         },
       ],
     },

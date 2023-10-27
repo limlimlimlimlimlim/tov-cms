@@ -18,6 +18,8 @@ const data = {
           initial: 'ㄹㅇㅈ',
           floor: '1F',
           building: '',
+          floorId: 1,
+          buildingId: 0,
         },
         {
           id: 12,
@@ -30,6 +32,8 @@ const data = {
           initial: 'ㄱㄹㅂㄹ',
           floor: '1F',
           building: '',
+          floorId: 1,
+          buildingId: 0,
         },
       ],
     },

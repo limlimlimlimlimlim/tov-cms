@@ -19,6 +19,8 @@ const data = {
           initial: 'ᄋᄉᄋᄎᄇ, ᄎᄇ, ᄋᄉᄋ, ᄋᄉ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 14,
@@ -32,6 +34,8 @@ const data = {
           initial: 'ᄅᄋᄏᄎ, ᄅᄋ, ᄏᄎ, ᄌᄉ,ᄌᄀᄌ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 15,
@@ -45,6 +49,8 @@ const data = {
           initial: 'ᄃᄃ, ᄋᄉᄋ, ᄉᄀᄉ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 16,
@@ -58,6 +64,8 @@ const data = {
           initial: 'ᄃᄃ, ᄋᄉᄋ, ᄉᄀᄉ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 17,
@@ -71,6 +79,8 @@ const data = {
           initial: 'ᄒᄇᄀ, ckbg, ᄉᄏᄇᄌ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 18,
@@ -84,6 +94,8 @@ const data = {
           initial: 'ᄒᄋᄋᄋ, ᄋᄋᄋᄇᄋᄏᄅ, ᄇᄋᄏᄅ, ᄏᄑ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 19,
@@ -97,6 +109,8 @@ const data = {
           initial: 'ᄒᄋᄌᄇᄌᄉ, ᄌᄉ, ᄌᄇ, ᄏᄑ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
         {
           id: 20,
@@ -110,6 +124,8 @@ const data = {
           initial: 'ᄑᄃᄏᄐ, ᄉᄃ',
           floor: 'B1',
           building: '',
+          floorId: 6,
+          buildingId: 0,
         },
       ],
     },

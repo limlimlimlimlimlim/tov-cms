@@ -1,9 +1,25 @@
 'use client';
 import { useBuildingContext } from '@/app/context/building';
+import { useCallback, useEffect } from 'react';
 
-export default function FacilityPage() {
-  const { facility }: any = useBuildingContext();
+export default function FacilityPage({ params }: any) {
+  const { section, facility, setFacility }: any = useBuildingContext();
 
+  useEffect(() => {
+    setCurrentFacility(params.facility);
+  }, [section]);
+
+  const setCurrentFacility = useCallback(
+    (facilityId: string) => {
+      if (!section) return;
+
+      const currentFacility: any = section.facility.find((fac: any) => {
+        return fac.id.toString() === facilityId;
+      });
+      setFacility(currentFacility);
+    },
+    [section],
+  );
   return (
     <>
       <div className="tab-wrap">

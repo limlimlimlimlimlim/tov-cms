@@ -10,7 +10,7 @@ export default function BuildingLayout({ children }: any) {
 
   useEffect(() => {
     setData(dummyData.tree as any);
-  }, []);
+  }, [dummyData]);
 
   const onClickSearch = useCallback(() => {
     router.push('/search');

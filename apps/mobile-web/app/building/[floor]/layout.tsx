@@ -18,7 +18,7 @@ export default function FloorLayout({ params, children }: any) {
   );
 
   useEffect(() => {
-    if (floor) return;
+    if (!data) return;
     setCurrentFloor(params.floor);
   }, [data]);
 

@@ -18,6 +18,10 @@ export default function Search() {
     setKeyword(e.target.value);
   }, []);
 
+  const onClickItem = useCallback((item: any) => {
+    router.replace(`building/${item.floorId}/${item.buildingId}/${item.id}`);
+  }, []);
+
   useEffect(() => {
     if (keyword.trim() === '') {
       setSearchItem([]);
@@ -50,7 +54,9 @@ export default function Search() {
             <div className="link-box">
               <button
                 type="button"
-                //   onclick="location.href='BD-detailView.html'"
+                onClick={() => {
+                  onClickItem(item);
+                }}
               >
                 <span></span>위치안내
               </button>

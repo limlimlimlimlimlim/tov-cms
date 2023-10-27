@@ -24,9 +24,9 @@ export default function Search() {
       return;
     }
 
-    const includeTag = (values: string[], keyword: string) => {
+    const includeTag = (values: string[], target: string) => {
       return values.some((value) => {
-        return value.trim().indexOf(keyword) === 0;
+        return value.trim().indexOf(target) === 0;
       });
     };
 
@@ -64,7 +64,12 @@ export default function Search() {
     <>
       <header className="header">
         <div>
-          <button className="btn-back" onClick={router.back}></button>
+          <button
+            className="btn-back"
+            onClick={() => {
+              router.back();
+            }}
+          ></button>
           <h2>검색</h2>
           <button className="btn-home"></button>
           <button className="btn-menu"></button>

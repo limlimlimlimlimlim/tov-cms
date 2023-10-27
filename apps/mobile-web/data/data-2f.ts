@@ -1,7 +1,7 @@
 const data = {
   id: 2,
   floorName: '2F',
-  maps: [
+  section: [
     {
       id: 0,
       name: '전체',

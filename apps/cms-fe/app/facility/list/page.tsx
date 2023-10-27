@@ -13,7 +13,7 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 export default function FacilityList() {
-  const [count, setCount] = useState(17);
+  const [count] = useState(17);
   const [data, setData] = useState<FacilityItem[]>([]);
   const [selectedData, setSelectedData] = useState<FacilityItem[]>([]);
   const [isCategoryManagementModalOpen, setIsOpenCategoryManagementModal] =

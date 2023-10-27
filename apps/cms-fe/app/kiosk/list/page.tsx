@@ -63,7 +63,7 @@ const columns: ColumnsType<KioskItem> = [
 ];
 
 export default function KioskList() {
-  const [count, setCount] = useState(17);
+  const [count] = useState(17);
   const [data, setData] = useState<KioskItem[]>([]);
   const [selectedData, setSelectedData] = useState<KioskItem[]>([]);
 

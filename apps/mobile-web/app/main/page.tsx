@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import dummyData from '../../data/data';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Main() {
   const router = useRouter();
@@ -16,12 +17,12 @@ export default function Main() {
     return data.map((item: any, i) => {
       return (
         <li key={i}>
-          <a href="BD-list.html">
+          <Link href={`/building/${item.id}/${item.section[0].id}`}>
             <p>
               {item.floorName}
               <i className="ic_arrow_right"></i>
             </p>
-          </a>
+          </Link>
         </li>
       );
     });

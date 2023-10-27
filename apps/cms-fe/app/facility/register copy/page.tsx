@@ -3,6 +3,7 @@
 import type { TabsProps } from 'antd';
 import {
   Button,
+  DatePicker,
   Divider,
   Flex,
   Form,
@@ -14,15 +15,15 @@ import {
 } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
-import FacilityPositionManagementModal from '../../../component/facility-position-management/facility-position-management-modal';
 
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
 
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const validateMessages = {
@@ -35,12 +36,14 @@ const validateMessages = {
 
 export default function FacilityRegister() {
   const router = useRouter();
-  const [isOpenPositionModal, setIsOpenPositionModal] = useState(false);
 
-  const onFinish = useCallback(() => {
-    void message.success('공지가 생성됐습니다.');
-    router.push('/notice/list');
-  }, [router]);
+  const onFinish = useCallback(
+    (values: any) => {
+      void message.success('공지가 생성됐습니다.');
+      router.push('/notice/list');
+    },
+    [router],
+  );
 
   const getForm = useCallback(() => {
     return (
@@ -144,14 +147,7 @@ export default function FacilityRegister() {
         <Form.Item label="지도">
           <Flex vertical gap="small">
             <Image alt="map" width="300px" height="200px" src="/map.png" />
-            <Button
-              style={{ width: 100 }}
-              onClick={() => {
-                setIsOpenPositionModal(true);
-              }}
-            >
-              구역설정
-            </Button>
+            <Button style={{ width: 100 }}>구역설정</Button>
           </Flex>
         </Form.Item>
       </Form>
@@ -172,27 +168,19 @@ export default function FacilityRegister() {
   ];
 
   return (
-    <>
-      <Flex vertical gap="middle">
-        <Tabs type="card" items={items} />
-        <Divider />
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
-          <Flex gap="small" justify="end">
-            <Link href="/facility/list">
-              <Button>취소</Button>
-            </Link>
-            <Button type="primary" htmlType="submit">
-              등록
-            </Button>
-          </Flex>
-        </Form.Item>
-      </Flex>
-      <FacilityPositionManagementModal
-        open={isOpenPositionModal}
-        onCancel={() => {
-          setIsOpenPositionModal(false);
-        }}
-      />
-    </>
+    <Flex vertical gap="middle">
+      <Tabs type="card" items={items} />
+      <Divider />
+      <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
+        <Flex gap="small" justify="end">
+          <Link href="/facility/list">
+            <Button>취소</Button>
+          </Link>
+          <Button type="primary" htmlType="submit">
+            등록
+          </Button>
+        </Flex>
+      </Form.Item>
+    </Flex>
   );
 }

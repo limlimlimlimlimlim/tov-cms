@@ -17,7 +17,7 @@ export default function Main() {
     return data.map((item: any, i) => {
       return (
         <li key={i}>
-          <Link href={`/building/${item.id}/${item.section[0].id}`}>
+          <Link href={`/building/${item.id}/${item.wing[0].id}`}>
             <p>
               {item.floorName}
               <i className="ic_arrow_right"></i>

@@ -1,7 +1,7 @@
 const data = {
   id: 1,
   floorName: '1F',
-  section: [
+  wing: [
     {
       id: 0,
       name: '전체',

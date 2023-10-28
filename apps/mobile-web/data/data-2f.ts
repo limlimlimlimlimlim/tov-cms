@@ -1,7 +1,7 @@
 const data = {
   id: 2,
   floorName: '2F',
-  section: [
+  wing: [
     {
       id: 0,
       name: '전체',
@@ -10,7 +10,7 @@ const data = {
         {
           id: 6,
           name: '사내병원',
-          image: '/images/sample/facility/17_사내병원.png',
+          image: '/images/sample/facility/17.png',
           phone: '02-2005-8900',
           address: '서관 2층 204호',
           description: '사내 지원들의 건겅을 위한 사내병원입니다.',
@@ -24,7 +24,7 @@ const data = {
         {
           id: 7,
           name: '신한은행',
-          image: '/images/sample/facility/16_신한은행.png',
+          image: '/images/sample/facility/16.png',
           phone: '02-2452-1900',
           address: '서관 2층 203호',
           description:
@@ -39,7 +39,7 @@ const data = {
         {
           id: 8,
           name: '사내약국',
-          image: '/images/sample/facility/15_사내약국.png',
+          image: '/images/sample/facility/15.png',
           phone: '02-2221-6689',
           address: '서관 2층 202호',
           description:
@@ -54,7 +54,7 @@ const data = {
         {
           id: 9,
           name: '사내피트니스',
-          image: '/images/sample/facility/14_사내피트니스.png',
+          image: '/images/sample/facility/14.png',
           phone: '02-2488-3368',
           address: '동관 2층 201호',
           description:
@@ -76,7 +76,7 @@ const data = {
         {
           id: 6,
           name: '사내병원',
-          image: '/images/sample/facility/17_사내병원.png',
+          image: '/images/sample/facility/17.png',
           phone: '02-2005-8900',
           address: '서관 2층 204호',
           description: '사내 지원들의 건겅을 위한 사내병원입니다.',
@@ -90,7 +90,7 @@ const data = {
         {
           id: 7,
           name: '신한은행',
-          image: '/images/sample/facility/16_신한은행.png',
+          image: '/images/sample/facility/16.png',
           phone: '02-2452-1900',
           address: '서관 2층 203호',
           description:
@@ -105,7 +105,7 @@ const data = {
         {
           id: 8,
           name: '사내약국',
-          image: '/images/sample/facility/15_사내약국.png',
+          image: '/images/sample/facility/15.png',
           phone: '02-2221-6689',
           address: '서관 2층 202호',
           description:
@@ -127,7 +127,7 @@ const data = {
         {
           id: 9,
           name: '사내피트니스',
-          image: '/images/sample/facility/14_사내피트니스.png',
+          image: '/images/sample/facility/14.png',
           phone: '02-2488-3368',
           address: '동관 2층 201호',
           description:
@@ -142,7 +142,7 @@ const data = {
         {
           id: 10,
           name: '어린이 집',
-          image: '/images/sample/facility/19_어린이집.png',
+          image: '/images/sample/facility/19.png',
           phone: '02-2755-7224',
           address: '트윈타워 5층',
           description: '아이들에게 보다 안전한 세상을 만들어주는 어린이집!',

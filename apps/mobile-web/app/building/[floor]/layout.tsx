@@ -10,9 +10,7 @@ export default function FloorLayout({ params, children }: any) {
   const onClickFloor = useCallback(
     (currentFloor: any) => {
       setFloor(currentFloor);
-      router.replace(
-        `/building/${currentFloor.id}/${currentFloor.section[0].id}`,
-      );
+      router.replace(`/building/${currentFloor.id}/${currentFloor.wing[0].id}`);
     },
     [data],
   );

@@ -1,7 +1,7 @@
 const data = {
   id: 3,
   floorName: '3F',
-  section: [
+  wing: [
     {
       id: 0,
       name: '전체',
@@ -10,7 +10,7 @@ const data = {
         {
           id: 5,
           name: '어린이 집',
-          image: '/images/sample/facility/19_어린이집.png',
+          image: '/images/sample/facility/19.png',
           phone: '02-2755-7224',
           address: '트윈타워 5층',
           description: '아이들에게 보다 안전한 세상을 만들어주는 어린이집!',

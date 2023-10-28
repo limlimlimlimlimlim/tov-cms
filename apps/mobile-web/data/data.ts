@@ -7,11 +7,11 @@ import datab2 from './data-b2';
 
 const tree = [data5f, data3f, data2f, data1f, datab1, datab2];
 const facility = [
-  ...data5f.section[0].facility,
-  ...data3f.section[0].facility,
-  ...data2f.section[0].facility,
-  ...data1f.section[0].facility,
-  ...datab1.section[0].facility,
-  ...datab2.section[0].facility,
+  ...data5f.wing[0].facility,
+  ...data3f.wing[0].facility,
+  ...data2f.wing[0].facility,
+  ...data1f.wing[0].facility,
+  ...datab1.wing[0].facility,
+  ...datab2.wing[0].facility,
 ];
 export default { tree, facility };

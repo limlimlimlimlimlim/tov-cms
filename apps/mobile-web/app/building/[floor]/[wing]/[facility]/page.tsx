@@ -68,7 +68,7 @@ export default function FacilityPage({ params }: any) {
               <button type="button" className="btn-close"></button>
               <div className="cont">
                 <div className="profile-box">
-                  <img src="/images/ic_character_gray.svg" alt="" />
+                  <img src={facility.image} alt="" />
                 </div>
                 <div className="text-box">
                   <ul>

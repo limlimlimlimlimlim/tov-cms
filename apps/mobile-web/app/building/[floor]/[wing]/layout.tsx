@@ -17,14 +17,14 @@ export default function SectionLayout({ params, children }: any) {
 
   useEffect(() => {
     if (!floor) return;
-    setCurrentSection(params.section);
+    setCurrentSection(params.wing);
   }, [floor]);
 
   const setCurrentSection = useCallback(
     (sectionId: string) => {
       if (!floor) return;
 
-      const currentSection: any = floor.section.find((sec: any) => {
+      const currentSection: any = floor.wing.find((sec: any) => {
         return sec.id.toString() === sectionId;
       });
       setSection(currentSection);
@@ -33,7 +33,7 @@ export default function SectionLayout({ params, children }: any) {
   );
 
   const createSections = useCallback(() => {
-    return floor.section.map((sec: any, index: number) => {
+    return floor.wing.map((sec: any, index: number) => {
       return (
         <td
           key={index}

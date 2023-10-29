@@ -50,7 +50,7 @@ export default function WingLayout({ params, children }: any) {
 
   return (
     <>
-      {wing && wing.length > 1 && (
+      {floor && floor.wing && floor.wing.length > 1 && (
         <div className="area-menu">
           <table>
             <tbody>

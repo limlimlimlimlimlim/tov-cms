@@ -30,7 +30,10 @@ export default function FacilityPage({ params }: any) {
         {facility && (
           <>
             <div className="map-box detail">
-              {/* <!-- <button type="button" className="btn-location ic_location_c"></button> --> */}
+              {/* <button
+                type="button"
+                className="btn-location ic_location_c"
+              ></button> */}
               <div
                 className="map-area"
                 onClick={() => {

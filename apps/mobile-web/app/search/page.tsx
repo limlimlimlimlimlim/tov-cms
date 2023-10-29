@@ -19,7 +19,7 @@ export default function Search() {
   }, []);
 
   const onClickItem = useCallback((item: any) => {
-    router.replace(`building/${item.floorId}/${item.buildingId}/${item.id}`);
+    router.replace(`building/${item.floorId}/${item.wingId}/${item.id}`);
   }, []);
 
   useEffect(() => {

@@ -40,16 +40,18 @@ export default function FacilityPage({ params }: any) {
                   setIsShowDetail(true);
                 }}
               >
-                <img
-                  src={wing.image}
-                  alt="지도"
-                  style={{ position: 'absolute' }}
-                />
-                <img
-                  src={facility.section}
-                  alt="지도"
-                  style={{ position: 'absolute' }}
-                />
+                <div style={{ marginTop: 90 }}>
+                  <img
+                    src={wing.image}
+                    alt="지도"
+                    style={{ position: 'absolute' }}
+                  />
+                  <img
+                    src={facility.section}
+                    alt="지도"
+                    style={{ position: 'absolute' }}
+                  />
+                </div>
               </div>
 
               <div className={`aside miniMap ${isShowMiniMap ? 'on' : null}`}>

@@ -7,12 +7,15 @@ import datab2 from './data-b2';
 
 const tree = [data5f, data3f, data2f, data1f, datab1, datab2];
 
-const facility = [
-  ...data5f.wing[0].facility,
-  ...data3f.wing[0].facility,
-  ...data2f.wing[0].facility,
-  ...data1f.wing[0].facility,
-  ...datab1.wing[0].facility,
-  ...datab2.wing[0].facility,
-];
+const facility = tree.reduce((acc: any[], floor: any) => {
+  const facilities = floor.wing.reduce((acc2: any[], w: any) => {
+    acc2.push(...w.facility);
+    return acc2;
+  }, []);
+  acc.push(...facilities);
+  return acc;
+}, []);
+
+console.log(facility);
+
 export default { tree, facility };

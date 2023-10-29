@@ -39,7 +39,7 @@ const data = {
           address: '서관 2층 204호',
           description: '사내 지원들의 건겅을 위한 사내병원입니다.',
           openingHours: '09:00 ~ 19:30',
-          initial: 'ㅂㅇ,ㅅㄴㅂㅇ',
+          initial: 'ㅂㅇ, ㅅㄴㅂㅇ',
           floor: '2F',
           wing: '서관',
           floorId: 2,
@@ -55,7 +55,7 @@ const data = {
           description:
             '인터넷뱅킹, 신한SOL뱅크, 외화 환전, 계좌조회, 펀드, 적금, 대출, 재형저축 상 품 안내',
           openingHours: '09:00 ~ 16:00',
-          initial: 'ᄋᄒ, ᄉᄒ, ᄉᄒᄋᄒ',
+          initial: 'ㅇㅎ, ᄉᄒ, ᄉᄒᄋᄒ',
           floor: '2F',
           wing: '서관',
           floorId: 2,
@@ -71,7 +71,7 @@ const data = {
           description:
             '직원의 건강을 위해 친절하게 복약 지도와 상담, 약 처방을 제공합니다.',
           openingHours: '10:00 ~ 22:00',
-          initial: 'ᄉᄂᄋᄀ, ᄋᄀ',
+          initial: 'ㅅㄴㅇㄱ, ㅇㄱ',
           floor: '2F',
           wing: '서관',
           floorId: 2,

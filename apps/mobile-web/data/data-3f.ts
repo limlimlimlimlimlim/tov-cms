@@ -11,6 +11,7 @@ const data = {
           id: 5,
           name: '어린이 집',
           image: '/images/sample/facility/19.png',
+          section: '/images/sample/map/1f/section2.png',
           phone: '02-2755-7224',
           address: '트윈타워 5층',
           description: '아이들에게 보다 안전한 세상을 만들어주는 어린이집!',

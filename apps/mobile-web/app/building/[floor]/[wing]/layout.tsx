@@ -3,65 +3,63 @@ import { useCallback, useEffect } from 'react';
 import { useBuildingContext } from '@/app/context/building';
 import { useRouter } from 'next/navigation';
 
-export default function SectionLayout({ params, children }: any) {
+export default function WingLayout({ params, children }: any) {
   const router = useRouter();
-  const { data, floor, section, setSection }: any = useBuildingContext();
+  const { data, floor, wing, setWing }: any = useBuildingContext();
 
-  const onClickSection = useCallback(
-    (currentSection: any) => {
-      setSection(currentSection);
-      router.replace(`/building/${floor.id}/${currentSection.id}`);
+  const onClickWing = useCallback(
+    (currentWing: any) => {
+      setWing(currentWing);
+      router.replace(`/building/${floor.id}/${currentWing.id}`);
     },
     [data, floor],
   );
 
   useEffect(() => {
     if (!floor) return;
-    setCurrentSection(params.wing);
+    setCurrentWing(params.wing);
   }, [floor]);
 
-  const setCurrentSection = useCallback(
-    (sectionId: string) => {
+  const setCurrentWing = useCallback(
+    (wingId: string) => {
       if (!floor) return;
 
-      const currentSection: any = floor.wing.find((sec: any) => {
-        return sec.id.toString() === sectionId;
+      const currentWing: any = floor.wing.find((sec: any) => {
+        return sec.id.toString() === wingId;
       });
-      setSection(currentSection);
+      setWing(currentWing);
     },
     [floor],
   );
 
-  const createSections = useCallback(() => {
-    return floor.wing.map((sec: any, index: number) => {
+  const createWings = useCallback(() => {
+    return floor.wing.map((w: any, i: number) => {
       return (
         <td
-          key={index}
-          className={section && (section as any).id == sec.id ? 'on' : ''}
+          key={i}
+          className={wing && (wing as any).id == w.id ? 'on' : ''}
           onClick={() => {
-            onClickSection(sec);
+            onClickWing(w);
           }}
         >
-          {sec.name}
+          {w.name}
         </td>
       );
     });
-  }, [floor, section]);
+  }, [floor, wing]);
 
   return (
     <>
-      {data && floor && (
-        <>
-          <div className="area-menu">
-            <table>
-              <tbody>
-                <tr>{createSections()}</tr>
-              </tbody>
-            </table>
-          </div>
-          {section && children}
-        </>
+      {wing && wing.length > 1 && (
+        <div className="area-menu">
+          <table>
+            <tbody>
+              <tr>{createWings()}</tr>
+            </tbody>
+          </table>
+        </div>
       )}
+      {wing && children}
     </>
   );
 }

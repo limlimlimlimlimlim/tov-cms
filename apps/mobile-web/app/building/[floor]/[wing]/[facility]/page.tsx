@@ -1,25 +1,29 @@
 'use client';
 import { useBuildingContext } from '@/app/context/building';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function FacilityPage({ params }: any) {
-  const { section, facility, setFacility }: any = useBuildingContext();
+  const { wing, facility, setFacility }: any = useBuildingContext();
+  const [isShowDetail, setIsShowDetail] = useState(true);
+  const [isShowMiniMap, setIsShowMiniMap] = useState(false);
+  const [isShowLegend, setIsShowLegend] = useState(false);
 
   useEffect(() => {
     setCurrentFacility(params.facility);
-  }, [section]);
+  }, [wing]);
 
   const setCurrentFacility = useCallback(
     (facilityId: string) => {
-      if (!section) return;
+      if (!wing) return;
 
-      const currentFacility: any = section.facility.find((fac: any) => {
+      const currentFacility: any = wing.facility.find((fac: any) => {
         return fac.id.toString() === facilityId;
       });
       setFacility(currentFacility);
     },
-    [section],
+    [wing],
   );
+
   return (
     <>
       <div className="tab-wrap">
@@ -27,22 +31,60 @@ export default function FacilityPage({ params }: any) {
           <>
             <div className="map-box detail">
               {/* <!-- <button type="button" className="btn-location ic_location_c"></button> --> */}
-              <div className="map-area">
-                <img src={facility.image} alt="지도" />
+              <div
+                className="map-area"
+                onClick={() => {
+                  setIsShowDetail(true);
+                }}
+              >
+                <img
+                  src={wing.image}
+                  alt="지도"
+                  style={{ position: 'absolute' }}
+                />
+                <img
+                  src={facility.section}
+                  alt="지도"
+                  style={{ position: 'absolute' }}
+                />
               </div>
 
-              <div className="aside miniMap">
-                <button type="button" className="btn-aside">
+              <div className={`aside miniMap ${isShowMiniMap ? 'on' : null}`}>
+                <button
+                  type="button"
+                  className="btn-aside"
+                  onClick={() => {
+                    setIsShowMiniMap(true);
+                  }}
+                >
                   미니맵
                 </button>
-                <button type="button" className="btn-close"></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => {
+                    setIsShowMiniMap(false);
+                  }}
+                ></button>
                 <img src="/images/img-miniMap.jpg" alt="" />
               </div>
-              <div className="aside legend">
-                <button type="button" className="btn-aside">
+              <div className={`aside legend ${isShowLegend ? 'on' : null}`}>
+                <button
+                  type="button"
+                  className="btn-aside"
+                  onClick={() => {
+                    setIsShowLegend(true);
+                  }}
+                >
                   범 례
                 </button>
-                <button type="button" className="btn-close"></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => {
+                    setIsShowLegend(false);
+                  }}
+                ></button>
                 <ul>
                   <li>
                     <img src="/images/ic_legend-f.png" alt="" />
@@ -63,12 +105,28 @@ export default function FacilityPage({ params }: any) {
                 </ul>
               </div>
             </div>
-            <div className="aside-infowrap">
+            <div
+              className="aside-infowrap"
+              style={{ display: isShowDetail ? 'block' : 'none' }}
+            >
               <h3>{facility.name}</h3>
-              <button type="button" className="btn-close"></button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => {
+                  setIsShowDetail(false);
+                }}
+              ></button>
               <div className="cont">
                 <div className="profile-box">
-                  <img src={facility.image} alt="" />
+                  <img
+                    src={
+                      facility.image
+                        ? facility.image
+                        : '/images/ic_character_gray.svg'
+                    }
+                    alt=""
+                  />
                 </div>
                 <div className="text-box">
                   <ul>

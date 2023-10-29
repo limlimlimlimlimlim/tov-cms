@@ -5,7 +5,15 @@ import data5f from './data-5f';
 import datab1 from './data-b1';
 import datab2 from './data-b2';
 
-const tree = [data5f, data3f, data2f, data1f, datab1, datab2];
+const tree = [
+  // data5f,
+  // data3f,
+  // data2f,
+  data1f,
+  // datab1,
+  // datab2
+];
+
 const facility = [
   ...data5f.wing[0].facility,
   ...data3f.wing[0].facility,

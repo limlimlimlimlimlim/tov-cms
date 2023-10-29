@@ -10,7 +10,8 @@ const data = {
         {
           id: 1,
           name: '기자 회의실',
-          image: '/images/sample/no_image.svg',
+          image: '',
+          section: '',
           phone: '02-000-0000',
           address: '트윈타워 5층',
           description: '기자 회의실 입니다.',
@@ -24,7 +25,7 @@ const data = {
         {
           id: 2,
           name: '회의실 A',
-          image: '/images/sample/no_image.svg',
+          image: '',
           phone: '02-000-0000',
           address: '트윈타워 5층',
           description: '회의실 A 입니다.',

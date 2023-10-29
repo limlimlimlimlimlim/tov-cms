@@ -8,6 +8,7 @@ export const BuildingContextProvider = ({ children }: any) => {
   const [data, setData] = useState();
   const [floor, setFloor] = useState();
   const [building, setBuilding] = useState();
+  const [wing, setWing] = useState();
   const [section, setSection] = useState();
   const [facility, setFacility] = useState();
 
@@ -19,6 +20,8 @@ export const BuildingContextProvider = ({ children }: any) => {
         floor,
         setFloor,
         building,
+        wing,
+        setWing,
         setBuilding,
         section,
         setSection,

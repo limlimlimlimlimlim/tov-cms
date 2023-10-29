@@ -3,14 +3,15 @@ const data = {
   floorName: '1F',
   wing: [
     {
-      id: 0,
+      id: 10,
       name: '전체',
-      image: '/images/sample/map/231024_1F_A.png',
+      image: '/images/sample/map/1f/map.png',
       facility: [
         {
-          id: 11,
+          id: 101,
           name: '라운지',
-          image: '/images/sample/no_image.svg',
+          image: '',
+          section: '/images/sample/map/1f/section2.png',
           phone: '02-0000-0000',
           address: '-',
           description: '-',
@@ -22,9 +23,10 @@ const data = {
           buildingId: 0,
         },
         {
-          id: 12,
+          id: 102,
           name: '그랑밸리',
-          image: '/images/sample/no_image.svg',
+          image: '',
+          section: '/images/sample/map/1f/section1.png',
           phone: '02-0000-0000',
           address: '-',
           description: '-',

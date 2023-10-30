@@ -71,7 +71,7 @@ export default function FacilityPage({ params }: any) {
                     setIsShowMiniMap(false);
                   }}
                 ></button>
-                <img src="/images/img-miniMap.jpg" alt="" />
+                <img src={wing?.image} alt="" />
               </div>
               <div className={`aside legend ${isShowLegend ? 'on' : null}`}>
                 <button

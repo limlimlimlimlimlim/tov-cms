@@ -43,10 +43,10 @@ model Permission {
   writePost      Boolean @default(false)
   editPost       Boolean @default(false)
   deletePost     Boolean @default(false)
-  readMap   Boolean @default(false)
-  writeMap  Boolean @default(false)
-  editMap   Boolean @default(false)
-  deleteMap Boolean @default(false)
+  readMap         Boolean @default(false)
+  writeMap        Boolean @default(false)
+  editMap         Boolean @default(false)
+  deleteMap       Boolean @default(false)
   readMapInfo    Boolean @default(false)
   writeMapInfo   Boolean @default(false)
   editMapInfo    Boolean @default(false)
@@ -64,46 +64,51 @@ model Permission {
 }
 
 model Floor {
-  id       Int      @default(autoincrement()) @id
-  name     String
-  nameEn   String?
-  order    Int
+  id        Int      @default(autoincrement()) @id
+  name      String
+  nameEn    String?
+  order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  maps      Map[]
+  wings     Wing[]
+  kiosks    Kiosk[]
 }
 
-model Building {
-  id         Int      @default(autoincrement()) @id
-  name       String
-  nameEn     String?
-  floorId    Int
-  order      Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  maps      Map[]
-}
-
-model FacilityCategory {
+model Wing{
   id          Int      @default(autoincrement()) @id
   name        String
+  nameEn      String?
+  floor       Floor @relation(fields: [floorId], references: [id] )
+  floorId     Int
+  order       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  map         Map[]
+  kiosks      Kiosk[]
+}
+model FacilityCategory {
+  id            Int      @default(autoincrement()) @id
+  name          String
+  facilties     Facility[]
+  subCategories FacilitySubCategory[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model FacilitySubCategory {
-  id      Int      @default(autoincrement()) @id
-  name    String
-  parentId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @default(autoincrement()) @id
+  name        String
+  categoryId  Int
+  facilties   Facility[]
+  category    FacilityCategory  @relation(fields: [categoryId], references: [id])  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Facility {
   id          Int      @default(autoincrement()) @id
   name        String
-  floorId     Int
-  buildingId  Int
+  wingId      Int
   initial     String
   fnbId       Int
   phone       String
@@ -111,60 +116,76 @@ model Facility {
   operation   String
   image       String
   iconId      Int
-  x          Int?
-  y          Int?
+  x           Int?
+  y           Int?
+  section     Section? @relation(fields: [sectionId], references: [id])
+  sectionId   Int @unique
+  categoryId  Int
+  category      FacilityCategory @relation(fields: [categoryId], references: [id])
+  subCategoryId Int
+  subCategory   FacilitySubCategory @relation(fields: [subCategoryId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Map {
+  id            Int      @default(autoincrement()) @id
+  floorId       Int
+  wingId        Int
+  wing          Wing  @relation(fields: [wingId], references: [id] )
+  name          String
+  image         String
+  isUse         Boolean 
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sections      Section[]
+  sectionGroups SectionGroup[]
+}
+
+model Section {
   id          Int      @default(autoincrement()) @id
-  floorId     Int
-  buildingId  Int
-  name        String
-  image    String
-  isUse       Boolean 
+  mapId       Int       
+  map         Map     @relation(fields: [mapId], references: [id])
+  groupId     Int?
+  group       SectionGroup? @relation(fields: [groupId], references: [id])
+  facilityId  Int
+  facility    Facility?
+  path        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  floor       Floor @relation(fields: [floorId], references: [id] )
-  building     Building @relation(fields: [buildingId], references: [id] )
 }
 
-model MapArea {
+model SectionGroup {
   id        Int      @default(autoincrement()) @id
+  sections  Section[]
   mapId     Int
-  groupId   Int?
-  path      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model MapAreaGroup {
-  id        Int      @default(autoincrement()) @id
+  map       Map @relation(fields: [mapId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Event {
-  id        Int      @default(autoincrement()) @id
-  title     String
-  image     String?
-  description String
-  startDate   DateTime?
-  endDate   DateTime?
-  noPeriod  Boolean?
-  useIntro  Boolean
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @default(autoincrement()) @id
+  title         String
+  image         String?
+  description   String
+  startDate     DateTime?
+  endDate       DateTime?
+  noPeriod      Boolean?
+  useIntro      Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Kiosk {
-  id            Int      @default(autoincrement()) @id
-  floorId       Int
-  buildingId    Int
-  code          String
-  name          String
-  description   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @default(autoincrement()) @id
+  floorId         Int
+  floor           Floor @relation(fields: [floorId], references: [id])
+  wingId          Int
+  wing            Wing @relation(fields: [wingId], references: [id])
+  code            String @unique
+  name            String
+  description     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

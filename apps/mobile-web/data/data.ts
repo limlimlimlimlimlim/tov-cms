@@ -16,6 +16,4 @@ const facility = tree.reduce((acc: any[], floor: any) => {
   return acc;
 }, []);
 
-console.log(facility);
-
 export default { tree, facility };

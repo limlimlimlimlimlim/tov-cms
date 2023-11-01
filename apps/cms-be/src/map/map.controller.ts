@@ -5,7 +5,6 @@ import {
   Delete,
   Body,
   Param,
-  ConflictException,
   NotFoundException,
   Patch,
   Query,
@@ -22,26 +21,26 @@ export class MapController {
     return await this.mapService.createMap(data);
   }
 
-  @Post('area')
-  async createMapArea(@Body() data: Prisma.MapAreaCreateInput) {
-    const map = await this.mapService.getMapById(data.mapId);
+  @Post('section')
+  async createSection(@Body() data: Prisma.SectionCreateInput) {
+    const map = await this.mapService.getMapById(data.map.connect.id);
 
     if (!map) {
       throw new NotFoundException('Map not found.');
     }
 
-    return await this.mapService.createMapArea(data);
+    return await this.mapService.createSection(data);
   }
 
-  @Post('area-group/merge')
-  async mergeMapArea(@Body() data: { areas: number[] }) {
-    return await this.mapService.mergeMapAreaGroup(data.areas);
-  }
+  // @Post('section-group/merge')
+  // async mergeSection(@Body() data: { sections: number[] }) {
+  //   return await this.mapService.mergeSectionGroup(data.sections);
+  // }
 
-  @Post('area-group/:id/split')
-  async splitMapArea(@Param('id') id: number) {
-    return await this.mapService.splitMapAreaGroup(+id);
-  }
+  // @Post('section-group/:id/split')
+  // async splitSection(@Param('id') id: number) {
+  //   return await this.mapService.splitSectionGroup(+id);
+  // }
 
   @Get()
   async getMaps(
@@ -54,9 +53,9 @@ export class MapController {
     return await this.mapService.getMaps(keyword, page, count, floor, building);
   }
 
-  @Get('area/:mapId')
-  async getMapAreasByMapId(@Param('mapId') mapId: number) {
-    return await this.mapService.getMapAreasByMapId(+mapId);
+  @Get('section/:mapId')
+  async getSectionsByMapId(@Param('mapId') mapId: number) {
+    return await this.mapService.getSectionsByMapId(+mapId);
   }
 
   @Get(':id')
@@ -76,16 +75,16 @@ export class MapController {
     return this.mapService.updateMap(+id, data);
   }
 
-  @Patch('area/:id')
-  async updateMapArea(
+  @Patch('section/:id')
+  async updateSection(
     @Param('id') id: number,
-    @Body() data: Prisma.MapAreaUpdateInput,
+    @Body() data: Prisma.SectionUpdateInput,
   ) {
-    const sameArea = await this.mapService.getMapAreaById(+id);
+    const sameArea = await this.mapService.getSectionById(+id);
     if (!sameArea) {
-      throw new NotFoundException('Map area not found.');
+      throw new NotFoundException('Map section not found.');
     }
-    return this.mapService.updateMapArea(+id, data);
+    return this.mapService.updateSection(+id, data);
   }
 
   @Delete(':id')
@@ -97,12 +96,12 @@ export class MapController {
     return this.mapService.deleteMap(+id);
   }
 
-  @Delete('area/:id')
-  async deleteMapArea(@Param('id') id: number) {
-    const sameArea = await this.mapService.getMapAreaById(+id);
+  @Delete('section/:id')
+  async deleteSection(@Param('id') id: number) {
+    const sameArea = await this.mapService.getSectionById(+id);
     if (!sameArea) {
-      throw new NotFoundException('Map area not found.');
+      throw new NotFoundException('Map section not found.');
     }
-    return this.mapService.deleteMapArea(+id);
+    return this.mapService.deleteSection(+id);
   }
 }

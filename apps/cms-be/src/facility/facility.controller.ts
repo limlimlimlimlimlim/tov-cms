@@ -75,7 +75,7 @@ export class FacilityController {
   @Post('sub-category')
   async createSubCategory(@Body() data: Prisma.FacilitySubCategoryCreateInput) {
     const sameCategory = await this.getSubCategoryByName(data.name);
-    if (sameCategory && sameCategory.parentId == +data.parentId) {
+    if (sameCategory && sameCategory.categoryId == data.category.connect.id) {
       throw new ConflictException('Data already exist.');
     }
     return await this.facilityService.createSubCategory(data);
@@ -87,7 +87,7 @@ export class FacilityController {
     const subCategories = await this.facilityService.getAllSubCategories();
     const result = categories.map((category) => {
       const childCategories = subCategories.filter((subCategory) => {
-        return subCategory.parentId === category.id;
+        return subCategory.categoryId === category.id;
       });
       return { ...category, child: childCategories || [] };
     });

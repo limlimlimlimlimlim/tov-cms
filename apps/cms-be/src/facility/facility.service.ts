@@ -48,7 +48,7 @@ export class FacilityService {
 
   async getSubCategoriesByCategoryId(categoryId: number) {
     return this.prisma.facilitySubCategory.findMany({
-      where: { parentId: categoryId },
+      where: { categoryId },
     });
   }
 

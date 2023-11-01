@@ -64,27 +64,36 @@ model Permission {
 }
 
 model Floor {
-  id        Int      @default(autoincrement()) @id
-  name      String
-  nameEn    String?
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  wings     Wing[]
+  id        Int       @default(autoincrement()) @id
+  name      String    @unique()
+  nameEn    String?   @unique()
+  order     Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  wings     WingOnFloor[]
+  mapss     Map[]
   kiosks    Kiosk[]
 }
 
 model Wing{
-  id          Int      @default(autoincrement()) @id
-  name        String
-  nameEn      String?
-  floor       Floor @relation(fields: [floorId], references: [id] )
-  floorId     Int
-  order       Int
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique()
+  nameEn      String?   @unique()
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  floors      WingOnFloor[]
   map         Map[]
   kiosks      Kiosk[]
+}
+
+model WingOnFloor {
+  id        Int       @default(autoincrement()) @id
+  wingId    Int
+  floorId   Int
+  order     Int
+  wing      Wing      @relation(fields: [wingId], references: [id])
+  floor     Floor     @relation(fields: [floorId], references: [id])
+  @@unique([wingId, floorId])
 }
 model FacilityCategory {
   id            Int      @default(autoincrement()) @id
@@ -116,8 +125,6 @@ model Facility {
   operation   String
   image       String
   iconId      Int
-  x           Int?
-  y           Int?
   section     Section? @relation(fields: [sectionId], references: [id])
   sectionId   Int @unique
   categoryId  Int
@@ -131,6 +138,7 @@ model Facility {
 model Map {
   id            Int      @default(autoincrement()) @id
   floorId       Int
+  floor         Floor  @relation(fields: [floorId], references: [id] )
   wingId        Int
   wing          Wing  @relation(fields: [wingId], references: [id] )
   name          String

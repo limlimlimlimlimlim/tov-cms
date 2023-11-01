@@ -6,9 +6,9 @@ import {
   Delete,
   Body,
   Param,
-  ConflictException,
   NotFoundException,
-  BadRequestException,
+  Query,
+  ConflictException,
 } from '@nestjs/common';
 import { BuildingInfoService } from './building-info.service';
 import { Prisma } from '@prisma/client';
@@ -19,26 +19,40 @@ export class BuildingInfoController {
 
   @Post('floor')
   async createFloor(@Body() data: Prisma.FloorCreateInput) {
-    const sameFloor = await this.getFloorByName(data.name);
-    if (sameFloor) {
-      throw new ConflictException('Data already exists.');
-    }
-    const count = await this.buildingInfoService.getFloorCount();
-    data.order = count;
     return await this.buildingInfoService.createFloor(data);
   }
 
-  @Post('building')
-  async createBuilding(@Body() data: Prisma.BuildingCreateInput) {
-    const sameBuilding = await this.getBuildingByName(data.name);
-    if (sameBuilding && sameBuilding.floorId === +data.floorId) {
-      throw new ConflictException('Data already exists.');
+  @Post('floor/:floorId/add/:wingId')
+  async addWingToFloor(
+    @Param('floorId') floorId: string,
+    @Param('wingId') wingId: string,
+    @Query('order') order?: string,
+  ) {
+    const floor = await this.buildingInfoService.getFloorById(floorId);
+    if (!floor) {
+      return new NotFoundException();
     }
-    const count = await this.buildingInfoService.getBuildingCountByFoorId(
-      +data.floorId,
-    );
-    data.order = count;
-    return await this.buildingInfoService.createBuilding(data);
+
+    const wing = await this.buildingInfoService.getWingById(wingId);
+    if (!wing) {
+      return new NotFoundException();
+    }
+
+    return await this.buildingInfoService.addWingToFloor({
+      floorId: +floorId,
+      wingId: +wingId,
+      order: order !== undefined ? +order : undefined,
+    });
+  }
+
+  @Post('wing')
+  async createWing(@Body() data: Prisma.WingUncheckedCreateInput) {
+    return await this.buildingInfoService.createWing(data);
+  }
+
+  @Get('tree')
+  async getFloorWingTree() {
+    return await this.buildingInfoService.getFloorWingTree();
   }
 
   @Get('floors')
@@ -46,125 +60,115 @@ export class BuildingInfoController {
     return await this.buildingInfoService.getAllFloors();
   }
 
-  @Get('tree')
-  async getBuildingInfoTree() {
-    const floors = await this.buildingInfoService.getAllFloors();
-    const buildings = await this.buildingInfoService.getAllBuildings();
-    const result = floors.map((floor) => {
-      const child = buildings.filter((building) => {
-        return building.floorId === floor.id;
-      });
-      return { ...floor, child: child || [] };
-    });
-    return result;
-  }
-
-  @Get('buildings')
-  async getAllBuildings() {
-    return await this.buildingInfoService.getAllBuildings();
+  @Get('wings')
+  async getAllWings() {
+    return await this.buildingInfoService.getAllWings();
   }
 
   @Get('floor/:id')
-  async getFloorById(@Param('id') id: number) {
-    return await this.buildingInfoService.getFloorById(+id);
+  async getFloorById(@Param('id') id: string) {
+    return await this.buildingInfoService.getFloorById(id);
   }
 
-  @Get('floor/:id/buildings')
-  async getBuildingsByFloor(@Param('id') id: number) {
-    return await this.buildingInfoService.getBuildingsByFloor(+id);
+  @Get('floor/:id/wings')
+  async getWingsInFloor(@Param('id') id: string) {
+    return await this.buildingInfoService.getWingsInFloor(id);
   }
 
   @Get('floor/name/:name')
-  async getFloorByName(@Param('name') name: string) {
-    return await this.buildingInfoService.getFloorByName(name);
+  async getFloorByName(
+    @Param('name') name: string,
+    @Query('lang') lang: 'ko' | 'en' = 'ko',
+  ) {
+    return await this.buildingInfoService.getFloorByName(name, lang);
   }
 
-  @Get('building/:id')
-  async getBuildingById(@Param('id') id: number) {
-    return await this.buildingInfoService.getBuildingById(+id);
+  @Get('wing/:id')
+  async getWingById(@Param('id') id: string) {
+    return await this.buildingInfoService.getWingById(id);
   }
 
-  @Get('building/name/:name')
-  async getBuildingByName(@Param('name') name: string) {
-    return await this.buildingInfoService.getBuildingByName(name);
+  @Get('wing/name/:name')
+  async getWingByName(@Param('name') name: string) {
+    return await this.buildingInfoService.getWingByName(name);
   }
 
   @Patch('floor/:id')
   async updateFloor(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() data: Prisma.FloorUpdateInput,
   ) {
-    const sameFloor = await this.getFloorById(+id);
+    const sameFloor = await this.getFloorById(id);
     if (!sameFloor) {
       throw new NotFoundException('Data not found.');
     }
-    return this.buildingInfoService.updateFloor(+id, data);
+    return this.buildingInfoService.updateFloor(id, data);
   }
 
-  @Patch('building/:id')
-  async updateBuilding(
-    @Param('id') id: number,
-    @Body() data: Prisma.BuildingUpdateInput,
+  @Patch('wing/:id')
+  async updateWing(
+    @Param('id') id: string,
+    @Body() data: Prisma.WingUpdateInput,
   ) {
-    const sameBuilding = await this.getBuildingById(+id);
-    if (!sameBuilding) {
+    const sameWing = await this.getWingById(id);
+    if (!sameWing) {
       throw new NotFoundException('Data not found.');
     }
-    return this.buildingInfoService.updateBuilding(+id, data);
+    return this.buildingInfoService.updateWing(+id, data);
   }
 
   @Patch('floor/swap/:id1/:id2')
-  async swapFloor(@Param('id1') id1: number, @Param('id2') id2: number) {
-    const floor1 = await this.getFloorById(+id1);
+  async swapFloor(@Param('id1') id1: string, @Param('id2') id2: string) {
+    const floor1 = await this.getFloorById(id1);
 
     if (!floor1) {
       throw new NotFoundException('Data not found.');
     }
-    const floor2 = await this.getFloorById(+id2);
+    const floor2 = await this.getFloorById(id2);
     if (!floor2) {
       throw new NotFoundException('Data not found.');
     }
-    return this.buildingInfoService.swapFloor(+id1, +id2);
+    return this.buildingInfoService.swapFloors(id1, id2);
   }
 
-  @Patch('building/swap/:id1/:id2')
-  async swapBuilding(@Param('id1') id1: number, @Param('id2') id2: number) {
-    const building1 = await this.getBuildingById(+id1);
-    if (!building1) {
-      throw new NotFoundException('Data not found.');
-    }
-    const building2 = await this.getBuildingById(+id2);
-    if (!building2) {
-      throw new NotFoundException('Data not found.');
-    }
-
-    if (building1.floorId !== building2.floorId) {
-      throw new BadRequestException('Invalid data input.');
-    }
-    return this.buildingInfoService.swapBuilding(+id1, +id2);
+  @Patch('floor/:floorId/wing/swap/:id1/:id2')
+  async swapWing(
+    @Param('floorId') floorId: string,
+    @Param('id1') id1: string,
+    @Param('id2') id2: string,
+  ) {
+    return this.buildingInfoService.swapWings(floorId, id1, id2);
   }
 
   @Delete('floor/:id')
-  async deleteFloor(@Param('id') id: number) {
-    const sameFloor = await this.getFloorById(+id);
+  async deleteFloor(@Param('id') id: string) {
+    const sameFloor = await this.getFloorById(id);
     if (!sameFloor) {
       throw new NotFoundException('Data not found.');
     }
-    const child = await this.getBuildingsByFloor(+id);
+    const child = await this.getWingsInFloor(id);
 
     if (child && child.length > 0) {
       throw new ConflictException('Data deletion failed due to dependencies.');
     }
 
-    return this.buildingInfoService.deleteFloor(+id);
+    return this.buildingInfoService.deleteFloor(id);
   }
 
-  @Delete('building/:id')
-  async deleteBuilding(@Param('id') id: number) {
-    const sameBuilding = await this.getBuildingById(+id);
-    if (!sameBuilding) {
+  @Delete('wing/:wingId')
+  async deleteWing(@Param('wingId') wingId: string) {
+    const wing = await this.getWingById(wingId);
+    if (!wing) {
       throw new NotFoundException('Data not found.');
     }
-    return this.buildingInfoService.deleteBuilding(+id);
+    return this.buildingInfoService.deleteWing(wingId);
+  }
+
+  @Delete('floor/:floorId/wing/:wingId')
+  async deleteWingInFloor(
+    @Param('floorId') floorId: string,
+    @Param('wingId') wingId: string,
+  ) {
+    return this.buildingInfoService.deleteWingInFloor(floorId, wingId);
   }
 }

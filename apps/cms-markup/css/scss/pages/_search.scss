@@ -1,0 +1,139 @@
+/* search.scss */
+// 검색 form
+.form-search {
+    position: relative;
+    padding: 20px $sidePadding 0;
+    width: 100%;
+    
+    input {
+        width: 100%;
+        height: 48px;
+        @include formSearch;
+    }
+    input[type=button] {
+        color: #ccc;
+    }
+    .btn-search {
+        position: absolute;
+        z-index: 1;
+        right: calc($sidePadding + 8px);
+        bottom: 8px;
+        width: 32px;
+        height: 32px;
+        background: #fff url(#{$img-path}/ic_search.svg) no-repeat;
+        background-size: contain;
+        background-position: center;
+    }
+    input:focus + .btn-search {
+        z-index: -1;
+    }
+    input:focus + .btn-search + .btn-delete {
+        z-index: 1;
+    }
+    .btn-delete {
+        position: absolute;
+        // 위치는 clear button이 생기는곳에 놔주시면 됩니다.
+        bottom: 4px;
+        right: calc($sidePadding + 4px);
+        width: 40px;
+        height: 40px;
+        background: url(#{$img-path}/ic_delete.svg) no-repeat;
+        background-size: contain;
+        cursor: pointer;
+        //해당 버튼이 아닌 뒤의 clear 버튼이 클릭되게하기위해 해당 엘리먼트의
+        //클릭을 막아줍니다
+        pointer-events: none;
+    }
+}
+
+// 검색페이지로 이동버튼(검색창 모양)
+.ip-srchForm {
+    text-align: left;
+    background: #fff url(#{$img-path}/ic_search.svg) no-repeat;
+    background-size: 32px;
+    background-position: calc(100% - 8px) center;
+}
+
+// 검색페이지 bdGuide-search
+.list-search {
+    .noSearch {
+        text-align: center;
+        img {
+            margin-top: 28%;
+            width: 96px;
+            height: 96px;
+        }
+        p {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            color: #999;
+        }
+    }
+
+    ul {
+        padding: 20px $sidePadding 0;
+
+        li {
+            @include flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        .text-box {
+            width: calc(100% - 62px);
+            border-right: 1px solid #ddd;
+        }
+        .link-box {
+            width: 62px;
+        }
+        button {
+            margin-left: 16px;
+            font-size: 1.3rem;
+            color: #333;
+            span {
+                display: block;
+                margin: 0 auto 8px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #f7f7f7 url(#{$img-path}/ic_location.svg) no-repeat;
+                background-size: 20px;
+                background-position: center;
+            }
+        }
+    }
+    
+    .text-box .tag {
+        display: inline-block;
+        padding: 4px;
+        width: 38px;
+        font-size: 1.3rem;
+        line-height: 1.4rem;
+        font-weight: 600;
+        color: #fff;
+        text-align: center;
+        border-radius: 30px;
+        background-color: #8ECCB5;
+    }
+    .text-box .area {
+        margin-left: 8px;
+        font-size: 1.3rem;
+        color: #999;
+        vertical-align: middle;
+    }
+    .text-box p {
+        margin: 8px 0 4px;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .text-box i {
+        font-size: 1.3rem;
+        color: #999;
+        font-style: normal;
+    }
+}

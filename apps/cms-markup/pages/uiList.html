@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>:: UI List ::</title>
+    <link href="../css/main.css" rel="stylesheet">
+</head>
+<body>
+    <h1>
+        UI page list
+    </h1>
+    
+    <table>
+        <colgroup>
+            <col width="15%" />
+            <col width="15%" />
+            <col width="15%" />
+            <col width="*" />
+            <col width="10%" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th>1 depth</th>
+                <th>2 depth</th>
+                <th>3 depth</th>
+                <th>디렉토리</th>
+                <th>비고</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>빌딩안내 메인</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a target="_blank" href="BD-main.html">BD-main.html</a>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>빌딩안내</td>
+                <td>검색</td>
+                <td></td>
+                <td>
+                    <a target="_blank" href="BD-search.html">BD-search.html</a>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>빌딩안내</td>
+                <td>리스트</td>
+                <td></td>
+                <td>
+                    <a target="_blank" href="BD-list.html">BD-list.html</a>
+                </td>
+                <td></td>
+            </tr>
+            <!-- <tr>
+                <td>빌딩안내</td>
+                <td>리스트</td>
+                <td>지도 확대</td>
+                <td>
+                    <a target="_blank" href="bdGuide-mapView.html">bdGuide-mapView.html</a>
+                </td>
+                <td></td>
+            </tr> -->
+            <tr>
+                <td>빌딩안내</td>
+                <td>리스트</td>
+                <td>상세 위치 확인</td>
+                <td>
+                    <a target="_blank" href="BD-detailView.html">BD-detailView.html</a>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <style>
+        html, body { margin: 0; padding: 0; font-size: 0.625em;  color:#000; font-family: 'Noto Sans KR', 'Apple Gothic', 'Malgun Gothic', 'sans-serif', 'Arial'; }
+        h1 {
+            margin-top: 50px;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            max-width:1200px; 
+            margin: 30px auto;
+            border-top: 1px solid rgb(223, 223, 223);
+        }
+        
+        table th {
+            font-weight: 700;
+            text-align: left;
+        }
+
+        table th, table td {
+            font-size: 1.6rem;
+            word-break: keep-all;
+            padding: 0.625rem 1%;
+        }
+        table td {
+            padding: 10px;
+            border-top: 1px solid rgb(223, 223, 223);
+        }
+
+        table td + td {
+            border-left: 1px solid rgb(223, 223, 223);
+        }
+
+        table a { color:#3E3A39; text-decoration: none;}
+        table a:hover {color: #ED6813;}
+
+
+        .table-wrap {
+            width: 90%;
+            max-width: 1200px; 
+            margin: 30px auto;
+        }
+        .table-wrap ul, .table-wrap li {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        .table-wrap li:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .table-wrap li {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .table-wrap li:hover {
+            background: #fafafa;
+            border-radius: 30px;
+        }
+        .table-wrap li.th {
+            font-weight: 600;
+            background: #F5F3F1;
+            border-radius: 10px;
+        }
+        .table-wrap li .td {
+            padding: 0 5px;
+            min-height: 30px;
+            font-size: 1.6rem;
+            line-height: 3rem;
+        }
+        .table-wrap li .td:nth-child(1) {
+            width: 10%;
+            min-width: 100px;
+        }
+        .table-wrap li .td:nth-child(2) {
+            width: 10%;
+            min-width: 80px;
+        }
+        .table-wrap li .td:nth-child(3) {
+            width: 60%;
+        }
+        .table-wrap li .td:nth-child(4) {
+            width: 20%;
+        }
+        .table-wrap li a {
+            display: inline-block;
+            color:#3E3A39;
+            line-height: 1.3;
+            text-decoration: none;
+        }
+        .table-wrap li a:hover {color: #ED6813;}
+    </style>
+</body>
+</html>

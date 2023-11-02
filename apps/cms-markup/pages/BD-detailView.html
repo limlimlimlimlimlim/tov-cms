@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:: twin tower ::</title>
+
+    <!-- css -->
+    <link href="../css/style.css" rel="stylesheet"/>
+    
+    <!-- js -->
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    
+</head>
+<body>
+    <!-- header -->
+    <header class="header">
+        <div>
+            <button class="btn-back" onclick="history.back();"></button>
+            <h2>빌딩안내</h2>
+            <button class="btn-home"></button>
+            <button class="btn-menu"></button>
+        </div>
+    </header>
+
+    <!-- 검색 폼 - 검색 페이지로 이동 버튼 -->
+    <section class="form-search">
+        <input type="button" class="ip-srchForm" value="초성만 입력해도 검색이 가능합니다." onclick="location.href='./BD-search.html'"/>
+    </section>
+
+    <!-- 메인 내용 -->
+    <section class="content">
+        <div class="floor-menu">
+            <ul>
+                <li>5F</li>
+                <li>3F</li>
+                <li>2F</li>
+                <li class="active">1F</li>
+                <li>B1</li>
+                <li>B2</li>
+                <li>B3</li>
+            </ul>
+        </div>
+        <div class="area-menu">
+            <table>
+                <tr>
+                    <td class="on" data-target=".tab-all">전체</td>
+                    <td data-target=".tab-west">서관</td>
+                    <td data-target=".tab-center">중원</td>
+                    <td data-target=".tab-east">동관</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tab-wrap">
+            <div class="map-box detail">
+                <!-- <button type="button" class="btn-location ic_location_c"></button> -->
+                <div class="map-area"><img src="../images/img-map-full.jpg" alt="지도"></div>
+
+                <div class="aside miniMap">
+                    <button type="button" class="btn-aside">미니맵</button>
+                    <button type="button" class="btn-close"></button>
+                    <img src="../images/img-miniMap.jpg" alt="">
+                </div>
+                <div class="aside legend">
+                    <button type="button" class="btn-aside">범 례</button>
+                    <button type="button" class="btn-close"></button>
+                    <ul>
+                        <li><img src="../images/ic_legend-f.png" alt="">여자화장실</li>
+                        <li><img src="../images/ic_legend-m.png" alt="">남자화장실</li>
+                        <li><img src="../images/ic_legend-stair.png" alt="">계단</li>
+                        <li><img src="../images/ic_legend-ev.png" alt="">엘리베이터</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="aside-infowrap">
+                <h3>사내병원 </h3>
+                <button type="button" class="btn-close"></button>
+                <div class="cont">
+                    <div class="profile-box">
+                        <img src="../images/ic_character_gray.svg" alt="">
+                    </div>
+                    <div class="text-box">
+                        <ul>
+                            <li><a href="tel:02-0000-0000">
+                                <i class="ic_phone"></i><p>02-0000-0000</p>
+                            </a></li>
+                            <li><i class="ic_location"></i><p>서관 2F 123호</p></li>
+                            <li><i class="ic_note"></i><p>사내 임직원을 위해 운영중인 사내 약국입니다.<br/>운영시간 : 9:00 ~ 17:00</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+$(document).ready(function() {
+
+    // 층메뉴 floor-menu --- 가로로 스크롤(메뉴 넘침)
+    $('.floor-menu li').on('click', function(){
+
+        $('.floor-menu li').removeClass('active');
+        $(this).addClass('active');
+
+        var left = $('.floor-menu li.active').offset().left - 20;
+        var curLeft = $('.floor-menu').scrollLeft();
+
+        $('.floor-menu').animate({scrollLeft : curLeft+left}, 400);
+
+        // 해당 탭 콘텐츠 로드
+        // var content = $(this).data('target');
+        // $('.tab-wrap > div').removeClass('on');
+        // $(content).addClass('on');
+    });
+
+    $('.area-menu td').click(function(){
+        var content = $(this).data('target');
+
+        $('.area-menu td').removeClass('on');
+        $(this).addClass('on');
+
+        $('.tab-wrap > div').removeClass('view');
+        $(content).addClass('view');
+    });
+    
+    // 지도 미니맵, 범례 버튼 on/off
+    $('.map-box .btn-aside').click(function(){
+        $('.map-box .aside').removeClass('on');
+        $(this).parents('.aside').addClass('on');
+    });
+    $('.map-box .btn-close').click(function(){
+        $(this).parents('.aside').removeClass('on');
+    });
+
+    // 하단 매장 설명창 on/off
+    $('.map-box.detail .map-area img').click(function(){
+        $(this).parents('.map-box.detail').siblings('.aside-infowrap').slideDown();
+    });
+    $('.aside-infowrap .btn-close').click(function(){
+        $(this).parents('.aside-infowrap').slideUp();
+    });
+    
+});
+
+</script>
+</body>
+</html>

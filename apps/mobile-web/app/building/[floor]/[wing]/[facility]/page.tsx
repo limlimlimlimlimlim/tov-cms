@@ -6,8 +6,8 @@ import { useBuildingContext } from '@/app/context/building';
 
 export default function FacilityPage({ params }: any) {
   const { wing, facility, setFacility }: any = useBuildingContext();
-  const [isShowDetail, setIsShowDetail] = useState(false);
-  const [isShowMiniMap, setIsShowMiniMap] = useState(true);
+  const [isShowDetail, setIsShowDetail] = useState(true);
+  const [isShowMiniMap, setIsShowMiniMap] = useState(false);
   const [isShowLegend, setIsShowLegend] = useState(false);
   const mapAreaRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);

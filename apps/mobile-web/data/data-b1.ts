@@ -10,7 +10,7 @@ const data = {
         {
           id: 600,
           name: '오사이초밥',
-          image: '/images/sample/04.png',
+          image: '/images/sample/facility/04.png',
           section: '/images/sample/map/b1/section4.png',
           phone: '02-2122-5425',
           address: 'B1 120호',
@@ -28,7 +28,7 @@ const data = {
         {
           id: 14,
           name: '루이키친',
-          image: '/images/sample/05.png',
+          image: '/images/sample/facility/05.png',
           section: '/images/sample/map/b1/section5.png',
           phone: '02-736-8889',
           address: 'B1 121호',
@@ -46,7 +46,7 @@ const data = {
         {
           id: 15,
           name: '띤띤',
-          image: '/images/sample/06.png',
+          image: '/images/sample/facility/06.png',
           section: '/images/sample/map/b1/section6.png',
           phone: '02-318-5501',
           address: 'B1 122호',
@@ -64,7 +64,7 @@ const data = {
         {
           id: 16,
           name: '감성타코',
-          image: '/images/sample/07.png',
+          image: '/images/sample/facility/07.png',
           section: '/images/sample/map/b1/section7.png',
           phone: '02-2245-5664',
           address: 'B1 123호',
@@ -82,7 +82,7 @@ const data = {
         {
           id: 17,
           name: 'Ckbg.lab',
-          image: '/images/sample/08.png',
+          image: '/images/sample/facility/08.png',
           section: '/images/sample/map/b1/section8.png',
           phone: '02-318-5501',
           address: 'B1 124호',
@@ -100,7 +100,7 @@ const data = {
         {
           id: 18,
           name: '아우어베이커리',
-          image: '/images/sample/09.png',
+          image: '/images/sample/facility/09.png',
           section: '/images/sample/map/b1/section2.png',
           phone: '02-2468-6544',
           address: 'B1 125호',
@@ -118,7 +118,7 @@ const data = {
         {
           id: 19,
           name: '잠바주스',
-          image: '/images/sample/10.png',
+          image: '/images/sample/facility/10.png',
           section: '/images/sample/map/b1/section3.png',
           phone: '02-2866-7585',
           address: 'B1 126호',
@@ -136,7 +136,7 @@ const data = {
         {
           id: 20,
           name: '푸드코트',
-          image: '/images/sample/11.png',
+          image: '/images/sample/facility/11.png',
           section: '/images/sample/map/b1/section1.png',
           phone: '02-2981-1566',
           address: 'B1 130호',

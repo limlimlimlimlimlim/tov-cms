@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Flex, Form, Input, Modal } from 'antd';
 import { useCallback, useState } from 'react';
 import FloorItem from './floor-item';
@@ -50,7 +51,7 @@ export default function FloorList({
       },
     });
     confirm;
-  }, [newItemNameKr, newItemNameEn]);
+  }, [onUpdate]);
 
   const onUpdateItem = useCallback(() => {
     onUpdate();

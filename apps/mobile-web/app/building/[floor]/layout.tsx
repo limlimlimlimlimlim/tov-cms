@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect } from 'react';
-import { useBuildingContext } from '@/app/context/building';
 import { useRouter } from 'next/navigation';
+import { useBuildingContext } from '@/app/context/building';
 
 export default function FloorLayout({ params, children }: any) {
   const router = useRouter();
@@ -12,13 +12,8 @@ export default function FloorLayout({ params, children }: any) {
       setFloor(currentFloor);
       router.replace(`/building/${currentFloor.id}/${currentFloor.wing[0].id}`);
     },
-    [data],
+    [router, setFloor],
   );
-
-  useEffect(() => {
-    if (!data) return;
-    setCurrentFloor(params.floor);
-  }, [data]);
 
   const setCurrentFloor = useCallback(
     (floorId: string) => {
@@ -28,8 +23,13 @@ export default function FloorLayout({ params, children }: any) {
       });
       setFloor(currentFloor);
     },
-    [data],
+    [data, setFloor],
   );
+
+  useEffect(() => {
+    if (!data) return;
+    setCurrentFloor(params.floor);
+  }, [data, params.floor, setCurrentFloor]);
 
   const createFloors = useCallback(() => {
     return data.map((f: any, index: number) => {
@@ -45,11 +45,11 @@ export default function FloorLayout({ params, children }: any) {
         </li>
       );
     });
-  }, [data, floor]);
+  }, [data, floor, onClickFloor]);
 
   return (
     <>
-      {data && (
+      {data ? (
         <>
           <div className="floor-menu">
             {' '}
@@ -57,7 +57,7 @@ export default function FloorLayout({ params, children }: any) {
           </div>
           {children}
         </>
-      )}
+      ) : null}
     </>
   );
 }

@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import dummyData from '../../data/data';
 import { useRouter } from 'next/navigation';
+import dummyData from '../../data/data';
 
 export default function Search() {
   const router = useRouter();
@@ -18,9 +18,12 @@ export default function Search() {
     setKeyword(e.target.value);
   }, []);
 
-  const onClickItem = useCallback((item: any) => {
-    router.replace(`building/${item.floorId}/${item.wingId}/${item.id}`);
-  }, []);
+  const onClickItem = useCallback(
+    (item: any) => {
+      router.replace(`building/${item.floorId}/${item.wingId}/${item.id}`);
+    },
+    [router],
+  );
 
   useEffect(() => {
     if (keyword.trim() === '') {
@@ -75,10 +78,10 @@ export default function Search() {
             onClick={() => {
               router.back();
             }}
-          ></button>
+          />
           <h2>검색</h2>
-          <button className="btn-home"></button>
-          <button className="btn-menu"></button>
+          <button className="btn-home" />
+          <button className="btn-menu" />
         </div>
       </header>
 
@@ -88,8 +91,8 @@ export default function Search() {
           placeholder="초성만 입력해도 검색이 가능합니다."
           onChange={onChangeKeyword}
         />
-        <button type="button" className="btn-search"></button>
-        <span className="btn-delete"></span>
+        <button type="button" className="btn-search" />
+        <span className="btn-delete" />
       </section>
 
       <section className="content">

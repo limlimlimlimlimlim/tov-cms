@@ -12,7 +12,7 @@ export default function WingPage() {
       setFacility(fac);
       router.push(`/building/${floor.id}/${wing.id}/${fac.id}`);
     },
-    [floor, wing],
+    [floor.id, router, setFacility, wing.id],
   );
 
   const createFacility = useCallback(() => {
@@ -22,7 +22,7 @@ export default function WingPage() {
         <li key={i}>
           <b>{f.name}</b>
           <div>
-            <a href={`tel:${f.phone}`} className="ic_phone"></a>
+            <a href={`tel:${f.phone}`} className="ic_phone" />
             <a
               href="#"
               className="ic_location"
@@ -30,28 +30,26 @@ export default function WingPage() {
                 e.preventDefault();
                 onClickFacility(f);
               }}
-            ></a>
+            />
           </div>
         </li>
       );
     });
-  }, [wing]);
+  }, [onClickFacility, wing]);
 
   return (
-    <>
-      <div className="tab-wrap">
-        <div className="tab tab-all view">
-          <div className="map-box list">
-            {wing.image && <img src={wing.image} alt="지도" />}
-          </div>
-          <div className="list-store">
-            <h3>
-              {floor.floorName} {wing.name}
-            </h3>
-            {wing && <ul>{createFacility()}</ul>}
-          </div>
+    <div className="tab-wrap">
+      <div className="tab tab-all view">
+        <div className="map-box list">
+          {wing.image ? <img src={wing.image} alt="지도" /> : null}
+        </div>
+        <div className="list-store">
+          <h3>
+            {floor.floorName} {wing.name}
+          </h3>
+          {wing ? <ul>{createFacility()}</ul> : null}
         </div>
       </div>
-    </>
+    </div>
   );
 }

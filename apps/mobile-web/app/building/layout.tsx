@@ -10,20 +10,20 @@ export default function BuildingLayout({ children }: any) {
 
   useEffect(() => {
     setData(dummyData.tree as any);
-  }, [dummyData]);
+  }, [setData]);
 
   const onClickSearch = useCallback(() => {
     router.push('/search');
-  }, []);
+  }, [router]);
 
   return (
     <>
       <header className="header">
         <div>
-          <button className="btn-back" onClick={router.back}></button>
+          <button className="btn-back" onClick={router.back} />
           <h2>빌딩안내</h2>
-          <button className="btn-home"></button>
-          <button className="btn-menu"></button>
+          <button className="btn-home" />
+          <button className="btn-menu" />
         </div>
       </header>
 
@@ -35,7 +35,7 @@ export default function BuildingLayout({ children }: any) {
           onClick={onClickSearch}
         />
       </section>
-      {data && <section className="content">{children}</section>}
+      {data ? <section className="content">{children}</section> : null}
     </>
   );
 }

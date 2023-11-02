@@ -1,8 +1,8 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import dummyData from '../../data/data';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import dummyData from '../../data/data';
 
 export default function Main() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function Main() {
           <Link href={`/building/${item.id}/${item.wing[0].id}`}>
             <p>
               {item.floorName}
-              <i className="ic_arrow_right"></i>
+              <i className="ic_arrow_right" />
             </p>
           </Link>
         </li>
@@ -44,10 +44,10 @@ export default function Main() {
     <>
       <header className="header">
         <div>
-          <button className="btn-back"></button>
+          <button className="btn-back" />
           <h2>빌딩안내</h2>
-          <button className="btn-home"></button>
-          <button className="btn-menu"></button>
+          <button className="btn-home" />
+          <button className="btn-menu" />
         </div>
       </header>
 
@@ -75,7 +75,7 @@ export default function Main() {
 
         <div className="info-box">
           <div>
-            <span className="ic_barrier"></span>
+            <span className="ic_barrier" />
           </div>
           <div className="text-box">
             <b>장애인 화장실 위치 안내</b>

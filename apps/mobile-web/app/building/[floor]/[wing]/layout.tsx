@@ -1,24 +1,19 @@
 'use client';
 import { useCallback, useEffect } from 'react';
-import { useBuildingContext } from '@/app/context/building';
 import { useRouter } from 'next/navigation';
+import { useBuildingContext } from '@/app/context/building';
 
 export default function WingLayout({ params, children }: any) {
   const router = useRouter();
-  const { data, floor, wing, setWing }: any = useBuildingContext();
+  const { floor, wing, setWing }: any = useBuildingContext();
 
   const onClickWing = useCallback(
     (currentWing: any) => {
       setWing(currentWing);
       router.replace(`/building/${floor.id}/${currentWing.id}`);
     },
-    [data, floor],
+    [floor.id, router, setWing],
   );
-
-  useEffect(() => {
-    if (!floor) return;
-    setCurrentWing(params.wing);
-  }, [floor]);
 
   const setCurrentWing = useCallback(
     (wingId: string) => {
@@ -29,8 +24,13 @@ export default function WingLayout({ params, children }: any) {
       });
       setWing(currentWing);
     },
-    [floor],
+    [floor, setWing],
   );
+
+  useEffect(() => {
+    if (!floor) return;
+    setCurrentWing(params.wing);
+  }, [floor, params.wing, setCurrentWing]);
 
   const createWings = useCallback(() => {
     return floor.wing.map((w: any, i: number) => {
@@ -46,7 +46,7 @@ export default function WingLayout({ params, children }: any) {
         </td>
       );
     });
-  }, [floor, wing]);
+  }, [floor.wing, onClickWing, wing]);
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function WingLayout({ params, children }: any) {
           </table>
         </div>
       )}
-      {wing && children}
+      {wing ? children : null}
     </>
   );
 }

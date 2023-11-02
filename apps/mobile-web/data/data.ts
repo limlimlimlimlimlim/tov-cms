@@ -6,6 +6,7 @@ import datab1 from './data-b1';
 import datab2 from './data-b2';
 
 const tree = [datab2, datab1, data1f, data2f, data3f, data5f];
+// const tree = [data5f, data3f, data2f, data1f, datab1, datab2];
 
 const facility = tree.reduce((acc: any[], floor: any) => {
   const facilities = floor.wing.reduce((acc2: any[], w: any) => {

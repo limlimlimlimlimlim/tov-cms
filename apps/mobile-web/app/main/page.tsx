@@ -14,23 +14,26 @@ export default function Main() {
   }, []);
 
   const createItems = useCallback(() => {
-    return data.map((item: any, i) => {
-      return (
-        <li key={i}>
-          <Link href={`/building/${item.id}/${item.wing[0].id}`}>
-            <p>
-              {item.floorName}
-              <i className="ic_arrow_right" />
-            </p>
-          </Link>
-        </li>
-      );
-    });
+    return data
+      .concat()
+      .reverse()
+      .map((item: any, i) => {
+        return (
+          <li key={i}>
+            <Link href={`/building/${item.id}/${item.wing[0].id}`}>
+              <p>
+                {item.floorName}
+                <i className="ic_arrow_right" />
+              </p>
+            </Link>
+          </li>
+        );
+      });
   }, [data]);
 
   const onClickSearch = useCallback(() => {
     router.push('/search');
-  }, []);
+  }, [router]);
 
   const onClickShowPopup = useCallback(() => {
     setIsShowPopup(true);

@@ -1,11 +1,13 @@
 'use client';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBuildingContext } from '@/app/context/building';
 
 export default function FloorLayout({ params, children }: any) {
   const router = useRouter();
   const { data, floor, setFloor }: any = useBuildingContext();
+  const [items, setItems] = useState([]);
+  const activeFloorElement = useRef(null);
 
   const onClickFloor = useCallback(
     (currentFloor: any) => {
@@ -33,10 +35,12 @@ export default function FloorLayout({ params, children }: any) {
 
   const createFloors = useCallback(() => {
     return data.map((f: any, index: number) => {
+      const isActive = floor && (floor as any).id == f.id;
       return (
         <li
           key={index}
-          className={floor && (floor as any).id == f.id ? 'active' : ''}
+          className={isActive ? 'active' : ''}
+          ref={isActive ? activeFloorElement : null}
           onClick={() => {
             onClickFloor(f);
           }}
@@ -47,13 +51,27 @@ export default function FloorLayout({ params, children }: any) {
     });
   }, [data, floor, onClickFloor]);
 
+  useEffect(() => {
+    setItems(createFloors());
+  }, [createFloors]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!activeFloorElement.current) {
+      return;
+    }
+    (activeFloorElement.current as HTMLElement).scrollIntoView({
+      block: 'nearest',
+    });
+  }, [items]);
+
   return (
     <>
       {data ? (
         <>
           <div className="floor-menu">
             {' '}
-            <ul>{createFloors()}</ul>
+            <ul>{items}</ul>
           </div>
           {children}
         </>

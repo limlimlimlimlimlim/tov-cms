@@ -11,7 +11,7 @@
         background: url(#{$img-path}/ic_location_color.svg) no-repeat;
     }
     .map-area {
-        height: calc(100vh - 279px);
+        height: calc(100vh - 274px);
         overflow: hidden;
     }
 
@@ -34,16 +34,17 @@
             display: none;
         }
         .btn-aside {
-            padding: 8px 16px;
+            padding: 0px 16px;
             height: 32px;
             font-size: 1.3rem;
             // line-height: 2rem;
             font-weight: 600;
+            color: #000;
         }
 
         &.on {
             padding: 8px 8px 8px;
-            border-radius: 10px;
+            border-radius: 4px;
             z-index: 901;
 
             .btn-aside {
@@ -60,10 +61,10 @@
     }
     .miniMap {
         left: $sidePadding;
-        background-color: #fafafa;
         &.on {
             @include clear;
             padding-right: 4px;
+            background-color: #fafafa;
             .btn-tit {
                 display: none;
             }

@@ -2,7 +2,8 @@
 // floor-menu 층 메뉴
 .floor-menu {
     height: 53px;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     &::-webkit-scrollbar {display: none;}
@@ -16,7 +17,7 @@
     li {
         float: left;
         position: relative;
-        padding: 19px 20px 16px;
+        padding: 20px 20px 18px;
         font-size: 1.5rem;
         color: #999;
         cursor: pointer;
@@ -205,6 +206,7 @@
         b {
             font-size: 1.5rem;
             font-weight: 400;
+            vertical-align: -webkit-baseline-middle;
         }
         div {
             float: right;

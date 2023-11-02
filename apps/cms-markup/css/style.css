@@ -137,7 +137,7 @@ a {
 html, body {
   font-family: "Pretendard", "Malgun Gothic", "sans-serif", "Arial";
   font-size: 0.625em;
-  line-height: 1.2;
+  line-height: 1;
   font-weight: 400;
   color: #000;
   margin: 0 auto;
@@ -440,7 +440,8 @@ section.content {
 /* list.scss */
 .floor-menu {
   height: 53px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   border-bottom: 1px solid #ddd;
@@ -466,7 +467,7 @@ section.content {
 .floor-menu li {
   float: left;
   position: relative;
-  padding: 19px 20px 16px;
+  padding: 20px 20px 18px;
   font-size: 1.5rem;
   color: #999;
   cursor: pointer;
@@ -562,6 +563,7 @@ section.content {
 .list-store li b {
   font-size: 1.5rem;
   font-weight: 400;
+  vertical-align: -webkit-baseline-middle;
 }
 .list-store li div {
   float: right;
@@ -585,7 +587,7 @@ section.content {
   background: url(../images/ic_location_color.svg) no-repeat;
 }
 .map-box.detail .map-area {
-  height: calc(100vh - 279px);
+  height: calc(100vh - 274px);
   overflow: hidden;
 }
 .map-box.detail .aside {
@@ -608,14 +610,15 @@ section.content {
   display: none;
 }
 .map-box.detail .aside .btn-aside {
-  padding: 8px 16px;
+  padding: 0px 16px;
   height: 32px;
   font-size: 1.3rem;
   font-weight: 600;
+  color: #000;
 }
 .map-box.detail .aside.on {
   padding: 8px 8px 8px;
-  border-radius: 10px;
+  border-radius: 4px;
   z-index: 901;
 }
 .map-box.detail .aside.on .btn-aside {
@@ -630,10 +633,10 @@ section.content {
 }
 .map-box.detail .miniMap {
   left: 5.556%;
-  background-color: #fafafa;
 }
 .map-box.detail .miniMap.on {
   padding-right: 4px;
+  background-color: #fafafa;
 }
 .map-box.detail .miniMap.on:after {
   content: "";

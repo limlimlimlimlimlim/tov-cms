@@ -98,7 +98,13 @@ export default function FacilityPage({ params }: any) {
       {facility ? (
         <>
           <div className="map-box detail">
-            <div className="map-area" ref={mapAreaRef}>
+            <div
+              className="map-area"
+              ref={mapAreaRef}
+              onClick={() => {
+                setIsShowDetail(true);
+              }}
+            >
               <animated.div
                 ref={viewerRef as any}
                 style={{ ...style, touchAction: 'none', paddingTop: 90 }}
@@ -117,9 +123,6 @@ export default function FacilityPage({ params }: any) {
                   type="button"
                   className="btn-location ic_location_c"
                   style={{ top: facility.y, left: facility.x }}
-                  onClick={() => {
-                    setIsShowDetail(true);
-                  }}
                 />
               </animated.div>
             </div>

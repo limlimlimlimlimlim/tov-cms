@@ -1,6 +1,9 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSpring, animated } from '@react-spring/web';
+import { folder, useControls } from 'leva';
 import { useBuildingContext } from '@/app/context/building';
+import { useGesture, usePinch } from '@use-gesture/react';
 
 export default function FacilityPage({ params }: any) {
   const { wing, facility, setFacility }: any = useBuildingContext();
@@ -24,6 +27,53 @@ export default function FacilityPage({ params }: any) {
     setCurrentFacility(params.facility);
   }, [params.facility, setCurrentFacility, wing]);
 
+  useEffect(() => {
+    const handler = (e: Event) => e.preventDefault();
+    document.addEventListener('gesturestart', handler);
+    document.addEventListener('gesturechange', handler);
+    document.addEventListener('gestureend', handler);
+    return () => {
+      document.removeEventListener('gesturestart', handler);
+      document.removeEventListener('gesturechange', handler);
+      document.removeEventListener('gestureend', handler);
+    };
+  }, []);
+
+  const [style, api] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotateZ: 0,
+  }));
+  const ref = useRef<HTMLDivElement>(null);
+
+  useGesture(
+    {
+      // onHover: ({ active, event }) => console.log('hover', event, active),
+      // onMove: ({ event }) => console.log('move', event),
+      onDrag: ({ pinching, cancel, offset: [x, y] }) => {
+        if (pinching) return cancel();
+        api.start({ x, y });
+      },
+      onPinch: ({ origin: [ox, oy], first, offset: [s], memo }) => {
+        if (first) {
+          const { width, height, x, y } = ref.current!.getBoundingClientRect();
+          const tx = ox - (x + width / 2);
+          const ty = oy - (y + height / 2);
+          // eslint-disable-next-line no-param-reassign
+          memo = [style.x.get(), style.y.get(), tx, ty];
+        }
+        api.start({ scale: s, rotateZ: 0 });
+        return memo;
+      },
+    },
+    {
+      target: ref,
+      drag: { from: () => [style.x.get(), style.y.get()] },
+      pinch: { scaleBounds: { min: 1, max: 2.5 }, rubberband: true },
+    },
+  );
+
   return (
     <div className="tab-wrap">
       {facility ? (
@@ -39,7 +89,10 @@ export default function FacilityPage({ params }: any) {
                 setIsShowDetail(true);
               }}
             >
-              <div style={{ marginTop: 90 }}>
+              <animated.div
+                ref={ref as any}
+                style={{ ...style, touchAction: 'none', paddingTop: 90 }}
+              >
                 <img
                   src={wing.image}
                   alt="지도"
@@ -50,7 +103,7 @@ export default function FacilityPage({ params }: any) {
                   alt="지도"
                   style={{ position: 'absolute' }}
                 />
-              </div>
+              </animated.div>
             </div>
 
             <div className={`aside miniMap ${isShowMiniMap ? 'on' : null}`}>

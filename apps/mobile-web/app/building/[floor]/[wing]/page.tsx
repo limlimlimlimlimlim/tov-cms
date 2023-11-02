@@ -1,7 +1,7 @@
 'use client';
-import { useBuildingContext } from '@/app/context/building';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
+import { useBuildingContext } from '@/app/context/building';
 
 export default function WingPage() {
   const { floor, setFacility, wing }: any = useBuildingContext();

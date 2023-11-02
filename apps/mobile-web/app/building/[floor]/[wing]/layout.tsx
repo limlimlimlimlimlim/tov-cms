@@ -12,7 +12,7 @@ export default function WingLayout({ params, children }: any) {
       setWing(currentWing);
       router.replace(`/building/${floor.id}/${currentWing.id}`);
     },
-    [floor.id, router, setWing],
+    [floor, router, setWing],
   );
 
   const setCurrentWing = useCallback(
@@ -46,7 +46,7 @@ export default function WingLayout({ params, children }: any) {
         </td>
       );
     });
-  }, [floor.wing, onClickWing, wing]);
+  }, [floor, onClickWing, wing]);
 
   return (
     <>

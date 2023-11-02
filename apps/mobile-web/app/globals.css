@@ -22,7 +22,6 @@ body {
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
-  touch-action: pan-x pan-y;
 }
 
 html {

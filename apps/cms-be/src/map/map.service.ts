@@ -40,8 +40,8 @@ export class MapService {
     keyword: string = '',
     page: string,
     count: string,
-    floor: string,
-    building: string,
+    floorId: string,
+    wingId: string,
   ) {
     const where = {
       AND: [],
@@ -49,11 +49,11 @@ export class MapService {
     if (keyword) {
       where.AND.push({ name: { contains: keyword } });
     }
-    if (floor) {
-      where.AND.push({ floorId: +floor });
+    if (floorId) {
+      where.AND.push({ floorId: +floorId });
     }
-    if (building) {
-      where.AND.push({ buildingId: +building });
+    if (wingId) {
+      where.AND.push({ wingId: +wingId });
     }
 
     const total = await this.prisma.map.count({ where });

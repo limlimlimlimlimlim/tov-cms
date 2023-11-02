@@ -1,60 +1,58 @@
 import { Select } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { getBuildingsByFloor, getFloors } from '../../api/building-info';
+import { getWingsInFloor } from '../../api/building-info';
 
 const { Option } = Select;
 
 interface ComponentProps {
   floorId;
-  buildingId?;
+  wingId?;
   style?;
-  onChange?: (buildingId) => void;
+  onChange?: (wingId) => void;
 }
 
 export default function BuildingSelect({
   floorId,
-  buildingId,
+  wingId,
   style,
   onChange,
 }: ComponentProps) {
-  const [buildings, setBuildings] = useState([]);
+  const [wings, setWings] = useState([]);
 
   useEffect(() => {
     if (floorId) {
-      fetchData(floorId);
+      void fetchData(floorId);
     } else {
-      setBuildings([]);
+      setWings([]);
       if (onChange) onChange('');
     }
-  }, [floorId]);
+  }, [floorId, onChange]);
 
   const fetchData = async (id) => {
-    const buildings = await getBuildingsByFloor(id);
-    setBuildings(buildings.data);
+    const wingsInFloor = await getWingsInFloor(id);
+    setWings(wingsInFloor.data);
   };
 
   const createOptions = useCallback(() => {
-    return buildings.map((building: any) => (
+    return wings.map((building: any) => (
       <Option key={building.id} value={building.id}>
         {building.name}
       </Option>
     ));
-  }, [buildings]);
+  }, [wings]);
   return (
-    <>
-      <Select
-        style={style}
-        value={buildingId}
-        onChange={(value) => {
-          if (!onChange) return;
-          onChange(value);
-        }}
-      >
-        <Option key="all" value="">
-          전체
-        </Option>
-        {createOptions()}
-      </Select>
-    </>
+    <Select
+      style={style}
+      value={wingId}
+      onChange={(value) => {
+        if (!onChange) return;
+        onChange(value);
+      }}
+    >
+      <Option key="all" value="">
+        전체
+      </Option>
+      {createOptions()}
+    </Select>
   );
 }

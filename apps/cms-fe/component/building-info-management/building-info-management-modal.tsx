@@ -1,7 +1,7 @@
 import { Modal, message } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  deleteBuilding,
+  deleteWing,
   deleteFloor,
   getBuildingInfoTree,
 } from '../../api/building-info';
@@ -20,54 +20,60 @@ export default function BuldingInfoManagementModal({
 }: ComponentProps) {
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = useCallback(async () => {
     const result = await getBuildingInfoTree();
     setData(result.data);
   }, []);
 
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
+
   const onUpdate = useCallback(() => {
-    fetchData();
-  }, []);
+    void fetchData();
+  }, [fetchData]);
 
-  const onDeleteBuilding = useCallback((id) => {
-    confirm({
-      title: '건물(동) 삭제',
-      okText: '확인',
-      cancelText: '취소',
-      content: '건물(동) 삭제하시겠습니까?',
-      async onOk() {
-        try {
-          await deleteBuilding(id);
-          fetchData();
-          void message.success('건물(동)이 삭제됐습니다.');
-        } catch (e) {
-          void message.error('건물(동)을 삭제할 수 없습니다.');
-        }
-      },
-    });
-  }, []);
+  const onDeleteWing = useCallback(
+    (id) => {
+      confirm({
+        title: '건물(동) 삭제',
+        okText: '확인',
+        cancelText: '취소',
+        content: '건물(동) 삭제하시겠습니까?',
+        async onOk() {
+          try {
+            await deleteWing(id);
+            await fetchData();
+            void message.success('건물(동)이 삭제됐습니다.');
+          } catch (e) {
+            void message.error('건물(동)을 삭제할 수 없습니다.');
+          }
+        },
+      });
+    },
+    [fetchData],
+  );
 
-  const onDeleteFloor = useCallback((id) => {
-    confirm({
-      title: '층 삭제',
-      okText: '확인',
-      cancelText: '취소',
-      content: '층을 삭제하시겠습니까?',
-      async onOk() {
-        try {
-          await deleteFloor(id);
-          fetchData();
-          void message.success('층이 삭제됐습니다.');
-        } catch (e) {
-          void message.error('층을 삭제할 수 없습니다.');
-        }
-      },
-    });
-  }, []);
+  const onDeleteFloor = useCallback(
+    (id) => {
+      confirm({
+        title: '층 삭제',
+        okText: '확인',
+        cancelText: '취소',
+        content: '층을 삭제하시겠습니까?',
+        async onOk() {
+          try {
+            await deleteFloor(id);
+            await fetchData();
+            void message.success('층이 삭제됐습니다.');
+          } catch (e) {
+            void message.error('층을 삭제할 수 없습니다.');
+          }
+        },
+      });
+    },
+    [fetchData],
+  );
 
   return (
     <Modal
@@ -79,7 +85,7 @@ export default function BuldingInfoManagementModal({
       <FloorList
         data={data}
         onUpdate={onUpdate}
-        onDeleteBuilding={onDeleteBuilding}
+        onDeleteWing={onDeleteWing}
         onDeleteFloor={onDeleteFloor}
       />
     </Modal>

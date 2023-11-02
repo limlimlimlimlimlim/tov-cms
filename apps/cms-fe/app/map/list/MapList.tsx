@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Form, Table, message } from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
@@ -12,9 +12,6 @@ import { deleteMap, getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import BuildingSelect from '../../../component/building-select/building-select';
 
-const { Search } = Input;
-const { confirm } = Modal;
-
 export default function MapList() {
   const [total, setTotal] = useState(17);
   const [data, setData] = useState<MapItem[]>([]);
@@ -24,15 +21,14 @@ export default function MapList() {
   const [selectedData, setSelectedData] = useState<MapItem[]>([]);
   const [floor, setFloor] = useState('');
   const [wing, setWing] = useState('');
-  const [isBuildingManagementModalOpen, setIsBuildingManagementModalOpen] =
+  const [isBuildingManagementModalOpen, setIsOpenBuildingManagementModal] =
     useState(false);
   const [isOpenMapAreaModal, setIsOpenMapAreaModal] = useState(false);
   const [currentMap, setCurrentMap] = useState(null);
 
   const fetchData = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    async ({ keyword, page, count, floor, wing }) => {
-      const maps = await getMaps({ keyword, page, count, floor, wing });
+    async ({ _keyword, _page, _count, _floor, _wing }) => {
+      const maps = await getMaps({ _keyword, _page, _count, _floor, _wing });
       setData(maps.data.data);
       setTotal(maps.data.total);
     },
@@ -136,7 +132,7 @@ export default function MapList() {
   }, [selectedData, fetchData, keyword, page, count, floor, wing]);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
+    onChange: async (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
       setSelectedData(selectedRows);
     },
   };
@@ -183,7 +179,7 @@ export default function MapList() {
           </Flex>
           <Button
             onClick={() => {
-              setIsBuildingManagementModalOpen(true);
+              setIsOpenBuildingManagementModal(true);
             }}
           >
             건물 정보 관리
@@ -229,7 +225,7 @@ export default function MapList() {
       <BuldingInfoManagementModal
         open={isBuildingManagementModalOpen}
         onCancel={() => {
-          setIsBuildingManagementModalOpen(false);
+          setIsOpenBuildingManagementModal(false);
         }}
       />
       <MapAreaEditorModal

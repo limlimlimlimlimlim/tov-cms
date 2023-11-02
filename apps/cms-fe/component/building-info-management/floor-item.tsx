@@ -15,7 +15,7 @@ interface ComponentProps {
   child: any[];
   onAdd: (id) => void;
   onDelete: (id) => void;
-  onDeleteBuilding: (id) => void;
+  onDeleteWing: (id) => void;
   onUpdate: (id, value) => void;
 }
 
@@ -25,7 +25,7 @@ export default function FloorItem({
   child,
   onAdd,
   onDelete,
-  onDeleteBuilding,
+  onDeleteWing,
   onUpdate,
 }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
@@ -92,7 +92,7 @@ export default function FloorItem({
       </Flex>
       {Boolean(child) && child.length > 0 && (
         <Flex style={{ paddingLeft: 30 }}>
-          <BuildingList data={child} onDelete={onDeleteBuilding} />
+          <BuildingList data={child} onDelete={onDeleteWing} />
         </Flex>
       )}
     </Flex>

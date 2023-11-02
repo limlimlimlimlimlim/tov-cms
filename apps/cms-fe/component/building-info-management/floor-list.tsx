@@ -1,4 +1,4 @@
-import { Flex, Form, Input, Modal, message } from 'antd';
+import { Flex, Form, Input, Modal } from 'antd';
 import { useCallback, useState } from 'react';
 import FloorItem from './floor-item';
 
@@ -7,7 +7,7 @@ const { confirm } = Modal;
 interface ComponentProps {
   data: any[];
   onDeleteFloor: (id) => void;
-  onDeleteBuilding: (id) => void;
+  onDeleteWing: (id) => void;
   onUpdate: () => void;
 }
 
@@ -15,7 +15,7 @@ export default function FloorList({
   data,
   onUpdate,
   onDeleteFloor,
-  onDeleteBuilding,
+  onDeleteWing,
 }: ComponentProps) {
   const [newItemNameKr, setNewItemNameKr] = useState('');
   const [newItemNameEn, setNewItemNameEn] = useState('');
@@ -54,7 +54,7 @@ export default function FloorList({
 
   const onUpdateItem = useCallback(() => {
     onUpdate();
-  }, []);
+  }, [onUpdate]);
 
   const createItems = useCallback(() => {
     return data.map((item) => {
@@ -67,11 +67,11 @@ export default function FloorList({
           onAdd={onAddItem}
           onDelete={onDeleteFloor}
           onUpdate={onUpdateItem}
-          onDeleteBuilding={onDeleteBuilding}
+          onDeleteWing={onDeleteWing}
         />
       );
     }, []);
-  }, [data, onAddItem, onUpdateItem, onDeleteFloor]);
+  }, [data, onAddItem, onDeleteFloor, onUpdateItem, onDeleteWing]);
   return (
     <Flex vertical gap="small" style={{ width: '100%' }}>
       {createItems()}

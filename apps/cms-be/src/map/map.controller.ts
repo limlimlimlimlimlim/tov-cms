@@ -47,10 +47,10 @@ export class MapController {
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
-    @Query('floor') floor: string,
-    @Query('building') building: string,
+    @Query('floorId') floorId: string,
+    @Query('wing') wingId: string,
   ) {
-    return await this.mapService.getMaps(keyword, page, count, floor, building);
+    return await this.mapService.getMaps(keyword, page, count, floorId, wingId);
   }
 
   @Get('section/:mapId')

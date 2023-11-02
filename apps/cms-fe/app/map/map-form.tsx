@@ -24,7 +24,6 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '필수 값을 입력해주세요',
   types: {
@@ -36,7 +35,7 @@ const validateMessages = {
 export default function MapForm({ data }) {
   const router = useRouter();
   const [floorId, setFloorId] = useState('');
-  const [buildingId, setBuildingId] = useState('');
+  const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [isUse, setIsUse] = useState(false);
@@ -46,7 +45,7 @@ export default function MapForm({ data }) {
     if (data) {
       setIsEdit(true);
       setFloorId(data.floorId);
-      setBuildingId(data.buildingId);
+      setWingId(data.wingId);
       setName(data.name);
       setImage(data.image);
       setIsUse(data.isUse);
@@ -58,7 +57,7 @@ export default function MapForm({ data }) {
       if (isEdit) {
         await updateMap(data.id, {
           floorId,
-          buildingId,
+          wingId,
           name,
           isUse,
           image,
@@ -67,7 +66,7 @@ export default function MapForm({ data }) {
       } else {
         await createMap({
           floorId,
-          buildingId,
+          wingId,
           name,
           isUse,
           image,
@@ -79,15 +78,15 @@ export default function MapForm({ data }) {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [router, floorId, buildingId, name, isUse, image, isEdit]);
+  }, [isEdit, router, data?.id, floorId, wingId, name, isUse, image]);
 
   const onChangeFloor = useCallback((floor) => {
     setFloorId(floor);
-    setBuildingId('');
+    setWingId('');
   }, []);
 
   const onChangeBuilding = useCallback((building) => {
-    setBuildingId(building);
+    setWingId(building);
   }, []);
 
   const onChageName = useCallback((e) => {
@@ -120,7 +119,9 @@ export default function MapForm({ data }) {
     <Flex vertical gap="middle">
       <Form
         {...layout}
-        onFinish={onFinish}
+        onFinish={() => {
+          void onFinish();
+        }}
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
@@ -135,7 +136,7 @@ export default function MapForm({ data }) {
           <BuildingSelect
             style={{ width: 200 }}
             floorId={floorId}
-            buildingId={buildingId}
+            wingId={wingId}
             onChange={onChangeBuilding}
           />
         </Form.Item>
@@ -158,11 +159,11 @@ export default function MapForm({ data }) {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            {isEdit && (
+            {isEdit ? (
               <Button danger onClick={onClickDeleteMap}>
                 삭제
               </Button>
-            )}
+            ) : null}
 
             <Link href="/map/list">
               <Button>취소</Button>

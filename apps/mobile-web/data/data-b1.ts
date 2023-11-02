@@ -22,6 +22,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 108,
+          y: 62,
         },
         {
           id: 14,
@@ -38,6 +40,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 145,
+          y: 62,
         },
         {
           id: 15,
@@ -54,6 +58,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 181,
+          y: 68,
         },
         {
           id: 16,
@@ -70,6 +76,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 195,
+          y: 62,
         },
         {
           id: 17,
@@ -86,12 +94,14 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 206,
+          y: 62,
         },
         {
           id: 18,
           name: '아우어베이커리',
           image: '/images/sample/09.png',
-          section: '/images/sample/map/b1/section1.png',
+          section: '/images/sample/map/b1/section2.png',
           phone: '02-2468-6544',
           address: 'B1 125호',
           description:
@@ -102,6 +112,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 145,
+          y: 175,
         },
         {
           id: 19,
@@ -118,6 +130,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 175,
+          y: 170,
         },
         {
           id: 20,
@@ -134,6 +148,8 @@ const data = {
           wing: '전체',
           floorId: 6,
           wingId: 60,
+          x: 20,
+          y: 121,
         },
       ],
     },

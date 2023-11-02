@@ -1,13 +1,12 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSpring, animated } from '@react-spring/web';
-import { folder, useControls } from 'leva';
+import { useGesture } from '@use-gesture/react';
 import { useBuildingContext } from '@/app/context/building';
-import { useGesture, usePinch } from '@use-gesture/react';
 
 export default function FacilityPage({ params }: any) {
   const { wing, facility, setFacility }: any = useBuildingContext();
-  const [isShowDetail, setIsShowDetail] = useState(true);
+  const [isShowDetail, setIsShowDetail] = useState(false);
   const [isShowMiniMap, setIsShowMiniMap] = useState(false);
   const [isShowLegend, setIsShowLegend] = useState(false);
 
@@ -79,16 +78,7 @@ export default function FacilityPage({ params }: any) {
       {facility ? (
         <>
           <div className="map-box detail">
-            {/* <button
-                type="button"
-                className="btn-location ic_location_c"
-              ></button> */}
-            <div
-              className="map-area"
-              onClick={() => {
-                setIsShowDetail(true);
-              }}
-            >
+            <div className="map-area">
               <animated.div
                 ref={ref as any}
                 style={{ ...style, touchAction: 'none', paddingTop: 90 }}
@@ -102,6 +92,14 @@ export default function FacilityPage({ params }: any) {
                   src={facility.section}
                   alt="지도"
                   style={{ position: 'absolute' }}
+                />
+                <button
+                  type="button"
+                  className="btn-location ic_location_c"
+                  style={{ top: facility.y, left: facility.x }}
+                  onClick={() => {
+                    setIsShowDetail(true);
+                  }}
                 />
               </animated.div>
             </div>

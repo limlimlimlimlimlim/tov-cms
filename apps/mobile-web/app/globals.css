@@ -606,8 +606,8 @@ section.content {
 }
 .map-box.detail .btn-location {
   position: absolute;
-  top: 24%;
-  left: 30%;
+  top: 0;
+  left: 0;
   width: 36px;
   height: 36px;
   background: url(/images/ic_location_color.svg) no-repeat;

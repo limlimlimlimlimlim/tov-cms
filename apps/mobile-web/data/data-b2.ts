@@ -21,6 +21,8 @@ const data = {
           wing: '전체',
           floorId: 7,
           wingId: 70,
+          x: 30,
+          y: 90,
         },
         {
           id: 701,
@@ -36,6 +38,8 @@ const data = {
           wing: '전체',
           floorId: 7,
           wingId: 70,
+          x: 160,
+          y: 130,
         },
       ],
     },

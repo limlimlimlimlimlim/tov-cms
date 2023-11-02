@@ -7,8 +7,12 @@ import { useBuildingContext } from '@/app/context/building';
 export default function FacilityPage({ params }: any) {
   const { wing, facility, setFacility }: any = useBuildingContext();
   const [isShowDetail, setIsShowDetail] = useState(false);
-  const [isShowMiniMap, setIsShowMiniMap] = useState(false);
+  const [isShowMiniMap, setIsShowMiniMap] = useState(true);
   const [isShowLegend, setIsShowLegend] = useState(false);
+  const mapAreaRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<HTMLDivElement>(null);
+  const miniImageRef = useRef<HTMLDivElement>(null);
 
   const setCurrentFacility = useCallback(
     (facilityId: string) => {
@@ -44,7 +48,6 @@ export default function FacilityPage({ params }: any) {
     scale: 1,
     rotateZ: 0,
   }));
-  const ref = useRef<HTMLDivElement>(null);
 
   useGesture(
     {
@@ -55,8 +58,15 @@ export default function FacilityPage({ params }: any) {
         api.start({ x, y });
       },
       onPinch: ({ origin: [ox, oy], first, offset: [s], memo }) => {
+        console.log(
+          'map area',
+          mapAreaRef.current?.getBoundingClientRect(),
+          'viewer',
+          viewerRef.current?.getBoundingClientRect(),
+        );
         if (first) {
-          const { width, height, x, y } = ref.current!.getBoundingClientRect();
+          const { width, height, x, y } =
+            viewerRef.current!.getBoundingClientRect();
           const tx = ox - (x + width / 2);
           const ty = oy - (y + height / 2);
           // eslint-disable-next-line no-param-reassign
@@ -67,20 +77,42 @@ export default function FacilityPage({ params }: any) {
       },
     },
     {
-      target: ref,
+      target: viewerRef,
       drag: { from: () => [style.x.get(), style.y.get()] },
       pinch: { scaleBounds: { min: 1, max: 2.5 }, rubberband: true },
     },
   );
+
+  useEffect(() => {
+    if (!mapAreaRef.current || !viewerRef.current) return;
+
+    console.log(
+      'map area',
+      mapAreaRef.current.getBoundingClientRect(),
+      'viewer',
+      viewerRef.current.getBoundingClientRect(),
+    );
+  }, [facility]);
+
+  useEffect(() => {
+    if (!isShowMiniMap) return;
+    if (!rectRef.current) return;
+    console.log(
+      miniImageRef.current?.clientWidth,
+      miniImageRef.current?.clientHeight,
+    );
+    // rectRef.current.style.width = `${miniImageRef.current?.clientWidth}px`;
+    // rectRef.current.style.height = `${miniImageRef.current?.clientHeight}px`;
+  }, [isShowMiniMap, miniImageRef]);
 
   return (
     <div className="tab-wrap">
       {facility ? (
         <>
           <div className="map-box detail">
-            <div className="map-area">
+            <div className="map-area" ref={mapAreaRef}>
               <animated.div
-                ref={ref as any}
+                ref={viewerRef as any}
                 style={{ ...style, touchAction: 'none', paddingTop: 90 }}
               >
                 <img
@@ -121,7 +153,15 @@ export default function FacilityPage({ params }: any) {
                   setIsShowMiniMap(false);
                 }}
               />
-              <img src={wing?.image} alt="" />
+              <img ref={miniImageRef as any} src={wing?.image} alt="" />
+              {/* <div
+                ref={rectRef}
+                style={{
+                  position: 'absolute',
+                  border: '1px solid red',
+                  display: isShowMiniMap ? 'block' : 'none',
+                }}
+              ></div> */}
             </div>
             <div className={`aside legend ${isShowLegend ? 'on' : null}`}>
               <button

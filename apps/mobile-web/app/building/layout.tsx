@@ -9,6 +9,18 @@ export default function BuildingLayout({ children }: any) {
   const { data, setData }: any = useBuildingContext();
 
   useEffect(() => {
+    const handler = (e: Event) => e.preventDefault();
+    document.addEventListener('gesturestart', handler);
+    document.addEventListener('gesturechange', handler);
+    document.addEventListener('gestureend', handler);
+    return () => {
+      document.removeEventListener('gesturestart', handler);
+      document.removeEventListener('gesturechange', handler);
+      document.removeEventListener('gestureend', handler);
+    };
+  }, []);
+
+  useEffect(() => {
     setData(dummyData.tree as any);
   }, [setData]);
 

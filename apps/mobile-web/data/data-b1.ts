@@ -23,7 +23,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 108,
-          y: 62,
+          y: -32,
         },
         {
           id: 14,
@@ -41,7 +41,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 145,
-          y: 62,
+          y: -32,
         },
         {
           id: 15,
@@ -59,7 +59,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 181,
-          y: 68,
+          y: -38,
         },
         {
           id: 16,
@@ -77,7 +77,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 195,
-          y: 62,
+          y: -32,
         },
         {
           id: 17,
@@ -95,7 +95,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 206,
-          y: 62,
+          y: -32,
         },
         {
           id: 18,
@@ -113,7 +113,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 145,
-          y: 175,
+          y: 85,
         },
         {
           id: 19,
@@ -131,7 +131,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 175,
-          y: 170,
+          y: 80,
         },
         {
           id: 20,
@@ -149,7 +149,7 @@ const data = {
           floorId: 6,
           wingId: 60,
           x: 20,
-          y: 121,
+          y: 11,
         },
       ],
     },

@@ -22,7 +22,7 @@ const data = {
           floorId: 7,
           wingId: 70,
           x: 30,
-          y: 90,
+          y: 0,
         },
         {
           id: 701,
@@ -39,7 +39,7 @@ const data = {
           floorId: 7,
           wingId: 70,
           x: 160,
-          y: 130,
+          y: 40,
         },
       ],
     },

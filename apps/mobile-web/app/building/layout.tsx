@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 'use client';
 import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';

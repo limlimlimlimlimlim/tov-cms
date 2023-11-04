@@ -85,7 +85,7 @@ export default function FacilityPage({ params }: any) {
     {
       // onHover: ({ active, event }) => console.log('hover', event, active),
       // onMove: ({ event }) => console.log('move', event),
-      onDrag: ({ pinching, cancel, offset: [x, y], ...rest }) => {
+      onDrag: ({ pinching, cancel, offset: [x, y] }) => {
         if (pinching) return cancel();
         api.start({ x, y });
         updateViewport();
@@ -94,7 +94,7 @@ export default function FacilityPage({ params }: any) {
         origin: [ox, oy],
         first,
         movement: [ms],
-        offset: [s, a],
+        offset: [s],
         memo,
       }) => {
         if (first) {

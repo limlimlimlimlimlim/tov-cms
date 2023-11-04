@@ -21,11 +21,12 @@ export default function FacilityPage({ params }: any) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const miniImageRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const [viewportPosition, setViewportPosition] = useState({ x: 0, y: 0 });
   const [viewportSize, setViewportSize] = useState({ w: 0, h: 0 });
-  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
-  const [imageScale, setImageScale] = useState(1);
-  const [interactiveType, setInteractiveType] = useState('');
+  const [viewportTransform, setViewportTransform] = useState({
+    x: 0,
+    y: 0,
+    s: 1,
+  });
 
   const setCurrentFacility = useCallback(
     (facilityId: string) => {
@@ -50,110 +51,51 @@ export default function FacilityPage({ params }: any) {
     rotateZ: 0,
   }));
 
-  const updateViewportPosition = useCallback(
-    (x: number, y: number) => {
-      if (!imageContainerRef.current) return;
-      if (!miniImageContainerRef2.current) return;
-      if (!viewerRef.current) return;
-      const imageContainerRect =
-        imageContainerRef.current.getBoundingClientRect();
-      const imageWidth = imageContainerRect.width * imageScale;
-      const imageX = imageContainerRef.current.clientLeft;
-      const miniImageX = miniImageContainerRef2.current.clientLeft;
-
-      const imageHeight = imageContainerRect.height * imageScale;
-      const imageY = imageContainerRef.current.clientTop;
-      const miniImageY = viewerRef.current.clientTop;
-      const viewportRect = viewportRef.current.getBoundingClientRect();
-      console.log(viewportRect);
-      const miniImageRect = miniImageRef.current.getBoundingClientRect();
-      const miniImageWidth = miniImageRect.width;
-      const miniImageHeight = miniImageRect.height;
-      console.log(
-        'miniImageWidth : ',
-        miniImageWidth,
-        'imageScale : ',
-        imageScale,
-      );
-      const targetX =
-        ((0 - miniImageWidth) / (imageWidth - imageX)) * (x - imageX) +
-        miniImageX;
-
-      const targetY =
-        ((0 - miniImageHeight) / (imageHeight - imageY)) * (y - imageY) +
-        miniImageY;
-
-      setViewportPosition({ x: targetX, y: targetY });
-    },
-    [imageScale],
-  );
-
-  const updateViewportSize = useCallback(() => {
-    if (!imageContainerRef.current) return;
+  const updateViewport = useCallback(() => {
     if (!viewerRef.current) return;
-    if (!imageRef.current) return;
-    if (!miniImageRef.current) return;
-    const viewportScale =
-      ((1 - minimapMinScale) / (1 - maxScale)) * (imageScale - maxScale) +
-      minimapMinScale;
-    (
-      viewportRef.current as HTMLElement
-    ).style.transform = `scale(${viewportScale})`;
-  }, [imageScale]);
-
-  useEffect(() => {
     if (!imageContainerRef.current) return;
-    const imageRect = imageContainerRef.current.getBoundingClientRect();
-    const imageWidth = imageRect.width * imageScale;
-    const imageHeight = imageRect.height * imageScale;
-    if (interactiveType === 'drag') {
-      const originW = imageWidth / imageScale;
-      const originX = imagePosition.x - (imageWidth - originW) / 2;
-      // console.log('--------------------------', interactiveType);
-      // console.log('imagePosition : ', imagePosition);
-      // console.log('originX : ', imagePosition.x);
-      // console.log('measureX : ', originX);
-      // console.log('imageScale : ', imageScale);
-      updateViewportPosition(originX, imagePosition.y);
-    } else {
-      //
-      // updateViewportPosition;
-      updateViewportSize();
-    }
+    if (!miniImageRef.current) return;
+    const viewerStyle = window.getComputedStyle(viewerRef.current);
+    const viewerTransform = viewerStyle.getPropertyValue('transform');
+    const viewerMatrix = new DOMMatrix(viewerTransform);
+    const viewerTranslateX = viewerMatrix.m41;
+    const viewerTranslateY = viewerMatrix.m42;
+    const viewerScale = viewerMatrix.a;
 
-    // updateViewportSize();
-    // console.log('--------------------------', interactiveType);
-    // console.log('imagePosition : ', imagePosition);
-    // if (imageScale > 1) {
-    //   const { w } = imageSize;
-    //   const originW = w / imageScale;
-    //   const originX = imagePosition.x - (w - originW) / 2;
+    const viewportTranslateX =
+      ((viewportSize.w - 0) / (0 - imageContainerRef.current.clientWidth)) *
+      viewerTranslateX;
 
-    //   console.log('originX : ', originX);
-    // }
-    // console.log('imageSize : ', imageSize);
-    // console.log('imageScale : ', imageScale);
-  }, [
-    imagePosition,
-    imageScale,
-    interactiveType,
-    updateViewportPosition,
-    updateViewportSize,
-  ]);
+    const viewportTranslateY =
+      ((viewportSize.h - 0) / (0 - imageContainerRef.current.clientHeight)) *
+      viewerTranslateY;
+
+    const viewportScale =
+      ((1 - minimapMinScale) / (1 - maxScale)) * (viewerScale - maxScale) +
+      minimapMinScale;
+
+    setViewportTransform({
+      x: viewportTranslateX / viewerScale,
+      y: viewportTranslateY / viewerScale,
+      s: viewportScale,
+    });
+  }, [viewportSize.h, viewportSize.w]);
 
   useGesture(
     {
-      // onHover: ({ active, event }) => console.log('hover', event, active),
-      // onMove: ({ event }) => console.log('move', event),
       onDrag: ({ pinching, cancel, offset: [x, y] }) => {
         if (pinching) return cancel();
-        setInteractiveType('drag');
         api.start({ x, y });
-        setImagePosition({ x, y });
-        // updateViewportPosition(x, y);
+        updateViewport();
       },
-      onPinch: ({ origin: [ox, oy], first, offset: [s], memo }) => {
-        setInteractiveType('pinch');
+      onPinch: ({
+        origin: [ox, oy],
+        first,
+        offset: [s],
+        event,
+        lastOffset: [lastX, lastY],
+        memo,
+      }) => {
         const { width, height, x, y } =
           viewerRef.current!.getBoundingClientRect();
         const tx = ox - (x + width / 2);
@@ -161,13 +103,14 @@ export default function FacilityPage({ params }: any) {
         if (first) {
           memo = [style.x.get(), style.y.get(), tx, ty];
         }
+        const centerX = (ox + lastX) / 2;
+        const centerY = (oy + lastY) / 2;
+        (
+          event.target as any
+        ).style.transformOrigin = `${centerX}px ${centerY}px`;
 
         api.start({ scale: s, rotateZ: 0 });
-        setImageScale(s);
-        setImagePosition({ x, y });
-        // updateViewportPosition(x, y - 190);
-        // updateViewportSize();
-        // scale.current = s;
+        updateViewport();
         return memo;
       },
     },
@@ -177,6 +120,10 @@ export default function FacilityPage({ params }: any) {
       pinch: { scaleBounds: { min: 1, max: maxScale }, rubberband: true },
     },
   );
+
+  useEffect(() => {
+    updateViewport();
+  }, [updateViewport, viewportSize]);
 
   return (
     <div className="tab-wrap">
@@ -195,14 +142,14 @@ export default function FacilityPage({ params }: any) {
                 style={{
                   ...style,
                   touchAction: 'none',
-                  border: '1px solid gray',
+                  transform: `translate3d(0px, 90px, 0px) scale(1) rotateZ(0deg)`,
                 }}
               >
                 <img
                   ref={imageRef as any}
                   src={wing.image}
                   alt="지도"
-                  style={{ position: 'absolute', border: '1px solid red' }}
+                  style={{ position: 'absolute' }}
                 />
                 <img
                   src={facility.section}
@@ -232,7 +179,6 @@ export default function FacilityPage({ params }: any) {
                     if (!miniImageRef.current) return;
                     if (!imageContainerRef.current) return;
                     if (!imageRef.current) return;
-                    // setViewportPosition({ x: 0, y: 0 });
 
                     const ratio = {
                       w:
@@ -263,7 +209,7 @@ export default function FacilityPage({ params }: any) {
                 ref={miniImageContainerRef2 as any}
                 style={{
                   width: 'calc(100% - 24px)',
-                  // overflow: 'hidden',
+                  overflow: 'hidden',
                   position: 'relative',
                 }}
               >
@@ -274,10 +220,10 @@ export default function FacilityPage({ params }: any) {
                     position: 'absolute',
                     border: '1px solid silver',
                     display: isShowMiniMap ? 'block' : 'none',
-                    left: viewportPosition.x,
-                    top: viewportPosition.y,
                     width: viewportSize.w,
                     height: viewportSize.h,
+                    transformOrigin: 'center top',
+                    transform: `translate3d(${viewportTransform.x}px, ${viewportTransform.y}px, 0px) scale(${viewportTransform.s}) rotateZ(0deg)`,
                   }}
                 />
               </div>

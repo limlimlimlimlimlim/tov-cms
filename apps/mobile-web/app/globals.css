@@ -684,7 +684,7 @@ section.content {
 .map-box.detail .miniMap.on img {
   display: block;
   float: left;
-  width: calc(100% - 24px);
+  /* width: calc(100% - 24px); */
   max-width: 158px;
 }
 .map-box.detail .miniMap.on .btn-close {

@@ -1,18 +1,31 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from '@use-gesture/react';
 import { useBuildingContext } from '@/app/context/building';
 
+const maxScale = 2;
+const minimapMinScale = 1 / maxScale;
+
 export default function FacilityPage({ params }: any) {
   const { wing, facility, setFacility }: any = useBuildingContext();
   const [isShowDetail, setIsShowDetail] = useState(true);
   const [isShowMiniMap, setIsShowMiniMap] = useState(false);
   const [isShowLegend, setIsShowLegend] = useState(false);
-  const mapAreaRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const miniImageContainerRef = useRef<HTMLDivElement>(null);
+  const miniImageContainerRef2 = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const rectRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const miniImageRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [viewportPosition, setViewportPosition] = useState({ x: 0, y: 0 });
+  const [viewportSize, setViewportSize] = useState({ w: 0, h: 0 });
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [imageScale, setImageScale] = useState(1);
+  const [interactiveType, setInteractiveType] = useState('');
 
   const setCurrentFacility = useCallback(
     (facilityId: string) => {
@@ -37,61 +50,133 @@ export default function FacilityPage({ params }: any) {
     rotateZ: 0,
   }));
 
+  const updateViewportPosition = useCallback(
+    (x: number, y: number) => {
+      if (!imageContainerRef.current) return;
+      if (!miniImageContainerRef2.current) return;
+      if (!viewerRef.current) return;
+      const imageContainerRect =
+        imageContainerRef.current.getBoundingClientRect();
+      const imageWidth = imageContainerRect.width * imageScale;
+      const imageX = imageContainerRef.current.clientLeft;
+      const miniImageX = miniImageContainerRef2.current.clientLeft;
+
+      const imageHeight = imageContainerRect.height * imageScale;
+      const imageY = imageContainerRef.current.clientTop;
+      const miniImageY = viewerRef.current.clientTop;
+      const viewportRect = viewportRef.current.getBoundingClientRect();
+      console.log(viewportRect);
+      const miniImageRect = miniImageRef.current.getBoundingClientRect();
+      const miniImageWidth = miniImageRect.width;
+      const miniImageHeight = miniImageRect.height;
+      console.log(
+        'miniImageWidth : ',
+        miniImageWidth,
+        'imageScale : ',
+        imageScale,
+      );
+      const targetX =
+        ((0 - miniImageWidth) / (imageWidth - imageX)) * (x - imageX) +
+        miniImageX;
+
+      const targetY =
+        ((0 - miniImageHeight) / (imageHeight - imageY)) * (y - imageY) +
+        miniImageY;
+
+      setViewportPosition({ x: targetX, y: targetY });
+    },
+    [imageScale],
+  );
+
+  const updateViewportSize = useCallback(() => {
+    if (!imageContainerRef.current) return;
+    if (!viewerRef.current) return;
+    if (!imageRef.current) return;
+    if (!miniImageRef.current) return;
+    const viewportScale =
+      ((1 - minimapMinScale) / (1 - maxScale)) * (imageScale - maxScale) +
+      minimapMinScale;
+    (
+      viewportRef.current as HTMLElement
+    ).style.transform = `scale(${viewportScale})`;
+  }, [imageScale]);
+
+  useEffect(() => {
+    if (!imageContainerRef.current) return;
+    const imageRect = imageContainerRef.current.getBoundingClientRect();
+    const imageWidth = imageRect.width * imageScale;
+    const imageHeight = imageRect.height * imageScale;
+    if (interactiveType === 'drag') {
+      const originW = imageWidth / imageScale;
+      const originX = imagePosition.x - (imageWidth - originW) / 2;
+      // console.log('--------------------------', interactiveType);
+      // console.log('imagePosition : ', imagePosition);
+      // console.log('originX : ', imagePosition.x);
+      // console.log('measureX : ', originX);
+      // console.log('imageScale : ', imageScale);
+      updateViewportPosition(originX, imagePosition.y);
+    } else {
+      //
+      // updateViewportPosition;
+      updateViewportSize();
+    }
+
+    // updateViewportSize();
+    // console.log('--------------------------', interactiveType);
+    // console.log('imagePosition : ', imagePosition);
+    // if (imageScale > 1) {
+    //   const { w } = imageSize;
+    //   const originW = w / imageScale;
+    //   const originX = imagePosition.x - (w - originW) / 2;
+
+    //   console.log('originX : ', originX);
+    // }
+    // console.log('imageSize : ', imageSize);
+    // console.log('imageScale : ', imageScale);
+  }, [
+    imagePosition,
+    imageScale,
+    interactiveType,
+    updateViewportPosition,
+    updateViewportSize,
+  ]);
+
   useGesture(
     {
       // onHover: ({ active, event }) => console.log('hover', event, active),
       // onMove: ({ event }) => console.log('move', event),
       onDrag: ({ pinching, cancel, offset: [x, y] }) => {
         if (pinching) return cancel();
+        setInteractiveType('drag');
         api.start({ x, y });
+        setImagePosition({ x, y });
+        // updateViewportPosition(x, y);
       },
       onPinch: ({ origin: [ox, oy], first, offset: [s], memo }) => {
-        console.log(
-          'map area',
-          mapAreaRef.current?.getBoundingClientRect(),
-          'viewer',
-          viewerRef.current?.getBoundingClientRect(),
-        );
+        setInteractiveType('pinch');
+        const { width, height, x, y } =
+          viewerRef.current!.getBoundingClientRect();
+        const tx = ox - (x + width / 2);
+        const ty = oy - (y + height / 2);
         if (first) {
-          const { width, height, x, y } =
-            viewerRef.current!.getBoundingClientRect();
-          const tx = ox - (x + width / 2);
-          const ty = oy - (y + height / 2);
-          // eslint-disable-next-line no-param-reassign
           memo = [style.x.get(), style.y.get(), tx, ty];
         }
+
         api.start({ scale: s, rotateZ: 0 });
+        setImageScale(s);
+        setImagePosition({ x, y });
+        // updateViewportPosition(x, y - 190);
+        // updateViewportSize();
+        // scale.current = s;
         return memo;
       },
     },
     {
       target: viewerRef,
       drag: { from: () => [style.x.get(), style.y.get()] },
-      pinch: { scaleBounds: { min: 1, max: 2.5 }, rubberband: true },
+      pinch: { scaleBounds: { min: 1, max: maxScale }, rubberband: true },
     },
   );
-
-  useEffect(() => {
-    if (!mapAreaRef.current || !viewerRef.current) return;
-
-    // console.log(
-    //   'map area',
-    //   mapAreaRef.current.getBoundingClientRect(),
-    //   'viewer',
-    //   viewerRef.current.getBoundingClientRect(),
-    // );
-  }, [facility]);
-
-  useEffect(() => {
-    if (!isShowMiniMap) return;
-    if (!rectRef.current) return;
-    console.log(
-      miniImageRef.current?.clientWidth,
-      miniImageRef.current?.clientHeight,
-    );
-    // rectRef.current.style.width = `${miniImageRef.current?.clientWidth}px`;
-    // rectRef.current.style.height = `${miniImageRef.current?.clientHeight}px`;
-  }, [isShowMiniMap, miniImageRef]);
 
   return (
     <div className="tab-wrap">
@@ -100,19 +185,24 @@ export default function FacilityPage({ params }: any) {
           <div className="map-box detail">
             <div
               className="map-area"
-              ref={mapAreaRef}
+              ref={imageContainerRef}
               onClick={() => {
                 setIsShowDetail(true);
               }}
             >
               <animated.div
                 ref={viewerRef as any}
-                style={{ ...style, touchAction: 'none', paddingTop: 90 }}
+                style={{
+                  ...style,
+                  touchAction: 'none',
+                  border: '1px solid gray',
+                }}
               >
                 <img
+                  ref={imageRef as any}
                   src={wing.image}
                   alt="지도"
-                  style={{ position: 'absolute' }}
+                  style={{ position: 'absolute', border: '1px solid red' }}
                 />
                 <img
                   src={facility.section}
@@ -127,12 +217,37 @@ export default function FacilityPage({ params }: any) {
               </animated.div>
             </div>
 
-            <div className={`aside miniMap ${isShowMiniMap ? 'on' : null}`}>
+            <div
+              ref={miniImageContainerRef as any}
+              className={`aside miniMap ${isShowMiniMap ? 'on' : null}`}
+            >
               <button
                 type="button"
                 className="btn-aside"
                 onClick={() => {
                   setIsShowMiniMap(true);
+                  setTimeout(() => {
+                    if (!viewportRef.current) return;
+                    if (!viewerRef.current) return;
+                    if (!miniImageRef.current) return;
+                    if (!imageContainerRef.current) return;
+                    if (!imageRef.current) return;
+                    // setViewportPosition({ x: 0, y: 0 });
+
+                    const ratio = {
+                      w:
+                        imageContainerRef.current.clientWidth /
+                        viewerRef.current.clientWidth,
+                      h:
+                        imageContainerRef.current.clientHeight /
+                        imageRef.current.clientHeight,
+                    };
+
+                    setViewportSize({
+                      w: miniImageRef.current.clientWidth * ratio.w,
+                      h: miniImageRef.current.clientHeight * ratio.h,
+                    });
+                  }, 0);
                 }}
               >
                 미니맵
@@ -144,15 +259,28 @@ export default function FacilityPage({ params }: any) {
                   setIsShowMiniMap(false);
                 }}
               />
-              <img ref={miniImageRef as any} src={wing?.image} alt="" />
-              {/* <div
-                ref={rectRef}
+              <div
+                ref={miniImageContainerRef2 as any}
                 style={{
-                  position: 'absolute',
-                  border: '1px solid red',
-                  display: isShowMiniMap ? 'block' : 'none',
+                  width: 'calc(100% - 24px)',
+                  // overflow: 'hidden',
+                  position: 'relative',
                 }}
-              ></div> */}
+              >
+                <img ref={miniImageRef as any} src={wing?.image} alt="" />
+                <div
+                  ref={viewportRef}
+                  style={{
+                    position: 'absolute',
+                    border: '1px solid silver',
+                    display: isShowMiniMap ? 'block' : 'none',
+                    left: viewportPosition.x,
+                    top: viewportPosition.y,
+                    width: viewportSize.w,
+                    height: viewportSize.h,
+                  }}
+                />
+              </div>
             </div>
             <div className={`aside legend ${isShowLegend ? 'on' : null}`}>
               <button

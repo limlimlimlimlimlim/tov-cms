@@ -6,7 +6,7 @@ import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from '@use-gesture/react';
 import { useBuildingContext } from '@/app/context/building';
 
-const maxScale = 2;
+const maxScale = 3;
 const minimapMinScale = 1 / maxScale;
 
 export default function FacilityPage({ params }: any) {
@@ -83,7 +83,9 @@ export default function FacilityPage({ params }: any) {
 
   useGesture(
     {
-      onDrag: ({ pinching, cancel, offset: [x, y] }) => {
+      // onHover: ({ active, event }) => console.log('hover', event, active),
+      // onMove: ({ event }) => console.log('move', event),
+      onDrag: ({ pinching, cancel, offset: [x, y], ...rest }) => {
         if (pinching) return cancel();
         api.start({ x, y });
         updateViewport();
@@ -91,25 +93,21 @@ export default function FacilityPage({ params }: any) {
       onPinch: ({
         origin: [ox, oy],
         first,
-        offset: [s],
-        event,
-        lastOffset: [lastX, lastY],
+        movement: [ms],
+        offset: [s, a],
         memo,
       }) => {
-        const { width, height, x, y } =
-          viewerRef.current!.getBoundingClientRect();
-        const tx = ox - (x + width / 2);
-        const ty = oy - (y + height / 2);
         if (first) {
+          const { width, height, x, y } =
+            viewerRef.current!.getBoundingClientRect();
+          const tx = ox - (x + width / 2);
+          const ty = oy - (y + height / 2);
           memo = [style.x.get(), style.y.get(), tx, ty];
         }
-        const centerX = (ox + lastX) / 2;
-        const centerY = (oy + lastY) / 2;
-        (
-          event.target as any
-        ).style.transformOrigin = `${centerX}px ${centerY}px`;
 
-        api.start({ scale: s, rotateZ: 0 });
+        const x = memo[0] - (ms - 1) * memo[2];
+        const y = memo[1] - (ms - 1) * memo[3];
+        api.start({ scale: s, rotateZ: 0, x, y });
         updateViewport();
         return memo;
       },

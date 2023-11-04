@@ -218,7 +218,7 @@ export default function FacilityPage({ params }: any) {
                   ref={viewportRef}
                   style={{
                     position: 'absolute',
-                    border: '1px solid silver',
+                    background: 'rgba(230,240,150,0.4)',
                     display: isShowMiniMap ? 'block' : 'none',
                     width: viewportSize.w,
                     height: viewportSize.h,

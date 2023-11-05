@@ -6,7 +6,7 @@ import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from '@use-gesture/react';
 import { useBuildingContext } from '@/app/context/building';
 
-const maxScale = 3;
+const maxScale = 2;
 const minimapMinScale = 1 / maxScale;
 
 export default function FacilityPage({ params }: any) {

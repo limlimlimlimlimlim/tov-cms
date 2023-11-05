@@ -21,6 +21,7 @@ import { EventModule } from './event/event.module';
 import { KioskModule } from './kiosk/kiosk.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception/custom-exception.filter';
+import { SectionModule } from './section/section.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { CustomExceptionFilter } from './custom-exception/custom-exception.filte
     MapModule,
     EventModule,
     KioskModule,
+    SectionModule,
   ],
   controllers: [AppController, AuthController, FileUploadController],
   providers: [

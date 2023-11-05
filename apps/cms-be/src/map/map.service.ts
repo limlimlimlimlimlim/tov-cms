@@ -14,27 +14,9 @@ export class MapService {
     return this.prisma.map.create({ data });
   }
 
-  async createSection(data: Prisma.SectionCreateInput) {
-    return this.prisma.section.create({ data });
+  async getMapById(id: number) {
+    return this.prisma.map.findUnique({ where: { id } });
   }
-
-  // async mergeSectionGroup(data: number[]) {
-  //   const group = await this.prisma.sectionGroup.create({ data: {} });
-  //   return Promise.all(
-  //     data.map((id) => {
-  //       return this.updateSection(id, { groupId: group.id });
-  //     }),
-  //   );
-  // }
-
-  // async splitSectionGroup(id: number) {
-  //   await this.prisma.mapArea.updateMany({
-  //     where: { groupId: id },
-  //     data: { groupId: null },
-  //   });
-
-  //   return await this.prisma.mapAreaGroup.delete({ where: { id } });
-  // }
 
   async getMaps(
     keyword: string = '',
@@ -91,37 +73,11 @@ export class MapService {
     return { total, data, page, count };
   }
 
-  async getAllSections(): Promise<any[]> {
-    return this.prisma.section.findMany();
-  }
-
-  async getSectionsByMapId(mapId: number) {
-    return this.prisma.section.findMany({
-      where: { mapId },
-    });
-  }
-
-  async getMapById(id: number) {
-    return this.prisma.map.findUnique({ where: { id } });
-  }
-
-  async getSectionById(id: number) {
-    return this.prisma.section.findUnique({ where: { id } });
-  }
-
   async updateMap(id: number, data: Prisma.MapUpdateInput) {
     return this.prisma.map.update({ where: { id }, data });
   }
 
-  async updateSection(id: number, data: Prisma.SectionUpdateInput) {
-    return this.prisma.section.update({ where: { id }, data });
-  }
-
   async deleteMap(id: number) {
     return this.prisma.map.delete({ where: { id } });
-  }
-
-  async deleteSection(id: number) {
-    return this.prisma.section.delete({ where: { id } });
   }
 }

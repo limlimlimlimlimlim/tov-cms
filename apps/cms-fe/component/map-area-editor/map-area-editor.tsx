@@ -4,6 +4,7 @@ import { HighlightOutlined } from '@ant-design/icons';
 import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
+import { getSectionsByMapId } from '../../api/section';
 
 interface ComponentProps {
   map: any;
@@ -17,11 +18,13 @@ declare global {
 }
 
 export default function MapAreaEditor({ map, onChange }: ComponentProps) {
+  console.log(map);
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
   const [transformer, setTransformer] = useState<any>(null);
   const [mode, setMode] = useState('none');
+  const [sections, setSections] = useState([]);
   const points = useRef([]);
   const newSections = useRef([]);
   const editSections = useRef([]);
@@ -39,20 +42,6 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
 
     const l = new window.Konva.Layer();
     const tr = new window.Konva.Transformer();
-
-    const rect1 = new window.Konva.Rect({
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 50,
-      fill: 'green',
-      stroke: 'black',
-      strokeWidth: 4,
-      draggable: true,
-    });
-
-    tr.nodes([rect1]);
-    // l.add(rect1);
     // l.add(tr);
     stg.add(l);
     setStage(stg);
@@ -62,7 +51,6 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
 
   const setAddNewMode = useCallback(() => {
     if (!stage) return;
-    console.log('on new');
     points.current = [];
     const poly: any = new window.Konva.Line({
       points: [],
@@ -110,14 +98,32 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
     }
   }, [layer, mode, setAddNewMode, stage]);
 
-  const onLoadImage = useCallback(() => {
+  const getSections = useCallback(async () => {
+    const sec = await getSectionsByMapId(map.id);
+    setSections(sec.data);
+  }, [map.id]);
+
+  const onLoadImage = useCallback(async () => {
     if (!imageRef.current) return;
     createStage(imageRef.current.width, imageRef.current.height);
-  }, [createStage]);
+    await getSections();
+  }, [createStage, getSections]);
 
   useEffect(() => {
     setImgSrc(`${baseURL}/files/upload/${map.image}`);
   }, [map]);
+
+  useEffect(() => {
+    sections.forEach((s: any) => {
+      const poly: any = new window.Konva.Line({
+        points: s.path.split(','),
+        fill: '#aaff77',
+        closed: true,
+        opacity: 0.5,
+      });
+      layer.add(poly);
+    }, []);
+  }, [layer, sections]);
 
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>

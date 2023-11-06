@@ -31,7 +31,6 @@ export default function MapAreaEditorModal({
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onOk={async () => {
         if (!sections) return;
-        console.log(sections);
         for (const s of sections.new) {
           console.log(map.id, s.join());
           await addSection(map.id, s.join());

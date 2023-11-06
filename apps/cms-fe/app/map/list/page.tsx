@@ -95,7 +95,7 @@ export default function MapList() {
         <Button
           size="small"
           onClick={() => {
-            setCurrentMap(map);
+            setCurrentMap({ ...map });
             setIsOpenMapAreaModal(true);
           }}
         >
@@ -143,7 +143,6 @@ export default function MapList() {
   };
 
   const onOkMapAreaModal = useCallback(() => {
-    void message.success('구역이 설정됐습니다.');
     setIsOpenMapAreaModal(false);
     setCurrentMap(null);
   }, []);

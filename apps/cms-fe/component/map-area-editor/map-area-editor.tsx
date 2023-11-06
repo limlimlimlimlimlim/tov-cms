@@ -4,11 +4,12 @@ import { HighlightOutlined } from '@ant-design/icons';
 import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
-import { deleteSectionById, getSectionsByMapId } from '../../api/section';
 
 interface ComponentProps {
   map: any;
-  onChange: (value) => void;
+  sections: any[];
+  onAdd: (section) => void;
+  onDelete: (name) => void;
 }
 
 declare global {
@@ -17,17 +18,19 @@ declare global {
   }
 }
 
-export default function MapAreaEditor({ map, onChange }: ComponentProps) {
+export default function MapAreaEditor({
+  map,
+  onAdd,
+  onDelete,
+  sections,
+}: ComponentProps) {
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
-  const [transformer, setTransformer] = useState<any>(null);
+  // const [transformer, setTransformer] = useState<any>(null);
   const [mode, setMode] = useState('none');
-  const [sections, setSections] = useState([]);
   const points = useRef<any[]>([]);
-  const newSections = useRef<any[]>([]);
-  const editSections = useRef<any[]>([]);
-  const deleteSections = useRef<any[]>([]);
+  const currentPoly = useRef<any>(null);
   const sectionPolies = useRef<any[]>([]);
 
   const imageRef = useRef<HTMLImageElement>(null);
@@ -41,13 +44,34 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
     });
 
     const l = new window.Konva.Layer();
-    const tr = new window.Konva.Transformer();
-    // l.add(tr);
+
     stg.add(l);
     setStage(stg);
     setLayer(l);
-    setTransformer(tr);
+    // const tr = new window.Konva.Transformer();
+    // l.add(tr);
+    // setTransformer(tr);
   }, []);
+
+  const draw = useCallback(() => {
+    sections.forEach((s: any) => {
+      const poly: any = new window.Konva.Line({
+        points: s.path.split(','),
+        fill: '#aaff77',
+        closed: true,
+        opacity: 0.5,
+        name: s.id,
+      });
+      layer.add(poly);
+      sectionPolies.current.push(poly);
+    });
+  }, [layer, sections]);
+
+  useEffect(() => {
+    if (!layer) return;
+    layer.destroyChildren();
+    draw();
+  }, [draw, layer, sections]);
 
   const setAddNewMode = useCallback(() => {
     if (!stage) return;
@@ -57,9 +81,11 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
       fill: '#aaff77',
       closed: true,
       opacity: 0.5,
+      name: `ready-${(Math.random() * 100000).toFixed()}`,
     });
     layer.add(poly);
     sectionPolies.current.push(poly);
+    currentPoly.current = poly;
 
     stage.on('click', (e: any) => {
       const x = e.evt.layerX;
@@ -87,21 +113,15 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
     });
   }, [layer, stage]);
 
-  const getSections = useCallback(async () => {
-    const sec = await getSectionsByMapId(map.id);
-    setSections(sec.data);
-  }, [map]);
-
   const setDeleteMode = useCallback(() => {
     sectionPolies.current.forEach((p) => {
-      p.on('click', async () => {
+      p.on('click', () => {
         const name = p.getName();
-        await deleteSectionById(name);
+        onDelete(name);
         p.remove();
-        await getSections();
       });
     });
-  }, [getSections]);
+  }, [onDelete]);
 
   useEffect(() => {
     switch (mode) {
@@ -116,29 +136,14 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
     }
   }, [layer, mode, setAddNewMode, setDeleteMode, stage]);
 
-  const onLoadImage = useCallback(async () => {
+  const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
     createStage(imageRef.current.width, imageRef.current.height);
-    await getSections();
-  }, [createStage, getSections]);
+  }, [createStage]);
 
   useEffect(() => {
-    setImgSrc(`${baseURL}/files/upload/${map.image}`);
+    setImgSrc(`${baseURL}/files/upload/${map.image}?${Math.random()}`);
   }, [map]);
-
-  useEffect(() => {
-    sections.forEach((s: any) => {
-      const poly: any = new window.Konva.Line({
-        points: s.path.split(','),
-        fill: '#aaff77',
-        closed: true,
-        opacity: 0.5,
-        name: s.id,
-      });
-      layer.add(poly);
-      sectionPolies.current.push(poly);
-    }, []);
-  }, [layer, sections]);
 
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
@@ -153,20 +158,16 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
                 setMode('new');
               } else if (mode === 'new') {
                 setMode('none');
-                newSections.current.push(
-                  points.current.map((p) => [p.getX(), p.getY()]).flat(),
-                );
+                onAdd({
+                  name: currentPoly.current.getName(),
+                  path: currentPoly.current.getPoints(),
+                });
                 points.current.forEach((c: any) => {
                   c.off('click');
                   c.remove();
                 });
                 stage.off('click');
                 points.current = [];
-                onChange({
-                  new: newSections.current,
-                  edit: editSections.current,
-                  delete: deleteSections.current,
-                });
               }
             }}
           >
@@ -194,7 +195,14 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
       </Flex>
       <Flex justify="center">
         {imgSrc ? (
-          <img alt="map" ref={imageRef} src={imgSrc} onLoad={onLoadImage} />
+          <img
+            alt="map"
+            ref={imageRef}
+            src={imgSrc}
+            onLoad={() => {
+              onLoadImage();
+            }}
+          />
         ) : null}
         <div
           ref={canvasRef}

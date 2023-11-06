@@ -11,6 +11,7 @@ import MapAreaEditorModal from '../../../component/map-area-editor/map-area-edit
 import { deleteMap, getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import BuildingSelect from '../../../component/building-select/building-select';
+import { addSection } from '../../../api/section';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -141,7 +142,7 @@ export default function MapList() {
     },
   };
 
-  const onOkMapAreaModal = useCallback(() => {
+  const onOkMapAreaModal = useCallback(async () => {
     void message.success('구역이 설정됐습니다.');
     setIsOpenMapAreaModal(false);
     setCurrentMap(null);

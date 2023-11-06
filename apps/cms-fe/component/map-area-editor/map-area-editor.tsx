@@ -7,6 +7,7 @@ import { baseURL } from '../../util/axios-client';
 
 interface ComponentProps {
   map: any;
+  onChange: (value) => void;
 }
 
 declare global {
@@ -15,12 +16,16 @@ declare global {
   }
 }
 
-export default function MapAreaEditor({ map }: ComponentProps) {
+export default function MapAreaEditor({ map, onChange }: ComponentProps) {
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
   const [transformer, setTransformer] = useState<any>(null);
   const [mode, setMode] = useState('none');
+  const points = useRef([]);
+  const newSections = useRef([]);
+  const editSections = useRef([]);
+  const deleteSections = useRef([]);
 
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -58,17 +63,15 @@ export default function MapAreaEditor({ map }: ComponentProps) {
   const setAddNewMode = useCallback(() => {
     if (!stage) return;
     console.log('on new');
-
+    points.current = [];
     const poly: any = new window.Konva.Line({
       points: [],
       fill: '#aaff77',
       closed: true,
       opacity: 0.5,
     });
-
-    const points = [];
-
     layer.add(poly);
+
     stage.on('click', (e: any) => {
       const x = e.evt.layerX;
       const y = e.evt.layerY;
@@ -78,17 +81,18 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         radius: 4,
         fill: 'red',
       });
-      points.push(c);
-      poly.setPoints([...points.map((p: any) => [p.getX(), p.getY()]).flat()]);
+      points.current.push(c);
+      poly.setPoints([
+        ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
+      ]);
       layer.add(c);
 
       c.on('click', () => {
         c.remove();
-        const index = points.indexOf(c);
-        console.log(index, points);
-        points.splice(index, 1);
+        const index = points.current.indexOf(c);
+        points.current.splice(index, 1);
         poly.setPoints([
-          ...points.map((p: any) => [p.getX(), p.getY()]).flat(),
+          ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
         ]);
       });
     });
@@ -124,10 +128,28 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         <Flex justify="end" gap="small">
           <Button
             onClick={() => {
-              setMode('new');
+              if (mode === 'none') {
+                setMode('new');
+              } else if (mode === 'new') {
+                setMode('none');
+                newSections.current.push(
+                  points.current.map((p) => [p.getX(), p.getY()]).flat(),
+                );
+                points.current.forEach((c: any) => {
+                  c.off('click');
+                  c.remove();
+                });
+                stage.off('click');
+                points.current = [];
+                onChange({
+                  new: newSections.current,
+                  edit: editSections.current,
+                  delete: deleteSections.current,
+                });
+              }
             }}
           >
-            구역 추가
+            {mode === 'none' ? '구역 추가' : mode === 'new' ? '완료' : ''}
           </Button>
           <Button
             onClick={() => {

@@ -4,7 +4,7 @@ import { HighlightOutlined } from '@ant-design/icons';
 import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
-import { getSectionsByMapId } from '../../api/section';
+import { deleteSectionById, getSectionsByMapId } from '../../api/section';
 
 interface ComponentProps {
   map: any;
@@ -18,17 +18,17 @@ declare global {
 }
 
 export default function MapAreaEditor({ map, onChange }: ComponentProps) {
-  console.log(map);
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
   const [transformer, setTransformer] = useState<any>(null);
   const [mode, setMode] = useState('none');
   const [sections, setSections] = useState([]);
-  const points = useRef([]);
-  const newSections = useRef([]);
-  const editSections = useRef([]);
-  const deleteSections = useRef([]);
+  const points = useRef<any[]>([]);
+  const newSections = useRef<any[]>([]);
+  const editSections = useRef<any[]>([]);
+  const deleteSections = useRef<any[]>([]);
+  const sectionPolies = useRef<any[]>([]);
 
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -59,6 +59,7 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
       opacity: 0.5,
     });
     layer.add(poly);
+    sectionPolies.current.push(poly);
 
     stage.on('click', (e: any) => {
       const x = e.evt.layerX;
@@ -86,6 +87,22 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
     });
   }, [layer, stage]);
 
+  const getSections = useCallback(async () => {
+    const sec = await getSectionsByMapId(map.id);
+    setSections(sec.data);
+  }, [map]);
+
+  const setDeleteMode = useCallback(() => {
+    sectionPolies.current.forEach((p) => {
+      p.on('click', async () => {
+        const name = p.getName();
+        await deleteSectionById(name);
+        p.remove();
+        await getSections();
+      });
+    });
+  }, [getSections]);
+
   useEffect(() => {
     switch (mode) {
       case 'new':
@@ -94,14 +111,10 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
       case 'edit':
         break;
       case 'delete':
+        setDeleteMode();
         break;
     }
-  }, [layer, mode, setAddNewMode, stage]);
-
-  const getSections = useCallback(async () => {
-    const sec = await getSectionsByMapId(map.id);
-    setSections(sec.data);
-  }, [map.id]);
+  }, [layer, mode, setAddNewMode, setDeleteMode, stage]);
 
   const onLoadImage = useCallback(async () => {
     if (!imageRef.current) return;
@@ -120,8 +133,10 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
         fill: '#aaff77',
         closed: true,
         opacity: 0.5,
+        name: s.id,
       });
       layer.add(poly);
+      sectionPolies.current.push(poly);
     }, []);
   }, [layer, sections]);
 
@@ -166,10 +181,14 @@ export default function MapAreaEditor({ map, onChange }: ComponentProps) {
           </Button>
           <Button
             onClick={() => {
-              setMode('delete');
+              if (mode === 'none') {
+                setMode('delete');
+              } else if (mode === 'delete') {
+                setMode('none');
+              }
             }}
           >
-            구역 삭제
+            {mode === 'none' ? '구역 삭제' : mode === 'delete' ? '완료' : ''}
           </Button>
         </Flex>
       </Flex>

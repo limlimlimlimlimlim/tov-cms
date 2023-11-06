@@ -1,7 +1,7 @@
 import Modal from 'antd/es/modal/Modal';
-import MapAreaEditor from './map-area-editor';
 import { useCallback, useState } from 'react';
 import { addSection } from '../../api/section';
+import MapAreaEditor from './map-area-editor';
 
 interface ComponentProps {
   map: any;
@@ -32,7 +32,6 @@ export default function MapAreaEditorModal({
       onOk={async () => {
         if (!sections) return;
         for (const s of sections.new) {
-          console.log(map.id, s.join());
           await addSection(map.id, s.join());
         }
         onOk(sections);

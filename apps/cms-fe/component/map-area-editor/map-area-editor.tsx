@@ -95,6 +95,7 @@ export default function MapAreaEditor({
         y,
         radius: 6,
         fill: 'red',
+        draggable: true,
       });
       points.current.push(c);
       poly.setPoints([
@@ -112,7 +113,9 @@ export default function MapAreaEditor({
       });
 
       c.on('dragmove', (e) => {
-        console.log(e);
+        poly.setPoints([
+          ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
+        ]);
       });
     });
   }, [layer, stage]);
@@ -121,6 +124,7 @@ export default function MapAreaEditor({
 
   const setDeleteMode = useCallback(() => {
     sectionPolies.current.forEach((p) => {
+      p.off('click');
       p.on('click', () => {
         const name = p.getName();
         onDelete(name);

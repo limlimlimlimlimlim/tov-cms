@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import { HighlightOutlined } from '@ant-design/icons';
-import { Button, Flex } from 'antd';
+import { Button, Flex, Space } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 
@@ -28,7 +28,7 @@ export default function MapAreaEditor({
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
   // const [transformer, setTransformer] = useState<any>(null);
-  const [mode, setMode] = useState('none');
+  const [mode, setMode] = useState('normal');
   const points = useRef<any[]>([]);
   const currentPoly = useRef<any>(null);
   const sectionPolies = useRef<any[]>([]);
@@ -86,14 +86,14 @@ export default function MapAreaEditor({
     layer.add(poly);
     sectionPolies.current.push(poly);
     currentPoly.current = poly;
-
+    stage.off('click');
     stage.on('click', (e: any) => {
       const x = e.evt.layerX;
       const y = e.evt.layerY;
       const c: any = new window.Konva.Circle({
         x,
         y,
-        radius: 4,
+        radius: 6,
         fill: 'red',
       });
       points.current.push(c);
@@ -110,8 +110,14 @@ export default function MapAreaEditor({
           ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
         ]);
       });
+
+      c.on('dragmove', (e) => {
+        console.log(e);
+      });
     });
   }, [layer, stage]);
+
+  const setEditMode = useCallback(() => {}, []);
 
   const setDeleteMode = useCallback(() => {
     sectionPolies.current.forEach((p) => {
@@ -145,52 +151,76 @@ export default function MapAreaEditor({
     setImgSrc(`${baseURL}/files/upload/${map.image}?${Math.random()}`);
   }, [map]);
 
+  const onClickAdd = useCallback(() => {
+    setMode('new');
+  }, []);
+
+  const onClickEdit = useCallback(() => {
+    setMode('edit');
+  }, []);
+
+  const onClickDelete = useCallback(() => {
+    setMode('delete');
+  }, []);
+
+  const addNew = useCallback(() => {
+    onAdd({
+      name: currentPoly.current.getName(),
+      path: currentPoly.current.getPoints(),
+    });
+    points.current.forEach((c: any) => {
+      c.off('click');
+      c.remove();
+    });
+    stage.off('click');
+    points.current = [];
+  }, [onAdd, stage]);
+
+  const onClickApply = useCallback(() => {
+    setMode('normal');
+    switch (mode) {
+      case 'new':
+        addNew();
+        break;
+      case 'edit':
+        break;
+      case 'delete':
+        break;
+    }
+  }, [addNew, mode]);
+
+  const onClickCancel = useCallback(() => {
+    setMode('normal');
+  }, []);
+
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
-      <Flex justify="space-between">
-        <Button>
-          <HighlightOutlined />
-        </Button>
+      <Flex justify="end" gap="middle">
+        <span>기본 구역 수 : {sections.length}</span>
         <Flex justify="end" gap="small">
-          <Button
-            onClick={() => {
-              if (mode === 'none') {
-                setMode('new');
-              } else if (mode === 'new') {
-                setMode('none');
-                onAdd({
-                  name: currentPoly.current.getName(),
-                  path: currentPoly.current.getPoints(),
-                });
-                points.current.forEach((c: any) => {
-                  c.off('click');
-                  c.remove();
-                });
-                stage.off('click');
-                points.current = [];
-              }
-            }}
-          >
-            {mode === 'none' ? '구역 추가' : mode === 'new' ? '완료' : ''}
-          </Button>
-          <Button
-            onClick={() => {
-              setMode('edit');
-            }}
-          >
-            구역 수정
-          </Button>
-          <Button
-            onClick={() => {
-              if (mode === 'none') {
-                setMode('delete');
-              } else if (mode === 'delete') {
-                setMode('none');
-              }
-            }}
-          >
-            {mode === 'none' ? '구역 삭제' : mode === 'delete' ? '완료' : ''}
-          </Button>
+          {mode === 'normal' && (
+            <Flex gap="small">
+              <Button size="small" onClick={onClickAdd}>
+                구역추가
+              </Button>
+              <Button size="small" onClick={onClickEdit}>
+                구역수정
+              </Button>
+              <Button size="small" onClick={onClickDelete}>
+                구역삭제
+              </Button>
+            </Flex>
+          )}
+          {mode !== 'normal' && (
+            <Flex gap="small">
+              <Button size="small" onClick={onClickApply}>
+                적용
+              </Button>
+              <Button size="small" onClick={onClickCancel}>
+                취소
+              </Button>
+            </Flex>
+          )}
         </Flex>
       </Flex>
       <Flex justify="center">

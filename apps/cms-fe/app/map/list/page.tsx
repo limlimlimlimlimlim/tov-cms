@@ -63,6 +63,7 @@ export default function MapList() {
     },
     {
       title: '지도명',
+      width: 150,
       dataIndex: 'name',
     },
     {

@@ -1,12 +1,12 @@
 import Modal from 'antd/es/modal/Modal';
 import { useCallback, useEffect, useState } from 'react';
+import { message } from 'antd';
 import {
   addSection,
   deleteSectionById,
   getSectionsByMapId,
 } from '../../api/section';
 import MapAreaEditor from './map-area-editor';
-import { message } from 'antd';
 
 interface ComponentProps {
   map: any;

@@ -6,6 +6,7 @@ import { baseURL } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
 import useViewMode from './hooks/use-view-mode';
 import useAddMode from './hooks/use-add-mode';
+import useEditMode from './hooks/use-edit-mode';
 import useDeleteMode from './hooks/use-delete-mode';
 
 interface ComponentProps {
@@ -32,13 +33,18 @@ export default function MapAreaEditor({ map }: ComponentProps) {
   } = useAddMode();
 
   const {
+    init: initEditMode,
+    apply: applyEditMode,
+    setup: setupEditMode,
+    clear: clearEditMode,
+  } = useEditMode();
+
+  const {
     init: initDeleteMode,
     apply: applyDeleteMode,
     setup: setupDeleteMode,
     clear: clearDeleteMode,
   } = useDeleteMode();
-
-  const sectionPolies = useRef<any[]>([]);
 
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -63,37 +69,6 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     setLayer(l);
   }, []);
 
-  const draw = useCallback(() => {
-    layer.destroyChildren();
-    sections.forEach((s: any) => {
-      const poly: any = new window.Konva.Line({
-        points: s.path.split(','),
-        fill: '#aaff77',
-        closed: true,
-        opacity: 0.5,
-        name: s.id,
-      });
-      layer.add(poly);
-      sectionPolies.current.push(poly);
-    });
-  }, [layer, sections]);
-
-  useEffect(() => {
-    if (!layer) return;
-    draw();
-  }, [draw, layer, sections]);
-
-  const setEditMode = useCallback(() => {
-    // sectionPolies.current.forEach((p) => {
-    //   p.off('click');
-    //   p.on('click', () => {
-    //     const name = p.getName();
-    //     onDelete(name);
-    //     p.remove();
-    //   });
-    // });
-  }, []);
-
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
     createStage(imageRef.current.width, imageRef.current.height);
@@ -110,8 +85,8 @@ export default function MapAreaEditor({ map }: ComponentProps) {
 
   const onClickEdit = useCallback(() => {
     setMode('edit');
-    setEditMode();
-  }, [setEditMode]);
+    setupEditMode(sections);
+  }, [sections, setupEditMode]);
 
   const onClickDelete = useCallback(() => {
     setMode('delete');
@@ -125,13 +100,14 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         await applyAddMode();
         break;
       case 'edit':
+        await applyEditMode();
         break;
       case 'delete':
         await applyDeleteMode();
         break;
     }
     await fetchSections();
-  }, [applyAddMode, applyDeleteMode, fetchSections, mode]);
+  }, [applyAddMode, applyDeleteMode, applyEditMode, fetchSections, mode]);
 
   const onClickCancel = useCallback(() => {
     switch (mode) {
@@ -139,6 +115,7 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         clearAddMode();
         break;
       case 'edit':
+        clearEditMode();
         break;
       case 'delete':
         clearDeleteMode();
@@ -146,7 +123,14 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     }
     setMode('normal');
     renderViewMode(sections);
-  }, [clearAddMode, clearDeleteMode, mode, renderViewMode, sections]);
+  }, [
+    clearAddMode,
+    clearDeleteMode,
+    clearEditMode,
+    mode,
+    renderViewMode,
+    sections,
+  ]);
 
   useEffect(() => {
     if (!map) return;
@@ -157,8 +141,17 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     if (!stage) return;
     initViewMode(layer);
     initAddMode(map.id, stage, layer);
+    initEditMode(map.id, stage, layer);
     initDeleteMode(map.id, stage, layer);
-  }, [initAddMode, initDeleteMode, initViewMode, layer, map.id, stage]);
+  }, [
+    initAddMode,
+    initDeleteMode,
+    initEditMode,
+    initViewMode,
+    layer,
+    map.id,
+    stage,
+  ]);
 
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>

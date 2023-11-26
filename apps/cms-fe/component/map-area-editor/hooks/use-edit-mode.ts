@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { updateSectionById } from '../../../api/section';
+import { message } from 'antd';
 
 const useDeleteMode = () => {
   const sections = useRef();
@@ -119,6 +120,7 @@ const useDeleteMode = () => {
         );
       }),
     );
+    void message.success('구역이 수정됐습니다.');
     clear();
   }, [clear]);
 

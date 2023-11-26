@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { deleteSectionById } from '../../../api/section';
+import { message } from 'antd';
 
 const useDeleteMode = () => {
   const sections = useRef();
@@ -71,6 +72,7 @@ const useDeleteMode = () => {
         return deleteSectionById(p);
       }),
     );
+    void message.success('구역이 삭제됐습니다.');
     clear();
   }, [clear]);
 

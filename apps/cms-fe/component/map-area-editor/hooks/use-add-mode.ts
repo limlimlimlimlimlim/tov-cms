@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { addSection } from '../../../api/section';
+import { message } from 'antd';
 
 const useAddMode = () => {
   const sections = useRef();
@@ -128,6 +129,7 @@ const useAddMode = () => {
         .flat()
         .join(','),
     );
+    void message.success('구역이 생성됐습니다.');
     clear();
   }, [clear]);
 

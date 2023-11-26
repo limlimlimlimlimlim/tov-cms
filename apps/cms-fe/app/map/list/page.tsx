@@ -11,7 +11,6 @@ import MapAreaEditorModal from '../../../component/map-area-editor/map-area-edit
 import { deleteMap, getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import BuildingSelect from '../../../component/building-select/building-select';
-import { addSection } from '../../../api/section';
 
 const { Search } = Input;
 const { confirm } = Modal;

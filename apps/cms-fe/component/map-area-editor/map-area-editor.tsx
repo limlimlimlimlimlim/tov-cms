@@ -1,40 +1,46 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import { HighlightOutlined } from '@ant-design/icons';
-import { Button, Flex, Space } from 'antd';
+import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
+import { getSectionsByMapId } from '../../api/section';
+import useViewMode from './hooks/use-view-mode';
+import useAddMode from './hooks/use-add-mode';
 
 interface ComponentProps {
   map: any;
-  sections: any[];
-  onAdd: (section) => void;
-  onDelete: (name) => void;
 }
-
 declare global {
   interface Window {
     Konva: any;
   }
 }
 
-export default function MapAreaEditor({
-  map,
-  onAdd,
-  onDelete,
-  sections,
-}: ComponentProps) {
+export default function MapAreaEditor({ map }: ComponentProps) {
+  const [sections, setSections] = useState<any[]>([]);
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
   const [layer, setLayer] = useState<any>(null);
-  // const [transformer, setTransformer] = useState<any>(null);
   const [mode, setMode] = useState('normal');
-  const points = useRef<any[]>([]);
-  const currentPoly = useRef<any>(null);
+  const { init: initViewMode, render: renderViewMode } = useViewMode();
+  const {
+    init: initAddMode,
+    apply: applyAddMode,
+    setup: setupAddMode,
+    clear: clearAddMode,
+  } = useAddMode();
+
   const sectionPolies = useRef<any[]>([]);
 
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  const fetchSections = useCallback(async () => {
+    if (!map) return;
+    const sec = await getSectionsByMapId(map.id);
+    setSections(sec.data);
+    renderViewMode(sec.data);
+  }, [map, renderViewMode]);
 
   const createStage = useCallback((w, h) => {
     const stg = new window.Konva.Stage({
@@ -44,16 +50,13 @@ export default function MapAreaEditor({
     });
 
     const l = new window.Konva.Layer();
-
     stg.add(l);
     setStage(stg);
     setLayer(l);
-    // const tr = new window.Konva.Transformer();
-    // l.add(tr);
-    // setTransformer(tr);
   }, []);
 
   const draw = useCallback(() => {
+    layer.destroyChildren();
     sections.forEach((s: any) => {
       const poly: any = new window.Konva.Line({
         points: s.path.split(','),
@@ -69,82 +72,30 @@ export default function MapAreaEditor({
 
   useEffect(() => {
     if (!layer) return;
-    layer.destroyChildren();
     draw();
   }, [draw, layer, sections]);
 
-  const setAddNewMode = useCallback(() => {
-    if (!stage) return;
-    points.current = [];
-    const poly: any = new window.Konva.Line({
-      points: [],
-      fill: '#aaff77',
-      closed: true,
-      opacity: 0.5,
-      name: `ready-${(Math.random() * 100000).toFixed()}`,
-    });
-    layer.add(poly);
-    sectionPolies.current.push(poly);
-    currentPoly.current = poly;
-    stage.off('click');
-    stage.on('click', (e: any) => {
-      const x = e.evt.layerX;
-      const y = e.evt.layerY;
-      const c: any = new window.Konva.Circle({
-        x,
-        y,
-        radius: 6,
-        fill: 'red',
-        draggable: true,
-      });
-      points.current.push(c);
-      poly.setPoints([
-        ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
-      ]);
-      layer.add(c);
-
-      c.on('click', () => {
-        c.remove();
-        const index = points.current.indexOf(c);
-        points.current.splice(index, 1);
-        poly.setPoints([
-          ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
-        ]);
-      });
-
-      c.on('dragmove', (e) => {
-        poly.setPoints([
-          ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
-        ]);
-      });
-    });
-  }, [layer, stage]);
-
-  const setEditMode = useCallback(() => {}, []);
+  const setEditMode = useCallback(() => {
+    // sectionPolies.current.forEach((p) => {
+    //   p.off('click');
+    //   p.on('click', () => {
+    //     const name = p.getName();
+    //     onDelete(name);
+    //     p.remove();
+    //   });
+    // });
+  }, []);
 
   const setDeleteMode = useCallback(() => {
     sectionPolies.current.forEach((p) => {
       p.off('click');
       p.on('click', () => {
-        const name = p.getName();
-        onDelete(name);
+        // const name = p.getName();
+        // onDelete(name);
         p.remove();
       });
     });
-  }, [onDelete]);
-
-  useEffect(() => {
-    switch (mode) {
-      case 'new':
-        setAddNewMode();
-        break;
-      case 'edit':
-        break;
-      case 'delete':
-        setDeleteMode();
-        break;
-    }
-  }, [layer, mode, setAddNewMode, setDeleteMode, stage]);
+  }, []);
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
@@ -157,45 +108,57 @@ export default function MapAreaEditor({
 
   const onClickAdd = useCallback(() => {
     setMode('new');
-  }, []);
+    setupAddMode(sections);
+  }, [sections, setupAddMode]);
 
   const onClickEdit = useCallback(() => {
     setMode('edit');
-  }, []);
+    setEditMode();
+  }, [setEditMode]);
 
   const onClickDelete = useCallback(() => {
     setMode('delete');
-  }, []);
+    setDeleteMode();
+  }, [setDeleteMode]);
 
-  const addNew = useCallback(() => {
-    onAdd({
-      name: currentPoly.current.getName(),
-      path: currentPoly.current.getPoints(),
-    });
-    points.current.forEach((c: any) => {
-      c.off('click');
-      c.remove();
-    });
-    stage.off('click');
-    points.current = [];
-  }, [onAdd, stage]);
-
-  const onClickApply = useCallback(() => {
+  const onClickApply = useCallback(async () => {
     setMode('normal');
     switch (mode) {
       case 'new':
-        addNew();
+        await applyAddMode();
         break;
       case 'edit':
         break;
       case 'delete':
         break;
     }
-  }, [addNew, mode]);
+    await fetchSections();
+  }, [applyAddMode, fetchSections, mode]);
 
   const onClickCancel = useCallback(() => {
+    switch (mode) {
+      case 'new':
+        clearAddMode();
+        break;
+      case 'edit':
+        break;
+      case 'delete':
+        break;
+    }
     setMode('normal');
-  }, []);
+    renderViewMode(sections);
+  }, [clearAddMode, mode, renderViewMode, sections]);
+
+  useEffect(() => {
+    if (!map) return;
+    void fetchSections();
+  }, [fetchSections, map]);
+
+  useEffect(() => {
+    if (!stage) return;
+    initViewMode(layer);
+    initAddMode(map.id, stage, layer);
+  }, [initAddMode, initViewMode, layer, map.id, stage]);
 
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
@@ -204,25 +167,17 @@ export default function MapAreaEditor({
         <Flex justify="end" gap="small">
           {mode === 'normal' && (
             <Flex gap="small">
-              <Button size="small" onClick={onClickAdd}>
-                구역추가
-              </Button>
-              <Button size="small" onClick={onClickEdit}>
-                구역수정
-              </Button>
-              <Button size="small" onClick={onClickDelete}>
-                구역삭제
-              </Button>
+              <Button onClick={onClickAdd}>구역추가</Button>
+              <Button onClick={onClickEdit}>구역수정</Button>
+              <Button onClick={onClickDelete}>구역삭제</Button>
             </Flex>
           )}
           {mode !== 'normal' && (
             <Flex gap="small">
-              <Button size="small" onClick={onClickApply}>
-                적용
+              <Button type="primary" onClick={onClickApply}>
+                저장
               </Button>
-              <Button size="small" onClick={onClickCancel}>
-                취소
-              </Button>
+              <Button onClick={onClickCancel}>취소</Button>
             </Flex>
           )}
         </Flex>

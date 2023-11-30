@@ -10,23 +10,22 @@ export class SectionService {
     return this.prisma.section.create({ data });
   }
 
-  // async mergeSectionGroup(data: number[]) {
-  //   const group = await this.prisma.sectionGroup.create({ data: {} });
-  //   return Promise.all(
-  //     data.map((id) => {
-  //       return this.updateSection(id, { groupId: group.id });
-  //     }),
-  //   );
-  // }
+  async createSectionsGroup(sections: string[]) {
+    const group = await this.prisma.sectionGroup.create({ data: {} });
+    return Promise.all(
+      sections.map((id) => {
+        return this.updateSection(Number(id), { groupId: group.id });
+      }),
+    );
+  }
 
-  // async splitSectionGroup(id: number) {
-  //   await this.prisma.mapArea.updateMany({
-  //     where: { groupId: id },
-  //     data: { groupId: null },
-  //   });
-
-  //   return await this.prisma.mapAreaGroup.delete({ where: { id } });
-  // }
+  async deleteSectionGroup(groupId: number) {
+    await this.prisma.section.updateMany({
+      where: { groupId },
+      data: { groupId: null },
+    });
+    return await this.prisma.sectionGroup.delete({ where: { id: groupId } });
+  }
 
   async getAllSections(): Promise<any[]> {
     return this.prisma.section.findMany();
@@ -50,7 +49,8 @@ export class SectionService {
     return this.prisma.section.delete({ where: { id } });
   }
 
-  async updateSection(id: number, data: Prisma.SectionUpdateInput) {
+  async updateSection(id: number, data: Prisma.SectionUncheckedUpdateInput) {
+    console.log(id, typeof data.disabled, data.disabled);
     return this.prisma.section.update({ where: { id }, data });
   }
 }

@@ -15,3 +15,19 @@ export const deleteSectionById = async (sectionId) => {
 export const updateSectionById = async (sectionId, mapId, path) => {
   return axiosClient.patch(`/section/${sectionId}`, { mapId, path });
 };
+
+export const disableSectionById = async (sectionId) => {
+  return axiosClient.patch(`/section/${sectionId}`, { disabled: true });
+};
+
+export const enableSectionById = async (sectionId) => {
+  return axiosClient.patch(`/section/${sectionId}`, { disabled: false });
+};
+
+export const createSectionGroup = async (sectionIds: string[]) => {
+  return axiosClient.post(`/section/group`, { sectionIds });
+};
+
+export const deleteSectionGroup = async (groupId: string) => {
+  return axiosClient.delete(`/section/group/${groupId}`);
+};

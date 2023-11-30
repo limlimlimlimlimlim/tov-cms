@@ -15,7 +15,32 @@ export class MapService {
   }
 
   async getMapById(id: number) {
-    return this.prisma.map.findUnique({ where: { id } });
+    return this.prisma.map.findUnique({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        image: true,
+        isUse: true,
+        floor: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        wing: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        sections: true,
+      },
+      where: { id },
+    });
   }
 
   async getMaps(
@@ -62,6 +87,7 @@ export class MapService {
             nameEn: true,
           },
         },
+        sections: true,
       },
       where: where,
       skip: (+page - 1) * +count,

@@ -16,7 +16,7 @@ const { Search } = Input;
 const { confirm } = Modal;
 
 export default function MapList() {
-  const [total, setTotal] = useState(17);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState<MapItem[]>([]);
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);

@@ -45,4 +45,14 @@ export class SectionController {
     }
     return this.sectionService.deleteSection(+id);
   }
+
+  @Post('/group')
+  async createSections(@Body() { sectionIds }: any) {
+    return this.sectionService.createSectionsGroup(sectionIds);
+  }
+
+  @Delete('/group/:id')
+  async deleteSections(@Param('id') id: string) {
+    return this.sectionService.deleteSectionGroup(+id);
+  }
 }

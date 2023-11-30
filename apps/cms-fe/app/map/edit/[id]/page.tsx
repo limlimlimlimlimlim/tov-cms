@@ -1,21 +1,21 @@
 'use client';
 import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import MapForm from '../../map-form';
 import { getMapDetail } from '../../../../api/map';
-import { useEffect, useState } from 'react';
 
 export default function MapEdit() {
   const { id } = useParams();
   const [mapData, setMapData] = useState();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
     setMapData(data.data);
-  };
+  }, [id]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    void fetchData();
+  }, [fetchData]);
 
   return <MapForm data={mapData} />;
 }

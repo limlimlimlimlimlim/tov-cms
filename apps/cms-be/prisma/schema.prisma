@@ -147,7 +147,7 @@ model Map {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   sections      Section[]
-  sectionGroups SectionGroup[]
+  sectionCount  Int?
 }
 
 model Section {
@@ -159,6 +159,7 @@ model Section {
   facilityId  Int?
   facility    Facility?
   path        String
+  disabled    Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -166,8 +167,6 @@ model Section {
 model SectionGroup {
   id        Int      @default(autoincrement()) @id
   sections  Section[]
-  mapId     Int
-  map       Map @relation(fields: [mapId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

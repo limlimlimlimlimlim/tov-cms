@@ -1,48 +1,71 @@
 'use client';
-import { Button, Flex, Form, Input, Select, Table } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Flex, Form, Input, Table } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { MapInfoItem } from '../../../interface/map-info';
+import { getMaps } from '../../../api/map';
+import FloorSelect from '../../../component/floor-select/floor-select';
+import BuildingSelect from '../../../component/building-select/building-select';
 
 const { Search } = Input;
-const { Option } = Select;
 
 export default function MapInfoList() {
-  const [count, setCount] = useState(17);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState<MapInfoItem[]>([]);
+  const [keyword, setKeyword] = useState('');
+  const [page, setPage] = useState(1);
+  const count = useMemo(() => 50, []);
+  const [floor, setFloor] = useState('');
+  const [wing, setWing] = useState('');
+
+  const fetchData = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    async ({ keyword, page, count, floor, wing }) => {
+      const maps = await getMaps({ keyword, page, count, floor, wing });
+      setData(maps.data.data);
+      setTotal(maps.data.total);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setPage(1);
+    void fetchData({ keyword, page, count, floor, wing });
+  }, [keyword, page, count, floor, fetchData, wing]);
 
   const columns: ColumnsType<MapInfoItem> = [
     {
       title: '번호',
-      dataIndex: 'no',
+      dataIndex: 'id',
       width: 80,
     },
     {
       title: '층',
-      dataIndex: 'floor',
       width: 100,
+      render: (row) => row.floor.name,
     },
     {
-      title: '동',
-      dataIndex: 'building',
+      title: '건물',
       width: 100,
+      render: (row) => row.wing.name,
     },
     {
       title: '지도명',
+      width: 150,
       dataIndex: 'name',
     },
     {
       title: '구역 수',
-      dataIndex: 'areaNum',
       width: 100,
+      render: (row) => row.sections.length,
     },
     {
       title: '설정 시설 수',
-      dataIndex: 'facilityNum',
       width: 140,
+      render: () => 0,
     },
     {
       title: '미리보기',
@@ -53,20 +76,20 @@ export default function MapInfoList() {
       title: '등록일',
       dataIndex: 'createdAt',
       width: 180,
-      render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+      render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
     },
     {
       title: '최종 수정일',
       dataIndex: 'updatedAt',
       width: 180,
-      render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+      render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
     },
     {
       title: '',
       width: 80,
       render: (value: any) => {
         return (
-          <Link href={`/map-info/edit/${(value as any).no}`}>
+          <Link href={`/map-info/edit/${(value as any).id}`}>
             <Button size="small" type="text">
               <EditOutlined />
             </Button>
@@ -76,46 +99,37 @@ export default function MapInfoList() {
     },
   ];
 
-  useEffect(() => {
-    const temp: MapInfoItem[] = [];
-    for (let i = 0; i < 100; i++) {
-      temp.push({
-        key: i,
-        no: i,
-        building: '중앙',
-        floor: '1',
-        name: 'name',
-        areaNum: 2,
-        facilityNum: 10,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
-    setData(temp);
+  const onSearch = useCallback((value) => {
+    setKeyword(value);
   }, []);
 
-  const onSearch = useCallback(() => {
-    console.log('on search');
+  const onChangeFloor = useCallback((f: any) => {
+    setFloor(f);
+    setWing('');
+  }, []);
+
+  const onChangeWing = useCallback((w) => {
+    setWing(w);
+  }, []);
+
+  const onChangePage = useCallback((p) => {
+    setPage(p.current);
   }, []);
 
   return (
     <Flex vertical gap="middle">
-      <Form.Item label="층 선택">
-        <Select style={{ width: 100 }} defaultValue="all">
-          <Option key="all" value="all">
-            전체
-          </Option>
-          <Option key="floor1" value="floor1">
-            1층
-          </Option>
-          <Option key="floor2" value="floor2">
-            2층
-          </Option>
-          <Option key="floor3" value="floor3">
-            3층
-          </Option>
-        </Select>
-      </Form.Item>
+      <Flex gap="large">
+        <Form.Item label="층 선택">
+          <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
+        </Form.Item>
+        <Form.Item label="동 선택">
+          <BuildingSelect
+            floorId={floor}
+            style={{ width: 200 }}
+            onChange={onChangeWing}
+          />
+        </Form.Item>
+      </Flex>
 
       <Flex justify="space-between" align="center">
         <span>Total : {count}</span>
@@ -128,8 +142,10 @@ export default function MapInfoList() {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 50 }}
+        pagination={{ pageSize: count, current: page, total }}
         scroll={{ y: 750 }}
+        rowKey="id"
+        onChange={onChangePage}
       />
     </Flex>
   );

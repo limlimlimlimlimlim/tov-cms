@@ -52,6 +52,7 @@ module.exports = {
     "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/no-misused-promises": "off",
+    "@next/next/no-img-element": "off",
     "no-console": "off",
     "eslint-comments/require-description": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",

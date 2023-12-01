@@ -1,7 +1,7 @@
 export interface KioskItem {
   key: React.Key;
-  no: number;
-  building: string;
+  id: number;
+  wing: string;
   floor: string;
   code: string;
   name: string;

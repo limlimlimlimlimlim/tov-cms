@@ -7,6 +7,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { KioskService } from './kiosk.service';
 import { Kiosk, Prisma } from '@prisma/client';
@@ -21,13 +22,31 @@ export class KioskController {
   }
 
   @Get()
-  async getKiosks(): Promise<Kiosk[]> {
-    return this.kioskService.getKiosks();
+  async getKiosks(
+    @Query('keyword') keyword: string,
+    @Query('page') page: string = '1',
+    @Query('count') count: string = '50',
+    @Query('floorId') floorId: string,
+    @Query('wingId') wingId: string,
+  ) {
+    return await this.kioskService.getKiosks({
+      keyword,
+      page,
+      count,
+      floorId,
+      wingId,
+    });
   }
 
   @Get(':id')
   async getKioskById(@Param('id') id: number): Promise<Kiosk> {
     return this.kioskService.getKioskById(+id);
+  }
+
+  @Get('/code/:code')
+  async getKioskByCode(@Param('code') code: string): Promise<Kiosk> {
+    console.log(code);
+    return this.kioskService.getKioskByCode(code);
   }
 
   @Patch(':id')

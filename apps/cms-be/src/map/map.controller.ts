@@ -27,9 +27,15 @@ export class MapController {
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
     @Query('floorId') floorId: string,
-    @Query('wing') wingId: string,
+    @Query('wingId') wingId: string,
   ) {
-    return await this.mapService.getMaps(keyword, page, count, floorId, wingId);
+    return await this.mapService.getMaps({
+      keyword,
+      page,
+      count,
+      floorId,
+      wingId,
+    });
   }
 
   @Get(':id')

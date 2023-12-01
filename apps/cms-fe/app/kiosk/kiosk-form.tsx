@@ -1,27 +1,15 @@
 'use client';
-import {
-  Button,
-  Divider,
-  Flex,
-  Form,
-  Input,
-  Modal,
-  Switch,
-  message,
-} from 'antd';
+import { Button, Divider, Flex, Form, Input, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import ContentsUploader from '../../component/contents-uploader/contentes-uploader';
+import { createKiosk, getKioskByCode, updateKiosk } from '../../api/kiosk';
 import FloorSelect from '../../component/floor-select/floor-select';
 import BuildingSelect from '../../component/building-select/building-select';
-import { createMap, deleteMap, updateMap } from '../../api/map';
-
-const { confirm } = Modal;
 
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 20 },
+  labelCol: { span: 5 },
+  wrapperCol: { span: 21 },
 };
 
 const validateMessages = {
@@ -32,13 +20,13 @@ const validateMessages = {
   },
 };
 
-export default function MapForm({ data }) {
+const KioskForm = ({ data }) => {
   const router = useRouter();
   const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [isUse, setIsUse] = useState(false);
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('ww');
+  const [description, setDescription] = useState('');
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
@@ -47,38 +35,46 @@ export default function MapForm({ data }) {
       setFloorId(data.floorId);
       setWingId(data.wingId);
       setName(data.name);
-      setImage(data.image);
-      setIsUse(data.isUse);
+      setCode(data.code);
+      setDescription(data.description);
     }
-  }, [data]);
+  }, [data, setCode]);
 
   const onFinish = useCallback(async () => {
     try {
       if (isEdit) {
-        await updateMap(data.id, {
+        await updateKiosk(data.id, {
           floorId,
           wingId,
+          code,
           name,
-          isUse,
-          image,
+          description,
         });
         void message.success('지도가 수정됐습니다.');
       } else {
-        await createMap({
+        await createKiosk({
           floorId,
           wingId,
+          code,
           name,
-          isUse,
-          image,
+          description,
         });
-        void message.success('지도가 생성됐습니다.');
+        void message.success('키오스크가 생성됐습니다.');
       }
-
-      router.push('/map/list');
+      router.push('/kiosk/list');
     } catch (e) {
       void message.error(e.message);
     }
-  }, [isEdit, router, data?.id, floorId, wingId, name, isUse, image]);
+  }, [code, data, description, floorId, isEdit, name, router, wingId]);
+
+  const onClickCheckDuplicate = useCallback(async () => {
+    const kiosk = await getKioskByCode(code);
+    if (kiosk.data) {
+      void message.warning('이미 등록된 키오스크 코드입니다.');
+    } else {
+      void message.success('사용가능한 키오스크 코드입니다.');
+    }
+  }, [code]);
 
   const onChangeFloor = useCallback((floor) => {
     setFloorId(floor);
@@ -88,40 +84,11 @@ export default function MapForm({ data }) {
   const onChangeWing = useCallback((wing) => {
     setWingId(wing);
   }, []);
-
-  const onChageName = useCallback((e) => {
-    setName(e.target.value);
-  }, []);
-
-  const onCompleteUpload = useCallback(({ fileName }) => {
-    setImage(fileName);
-  }, []);
-
-  const onChangeStatus = useCallback((value) => {
-    setIsUse(value);
-  }, []);
-
-  const onClickDeleteMap = useCallback(() => {
-    confirm({
-      title: '삭제 확인',
-      okText: '확인',
-      cancelText: '취소',
-      content: '지도를 삭제하겠습니까?',
-      async onOk() {
-        await deleteMap(data.id);
-        void message.success('지도가 삭제됐습니다.');
-        router.push('/map/list');
-      },
-    });
-  }, [router, data]);
-
   return (
     <Flex vertical gap="middle">
       <Form
         {...layout}
-        onFinish={() => {
-          void onFinish();
-        }}
+        onFinish={onFinish}
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
@@ -140,40 +107,51 @@ export default function MapForm({ data }) {
             onChange={onChangeWing}
           />
         </Form.Item>
-        <Form.Item label="지도 이름" rules={[{ required: true }]}>
-          <Input value={name} style={{ width: 200 }} onChange={onChageName} />
+        <Form.Item label="키오스크 코드" rules={[{ required: true }]}>
+          <Flex gap="small">
+            <Input
+              value={code}
+              style={{ width: 200 }}
+              onChange={(e) => {
+                setCode(e.target.value);
+              }}
+            />
+            <Button onClick={onClickCheckDuplicate}>중복검사</Button>
+          </Flex>
         </Form.Item>
-        <Form.Item label="지도파일 등록">
-          <ContentsUploader image={image} onComplete={onCompleteUpload} />
+        <Form.Item label="키오스크 이름" rules={[{ required: true }]}>
+          <Input
+            value={name}
+            style={{ width: 200 }}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
         </Form.Item>
-
-        <Form.Item label="상태">
-          <Switch
-            checked={isUse}
-            onChange={onChangeStatus}
-            checkedChildren="사용"
-            unCheckedChildren="미사용"
+        <Form.Item label="메모">
+          <Input.TextArea
+            value={description}
+            style={{ width: 500, height: 200 }}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
           />
         </Form.Item>
 
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            {isEdit ? (
-              <Button danger onClick={onClickDeleteMap}>
-                삭제
-              </Button>
-            ) : null}
-
-            <Link href="/map/list">
+            <Link href="/kiosk/list">
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">
-              {!isEdit ? '등록' : '수정'}
+              등록
             </Button>
           </Flex>
         </Form.Item>
       </Form>
     </Flex>
   );
-}
+};
+
+export default KioskForm;

@@ -30,7 +30,6 @@ export default function MapList() {
   const [currentMap, setCurrentMap] = useState(null);
 
   const fetchData = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     async ({ keyword, page, count, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
       setData(maps.data.data);

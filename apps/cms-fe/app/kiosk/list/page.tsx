@@ -1,58 +1,62 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Select, Table, message } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { KioskItem } from '../../../interface/kiosk';
+import FloorSelect from '../../../component/floor-select/floor-select';
+import BuildingSelect from '../../../component/building-select/building-select';
+import { deleteKiosk, getKiosks } from '../../../api/kiosk';
 
 const { Search } = Input;
 const { confirm } = Modal;
-const { Option } = Select;
 
 const columns: ColumnsType<KioskItem> = [
   {
     title: '번호',
-    dataIndex: 'no',
+    dataIndex: 'id',
     width: 80,
   },
   {
     title: '동',
-    dataIndex: 'building',
-    width: 80,
+    width: 100,
+    render: (row) => row.wing.name,
   },
   {
     title: '층',
-    dataIndex: 'floor',
-    width: 80,
+    width: 100,
+    render: (row) => row.floor.name,
   },
   {
     title: '키오스크 코드',
+    width: 150,
     dataIndex: 'code',
   },
   {
     title: '키오스크 이름',
+    width: 150,
     dataIndex: 'name',
   },
   {
     title: '등록일',
     dataIndex: 'createdAt',
     width: 180,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '최종 수정일',
     dataIndex: 'updatedAt',
     width: 180,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '',
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/kiosk/edit/${(value as any).no}`}>
+        <Link href={`/kiosk/edit/${(value as any).id}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -63,29 +67,31 @@ const columns: ColumnsType<KioskItem> = [
 ];
 
 export default function KioskList() {
-  const [count] = useState(17);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState<KioskItem[]>([]);
+  const [keyword, setKeyword] = useState('');
+  const [floor, setFloor] = useState('');
+  const [wing, setWing] = useState('');
+  const [page, setPage] = useState(1);
+  const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<KioskItem[]>([]);
 
-  useEffect(() => {
-    const temp: KioskItem[] = [];
-    for (let i = 0; i < 100; i++) {
-      temp.push({
-        key: i,
-        no: i,
-        building: '중앙',
-        floor: '1',
-        code: 'code',
-        name: 'name',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
-    setData(temp);
-  }, []);
+  const fetchData = useCallback(
+    async ({ keyword, page, count, floor, wing }) => {
+      const kiosks = await getKiosks({ keyword, page, count, floor, wing });
+      setData(kiosks.data.data);
+      setTotal(kiosks.data.total);
+    },
+    [],
+  );
 
-  const onSearch = useCallback(() => {
-    console.log('on search');
+  useEffect(() => {
+    setPage(1);
+    void fetchData({ keyword, page, count, floor, wing });
+  }, [keyword, page, count, floor, fetchData, wing]);
+
+  const onSearch = useCallback((value) => {
+    setKeyword(value);
   }, []);
 
   const onClickDelete = useCallback(() => {
@@ -94,11 +100,13 @@ export default function KioskList() {
       okText: '확인',
       cancelText: '취소',
       content: '선택된 키오스크를 삭제하시겠습니까?',
-      onOk() {
+      async onOk() {
+        await Promise.all(selectedData.map((row) => deleteKiosk(row.id)));
+        void fetchData({ keyword, page, count, floor, wing });
         void message.success('선택된 키오스크가 삭제됐습니다.');
       },
     });
-  }, []);
+  }, [count, fetchData, floor, keyword, page, selectedData, wing]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: KioskItem[]) => {
@@ -106,34 +114,31 @@ export default function KioskList() {
     },
   };
 
+  const onChangeWing = useCallback((w) => {
+    setWing(w);
+  }, []);
+
+  const onChangeFloor = useCallback((f: any) => {
+    setFloor(f);
+    setWing('');
+  }, []);
+
+  const onChangePage = useCallback((p) => {
+    setPage(p.current);
+  }, []);
+
   return (
     <Flex vertical gap="middle">
       <Flex gap="large">
-        <Form.Item label="동 선택">
-          <Select style={{ width: 200 }} defaultValue="all">
-            <Option key="all" value="all">
-              전체
-            </Option>
-            <Option key="building1" value="building1">
-              중앙
-            </Option>
-          </Select>
-        </Form.Item>
         <Form.Item label="층 선택">
-          <Select style={{ width: 100 }} defaultValue="all">
-            <Option key="all" value="all">
-              전체
-            </Option>
-            <Option key="floor1" value="floor1">
-              1층
-            </Option>
-            <Option key="floor2" value="floor2">
-              2층
-            </Option>
-            <Option key="floor3" value="floor3">
-              3층
-            </Option>
-          </Select>
+          <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
+        </Form.Item>
+        <Form.Item label="동 선택">
+          <BuildingSelect
+            floorId={floor}
+            style={{ width: 200 }}
+            onChange={onChangeWing}
+          />
         </Form.Item>
       </Flex>
       <Flex justify="space-between">
@@ -149,7 +154,7 @@ export default function KioskList() {
             <Button type="primary">등록</Button>
           </Link>
 
-          <span>Total : {count}</span>
+          <span>Total : {total}</span>
         </Flex>
         <Flex>
           <Search
@@ -162,12 +167,14 @@ export default function KioskList() {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 50 }}
+        pagination={{ pageSize: count, current: page, total }}
         scroll={{ y: 750 }}
+        rowKey="id"
         rowSelection={{
           type: 'checkbox',
           ...rowSelection,
         }}
+        onChange={onChangePage}
       />
     </Flex>
   );

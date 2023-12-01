@@ -43,13 +43,7 @@ export class MapService {
     });
   }
 
-  async getMaps(
-    keyword: string = '',
-    page: string,
-    count: string,
-    floorId: string,
-    wingId: string,
-  ) {
+  async getMaps({ keyword, page, count, floorId, wingId }) {
     const where = {
       AND: [],
     };

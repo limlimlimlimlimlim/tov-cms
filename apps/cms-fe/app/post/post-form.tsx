@@ -188,27 +188,19 @@ const PostForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
+        <Form.Item label="건물 선택">
+          <WingSelect
+            style={{ width: 200 }}
+            floorId={floorId}
+            wingId={wingId}
+            onChange={onChangeWing}
+          />
+        </Form.Item>
         <Form.Item label="층 선택">
           <FloorSelect
             floorId={floorId}
             style={{ width: 200 }}
             onChange={onChangeFloor}
-          />
-        </Form.Item>
-        <Form.Item label="동 선택">
-          <WingSelect
-            style={{ width: 200 }}
-            floorId={floorId}
-            wingId={wingId}
-            onChange={onChangeWing}
-          />
-        </Form.Item>
-        <Form.Item label="시설 선택">
-          <WingSelect
-            style={{ width: 200 }}
-            floorId={floorId}
-            wingId={wingId}
-            onChange={onChangeWing}
           />
         </Form.Item>
         <Form.Item label="구분">

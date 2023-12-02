@@ -11,7 +11,7 @@ interface ComponentProps {
 }
 
 export default function FloorSelect({
-  floorId,
+  floorId = '',
   style,
   onChange,
 }: ComponentProps) {
@@ -22,7 +22,7 @@ export default function FloorSelect({
       const floors = await getFloors();
       setFloors(floors.data);
     };
-    fetchData();
+    void fetchData();
   }, []);
 
   const createOptions = useCallback(() => {

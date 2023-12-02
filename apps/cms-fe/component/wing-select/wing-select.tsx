@@ -13,7 +13,7 @@ interface ComponentProps {
 
 export default function WingSelect({
   floorId,
-  wingId,
+  wingId = '',
   style,
   onChange,
 }: ComponentProps) {

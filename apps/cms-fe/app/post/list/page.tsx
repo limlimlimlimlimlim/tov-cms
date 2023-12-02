@@ -153,15 +153,15 @@ export default function PostList() {
   return (
     <Flex vertical gap="middle">
       <Flex gap="large">
-        <Form.Item label="층 선택">
-          <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
-        </Form.Item>
-        <Form.Item label="동 선택">
+        <Form.Item label="건물 선택">
           <WingSelect
             floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeWing}
           />
+        </Form.Item>
+        <Form.Item label="층 선택">
+          <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
         </Form.Item>
       </Flex>
       <Flex justify="space-between">

@@ -9,6 +9,7 @@ import {
   ShopOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './styles.module.css';
 
 const { Sider } = Layout;
@@ -32,33 +33,34 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem('계정 관리', 'account', <IdcardOutlined />, [
-    getItem(<Link href="/account/list">계정 관리</Link>, '/account/list'),
-    getItem(<Link href="/permission/list">권한 관리</Link>, '/permission/list'),
+  getItem('계정 관리', 'account-management', <IdcardOutlined />, [
+    getItem(<Link href="/account">계정 관리</Link>, 'account'),
+    getItem(<Link href="/permission">권한 관리</Link>, 'permission'),
   ]),
   getItem(
-    <Link href="/schedule/list">스케줄</Link>,
+    <Link href="/schedule">스케줄</Link>,
     'schedule',
     <CalendarOutlined />,
   ),
-  getItem(<Link href="/post/list">게시물</Link>, 'post', <FormOutlined />),
-  getItem('지도 관리', 'map', <EnvironmentOutlined />, [
-    getItem(<Link href="/map/list">층별 지도</Link>, '/map/list'),
-    getItem(<Link href="/map-info/list">지도 정보</Link>, '/map-info/list'),
+  getItem(<Link href="/post">게시물</Link>, 'post', <FormOutlined />),
+  getItem('지도 관리', 'map-management', <EnvironmentOutlined />, [
+    getItem(<Link href="/map">층별 지도</Link>, 'map'),
+    getItem(<Link href="/map-info">지도 정보</Link>, 'map-info'),
   ]),
   getItem(
-    <Link href="/facility/list">시설 관리</Link>,
+    <Link href="/facility">시설 관리</Link>,
     'facility',
     <ShopOutlined />,
   ),
   getItem(
-    <Link href="/kiosk/list">키오스크 관리</Link>,
+    <Link href="/kiosk">키오스크 관리</Link>,
     'kiosk',
     <DesktopOutlined />,
   ),
 ];
 
 export default function AppSider({ collapsed }) {
+  const pathname = usePathname();
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className={styles.logo} />
@@ -66,8 +68,8 @@ export default function AppSider({ collapsed }) {
         theme="dark"
         mode="inline"
         items={items}
-        defaultSelectedKeys={['/account/list']}
-        defaultOpenKeys={['account', 'map']}
+        defaultSelectedKeys={[pathname.split('/')[1]]}
+        defaultOpenKeys={['account-management', 'map-management']}
       />
     </Sider>
   );

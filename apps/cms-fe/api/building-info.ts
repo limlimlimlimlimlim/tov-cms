@@ -8,6 +8,14 @@ export const getFloors = async () => {
   return axiosClient.get('/building-info/floors');
 };
 
+export const getFloorsInWing = async (wingId: string) => {
+  return axiosClient.get(`/building-info/wing/${wingId}/floors`);
+};
+
+export const getWings = async () => {
+  return axiosClient.get(`/building-info/wings`);
+};
+
 export const getWingsInFloor = async (floorId: number) => {
   return axiosClient.get(`/building-info/floor/${floorId}/wings`);
 };

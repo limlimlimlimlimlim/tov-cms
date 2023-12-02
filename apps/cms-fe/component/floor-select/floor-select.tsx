@@ -1,16 +1,18 @@
 import { Select } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { getFloors } from '../../api/building-info';
+import { getFloors, getFloorsInWing } from '../../api/building-info';
 
 const { Option } = Select;
 
 interface ComponentProps {
+  wingId: string;
   floorId?: string;
   style?: any;
   onChange?: (floorId) => void;
 }
 
 export default function FloorSelect({
+  wingId,
   floorId = '',
   style,
   onChange,
@@ -18,12 +20,16 @@ export default function FloorSelect({
   const [floors, setFloors] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const floors = await getFloors();
+    if (!wingId) return;
+
+    const fetchData = async (wingId) => {
+      // const floors = await getFloors();
+      const floors = await getFloorsInWing(wingId);
       setFloors(floors.data);
     };
-    void fetchData();
-  }, []);
+
+    void fetchData(wingId);
+  }, [wingId]);
 
   const createOptions = useCallback(() => {
     return floors.map((floor: any) => (

@@ -70,6 +70,11 @@ export class BuildingInfoController {
     return await this.buildingInfoService.getFloorById(id);
   }
 
+  @Get('wing/:id/floors')
+  async getFloorsInWing(@Param('id') id: string) {
+    return await this.buildingInfoService.getFloorsInWing(id);
+  }
+
   @Get('floor/:id/wings')
   async getWingsInFloor(@Param('id') id: string) {
     return await this.buildingInfoService.getWingsInFloor(id);

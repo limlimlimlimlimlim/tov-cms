@@ -22,7 +22,6 @@ export default function MapInfoList() {
   const [wing, setWing] = useState('');
 
   const fetchData = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     async ({ keyword, page, count, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
       setData(maps.data.data);
@@ -119,14 +118,14 @@ export default function MapInfoList() {
   return (
     <Flex vertical gap="middle">
       <Flex gap="large">
-        <Form.Item label="층 선택">
-          <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
+        <Form.Item label="건물 선택">
+          <WingSelect style={{ width: 200 }} onChange={onChangeWing} />
         </Form.Item>
-        <Form.Item label="동 선택">
-          <WingSelect
-            floorId={floor}
+        <Form.Item label="층 선택">
+          <FloorSelect
+            wingId={wing}
             style={{ width: 200 }}
-            onChange={onChangeWing}
+            onChange={onChangeFloor}
           />
         </Form.Item>
       </Flex>

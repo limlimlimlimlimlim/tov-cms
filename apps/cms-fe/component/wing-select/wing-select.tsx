@@ -1,18 +1,16 @@
 import { Select } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { getWingsInFloor } from '../../api/building-info';
+import { getWings } from '../../api/building-info';
 
 const { Option } = Select;
 
 interface ComponentProps {
-  floorId;
   wingId?;
   style?;
   onChange?: (wingId) => void;
 }
 
 export default function WingSelect({
-  floorId,
   wingId = '',
   style,
   onChange,
@@ -20,17 +18,12 @@ export default function WingSelect({
   const [wings, setWings] = useState([]);
 
   useEffect(() => {
-    if (floorId) {
-      void fetchData(floorId);
-    } else {
-      setWings([]);
-      if (onChange) onChange('');
-    }
-  }, [floorId, onChange]);
+    void fetchData();
+  }, [onChange]);
 
-  const fetchData = async (id) => {
-    const wingsInFloor = await getWingsInFloor(id);
-    setWings(wingsInFloor.data);
+  const fetchData = async () => {
+    const result = await getWings();
+    setWings(result.data);
   };
 
   const createOptions = useCallback(() => {

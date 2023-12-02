@@ -90,6 +90,22 @@ export class BuildingInfoService {
     return this.prisma.wing.findUnique({ where: { id: +id } });
   }
 
+  async getFloorsInWing(wingId: string) {
+    const wingOnFloorData = await this.prisma.wingOnFloor.findMany({
+      where: { wingId: +wingId },
+      include: { floor: true },
+    });
+
+    return wingOnFloorData.map((item) => ({
+      id: item.floor.id,
+      name: item.floor.name,
+      nameEn: item.floor.nameEn,
+      createdAt: item.floor.createdAt,
+      updatedAt: item.floor.updatedAt,
+      order: item.order,
+    }));
+  }
+
   async getWingsInFloor(floorId: string) {
     const wingOnFloorData = await this.prisma.wingOnFloor.findMany({
       where: { floorId: +floorId },

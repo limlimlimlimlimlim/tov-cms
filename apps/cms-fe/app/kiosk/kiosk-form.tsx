@@ -78,11 +78,11 @@ const KioskForm = ({ data }) => {
 
   const onChangeFloor = useCallback((floor) => {
     setFloorId(floor);
-    setWingId('');
   }, []);
 
   const onChangeWing = useCallback((wing) => {
     setWingId(wing);
+    setFloorId('');
   }, []);
   return (
     <Flex vertical gap="middle">
@@ -95,13 +95,13 @@ const KioskForm = ({ data }) => {
         <Form.Item label="건물 선택">
           <WingSelect
             style={{ width: 200 }}
-            floorId={floorId}
             wingId={wingId}
             onChange={onChangeWing}
           />
         </Form.Item>
         <Form.Item label="층 선택">
           <FloorSelect
+            wingId={wingId}
             floorId={floorId}
             style={{ width: 200 }}
             onChange={onChangeFloor}

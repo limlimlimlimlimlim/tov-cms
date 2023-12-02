@@ -54,9 +54,9 @@ const columns: ColumnsType<PostItem> = [
     dataIndex: 'status',
     render(type) {
       switch (type) {
-        case 'enable':
+        case 'enabled':
           return '활성';
-        case 'disable':
+        case 'disabled':
           return '비활성';
       }
       return '';

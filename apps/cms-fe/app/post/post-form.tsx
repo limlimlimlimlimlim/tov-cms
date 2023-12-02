@@ -49,7 +49,7 @@ const PostForm = ({ data }) => {
   const [contentsType, setContentsType] = useState('image');
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
-  const [status, setStatus] = useState('enable');
+  const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [useIntro, setUseIntro] = useState(false);
 
@@ -264,9 +264,9 @@ const PostForm = ({ data }) => {
         </Form.Item>
         <Form.Item name="status" label="상태">
           <Switch
-            checked={status == 'enable'}
+            checked={status == 'enabled'}
             onChange={(e) => {
-              setStatus(e ? 'enable' : 'disable');
+              setStatus(e ? 'enabled' : 'disabled');
             }}
           />
         </Form.Item>

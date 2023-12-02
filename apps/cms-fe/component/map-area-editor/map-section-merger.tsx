@@ -43,7 +43,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
     init: initDisableMode,
     apply: applyDisableMode,
     setup: setupDisableMode,
-    clear: clearDisableMode,
+    clear: clearDisabledMode,
   } = useDisableMode();
 
   const imageRef = useRef<HTMLImageElement>(null);
@@ -89,7 +89,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
   }, [sections, setupSplitMode]);
 
   const onClickDelete = useCallback(() => {
-    setMode('disable');
+    setMode('disabled');
     setupDisableMode(sections);
   }, [sections, setupDisableMode]);
 
@@ -102,7 +102,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
       case 'split':
         await applySplitMode();
         break;
-      case 'disable':
+      case 'disabled':
         await applyDisableMode();
         break;
     }
@@ -117,15 +117,15 @@ export default function MapSectionMerger({ map }: ComponentProps) {
       case 'edit':
         clearSplitMode();
         break;
-      case 'disable':
-        clearDisableMode();
+      case 'disabled':
+        clearDisabledMode();
         break;
     }
     setMode('normal');
     renderViewMode(sections);
   }, [
     clearMergeMode,
-    clearDisableMode,
+    clearDisabledMode,
     clearSplitMode,
     mode,
     renderViewMode,

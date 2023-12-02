@@ -63,6 +63,29 @@ model Permission {
   updatedAt         DateTime @updatedAt
 }
 
+model Region{
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique()
+  nameEn      String?   @unique()
+  disabled    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  wing        Wing[]
+}
+
+model Wing{
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique()
+  nameEn      String?   @unique()
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  regionId    Int       
+  region      Region    @relation(fields: [regionId], references: [id])
+  floors      WingOnFloor[]
+  map         Map[]
+  kiosks      Kiosk[]
+  posts       Post[]
+}
 model Floor {
   id        Int       @default(autoincrement()) @id
   name      String    @unique()
@@ -73,18 +96,6 @@ model Floor {
   wings     WingOnFloor[]
   mapss     Map[]
   kiosks    Kiosk[]
-}
-
-model Wing{
-  id          Int       @default(autoincrement()) @id
-  name        String    @unique()
-  nameEn      String?   @unique()
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  floors      WingOnFloor[]
-  map         Map[]
-  kiosks      Kiosk[]
-  posts       Post[]
 }
 
 model WingOnFloor {

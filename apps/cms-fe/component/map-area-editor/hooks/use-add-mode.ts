@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
-import { addSection } from '../../../api/section';
 import { message } from 'antd';
+import { addSection } from '../../../api/section';
 
 const useAddMode = () => {
   const sections = useRef();

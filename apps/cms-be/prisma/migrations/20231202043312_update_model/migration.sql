@@ -1,0 +1,19 @@
+-- CreateTable
+CREATE TABLE `Post` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `floorId` INTEGER NOT NULL,
+    `wingId` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NOT NULL,
+    `image` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_floorId_fkey` FOREIGN KEY (`floorId`) REFERENCES `Floor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_wingId_fkey` FOREIGN KEY (`wingId`) REFERENCES `Wing`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

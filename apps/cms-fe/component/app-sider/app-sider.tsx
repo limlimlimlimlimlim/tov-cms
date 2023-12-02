@@ -1,4 +1,5 @@
-import { Layout, Menu, MenuProps } from "antd";
+import type { MenuProps } from 'antd';
+import { Layout, Menu } from 'antd';
 import {
   CalendarOutlined,
   DesktopOutlined,
@@ -6,21 +7,20 @@ import {
   FormOutlined,
   IdcardOutlined,
   ShopOutlined,
-} from "@ant-design/icons";
-import Link from "next/link";
-
-import styles from "./styles.module.css";
+} from '@ant-design/icons';
+import Link from 'next/link';
+import styles from './styles.module.css';
 
 const { Sider } = Layout;
 
-type MenuItem = Required<MenuProps>["items"][number];
+type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
-  type?: "group"
+  type?: 'group',
 ): MenuItem {
   return {
     key,
@@ -32,32 +32,29 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("계정 관리", "account", <IdcardOutlined />, [
-    getItem(<Link href="/account/list">계정 관리</Link>, "/account/list"),
-    getItem(<Link href="/permission/list">권한 관리</Link>, "/permission/list"),
+  getItem('계정 관리', 'account', <IdcardOutlined />, [
+    getItem(<Link href="/account/list">계정 관리</Link>, '/account/list'),
+    getItem(<Link href="/permission/list">권한 관리</Link>, '/permission/list'),
   ]),
   getItem(
     <Link href="/schedule/list">스케줄</Link>,
-    "schedule",
-    <CalendarOutlined />
+    'schedule',
+    <CalendarOutlined />,
   ),
-  getItem("게시물", "post", <FormOutlined />, [
-    getItem(<Link href="/notice/list">공지사항</Link>, "/notice/list"),
-    getItem(<Link href="/event/list">이벤트</Link>, "/event/list"),
-  ]),
-  getItem("지도 관리", "map", <EnvironmentOutlined />, [
-    getItem(<Link href="/map/list">층별 지도</Link>, "/map/list"),
-    getItem(<Link href="/map-info/list">지도 정보</Link>, "/map-info/list"),
+  getItem(<Link href="/post/list">게시물</Link>, 'post', <FormOutlined />),
+  getItem('지도 관리', 'map', <EnvironmentOutlined />, [
+    getItem(<Link href="/map/list">층별 지도</Link>, '/map/list'),
+    getItem(<Link href="/map-info/list">지도 정보</Link>, '/map-info/list'),
   ]),
   getItem(
     <Link href="/facility/list">시설 관리</Link>,
-    "facility",
-    <ShopOutlined />
+    'facility',
+    <ShopOutlined />,
   ),
   getItem(
     <Link href="/kiosk/list">키오스크 관리</Link>,
-    "kiosk",
-    <DesktopOutlined />
+    'kiosk',
+    <DesktopOutlined />,
   ),
 ];
 
@@ -69,8 +66,8 @@ export default function AppSider({ collapsed }) {
         theme="dark"
         mode="inline"
         items={items}
-        defaultSelectedKeys={["/account/list"]}
-        defaultOpenKeys={["account", "post", "map"]}
+        defaultSelectedKeys={['/account/list']}
+        defaultOpenKeys={['account', 'map']}
       />
     </Sider>
   );

@@ -1,13 +1,10 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
+
 import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
 import useViewMode from './hooks/use-view-mode';
-import useAddMode from './hooks/use-add-mode';
-import useEditMode from './hooks/use-edit-mode';
-import useDeleteMode from './hooks/use-delete-mode';
 import useMergeMode from './hooks/use-merge-mode';
 import useSplitMode from './hooks/use-split-mode';
 import useDisableMode from './hooks/use-disable-mode';

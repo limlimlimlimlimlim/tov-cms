@@ -144,7 +144,7 @@ export default function MapForm({ data }) {
           <Input value={name} style={{ width: 200 }} onChange={onChageName} />
         </Form.Item>
         <Form.Item label="지도파일 등록">
-          <ContentsUploader image={image} onComplete={onCompleteUpload} />
+          <ContentsUploader source={image} onComplete={onCompleteUpload} />
         </Form.Item>
 
         <Form.Item label="상태">

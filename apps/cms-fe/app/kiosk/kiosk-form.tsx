@@ -25,7 +25,7 @@ const KioskForm = ({ data }) => {
   const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
   const [code, setCode] = useState('');
-  const [name, setName] = useState('ww');
+  const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isEdit, setIsEdit] = useState(false);
 
@@ -50,7 +50,7 @@ const KioskForm = ({ data }) => {
           name,
           description,
         });
-        void message.success('지도가 수정됐습니다.');
+        void message.success('키오스크가 수정됐습니다.');
       } else {
         await createKiosk({
           floorId,

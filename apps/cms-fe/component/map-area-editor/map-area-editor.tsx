@@ -1,5 +1,4 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
 import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';

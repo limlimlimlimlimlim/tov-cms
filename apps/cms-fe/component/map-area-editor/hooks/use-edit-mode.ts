@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
-import { updateSectionById } from '../../../api/section';
 import { message } from 'antd';
+import { updateSectionById } from '../../../api/section';
 
 const useDeleteMode = () => {
   const sections = useRef();

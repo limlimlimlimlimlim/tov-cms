@@ -11,56 +11,56 @@ datasource db {
 }
 
 model User {
-  id               Int      @default(autoincrement()) @id
-  userId           String   @unique
-  password         String
-  name             String
-  phone            String?
-  description      String?
-  permissionId     Int
-  facilityCategoryId Int?
+  id                    Int      @default(autoincrement()) @id
+  userId                String   @unique
+  password              String
+  name                  String
+  phone                 String?
+  description           String?
+  permissionId          Int
+  facilityCategoryId    Int?
   facilitySubCategoryId Int?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model Permission {
-  id             Int      @default(autoincrement()) @id
-  name           String
-  readAccount    Boolean @default(false)
-  writeAccount   Boolean @default(false)
-  editAccount    Boolean @default(false)
-  deleteAccount  Boolean @default(false)
-  readPermission Boolean @default(false)
-  writePermission Boolean @default(false)
-  editPermission  Boolean @default(false)
-  deletePermission Boolean @default(false)
-  readSchedule   Boolean @default(false)
-  writeSchedule  Boolean @default(false)
-  editSchedule   Boolean @default(false)
-  deleteSchedule Boolean @default(false)
-  readPost       Boolean @default(false)
-  writePost      Boolean @default(false)
-  editPost       Boolean @default(false)
-  deletePost     Boolean @default(false)
-  readMap         Boolean @default(false)
-  writeMap        Boolean @default(false)
-  editMap         Boolean @default(false)
-  deleteMap       Boolean @default(false)
-  readMapInfo    Boolean @default(false)
-  writeMapInfo   Boolean @default(false)
-  editMapInfo    Boolean @default(false)
-  deleteMapInfo  Boolean @default(false)
-  readFacility   Boolean @default(false)
-  writeFacility  Boolean @default(false)
-  editFacility   Boolean @default(false)
-  deleteFacility  Boolean @default(false)
-  readKiosk      Boolean @default(false)
-  writeKiosk     Boolean @default(false)
-  editKiosk      Boolean @default(false)
-  deleteKiosk    Boolean @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                Int      @default(autoincrement()) @id
+  name              String
+  readAccount       Boolean @default(false)
+  writeAccount      Boolean @default(false)
+  editAccount       Boolean @default(false)
+  deleteAccount     Boolean @default(false)
+  readPermission    Boolean @default(false)
+  writePermission   Boolean @default(false)
+  editPermission    Boolean @default(false)
+  deletePermission  Boolean @default(false)
+  readSchedule      Boolean @default(false)
+  writeSchedule     Boolean @default(false)
+  editSchedule      Boolean @default(false)
+  deleteSchedule    Boolean @default(false)
+  readPost          Boolean @default(false)
+  writePost         Boolean @default(false)
+  editPost          Boolean @default(false)
+  deletePost        Boolean @default(false)
+  readMap           Boolean @default(false)
+  writeMap          Boolean @default(false)
+  editMap           Boolean @default(false)
+  deleteMap         Boolean @default(false)
+  readMapInfo       Boolean @default(false)
+  writeMapInfo      Boolean @default(false)
+  editMapInfo       Boolean @default(false)
+  deleteMapInfo     Boolean @default(false)
+  readFacility      Boolean @default(false)
+  writeFacility     Boolean @default(false)
+  editFacility      Boolean @default(false)
+  deleteFacility    Boolean @default(false)
+  readKiosk         Boolean @default(false)
+  writeKiosk        Boolean @default(false)
+  editKiosk         Boolean @default(false)
+  deleteKiosk       Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Floor {
@@ -84,6 +84,7 @@ model Wing{
   floors      WingOnFloor[]
   map         Map[]
   kiosks      Kiosk[]
+  posts       Post[]
 }
 
 model WingOnFloor {
@@ -115,24 +116,25 @@ model FacilitySubCategory {
 }
 
 model Facility {
-  id          Int      @default(autoincrement()) @id
-  name        String
-  wingId      Int
-  initial     String
-  fnbId       Int
-  phone       String
-  address     String
-  operation   String
-  image       String
-  iconId      Int
-  section     Section? @relation(fields: [sectionId], references: [id])
-  sectionId   Int @unique
-  categoryId  Int
-  category      FacilityCategory @relation(fields: [categoryId], references: [id])
-  subCategoryId Int
-  subCategory   FacilitySubCategory @relation(fields: [subCategoryId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @default(autoincrement()) @id
+  name            String
+  wingId          Int
+  initial         String
+  fnbId           Int
+  phone           String
+  address         String
+  operation       String
+  image           String
+  iconId          Int
+  section         Section? @relation(fields: [sectionId], references: [id])
+  sectionId       Int @unique
+  categoryId      Int
+  category        FacilityCategory @relation(fields: [categoryId], references: [id])
+  subCategoryId   Int
+  subCategory     FacilitySubCategory @relation(fields: [subCategoryId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  posts           Post[]
 }
 
 model Map {
@@ -185,14 +187,35 @@ model Event {
 }
 
 model Kiosk {
-  id              Int      @default(autoincrement()) @id
+  id              Int       @default(autoincrement()) @id
   floorId         Int
-  floor           Floor @relation(fields: [floorId], references: [id])
+  floor           Floor     @relation(fields: [floorId], references: [id])
   wingId          Int
-  wing            Wing @relation(fields: [wingId], references: [id])
-  code            String @unique
+  wing            Wing      @relation(fields: [wingId], references: [id])
+  code            String    @unique
   name            String
   description     String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Post{
+  id              Int       @default(autoincrement()) @id
+  wingId          Int
+  wing            Wing      @relation(fields: [wingId], references: [id])
+  facilityId      Int?
+  facility        Facility?   @relation(fields: [facilityId], references: [id])
+  name            String
+  imageContents   String?
+  videoContents   String?
+  textContents    String?
+  type            String
+  contentsType    String
+  startDate       DateTime?
+  endDate         DateTime?
+  status          String
+  noPeriod        Boolean
+  useIntro        Boolean
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

@@ -5,21 +5,21 @@ import { useEffect, useMemo, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 
 interface ComponentProps {
-  image?: string;
+  source?: string;
   onComplete?: ({ fileName }) => void;
 }
 
 export default function ContentsUploader({
-  image,
+  source,
   onComplete,
 }: ComponentProps) {
   const [src, setSrc] = useState('');
 
   useEffect(() => {
-    if (image) {
-      setSrc(`${baseURL}/files/upload/${image}`);
+    if (source) {
+      setSrc(`${baseURL}/files/upload/${source}`);
     }
-  }, [image]);
+  }, [source]);
 
   const uploadProps: UploadProps = useMemo(() => {
     return {
@@ -36,13 +36,12 @@ export default function ContentsUploader({
           }
 
           setSrc(`${baseURL}/files/upload/${info.file.response.fileName}`);
-          // void message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
           void message.error(`${info.file.name} file upload failed.`);
         }
       },
     };
-  }, []);
+  }, [onComplete]);
 
   return (
     <Flex vertical gap="small">

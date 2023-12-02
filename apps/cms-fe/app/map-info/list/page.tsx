@@ -8,7 +8,7 @@ import { EditOutlined } from '@ant-design/icons';
 import type { MapInfoItem } from '../../../interface/map-info';
 import { getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
-import BuildingSelect from '../../../component/building-select/building-select';
+import WingSelect from '../../../component/wing-select/wing-select';
 
 const { Search } = Input;
 
@@ -123,7 +123,7 @@ export default function MapInfoList() {
           <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
         </Form.Item>
         <Form.Item label="동 선택">
-          <BuildingSelect
+          <WingSelect
             floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeWing}

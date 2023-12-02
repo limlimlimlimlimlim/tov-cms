@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import FloorSelect from '../../component/floor-select/floor-select';
-import BuildingSelect from '../../component/building-select/building-select';
+import WingSelect from '../../component/wing-select/wing-select';
 import ContentsUploader from '../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../api/post';
 
@@ -196,7 +196,7 @@ const PostForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="동 선택">
-          <BuildingSelect
+          <WingSelect
             style={{ width: 200 }}
             floorId={floorId}
             wingId={wingId}
@@ -204,7 +204,7 @@ const PostForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="시설 선택">
-          <BuildingSelect
+          <WingSelect
             style={{ width: 200 }}
             floorId={floorId}
             wingId={wingId}

@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import ContentsUploader from '../../component/contents-uploader/contentes-uploader';
 import FloorSelect from '../../component/floor-select/floor-select';
-import BuildingSelect from '../../component/building-select/building-select';
+import WingSelect from '../../component/wing-select/wing-select';
 import { createMap, deleteMap, updateMap } from '../../api/map';
 
 const { confirm } = Modal;
@@ -133,7 +133,7 @@ export default function MapForm({ data }) {
           />
         </Form.Item>
         <Form.Item label="층 선택">
-          <BuildingSelect
+          <WingSelect
             style={{ width: 200 }}
             floorId={floorId}
             wingId={wingId}

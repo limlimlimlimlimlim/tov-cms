@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { createKiosk, getKioskByCode, updateKiosk } from '../../api/kiosk';
 import FloorSelect from '../../component/floor-select/floor-select';
-import BuildingSelect from '../../component/building-select/building-select';
+import WingSelect from '../../component/wing-select/wing-select';
 
 const layout = {
   labelCol: { span: 5 },
@@ -100,7 +100,7 @@ const KioskForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="층 선택">
-          <BuildingSelect
+          <WingSelect
             style={{ width: 200 }}
             floorId={floorId}
             wingId={wingId}

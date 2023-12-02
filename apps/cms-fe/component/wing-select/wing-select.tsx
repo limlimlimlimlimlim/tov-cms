@@ -11,7 +11,7 @@ interface ComponentProps {
   onChange?: (wingId) => void;
 }
 
-export default function BuildingSelect({
+export default function WingSelect({
   floorId,
   wingId,
   style,

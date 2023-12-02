@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { KioskItem } from '../../../interface/kiosk';
 import FloorSelect from '../../../component/floor-select/floor-select';
-import BuildingSelect from '../../../component/building-select/building-select';
+import WingSelect from '../../../component/wing-select/wing-select';
 import { deleteKiosk, getKiosks } from '../../../api/kiosk';
 
 const { Search } = Input;
@@ -134,7 +134,7 @@ export default function KioskList() {
           <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
         </Form.Item>
         <Form.Item label="동 선택">
-          <BuildingSelect
+          <WingSelect
             floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeWing}

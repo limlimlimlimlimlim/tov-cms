@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { PostItem } from '../../../interface/post';
 import FloorSelect from '../../../component/floor-select/floor-select';
-import BuildingSelect from '../../../component/building-select/building-select';
+import WingSelect from '../../../component/wing-select/wing-select';
 import { deletePost, getPosts } from '../../../api/post';
 
 const { Search } = Input;
@@ -157,7 +157,7 @@ export default function PostList() {
           <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
         </Form.Item>
         <Form.Item label="동 선택">
-          <BuildingSelect
+          <WingSelect
             floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeWing}

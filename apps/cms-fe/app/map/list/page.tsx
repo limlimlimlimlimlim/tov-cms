@@ -10,7 +10,7 @@ import BuldingInfoManagementModal from '../../../component/building-info-managem
 import MapAreaEditorModal from '../../../component/map-area-editor/map-area-editor-modal';
 import { deleteMap, getMaps } from '../../../api/map';
 import FloorSelect from '../../../component/floor-select/floor-select';
-import BuildingSelect from '../../../component/building-select/building-select';
+import WingSelect from '../../../component/wing-select/wing-select';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -173,7 +173,7 @@ export default function MapList() {
               <FloorSelect style={{ width: 200 }} onChange={onChangeFloor} />
             </Form.Item>
             <Form.Item label="동 선택">
-              <BuildingSelect
+              <WingSelect
                 floorId={floor}
                 style={{ width: 200 }}
                 onChange={onChangeWing}

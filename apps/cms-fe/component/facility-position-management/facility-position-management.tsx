@@ -4,19 +4,23 @@ import { Button, Flex, Form, Switch } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import MapViewer from '../map-viewer/map-viewer';
 
-export default function FacilityPositionManagement({ mapId }) {
+export default function FacilityPositionManagement({ mapId, onChange }) {
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
-  const [position, setPosition] = useState<any>();
   const [originPosition, setOriginPosition] = useState<any>();
-
-  const onClickMap = (data) => {
-    setPosition({ x: data.x, y: data.y });
-    setOriginPosition({ x: data.originX, y: data.originY });
-  };
+  const [alwaysVisible, setAlwaysVisible] = useState(false);
+  const onClickMap = useCallback(
+    (data) => {
+      setOriginPosition({ x: data.originX, y: data.originY });
+      onChange({
+        position: { x: data.originX, y: data.originY },
+        alwaysVisible,
+      });
+    },
+    [alwaysVisible, onChange],
+  );
 
   useEffect(() => {
-    setEnabledPositionSetting(false);
-    setPosition(null);
+    setEnabledPositionSetting(true);
     setOriginPosition(null);
   }, []);
 
@@ -33,15 +37,27 @@ export default function FacilityPositionManagement({ mapId }) {
             />
           </Form.Item>
           <Form.Item label="상시표시">
-            <Switch />
+            <Switch
+              checked={alwaysVisible}
+              onChange={(check) => {
+                setAlwaysVisible(check);
+                onChange({
+                  position: originPosition,
+                  alwaysVisible: check,
+                });
+              }}
+            />
           </Form.Item>
         </Flex>
 
         <Flex gap="middle">
           <Button
             onClick={() => {
-              setPosition(null);
               setOriginPosition(null);
+              onChange({
+                position: null,
+                alwaysVisible,
+              });
             }}
           >
             초기화
@@ -49,11 +65,12 @@ export default function FacilityPositionManagement({ mapId }) {
         </Flex>
       </Flex>
       <Flex justify="center" style={{ overflow: 'auto' }}>
+        {enabledPositionSetting}
         <MapViewer
           mapId={mapId}
           width={900}
           facility={originPosition}
-          onClick={onClickMap}
+          onClick={enabledPositionSetting ? onClickMap : null}
         />
       </Flex>
     </Flex>

@@ -239,7 +239,7 @@ const FacilityForm = ({ data }) => {
                 mapId={map?.id}
                 width={400}
                 onClick={null}
-                facility={null}
+                facility={position}
               />
             </Flex>
           </Form.Item>
@@ -259,6 +259,10 @@ const FacilityForm = ({ data }) => {
       <FacilityPositionManagementModal
         mapId={map?.id}
         open={isOpenModal}
+        onOk={(data) => {
+          setPosition(data.position);
+          setAlwaysVisible(data.alwaysVisible);
+        }}
         onCancel={() => {
           setIsOpenModal(false);
         }}

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { getMapDetail } from '../../api/map';
 import { baseURL } from '../../util/axios-client';
 
 const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   const [data, setData] = useState<any>();
-  const [containerId] = useState(`canvans-${Math.random()}`);
+  const containerId = useMemo(() => `canvans-${Math.random()}`, []);
   const [scale, setScale] = useState(1);
   const stageRef = useRef<any>(null);
   const secLayerRef = useRef<any>(null);
@@ -12,8 +12,30 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  const onClickStage = useCallback(
+    (e) => {
+      onClick({
+        x: e.evt.layerX,
+        y: e.evt.layerY,
+        originX: e.evt.layerX * (1 / scale),
+        originY: e.evt.layerY * (1 / scale),
+        scale,
+      });
+    },
+    [onClick, scale],
+  );
+
+  useEffect(() => {
+    if (!stageRef.current) return;
+    if (onClick) {
+      stageRef.current.on('click', onClickStage);
+    } else {
+      stageRef.current.off('click');
+    }
+  }, [onClick, onClickStage]);
+
   const createStage = useCallback(
-    (w, h, s) => {
+    (w, h) => {
       const stg = new window.Konva.Stage({
         container: containerId,
         width: w,
@@ -26,22 +48,14 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
       stg.add(_secLayer);
       stg.add(_facLayer);
       if (onClick) {
-        stg.on('click', (e) => {
-          onClick({
-            x: e.evt.layerX,
-            y: e.evt.layerY,
-            originX: e.evt.layerX * (1 / s),
-            originY: e.evt.layerY * (1 / s),
-            scale: s,
-          });
-        });
+        stg.on('click', onClickStage);
       }
 
       stageRef.current = stg;
       secLayerRef.current = _secLayer;
       facLayerRef.current = _facLayer;
     },
-    [containerId, onClick],
+    [containerId, onClick, onClickStage],
   );
 
   const render = useCallback(
@@ -73,7 +87,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
     }
     setScale(_scale);
     imageRef.current.width *= _scale;
-    createStage(imageRef.current.width, imageRef.current.height, _scale);
+    createStage(imageRef.current.width, imageRef.current.height);
     render(_scale);
   }, [createStage, render, width]);
 
@@ -106,17 +120,16 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
           top: 0,
         }}
       />
-      {scale}
-      {facility ? (
+      {facility?.x && facility.y ? (
         <img
           src="/facility-flag.png"
           alt="facility-flag"
           style={{
             position: 'absolute',
-            width: 64,
-            height: 64,
-            left: facility.x * scale - 32,
-            top: facility.y * scale - 64,
+            width: 64 * scale,
+            height: 64 * scale,
+            left: facility.x * scale - 32 * scale,
+            top: facility.y * scale - 64 * scale,
           }}
         />
       ) : null}

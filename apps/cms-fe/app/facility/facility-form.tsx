@@ -1,22 +1,14 @@
 'use client';
-import {
-  Button,
-  Divider,
-  Flex,
-  Form,
-  Image,
-  Input,
-  Select,
-  message,
-} from 'antd';
+import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import WingSelect from '../../component/wing-select/wing-select';
 import FloorSelect from '../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../api/map';
-import { baseURL } from '../../util/axios-client';
 import { createFacility } from '../../api/facility';
+import MapViewer from '../../component/map-viewer/map-viewer';
+import FacilityPositionManagementModal from '../../component/facility-position-management/facility-position-management-modal';
 
 const layout = {
   labelCol: { span: 4 },
@@ -48,6 +40,7 @@ const FacilityForm = ({ data }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [status, setStatus] = useState('enabled');
   const [map, setMap] = useState<any>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   useEffect(() => {
     if (!data) return;
@@ -234,12 +227,19 @@ const FacilityForm = ({ data }) => {
         {map ? (
           <Form.Item label="지도">
             <Flex vertical gap="small">
-              <Button style={{ width: 100 }}>위치설정</Button>
-              <Image
-                alt="map"
-                width="300px"
-                height="200px"
-                src={`${baseURL}/files/upload/${map?.image}`}
+              <Button
+                style={{ width: 100 }}
+                onClick={() => {
+                  setIsOpenModal(true);
+                }}
+              >
+                위치설정
+              </Button>
+              <MapViewer
+                mapId={map?.id}
+                width={400}
+                onClick={null}
+                facility={null}
               />
             </Flex>
           </Form.Item>
@@ -256,6 +256,13 @@ const FacilityForm = ({ data }) => {
           </Flex>
         </Form.Item>
       </Form>
+      <FacilityPositionManagementModal
+        mapId={map?.id}
+        open={isOpenModal}
+        onCancel={() => {
+          setIsOpenModal(false);
+        }}
+      />
     </Flex>
   );
 };

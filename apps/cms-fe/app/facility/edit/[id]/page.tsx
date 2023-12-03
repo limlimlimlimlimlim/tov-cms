@@ -12,7 +12,6 @@ export default function FacilityRegister() {
   const fetchData = useCallback(async () => {
     const data = await getFacilityDetail(id);
     setFacilityData(data.data);
-    console.log(data.data);
   }, [id]);
 
   useEffect(() => {

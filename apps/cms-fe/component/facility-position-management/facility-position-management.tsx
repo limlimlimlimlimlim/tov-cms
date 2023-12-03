@@ -1,18 +1,60 @@
-import { Button, Flex, Image } from "antd";
+'use client';
 
-export default function FacilityPositionManagement() {
+import { Button, Flex, Form, Switch } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import MapViewer from '../map-viewer/map-viewer';
+
+export default function FacilityPositionManagement({ mapId }) {
+  const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
+  const [position, setPosition] = useState<any>();
+  const [originPosition, setOriginPosition] = useState<any>();
+
+  const onClickMap = (data) => {
+    setPosition({ x: data.x, y: data.y });
+    setOriginPosition({ x: data.originX, y: data.originY });
+  };
+
+  useEffect(() => {
+    setEnabledPositionSetting(false);
+    setPosition(null);
+    setOriginPosition(null);
+  }, []);
+
   return (
     <Flex vertical gap="middle">
       <Flex justify="space-between">
-        <Button>위치설정</Button>
+        <Flex gap="small">
+          <Form.Item label="위치설정">
+            <Switch
+              checked={enabledPositionSetting}
+              onChange={(checked) => {
+                setEnabledPositionSetting(checked);
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="상시표시">
+            <Switch />
+          </Form.Item>
+        </Flex>
+
         <Flex gap="middle">
-          <Button>위치 지정 핀</Button>
-          <Button>사용 중 위치</Button>
-          <Button>초기화</Button>
+          <Button
+            onClick={() => {
+              setPosition(null);
+              setOriginPosition(null);
+            }}
+          >
+            초기화
+          </Button>
         </Flex>
       </Flex>
-      <Flex justify="center">
-        <Image alt="map" width="800px" height="600px" src="/map.png" />{" "}
+      <Flex justify="center" style={{ overflow: 'auto' }}>
+        <MapViewer
+          mapId={mapId}
+          width={900}
+          facility={originPosition}
+          onClick={onClickMap}
+        />
       </Flex>
     </Flex>
   );

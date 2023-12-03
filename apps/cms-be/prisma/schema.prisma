@@ -79,12 +79,13 @@ model Wing{
   nameEn      String?   @unique()
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  regionId    Int       
-  region      Region    @relation(fields: [regionId], references: [id])
+  regionId    Int?       
+  region      Region?    @relation(fields: [regionId], references: [id])
   floors      WingOnFloor[]
   map         Map[]
   kiosks      Kiosk[]
   posts       Post[]
+  facilities  Facility[]
 }
 model Floor {
   id        Int       @default(autoincrement()) @id
@@ -96,6 +97,7 @@ model Floor {
   wings     WingOnFloor[]
   mapss     Map[]
   kiosks    Kiosk[]
+  facilities  Facility[]
 }
 
 model WingOnFloor {
@@ -110,39 +112,41 @@ model WingOnFloor {
 model FacilityCategory {
   id            Int      @default(autoincrement()) @id
   name          String
-  facilties     Facility[]
-  subCategories FacilitySubCategory[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  facilties     Facility[]
+  subCategories FacilitySubCategory[]
 }
 
 model FacilitySubCategory {
   id          Int      @default(autoincrement()) @id
   name        String
   categoryId  Int
-  facilties   Facility[]
   category    FacilityCategory  @relation(fields: [categoryId], references: [id])  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  facilties   Facility[]
 }
 
 model Facility {
   id              Int      @default(autoincrement()) @id
-  name            String
-  wingId          Int
-  initial         String
-  fnbId           Int
-  phone           String
-  address         String
-  operation       String
-  image           String
-  iconId          Int
-  section         Section? @relation(fields: [sectionId], references: [id])
-  sectionId       Int @unique
-  categoryId      Int
-  category        FacilityCategory @relation(fields: [categoryId], references: [id])
-  subCategoryId   Int
-  subCategory     FacilitySubCategory @relation(fields: [subCategoryId], references: [id])
+  name            String?
+  wingId          Int?
+  wing            Wing? @relation(fields: [wingId], references: [id])
+  floorId         Int?
+  floor           Floor? @relation(fields: [floorId], references: [id])
+  phone           String?
+  address         String?
+  time            String?
+  alwaysVisible   Boolean?
+  iconType        String?
+  status          String?
+  x               Int?
+  y               Int?
+  categoryId      Int?
+  category        FacilityCategory? @relation(fields: [categoryId], references: [id])
+  subCategoryId   Int?
+  subCategory     FacilitySubCategory? @relation(fields: [subCategoryId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   posts           Post[]
@@ -169,8 +173,6 @@ model Section {
   map         Map     @relation(fields: [mapId], references: [id])
   groupId     Int?
   group       SectionGroup? @relation(fields: [groupId], references: [id])
-  facilityId  Int?
-  facility    Facility?
   path        String
   disabled    Boolean @default(false)
   createdAt   DateTime @default(now())

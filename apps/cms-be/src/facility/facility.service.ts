@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -10,8 +10,69 @@ export class FacilityService {
     return this.prisma.facility.create({ data });
   }
 
-  async getAllFacilities() {
-    return this.prisma.facility.findMany();
+  async getFacilities({ keyword, page, count, floorId, wingId }) {
+    const where = {
+      AND: [],
+    };
+    if (keyword) {
+      where.AND.push({ name: { contains: keyword } });
+    }
+    if (floorId) {
+      where.AND.push({ floorId: +floorId });
+    }
+    if (wingId) {
+      where.AND.push({ wingId: +wingId });
+    }
+
+    const total = await this.prisma.facility.count({ where });
+    const data = await this.prisma.facility.findMany({
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        time: true,
+        iconType: true,
+        status: true,
+        x: true,
+        y: true,
+        createdAt: true,
+        updatedAt: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subCategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        floor: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        wing: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+      },
+      where: where,
+      skip: (+page - 1) * +count,
+      take: +count,
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return { total, data, page, count };
   }
 
   async getFacilityById(id: number) {
@@ -23,11 +84,32 @@ export class FacilityService {
   }
 
   async updateFacility(id: number, data: Prisma.FacilityUpdateInput) {
-    return this.prisma.facility.update({ where: { id }, data });
+    const facility = await this.prisma.facility.findUnique({
+      where: { id },
+    });
+
+    if (!facility) {
+      throw new NotFoundException('Facility not found.');
+    }
+
+    return this.prisma.facility.update({
+      where: { id },
+      data,
+    });
   }
 
   async deleteFacility(id: number) {
-    return this.prisma.facility.delete({ where: { id } });
+    const facility = await this.prisma.facility.findUnique({
+      where: { id },
+    });
+
+    if (!facility) {
+      throw new NotFoundException('Facility not found.');
+    }
+
+    return await this.prisma.facility.delete({
+      where: { id },
+    });
   }
 
   async createCategory(data: Prisma.FacilityCategoryCreateInput) {

@@ -8,6 +8,7 @@ import {
   ConflictException,
   NotFoundException,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { FacilityService } from './facility.service';
 import { Prisma } from '@prisma/client';
@@ -29,12 +30,24 @@ export class FacilityController {
   }
 
   @Get()
-  async getAllFacilities() {
-    return this.facilityService.getAllFacilities();
+  async getFacilities(
+    @Query('keyword') keyword: string,
+    @Query('page') page: string = '1',
+    @Query('count') count: string = '50',
+    @Query('floorId') floorId: string,
+    @Query('wingId') wingId: string,
+  ) {
+    return this.facilityService.getFacilities({
+      keyword,
+      page,
+      count,
+      floorId,
+      wingId,
+    });
   }
 
   @Get(':id')
-  async getFacilityById(@Param('id') id: number) {
+  async getFacilityById(@Param('id') id: string) {
     const facility = await this.facilityService.getFacilityById(+id);
     if (!facility) {
       throw new NotFoundException('Facility not found.');

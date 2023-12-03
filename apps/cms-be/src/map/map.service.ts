@@ -98,6 +98,7 @@ export class MapService {
   }
 
   async deleteMap(id: number) {
+    await this.prisma.section.deleteMany({ where: { mapId: id } });
     return this.prisma.map.delete({ where: { id } });
   }
 }

@@ -6,6 +6,10 @@ export const getMaps = async (param: { keyword; page; count; floor; wing }) => {
   );
 };
 
+export const getMapByWingAndFloor = async (param: { floor; wing }) => {
+  return axiosClient.get(`/maps?floor=${param.floor}&wing=${param.wing}`);
+};
+
 export const getMapDetail = async (id) => {
   return axiosClient.get(`/maps/${id}`);
 };

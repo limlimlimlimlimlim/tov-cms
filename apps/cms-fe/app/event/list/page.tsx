@@ -100,7 +100,7 @@ export default function EventList() {
         <Flex gap="small" align="center">
           <Button
             danger
-            disabled={selectedData.length === 0}
+            disabled={data.length === 0 || selectedData.length === 0}
             onClick={onClickDelete}
           >
             삭제

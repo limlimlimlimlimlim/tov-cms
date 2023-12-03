@@ -1,6 +1,6 @@
 import { Select } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { getFloors, getFloorsInWing } from '../../api/building-info';
+import { getFloorsInWing } from '../../api/building-info';
 
 const { Option } = Select;
 

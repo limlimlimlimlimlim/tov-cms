@@ -20,7 +20,7 @@ const columns: ColumnsType<KioskItem> = [
     width: 80,
   },
   {
-    title: '동',
+    title: '건물명',
     width: 100,
     render: (row) => row.wing.name,
   },
@@ -116,11 +116,11 @@ export default function KioskList() {
 
   const onChangeWing = useCallback((w) => {
     setWing(w);
+    setFloor('');
   }, []);
 
   const onChangeFloor = useCallback((f: any) => {
     setFloor(f);
-    setWing('');
   }, []);
 
   const onChangePage = useCallback((p) => {
@@ -149,7 +149,7 @@ export default function KioskList() {
         <Flex gap="small" align="center">
           <Button
             danger
-            disabled={selectedData.length === 0}
+            disabled={data.length === 0 || selectedData.length === 0}
             onClick={onClickDelete}
           >
             삭제

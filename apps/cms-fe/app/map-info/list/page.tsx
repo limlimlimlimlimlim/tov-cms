@@ -104,11 +104,11 @@ export default function MapInfoList() {
 
   const onChangeFloor = useCallback((f: any) => {
     setFloor(f);
-    setWing('');
   }, []);
 
   const onChangeWing = useCallback((w) => {
     setWing(w);
+    setFloor('');
   }, []);
 
   const onChangePage = useCallback((p) => {

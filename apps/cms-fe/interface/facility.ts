@@ -1,7 +1,7 @@
 export interface FacilityItem {
   key: React.Key;
-  no: number;
-  building: string;
+  id: number;
+  wing: string;
   floor: string;
   name: string;
   type: string;

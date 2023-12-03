@@ -139,11 +139,11 @@ export default function PostList() {
 
   const onChangeWing = useCallback((w) => {
     setWing(w);
+    setFloor('');
   }, []);
 
   const onChangeFloor = useCallback((f: any) => {
     setFloor(f);
-    setWing('');
   }, []);
 
   const onChangePage = useCallback((p) => {
@@ -168,7 +168,7 @@ export default function PostList() {
         <Flex gap="small" align="center">
           <Button
             danger
-            disabled={selectedData.length === 0}
+            disabled={data.length === 0 || selectedData.length === 0}
             onClick={onClickDelete}
           >
             삭제

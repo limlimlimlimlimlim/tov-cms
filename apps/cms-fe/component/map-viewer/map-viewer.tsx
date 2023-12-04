@@ -21,7 +21,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
         originX: e.evt.layerX * (1 / scale),
         originY: e.evt.layerY * (1 / scale),
         scale,
-        facility: e.target.getName(),
+        section: e.target.getName(),
       });
     },
     [onClick, scale],

@@ -12,15 +12,18 @@ export default function FacilityPositionManagement({
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
   const [originPosition, setOriginPosition] = useState<any>({ ...position });
   const [alwaysVisible, setAlwaysVisible] = useState(false);
+  const [sectionId, setSectionId] = useState();
   const onClickMap = useCallback(
     (data) => {
+      setSectionId(data.section);
       setOriginPosition({ x: data.originX, y: data.originY });
       onChange({
         position: { x: data.originX, y: data.originY },
         alwaysVisible,
+        sectionId,
       });
     },
-    [alwaysVisible, onChange],
+    [alwaysVisible, onChange, sectionId],
   );
 
   useEffect(() => {
@@ -47,6 +50,7 @@ export default function FacilityPositionManagement({
                 onChange({
                   position: originPosition,
                   alwaysVisible: check,
+                  sectionId,
                 });
               }}
             />
@@ -60,6 +64,7 @@ export default function FacilityPositionManagement({
               onChange({
                 position: null,
                 alwaysVisible,
+                sectionId,
               });
             }}
           >

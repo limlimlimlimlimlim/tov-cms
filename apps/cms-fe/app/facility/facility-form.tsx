@@ -84,6 +84,7 @@ const FacilityForm = ({ data }) => {
         });
         void message.success('시설이 수정됐습니다.');
       } else {
+        console.log(sectionId);
         await createFacility({
           name,
           phone,
@@ -108,20 +109,22 @@ const FacilityForm = ({ data }) => {
       void message.error(e.message);
     }
   }, [
-    address,
-    alwaysVisible,
-    category,
-    floor,
-    iconType,
+    isEdit,
+    router,
+    data,
     name,
     phone,
+    address,
+    time,
+    alwaysVisible,
+    iconType,
+    status,
+    floor,
+    wing,
+    category,
+    subCategory,
     position.x,
     position.y,
-    router,
-    status,
-    subCategory,
-    time,
-    wing,
     sectionId,
   ]);
 
@@ -291,6 +294,7 @@ const FacilityForm = ({ data }) => {
         onOk={(data) => {
           setPosition(data.position);
           setAlwaysVisible(data.alwaysVisible);
+          setSectionId(data.sectionId);
         }}
         onCancel={() => {
           setIsOpenModal(false);

@@ -64,6 +64,18 @@ export class FacilityService {
             nameEn: true,
           },
         },
+        section: {
+          select: {
+            id: true,
+            path: true,
+            group: {
+              select: {
+                id: true,
+                sections: true,
+              },
+            },
+          },
+        },
       },
       where: where,
       skip: (+page - 1) * +count,
@@ -113,6 +125,18 @@ export class FacilityService {
           select: {
             id: true,
             name: true,
+          },
+        },
+        section: {
+          select: {
+            id: true,
+            path: true,
+            group: {
+              select: {
+                id: true,
+                sections: true,
+              },
+            },
           },
         },
       },

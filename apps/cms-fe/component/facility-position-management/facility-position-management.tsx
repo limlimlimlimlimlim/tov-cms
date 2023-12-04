@@ -4,9 +4,13 @@ import { Button, Flex, Form, Switch } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import MapViewer from '../map-viewer/map-viewer';
 
-export default function FacilityPositionManagement({ mapId, onChange }) {
+export default function FacilityPositionManagement({
+  mapId,
+  position,
+  onChange,
+}) {
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
-  const [originPosition, setOriginPosition] = useState<any>();
+  const [originPosition, setOriginPosition] = useState<any>({ ...position });
   const [alwaysVisible, setAlwaysVisible] = useState(false);
   const onClickMap = useCallback(
     (data) => {
@@ -21,7 +25,6 @@ export default function FacilityPositionManagement({ mapId, onChange }) {
 
   useEffect(() => {
     setEnabledPositionSetting(true);
-    setOriginPosition(null);
   }, []);
 
   return (

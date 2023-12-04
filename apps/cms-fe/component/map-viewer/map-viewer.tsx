@@ -14,12 +14,14 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
 
   const onClickStage = useCallback(
     (e) => {
+      if (e.target.nodeType !== 'Shape') return;
       onClick({
         x: e.evt.layerX,
         y: e.evt.layerY,
         originX: e.evt.layerX * (1 / scale),
         originY: e.evt.layerY * (1 / scale),
         scale,
+        facility: e.target.getName(),
       });
     },
     [onClick, scale],
@@ -28,9 +30,8 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   useEffect(() => {
     if (!stageRef.current) return;
     if (onClick) {
-      stageRef.current.on('click', onClickStage);
-    } else {
       stageRef.current.off('click');
+      stageRef.current.on('click', onClickStage);
     }
   }, [onClick, onClickStage]);
 
@@ -48,6 +49,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
       stg.add(_secLayer);
       stg.add(_facLayer);
       if (onClick) {
+        stg.off('click');
         stg.on('click', onClickStage);
       }
 

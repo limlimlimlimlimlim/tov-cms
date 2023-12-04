@@ -259,6 +259,7 @@ const FacilityForm = ({ data }) => {
       <FacilityPositionManagementModal
         mapId={map?.id}
         open={isOpenModal}
+        position={position}
         onOk={(data) => {
           setPosition(data.position);
           setAlwaysVisible(data.alwaysVisible);

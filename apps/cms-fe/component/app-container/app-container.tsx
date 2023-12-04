@@ -2,13 +2,6 @@
 
 import { Layout, theme } from 'antd';
 import { useCallback, useState } from 'react';
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
 import AppSider from '../app-sider/app-sider';
 import AppHeader from '../app-hader/app-header';
 

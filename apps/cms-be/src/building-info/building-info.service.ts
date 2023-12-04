@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 export class BuildingInfoService {
   constructor(private prisma: PrismaService) {}
 
-  async createFloor(data: Prisma.FloorCreateInput) {
+  async createFloor(data: Prisma.FloorUncheckedCreateInput) {
     if (data.order !== undefined) {
       await this.prisma.floor.updateMany({
         where: {
@@ -18,60 +18,42 @@ export class BuildingInfoService {
           order: { increment: 1 },
         },
       });
-    }
-    return this.prisma.floor.create({ data });
-  }
-
-  async addWingToFloor(data: Prisma.WingOnFloorUncheckedCreateInput) {
-    if (data.order !== undefined) {
-      await this.prisma.wingOnFloor.updateMany({
+    } else {
+      const count = await this.prisma.floor.count({
         where: {
-          floorId: data.floorId,
-          order: {
-            gte: data.order,
-          },
-        },
-        data: {
-          order: { increment: 1 },
+          wingId: data.wingId,
         },
       });
-    } else {
-      const count = await this.getFloorCountFromWingOnFloor(
-        data.floorId.toString(),
-      );
-      data.order = count;
+      data.order = count + 1;
     }
-    return this.prisma.wingOnFloor.create({ data });
-  }
-
-  async getFloorCountFromWingOnFloor(floorId: string) {
-    return this.prisma.wingOnFloor.count({ where: { floorId: +floorId } });
+    return this.prisma.floor.create({ data });
   }
 
   async createWing(data: Prisma.WingUncheckedCreateInput) {
     return this.prisma.wing.create({ data });
   }
 
-  async getFloorWingTree() {
-    const floors = await this.prisma.floor.findMany({
-      orderBy: { order: 'asc' },
+  async getWingFloorTree() {
+    return await this.prisma.wing.findMany({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        floors: {
+          select: {
+            id: true,
+            name: true,
+            order: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
     });
-    const tree = [];
-    for (const floor of floors) {
-      const floorId = floor.id;
-
-      if (
-        !tree.find((i) => {
-          i.id == floorId;
-        })
-      ) {
-        tree.push({
-          ...floor,
-          wings: await this.getWingsInFloor(floorId.toString()),
-        });
-      }
-    }
-    return tree;
   }
 
   async getAllFloors() {
@@ -91,51 +73,15 @@ export class BuildingInfoService {
   }
 
   async getFloorsInWing(wingId: string) {
-    const wingOnFloorData = await this.prisma.wingOnFloor.findMany({
-      where: { wingId: +wingId },
-      include: { floor: true },
-    });
-
-    return wingOnFloorData.map((item) => ({
-      id: item.floor.id,
-      name: item.floor.name,
-      nameEn: item.floor.nameEn,
-      createdAt: item.floor.createdAt,
-      updatedAt: item.floor.updatedAt,
-      order: item.order,
-    }));
-  }
-
-  async getWingsInFloor(floorId: string) {
-    const wingOnFloorData = await this.prisma.wingOnFloor.findMany({
-      where: { floorId: +floorId },
-      include: { wing: true },
-    });
-
-    return wingOnFloorData.map((item) => ({
-      id: item.wing.id,
-      name: item.wing.name,
-      nameEn: item.wing.nameEn,
-      createdAt: item.wing.createdAt,
-      updatedAt: item.wing.updatedAt,
-      order: item.order,
-    }));
-  }
-
-  async hasAddedWing(floorId: string) {
-    const floor = await this.prisma.wingOnFloor.findFirst({
-      where: { floorId: +floorId },
-    });
-
-    return !!floor;
-  }
-
-  async isAddedWing(wingId: string) {
-    const wing = await this.prisma.wingOnFloor.findFirst({
+    return this.prisma.floor.findMany({
       where: { wingId: +wingId },
     });
+  }
 
-    return !!wing;
+  async getWingsInFloor(wingId: string) {
+    return await this.prisma.floor.findMany({
+      where: { wingId: +wingId },
+    });
   }
 
   async getFloorByName(name: string, lang: 'ko' | 'en') {
@@ -163,43 +109,22 @@ export class BuildingInfoService {
   async deleteFloor(id: string) {
     const floor = await this.getFloorById(id);
     const order = floor.order;
-    await this.prisma.floor.delete({ where: { id: +id } });
-    return this.prisma.floor.updateMany({
-      where: { order: { gte: order } },
-      data: { order: { decrement: 1 } },
+    await this.prisma.floor.updateMany({
+      where: {
+        wingId: floor.wingId,
+        order: {
+          gt: order,
+        },
+      },
+      data: {
+        order: { decrement: 1 },
+      },
     });
+    return this.prisma.floor.delete({ where: { id: +id } });
   }
 
   async deleteWing(id: string) {
     return this.prisma.wing.delete({ where: { id: +id } });
-  }
-
-  async deleteWingInFloor(floorId: string, wingId: string) {
-    const wing = await this.prisma.wingOnFloor.findUnique({
-      where: {
-        wingId_floorId: {
-          floorId: +floorId,
-          wingId: +wingId,
-        },
-      },
-    });
-    const order = wing.order;
-
-    await this.prisma.wingOnFloor.delete({
-      where: {
-        wingId_floorId: {
-          floorId: +floorId,
-          wingId: +wingId,
-        },
-      },
-    });
-    return await this.prisma.wingOnFloor.updateMany({
-      where: {
-        floorId: +floorId,
-        order: { gte: order },
-      },
-      data: { order: { decrement: 1 } },
-    });
   }
 
   async swapFloors(id1: string, id2: string) {
@@ -219,29 +144,28 @@ export class BuildingInfoService {
   }
 
   async swapWings(floorId: string, id1: string, id2: string) {
-    const wings = await this.getWingsInFloor(floorId);
-    const wing1 = wings.find((wing) => wing.id.toString() === id1);
-    const wing2 = wings.find((wing) => wing.id.toString() === id2);
-
-    return Promise.all([
-      this.prisma.wingOnFloor.update({
-        where: {
-          wingId_floorId: {
-            floorId: +floorId,
-            wingId: wing1.id,
-          },
-        },
-        data: { order: wing2.order },
-      }),
-      this.prisma.wingOnFloor.update({
-        where: {
-          wingId_floorId: {
-            floorId: +floorId,
-            wingId: wing2.id,
-          },
-        },
-        data: { order: wing1.order },
-      }),
-    ]);
+    // const wings = await this.getWingsInFloor(floorId);
+    // const wing1 = wings.find((wing) => wing.id.toString() === id1);
+    // const wing2 = wings.find((wing) => wing.id.toString() === id2);
+    // return Promise.all([
+    //   this.prisma.wingOnFloor.update({
+    //     where: {
+    //       wingId_floorId: {
+    //         floorId: +floorId,
+    //         wingId: wing1.id,
+    //       },
+    //     },
+    //     data: { order: wing2.order },
+    //   }),
+    //   this.prisma.wingOnFloor.update({
+    //     where: {
+    //       wingId_floorId: {
+    //         floorId: +floorId,
+    //         wingId: wing2.id,
+    //       },
+    //     },
+    //     data: { order: wing1.order },
+    //   }),
+    // ]);
   }
 }

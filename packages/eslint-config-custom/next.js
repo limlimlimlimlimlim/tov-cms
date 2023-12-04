@@ -65,6 +65,7 @@ module.exports = {
     "jsx-a11y/anchor-has-content": "off",
     "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/anchor-is-valid": "off",
+    "react/jsx-no-leaked-render": "off",
     "react/function-component-definition": [
       2,
       { namedComponents: ["arrow-function", "function-declaration"] },

@@ -8,7 +8,6 @@ import {
   Param,
   NotFoundException,
   Query,
-  ConflictException,
 } from '@nestjs/common';
 import { BuildingInfoService } from './building-info.service';
 import { Prisma } from '@prisma/client';
@@ -18,32 +17,32 @@ export class BuildingInfoController {
   constructor(private readonly buildingInfoService: BuildingInfoService) {}
 
   @Post('floor')
-  async createFloor(@Body() data: Prisma.FloorCreateInput) {
+  async createFloor(@Body() data: Prisma.FloorUncheckedCreateInput) {
     return await this.buildingInfoService.createFloor(data);
   }
 
-  @Post('floor/:floorId/add/:wingId')
-  async addWingToFloor(
-    @Param('floorId') floorId: string,
-    @Param('wingId') wingId: string,
-    @Query('order') order?: string,
-  ) {
-    const floor = await this.buildingInfoService.getFloorById(floorId);
-    if (!floor) {
-      return new NotFoundException();
-    }
+  // @Post('floor/:floorId/add/:wingId')
+  // async addWingToFloor(
+  //   @Param('floorId') floorId: string,
+  //   @Param('wingId') wingId: string,
+  //   @Query('order') order?: string,
+  // ) {
+  //   const floor = await this.buildingInfoService.getFloorById(floorId);
+  //   if (!floor) {
+  //     return new NotFoundException();
+  //   }
 
-    const wing = await this.buildingInfoService.getWingById(wingId);
-    if (!wing) {
-      return new NotFoundException();
-    }
+  //   const wing = await this.buildingInfoService.getWingById(wingId);
+  //   if (!wing) {
+  //     return new NotFoundException();
+  //   }
 
-    return await this.buildingInfoService.addWingToFloor({
-      floorId: +floorId,
-      wingId: +wingId,
-      order: order !== undefined ? +order : undefined,
-    });
-  }
+  //   return await this.buildingInfoService.addWingToFloor({
+  //     floorId: +floorId,
+  //     wingId: +wingId,
+  //     order: order !== undefined ? +order : undefined,
+  //   });
+  // }
 
   @Post('wing')
   async createWing(@Body() data: Prisma.WingUncheckedCreateInput) {
@@ -51,8 +50,8 @@ export class BuildingInfoController {
   }
 
   @Get('tree')
-  async getFloorWingTree() {
-    return await this.buildingInfoService.getFloorWingTree();
+  async getWingFloorTree() {
+    return await this.buildingInfoService.getWingFloorTree();
   }
 
   @Get('floors')
@@ -151,12 +150,6 @@ export class BuildingInfoController {
     if (!sameFloor) {
       throw new NotFoundException('Data not found.');
     }
-    const child = await this.getWingsInFloor(id);
-
-    if (child && child.length > 0) {
-      throw new ConflictException('Data deletion failed due to dependencies.');
-    }
-
     return this.buildingInfoService.deleteFloor(id);
   }
 
@@ -167,13 +160,5 @@ export class BuildingInfoController {
       throw new NotFoundException('Data not found.');
     }
     return this.buildingInfoService.deleteWing(wingId);
-  }
-
-  @Delete('floor/:floorId/wing/:wingId')
-  async deleteWingInFloor(
-    @Param('floorId') floorId: string,
-    @Param('wingId') wingId: string,
-  ) {
-    return this.buildingInfoService.deleteWingInFloor(floorId, wingId);
   }
 }

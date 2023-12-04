@@ -7,6 +7,7 @@ const { Option } = Select;
 interface ComponentProps {
   wingId: string;
   floorId?: string;
+  useAll?: boolean;
   style?: any;
   onChange?: (floorId) => void;
 }
@@ -14,6 +15,7 @@ interface ComponentProps {
 export default function FloorSelect({
   wingId,
   floorId = '',
+  useAll = false,
   style,
   onChange,
 }: ComponentProps) {
@@ -23,7 +25,6 @@ export default function FloorSelect({
     if (!wingId) return;
 
     const fetchData = async (wingId) => {
-      // const floors = await getFloors();
       const floors = await getFloorsInWing(wingId);
       setFloors(floors.data);
     };
@@ -47,9 +48,12 @@ export default function FloorSelect({
         onChange(value);
       }}
     >
-      <Option key="all" value="">
-        전체
-      </Option>
+      {useAll && (
+        <Option key="all" value="">
+          전체
+        </Option>
+      )}
+
       {createOptions()}
     </Select>
   );

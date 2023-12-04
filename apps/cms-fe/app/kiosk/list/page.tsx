@@ -135,6 +135,7 @@ export default function KioskList() {
             wingId={wing}
             style={{ width: 200 }}
             onChange={onChangeWing}
+            useAll
           />
         </Form.Item>
         <Form.Item label="층 선택">
@@ -142,6 +143,7 @@ export default function KioskList() {
             wingId={wing}
             style={{ width: 200 }}
             onChange={onChangeFloor}
+            useAll
           />
         </Form.Item>
       </Flex>

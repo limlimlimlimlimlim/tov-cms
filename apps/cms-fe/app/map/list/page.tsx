@@ -170,13 +170,18 @@ export default function MapList() {
         <Flex justify="space-between">
           <Flex gap="large">
             <Form.Item label="건물 선택">
-              <WingSelect style={{ width: 200 }} onChange={onChangeWing} />
+              <WingSelect
+                style={{ width: 200 }}
+                onChange={onChangeWing}
+                useAll
+              />
             </Form.Item>
             <Form.Item label="층 선택">
               <FloorSelect
                 wingId={wing}
                 style={{ width: 200 }}
                 onChange={onChangeFloor}
+                useAll
               />
             </Form.Item>
           </Flex>

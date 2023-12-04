@@ -1,4 +1,4 @@
-import { Button, Flex, Input } from 'antd';
+import { Button, Flex, Input, Modal, message } from 'antd';
 import { useCallback, useState } from 'react';
 import {
   CloseOutlined,
@@ -7,42 +7,46 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
-import BuildingList from './building-list';
+import { deleteFloor, updateFloor } from '../../api/building-info';
+
+const { confirm } = Modal;
 
 interface ComponentProps {
-  id: string;
-  name: string;
-  child: any[];
-  onAdd: (id) => void;
-  onDelete: (id) => void;
-  onDeleteWing: (id) => void;
-  onUpdate: (id, value) => void;
+  data: any;
+  onChange: () => void;
+  onAdd: (order) => void;
 }
 
-export default function FloorItem({
-  id,
-  name,
-  child,
-  onAdd,
-  onDelete,
-  onDeleteWing,
-  onUpdate,
-}: ComponentProps) {
+export default function FloorItem({ data, onAdd, onChange }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
-  const [itemName, setItemName] = useState(name);
+  const [itemName, setItemName] = useState(data.name);
 
   const onClickAdd = useCallback(() => {
-    onAdd(id);
-  }, [id, onAdd]);
-
+    onAdd(data.order + 1);
+  }, [data, onAdd]);
   const onClickDelete = useCallback(() => {
-    onDelete(id);
-  }, [id, onDelete]);
+    confirm({
+      title: '층 삭제',
+      okText: '확인',
+      cancelText: '취소',
+      content: '층을 삭제하시겠습니까?',
+      async onOk() {
+        try {
+          await deleteFloor(data.id);
+          onChange();
+          void message.success('층이 삭제됐습니다.');
+        } catch (e) {
+          void message.error('층을 삭제할 수 없습니다.');
+        }
+      },
+    });
+  }, [data, onChange]);
 
-  const onClickUpdate = useCallback(() => {
-    onUpdate(id, itemName);
+  const onClickUpdate = useCallback(async () => {
+    await updateFloor(data.id, { name: itemName });
+    void message.success('층이 수정 됐습니다.');
     setIsEdit(false);
-  }, [itemName, id, onUpdate]);
+  }, [data, itemName]);
 
   const onClickEdit = useCallback(() => {
     setIsEdit(true);
@@ -90,11 +94,6 @@ export default function FloorItem({
           </Button>
         )}
       </Flex>
-      {Boolean(child) && child.length > 0 && (
-        <Flex style={{ paddingLeft: 30 }}>
-          <BuildingList data={child} onDelete={onDeleteWing} />
-        </Flex>
-      )}
     </Flex>
   );
 }

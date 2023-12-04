@@ -81,35 +81,36 @@ model Wing{
   updatedAt   DateTime  @updatedAt
   regionId    Int?       
   region      Region?    @relation(fields: [regionId], references: [id])
-  floors      WingOnFloor[]
   map         Map[]
   kiosks      Kiosk[]
   posts       Post[]
   facilities  Facility[]
   schedule    Schedule[]
+  floors      Floor[]
 }
 model Floor {
   id        Int       @default(autoincrement()) @id
-  name      String    @unique()
-  nameEn    String?   @unique()
+  name      String    
+  nameEn    String?   
   order     Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  wings     WingOnFloor[]
+  wingId    Int?       
+  wing      Wing?  @relation(fields: [wingId], references: [id])
   mapss     Map[]
   kiosks    Kiosk[]
   facilities  Facility[]
 }
 
-model WingOnFloor {
-  id        Int       @default(autoincrement()) @id
-  wingId    Int
-  floorId   Int
-  order     Int
-  wing      Wing      @relation(fields: [wingId], references: [id])
-  floor     Floor     @relation(fields: [floorId], references: [id])
-  @@unique([wingId, floorId])
-}
+// model WingOnFloor {
+//   id        Int       @default(autoincrement()) @id
+//   wingId    Int
+//   floorId   Int
+//   order     Int
+//   wing      Wing      @relation(fields: [wingId], references: [id])
+//   floor     Floor     @relation(fields: [floorId], references: [id])
+//   @@unique([wingId, floorId])
+// }
 model FacilityCategory {
   id            Int      @default(autoincrement()) @id
   name          String

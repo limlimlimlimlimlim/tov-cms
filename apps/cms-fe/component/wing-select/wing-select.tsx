@@ -7,15 +7,18 @@ const { Option } = Select;
 interface ComponentProps {
   wingId?;
   style?;
+  useAll?;
   onChange?: (wingId) => void;
 }
 
 export default function WingSelect({
   wingId = '',
+  useAll = false,
   style,
   onChange,
 }: ComponentProps) {
   const [wings, setWings] = useState([]);
+  const [selectedWing, setSelectedWing] = useState(wingId);
 
   useEffect(() => {
     void fetchData();
@@ -35,16 +38,21 @@ export default function WingSelect({
   }, [wings]);
   return (
     <Select
+      placeholder="선택"
       style={style}
-      value={wingId}
+      value={selectedWing}
       onChange={(value) => {
         if (!onChange) return;
         onChange(value);
+        setSelectedWing(value);
       }}
     >
-      <Option key="all" value="">
-        전체
-      </Option>
+      {useAll ? (
+        <Option key="all" value="">
+          전체
+        </Option>
+      ) : null}
+
       {createOptions()}
     </Select>
   );

@@ -44,8 +44,8 @@ export default function MapForm({ data }) {
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setFloorId(data.floorId);
-      setWingId(data.wingId);
+      setWingId(data.wing.id);
+      setFloorId(data.floor.id);
       setName(data.name);
       setImage(data.image);
       setIsUse(data.isUse);

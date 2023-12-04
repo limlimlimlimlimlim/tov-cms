@@ -17,8 +17,7 @@ export default function WingSelect({
   style,
   onChange,
 }: ComponentProps) {
-  const [wings, setWings] = useState([]);
-  const [selectedWing, setSelectedWing] = useState(wingId);
+  const [wings, setWings] = useState<any[]>();
 
   useEffect(() => {
     void fetchData();
@@ -30,30 +29,33 @@ export default function WingSelect({
   };
 
   const createOptions = useCallback(() => {
-    return wings.map((building: any) => (
-      <Option key={building.id} value={building.id}>
-        {building.name}
+    return wings?.map((wing: any) => (
+      <Option key={wing.id} value={wing.id}>
+        {wing.name}
       </Option>
     ));
   }, [wings]);
   return (
-    <Select
-      placeholder="선택"
-      style={style}
-      value={selectedWing}
-      onChange={(value) => {
-        if (!onChange) return;
-        onChange(value);
-        setSelectedWing(value);
-      }}
-    >
-      {useAll ? (
-        <Option key="all" value="">
-          전체
-        </Option>
-      ) : null}
+    <>
+      {wings && (
+        <Select
+          placeholder="선택"
+          style={style}
+          value={wingId}
+          onChange={(value) => {
+            if (!onChange) return;
+            onChange(value);
+          }}
+        >
+          {useAll ? (
+            <Option key="all" value="">
+              전체
+            </Option>
+          ) : null}
 
-      {createOptions()}
-    </Select>
+          {createOptions()}
+        </Select>
+      )}
+    </>
   );
 }

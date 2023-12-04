@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import WingSelect from '../../component/wing-select/wing-select';
 import FloorSelect from '../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../api/map';
-import { createFacility } from '../../api/facility';
+import { createFacility, updateFacility } from '../../api/facility';
 import MapViewer from '../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../component/facility-position-management/facility-position-management-modal';
 
@@ -38,44 +38,71 @@ const FacilityForm = ({ data }) => {
   const [iconType, setIconType] = useState('icon1');
   const [alwaysVisible, setAlwaysVisible] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [sectionId, setSectionId] = useState();
   const [status, setStatus] = useState('enabled');
   const [map, setMap] = useState<any>();
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
-    if (!data) return;
-    setWing(data.wingId);
-    setFloor(data.floorId);
-    setCategory(data.categoryId);
-    setSubCategory(data.subCategoryId);
-    setName(data.name);
-    setAddress(data.address);
-    setPhone(data.phone);
-    setTime(data.time);
-    setIconType(data.iconType);
-    setAlwaysVisible(data.alwaysVisible);
-    setPosition({ x: data.x, y: data.y });
-    setStatus(data.status);
+    if (data) {
+      setIsEdit(true);
+      setWing(data.wingId);
+      setFloor(data.floorId);
+      setCategory(data.categoryId);
+      setSubCategory(data.subCategoryId);
+      setName(data.name);
+      setAddress(data.address);
+      setPhone(data.phone);
+      setTime(data.time);
+      setIconType(data.iconType);
+      setAlwaysVisible(data.alwaysVisible);
+      setPosition({ x: data.x, y: data.y });
+      setStatus(data.status);
+      setSectionId(data.section?.id);
+    }
   }, [data]);
 
   const onFinish = useCallback(async () => {
     try {
-      await createFacility({
-        name,
-        phone,
-        address,
-        time,
-        alwaysVisible,
-        iconType,
-        status,
-        floorId: floor,
-        wingId: wing,
-        categoryId: category,
-        subCategoryId: subCategory,
-        x: position.x,
-        y: position.y,
-      });
-      void message.success('시설이 생성됐습니다.');
+      if (isEdit) {
+        await updateFacility(data.id, {
+          name,
+          phone,
+          address,
+          time,
+          alwaysVisible,
+          iconType,
+          status,
+          floorId: floor,
+          wingId: wing,
+          categoryId: category,
+          subCategoryId: subCategory,
+          x: position.x,
+          y: position.y,
+          sectionId,
+        });
+        void message.success('시설이 수정됐습니다.');
+      } else {
+        await createFacility({
+          name,
+          phone,
+          address,
+          time,
+          alwaysVisible,
+          iconType,
+          status,
+          floorId: floor,
+          wingId: wing,
+          categoryId: category,
+          subCategoryId: subCategory,
+          x: position.x,
+          y: position.y,
+          sectionId,
+        });
+        void message.success('시설이 생성됐습니다.');
+      }
+
       router.push('/facility/list');
     } catch (e) {
       void message.error(e.message);
@@ -95,6 +122,7 @@ const FacilityForm = ({ data }) => {
     subCategory,
     time,
     wing,
+    sectionId,
   ]);
 
   const onChangeFloor = useCallback((f: any) => {

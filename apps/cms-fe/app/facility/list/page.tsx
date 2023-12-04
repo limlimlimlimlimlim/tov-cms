@@ -33,12 +33,12 @@ const columns: ColumnsType<FacilityItem> = [
   {
     title: '구분',
     width: 150,
-    render: (row) => row.category.name,
+    render: (row) => row.category?.name,
   },
   {
     title: '구분상세',
     width: 150,
-    render: (row) => row.subCategory.name,
+    render: (row) => row.subCategory?.name,
   },
   {
     title: '시설명',

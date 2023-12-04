@@ -122,7 +122,7 @@ export default function PostList() {
       title: '게시물 삭제 확인',
       okText: '확인',
       cancelText: '취소',
-      content: '선택된 게시물를 삭제하시겠습니까?',
+      content: '선택된 게시물을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deletePost(row.id)));
         void fetchData({ keyword, page, count, floor, wing });

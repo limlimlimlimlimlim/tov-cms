@@ -1,89 +1,66 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Select, Table, message } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
-import type { ScheduleItem } from '../../../interface/schedule';
+import { EditOutlined } from '@ant-design/icons';
+import type { PostItem } from '../../../interface/post';
+import WingSelect from '../../../component/wing-select/wing-select';
+import { deletePost } from '../../../api/post';
+import { getSchedules } from '../../../api/schedule';
 
 const { Search } = Input;
 const { confirm } = Modal;
-const { Option } = Select;
 
-const columns: ColumnsType<ScheduleItem> = [
+const columns: ColumnsType<PostItem> = [
   {
     title: '번호',
-    dataIndex: 'no',
+    dataIndex: 'id',
     width: 80,
   },
   {
-    title: '키오스크',
-    dataIndex: 'kiosk',
-    width: 120,
-  },
-  {
-    title: '스케줄명',
-    dataIndex: 'name',
-    width: 150,
-  },
-  {
-    title: '종류',
-    dataIndex: 'type',
+    title: '건물명',
     width: 100,
+    render: (row) => row.wing.name,
+  },
+  {
+    title: '스케쥴명',
+    width: 150,
+    dataIndex: 'name',
   },
   {
     title: '상태',
+    width: 150,
     dataIndex: 'status',
-    width: 100,
-  },
-  {
-    title: '기간',
-    render: (value: ScheduleItem) => (
-      <>
-        {format(value.startDate, 'yyyy-MM-dd')} ~
-        {format(value.endDate, 'yyyy-MM-dd')}
-      </>
-    ),
-    width: 250,
-  },
-  {
-    title: '순서변경',
-    dataIndex: 'order',
-    width: 100,
-    render: (order: number) => (
-      <Flex>
-        <Button size="small">
-          <CaretUpOutlined />
-        </Button>
-        <Button size="small">
-          <CaretDownOutlined />
-        </Button>
-      </Flex>
-    ),
+    render(type) {
+      switch (type) {
+        case 'enabled':
+          return '활성';
+        case 'disabled':
+          return '비활성';
+      }
+      return '';
+    },
   },
   {
     title: '등록일',
     dataIndex: 'createdAt',
-    width: 130,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    width: 180,
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '최종 수정일',
     dataIndex: 'updatedAt',
-    width: 130,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    width: 180,
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '',
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/schedule/edit/${(value as any).no}`}>
+        <Link href={`/schedule/edit/${(value as any).id}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -94,83 +71,62 @@ const columns: ColumnsType<ScheduleItem> = [
 ];
 
 export default function ScheduleList() {
-  const [count, setCount] = useState(17);
-  const [data, setData] = useState<ScheduleItem[]>([]);
-  const [selectedData, setSelectedData] = useState<ScheduleItem[]>([]);
+  const [total, setTotal] = useState(0);
+  const [data, setData] = useState<PostItem[]>([]);
+  const [keyword, setKeyword] = useState('');
+  const [wing, setWing] = useState('');
+  const [page, setPage] = useState(1);
+  const count = useMemo(() => 50, []);
+  const [selectedData, setSelectedData] = useState<PostItem[]>([]);
 
-  useEffect(() => {
-    const temp: ScheduleItem[] = [];
-    for (let i = 0; i < 100; i++) {
-      temp.push({
-        key: i,
-        no: i,
-        order: i,
-        name: `스케줄명 ${i}`,
-        kiosk: `키오스크 ${i}`,
-        type: '이미지',
-        status: '정상',
-        startDate: new Date(),
-        endDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
-    setData(temp);
+  const fetchData = useCallback(async ({ keyword, page, count, wing }) => {
+    const posts = await getSchedules({ keyword, page, count, wing });
+    setData(posts.data.data);
+    setTotal(posts.data.total);
   }, []);
 
-  const onSearch = useCallback(() => {
-    console.log('on search');
+  useEffect(() => {
+    setPage(1);
+    void fetchData({ keyword, page, count, wing });
+  }, [keyword, page, count, fetchData, wing]);
+
+  const onSearch = useCallback((value) => {
+    setKeyword(value);
   }, []);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: '스케줄 삭제 확인',
+      title: '스케쥴 삭제 확인',
       okText: '확인',
       cancelText: '취소',
-      content: '선택된 스케줄을 삭제하시겠습니까?',
-      onOk() {
-        void message.success('선택된 스케줄이 삭제됐습니다.');
+      content: '선택된 스케쥴을 삭제하시겠습니까?',
+      async onOk() {
+        await Promise.all(selectedData.map((row) => deletePost(row.id)));
+        void fetchData({ keyword, page, count, wing });
+        void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });
-  }, []);
+  }, [count, fetchData, keyword, page, selectedData, wing]);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: ScheduleItem[]) => {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
       setSelectedData(selectedRows);
     },
   };
 
+  const onChangeWing = useCallback((w) => {
+    setWing(w);
+  }, []);
+
+  const onChangePage = useCallback((p) => {
+    setPage(p.current);
+  }, []);
+
   return (
     <Flex vertical gap="middle">
       <Flex gap="large">
-        <Form.Item label="키오스크 선택">
-          <Select style={{ width: 200 }} defaultValue="all">
-            <Option key="all" value="all">
-              전체
-            </Option>
-            <Option key="floor1" value="floor1">
-              1층 키오스크
-            </Option>
-            <Option key="floor2" value="floor2">
-              2층 키오스크
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="상태">
-          <Select style={{ width: 100 }} defaultValue="all">
-            <Option key="all" value="all">
-              전체
-            </Option>
-            <Option key="normal" value="normal">
-              정상
-            </Option>
-            <Option key="close" value="close">
-              종료
-            </Option>
-            <Option key="stop" value="stop">
-              중지
-            </Option>
-          </Select>
+        <Form.Item label="건물 선택">
+          <WingSelect style={{ width: 200 }} onChange={onChangeWing} />
         </Form.Item>
       </Flex>
       <Flex justify="space-between">
@@ -186,7 +142,7 @@ export default function ScheduleList() {
             <Button type="primary">등록</Button>
           </Link>
 
-          <span>Total : {count}</span>
+          <span>Total : {total}</span>
         </Flex>
         <Flex>
           <Search
@@ -199,12 +155,14 @@ export default function ScheduleList() {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 50 }}
+        pagination={{ pageSize: count, current: page, total }}
         scroll={{ y: 750 }}
+        rowKey="id"
         rowSelection={{
           type: 'checkbox',
           ...rowSelection,
         }}
+        onChange={onChangePage}
       />
     </Flex>
   );

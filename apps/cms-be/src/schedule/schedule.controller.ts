@@ -8,27 +8,27 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { PostService } from './post.service';
+import { ScheduleService } from './schedule.service';
 import { Prisma } from '@prisma/client';
 
-@Controller('post')
-export class PostController {
-  constructor(private readonly postService: PostService) {}
+@Controller('schedule')
+export class ScheduleController {
+  constructor(private readonly scheduleService: ScheduleService) {}
 
   @Post()
-  async createPost(@Body() data: Prisma.PostUncheckedCreateInput) {
-    return this.postService.createPost(data);
+  async createSchedule(@Body() data: Prisma.PostUncheckedCreateInput) {
+    return this.scheduleService.createSchedule(data);
   }
 
   @Get()
-  async getPosts(
+  async getSchedules(
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
     @Query('floorId') floorId: string,
     @Query('wingId') wingId: string,
   ) {
-    return await this.postService.getPosts({
+    return await this.scheduleService.getSchedules({
       keyword,
       page,
       count,
@@ -38,8 +38,8 @@ export class PostController {
   }
 
   @Get(':id')
-  async getPostById(@Param('id') id: string) {
-    return this.postService.getPostById(+id);
+  async getScheduleById(@Param('id') id: string) {
+    return this.scheduleService.getScheduleById(+id);
   }
 
   @Patch(':id')
@@ -47,11 +47,11 @@ export class PostController {
     @Param('id') id: number,
     @Body() data: Prisma.KioskUpdateInput,
   ) {
-    return this.postService.updatePost(+id, data);
+    return this.scheduleService.updateSchedule(+id, data);
   }
 
   @Delete(':id')
   async deletePost(@Param('id') id: number) {
-    return this.postService.deletePost(+id);
+    return this.scheduleService.deleteSchedule(+id);
   }
 }

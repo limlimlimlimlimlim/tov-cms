@@ -86,6 +86,7 @@ model Wing{
   kiosks      Kiosk[]
   posts       Post[]
   facilities  Facility[]
+  schedule    Schedule[]
 }
 model Floor {
   id        Int       @default(autoincrement()) @id
@@ -150,6 +151,7 @@ model Facility {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   posts           Post[]
+  schedule        Schedule[]
 }
 
 model Map {
@@ -229,6 +231,25 @@ model Post{
   status          String
   noPeriod        Boolean
   useIntro        Boolean
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Schedule{
+  id              Int       @default(autoincrement()) @id
+  wingId          Int
+  wing            Wing      @relation(fields: [wingId], references: [id])
+  facilityId      Int?
+  facility        Facility?   @relation(fields: [facilityId], references: [id])
+  name            String
+  imageContents   String?
+  videoContents   String?
+  contentsType    String
+  description     String?
+  startDate       DateTime?
+  endDate         DateTime?
+  status          String
+  noPeriod        Boolean
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }

@@ -7,7 +7,6 @@ import {
   Flex,
   Form,
   Input,
-  Radio,
   Switch,
   Tabs,
   message,
@@ -16,10 +15,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import FloorSelect from '../../component/floor-select/floor-select';
 import WingSelect from '../../component/wing-select/wing-select';
 import ContentsUploader from '../../component/contents-uploader/contentes-uploader';
-import { createPost, updatePost } from '../../api/post';
+import { createSchedule, updateSchedule } from '../../api/schedule';
 
 const { RangePicker } = DatePicker;
 
@@ -36,22 +34,19 @@ const validateMessages = {
   },
 };
 
-const PostForm = ({ data }) => {
+const ScheduleForm = ({ data }) => {
   const router = useRouter();
-  const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [type, setType] = useState('info');
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
-  const [textContents, setTextContents] = useState('');
   const [contentsType, setContentsType] = useState('image');
+  const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
-  const [useIntro, setUseIntro] = useState(false);
 
   const items = [
     {
@@ -79,82 +74,62 @@ const PostForm = ({ data }) => {
         />
       ),
     },
-    {
-      label: '텍스트',
-      key: 'text',
-      children: (
-        <Input.TextArea
-          defaultValue={textContents}
-          style={{ height: 250 }}
-          onChange={(e) => {
-            setTextContents(e.target.value);
-          }}
-        />
-      ),
-    },
   ];
 
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setFloorId(data.floorId);
       setWingId(data.wingId);
       setName(data.name);
-      setType(data.type);
       setImageContents(data.imageContents);
       setVideoContents(data.videoContents);
-      setTextContents(data.textContents);
-      setContentsType(data.contentsType);
+      setDescription(data.description);
       setStartDate(dayjs(data.startDate));
       setEndDate(dayjs(data.endDate));
       setStatus(data.status);
       setNoPeriod(data.noPeriod);
-      setUseIntro(data.useIntro);
     }
   }, [data]);
 
   const onFinish = useCallback(async () => {
     try {
       if (isEdit) {
-        await updatePost(data.id, {
+        await updateSchedule(data.id, {
           wingId,
           name,
-          type,
           imageContents,
           videoContents,
-          textContents,
           contentsType,
           status,
+          description,
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
           noPeriod,
-          useIntro,
         });
         void message.success('게시물이 수정됐습니다.');
       } else {
-        await createPost({
+        await createSchedule({
           wingId,
           name,
-          type,
           imageContents,
           videoContents,
-          textContents,
           contentsType,
           status,
+          description,
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
           noPeriod,
-          useIntro,
         });
-        void message.success('게시물이 생성됐습니다.');
+        void message.success('스케쥴이 생성됐습니다.');
       }
-      router.push('/post/list');
+      router.push('/schedule/list');
     } catch (e) {
       void message.error(e.message);
     }
   }, [
     contentsType,
     data,
+    description,
     endDate,
     imageContents,
     isEdit,
@@ -163,20 +138,12 @@ const PostForm = ({ data }) => {
     router,
     startDate,
     status,
-    textContents,
-    type,
-    useIntro,
     videoContents,
     wingId,
   ]);
 
-  const onChangeFloor = useCallback((floor) => {
-    setFloorId(floor);
-  }, []);
-
   const onChangeWing = useCallback((wing) => {
     setWingId(wing);
-    setFloorId('');
   }, []);
 
   return (
@@ -194,15 +161,7 @@ const PostForm = ({ data }) => {
             onChange={onChangeWing}
           />
         </Form.Item>
-        <Form.Item label="층 선택">
-          <FloorSelect
-            wingId={wingId}
-            floorId={floorId}
-            style={{ width: 200 }}
-            onChange={onChangeFloor}
-          />
-        </Form.Item>
-        <Form.Item label="구분">
+        {/* <Form.Item label="구분">
           <Radio.Group
             value={type}
             onChange={(e) => {
@@ -212,9 +171,9 @@ const PostForm = ({ data }) => {
             <Radio value="info">안내</Radio>
             <Radio value="event">이벤트</Radio>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item label="게시물명" rules={[{ required: true }]}>
+        <Form.Item label="콘텐츠명" rules={[{ required: true }]}>
           <Input
             value={name}
             style={{ width: 300 }}
@@ -261,11 +220,12 @@ const PostForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="인트로 콘텐츠 노출">
-          <Switch
-            checked={useIntro}
+        <Form.Item label="메모">
+          <Input.TextArea
+            value={description}
+            style={{ height: 200 }}
             onChange={(e) => {
-              setUseIntro(e);
+              setDescription(e.target.value);
             }}
           />
         </Form.Item>
@@ -285,4 +245,4 @@ const PostForm = ({ data }) => {
   );
 };
 
-export default PostForm;
+export default ScheduleForm;

@@ -174,7 +174,10 @@ export default function MapAreaEditor({ map }: ComponentProps) {
           )}
         </Flex>
       </Flex>
-      <Flex justify="center">
+      <Flex
+        justify="center"
+        style={{ position: 'relative', overflow: 'scroll' }}
+      >
         {imgSrc ? (
           <img
             alt="map"

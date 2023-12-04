@@ -28,7 +28,7 @@ const columns: ColumnsType<FacilityItem> = [
   {
     title: '층',
     width: 100,
-    render: (row) => row.floor.name,
+    render: (row) => row.floor?.name,
   },
   {
     title: '구분',

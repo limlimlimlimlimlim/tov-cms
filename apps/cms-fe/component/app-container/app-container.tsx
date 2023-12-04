@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Layout, theme } from "antd";
-import { useCallback, useState } from "react";
+import { Layout, theme } from 'antd';
+import { useCallback, useState } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
-} from "@ant-design/icons";
-import AppSider from "../app-sider/app-sider";
-import AppHeader from "../app-hader/app-header";
+} from '@ant-design/icons';
+import AppSider from '../app-sider/app-sider';
+import AppHeader from '../app-hader/app-header';
 
 const { Content } = Layout;
 
@@ -25,17 +25,18 @@ export default function AppContainer({ children }) {
   }, []);
 
   return (
-    <Layout style={{ height: "100%" }}>
+    <Layout style={{ height: '100%' }}>
       <AppSider collapsed={collapsed} />
       <Layout>
         <AppHeader onChangeCollapse={onChangeCollapse} collapsed={collapsed} />
         <Content
           style={{
-            margin: "24px 16px",
+            margin: '24px 16px',
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
-            overflow: "auto",
+            overflow: 'auto',
+            position: 'relative',
           }}
         >
           {children}

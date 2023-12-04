@@ -76,7 +76,62 @@ export class FacilityService {
   }
 
   async getFacilityById(id: number) {
-    return this.prisma.facility.findUnique({ where: { id } });
+    const result = await this.prisma.facility.findUnique({
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        time: true,
+        iconType: true,
+        status: true,
+        x: true,
+        y: true,
+        createdAt: true,
+        updatedAt: true,
+        wingId: true,
+        floorId: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subCategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        floor: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        wing: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      where: { id },
+    });
+
+    const map = await this.prisma.map.findFirst({
+      select: {
+        id: true,
+        image: true,
+        sections: true,
+      },
+      where: {
+        floorId: result.floorId,
+        wingId: result.wingId,
+      },
+    });
+    (result as any).map = map;
+    return result;
   }
 
   async getFacilityByName(name: string) {

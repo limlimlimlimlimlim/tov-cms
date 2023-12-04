@@ -69,7 +69,7 @@ export default function AppSider({ collapsed }) {
         mode="inline"
         items={items}
         defaultSelectedKeys={[pathname.split('/')[1]]}
-        defaultOpenKeys={['account-management', 'map-management']}
+        defaultOpenKeys={[/*'account-management',*/ 'map-management']}
       />
     </Sider>
   );

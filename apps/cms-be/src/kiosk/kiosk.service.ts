@@ -62,6 +62,28 @@ export class KioskService {
 
   async getKioskById(id: number) {
     return await this.prisma.kiosk.findUnique({
+      select: {
+        id: true,
+        floorId: true,
+        wingId: true,
+        code: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        floor: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        wing: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       where: { id },
     });
   }

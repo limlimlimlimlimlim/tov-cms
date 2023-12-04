@@ -103,7 +103,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   }, [fetchData, mapId]);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', overflow: 'scroll' }}>
       {data ? (
         <img
           alt="map"

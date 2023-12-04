@@ -135,14 +135,14 @@ export class BuildingInfoController {
     return this.buildingInfoService.swapFloors(id1, id2);
   }
 
-  @Patch('floor/:floorId/wing/swap/:id1/:id2')
-  async swapWing(
-    @Param('floorId') floorId: string,
-    @Param('id1') id1: string,
-    @Param('id2') id2: string,
-  ) {
-    return this.buildingInfoService.swapWings(floorId, id1, id2);
-  }
+  // @Patch('floor/:floorId/wing/swap/:id1/:id2')
+  // async swapWing(
+  //   @Param('floorId') floorId: string,
+  //   @Param('id1') id1: string,
+  //   @Param('id2') id2: string,
+  // ) {
+  //   return this.buildingInfoService.swapWings(floorId, id1, id2);
+  // }
 
   @Delete('floor/:id')
   async deleteFloor(@Param('id') id: string) {

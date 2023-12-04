@@ -143,29 +143,29 @@ export class BuildingInfoService {
     ]);
   }
 
-  async swapWings(floorId: string, id1: string, id2: string) {
-    // const wings = await this.getWingsInFloor(floorId);
-    // const wing1 = wings.find((wing) => wing.id.toString() === id1);
-    // const wing2 = wings.find((wing) => wing.id.toString() === id2);
-    // return Promise.all([
-    //   this.prisma.wingOnFloor.update({
-    //     where: {
-    //       wingId_floorId: {
-    //         floorId: +floorId,
-    //         wingId: wing1.id,
-    //       },
-    //     },
-    //     data: { order: wing2.order },
-    //   }),
-    //   this.prisma.wingOnFloor.update({
-    //     where: {
-    //       wingId_floorId: {
-    //         floorId: +floorId,
-    //         wingId: wing2.id,
-    //       },
-    //     },
-    //     data: { order: wing1.order },
-    //   }),
-    // ]);
-  }
+  // async swapWings(floorId: string, id1: string, id2: string) {
+  // const wings = await this.getWingsInFloor(floorId);
+  // const wing1 = wings.find((wing) => wing.id.toString() === id1);
+  // const wing2 = wings.find((wing) => wing.id.toString() === id2);
+  // return Promise.all([
+  //   this.prisma.wingOnFloor.update({
+  //     where: {
+  //       wingId_floorId: {
+  //         floorId: +floorId,
+  //         wingId: wing1.id,
+  //       },
+  //     },
+  //     data: { order: wing2.order },
+  //   }),
+  //   this.prisma.wingOnFloor.update({
+  //     where: {
+  //       wingId_floorId: {
+  //         floorId: +floorId,
+  //         wingId: wing2.id,
+  //       },
+  //     },
+  //     data: { order: wing1.order },
+  //   }),
+  // ]);
+  // }
 }

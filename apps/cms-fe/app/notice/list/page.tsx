@@ -63,7 +63,7 @@ const columns: ColumnsType<NoticeItem> = [
 ];
 
 export default function NoticeList() {
-  const [count, setCount] = useState(17);
+  const [count] = useState(17);
   const [data, setData] = useState<NoticeItem[]>([]);
   const [selectedData, setSelectedData] = useState<NoticeItem[]>([]);
 

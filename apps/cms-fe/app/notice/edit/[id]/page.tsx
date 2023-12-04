@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type { TabsProps } from "antd";
+import type { TabsProps } from 'antd';
 import {
   Button,
   Checkbox,
@@ -13,11 +13,11 @@ import {
   Switch,
   Tabs,
   message,
-} from "antd";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
-import ContentsUploader from "../../../../component/contents-uploader/contentes-uploader";
+} from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
+import ContentsUploader from '../../../../component/contents-uploader/contentes-uploader';
 
 const layout = {
   labelCol: { span: 4 },
@@ -28,29 +28,26 @@ const { RangePicker } = DatePicker;
 const { confirm } = Modal;
 
 const validateMessages = {
-  required: "필수 값을 입력해주세요",
+  required: '필수 값을 입력해주세요',
   types: {
-    email: "유효하지 않은 이메일 주소입니다.",
-    number: "유효하지 않은 값입니다.",
+    email: '유효하지 않은 이메일 주소입니다.',
+    number: '유효하지 않은 값입니다.',
   },
 };
 
 export default function NoticeEdit() {
   const router = useRouter();
 
-  const onFinish = useCallback(
-    (values: any) => {
-      void message.success("공지가 수정됐습니다.");
-      router.push("/notice/list");
-    },
-    [router]
-  );
+  const onFinish = useCallback(() => {
+    void message.success('공지가 수정됐습니다.');
+    router.push('/notice/list');
+  }, [router]);
 
-  const contentsItems: TabsProps["items"] = useMemo(() => {
+  const contentsItems: TabsProps['items'] = useMemo(() => {
     return [
       {
-        key: "normal",
-        label: "기본",
+        key: 'normal',
+        label: '기본',
         children: (
           <Flex vertical gap="middle">
             <ContentsUploader />
@@ -59,8 +56,8 @@ export default function NoticeEdit() {
         ),
       },
       {
-        key: "leftImage",
-        label: "좌측 이미지",
+        key: 'leftImage',
+        label: '좌측 이미지',
         children: (
           <Flex gap="middle">
             <ContentsUploader />
@@ -69,8 +66,8 @@ export default function NoticeEdit() {
         ),
       },
       {
-        key: "rightImage",
-        label: "우측 이미지",
+        key: 'rightImage',
+        label: '우측 이미지',
         children: (
           <Flex gap="middle">
             <Input.TextArea style={{ width: 500, height: 300 }} />
@@ -102,37 +99,37 @@ export default function NoticeEdit() {
           </Flex>
         </Form.Item>
         <Form.Item name="status" label="상태">
-          <Switch checked={true}></Switch>
+          <Switch checked />
         </Form.Item>
         <Form.Item name="useIntro" label="인트로 콘텐츠 노출">
-          <Switch checked={true}></Switch>
+          <Switch checked />
         </Form.Item>
       </Form>
     );
   }, [contentsItems, onFinish]);
 
-  const items: TabsProps["items"] = [
+  const items: TabsProps['items'] = [
     {
-      key: "ko",
-      label: "한글",
+      key: 'ko',
+      label: '한글',
       children: getForm(),
     },
     {
-      key: "en",
-      label: "영어",
+      key: 'en',
+      label: '영어',
       children: getForm(),
     },
   ];
 
   const onClickDeleteNotice = useCallback(() => {
     confirm({
-      title: "삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "공지를 삭제하겠습니까?",
+      title: '삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '공지를 삭제하겠습니까?',
       onOk() {
-        void message.success("공지가 삭제 됐습니다.");
-        router.push("/notice/list");
+        void message.success('공지가 삭제 됐습니다.');
+        router.push('/notice/list');
       },
     });
   }, [router]);

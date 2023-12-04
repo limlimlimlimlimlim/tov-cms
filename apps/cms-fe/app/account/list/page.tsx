@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import type { AccountItem } from '../../../interface/account';
 import { EditOutlined } from '@ant-design/icons';
+import type { AccountItem } from '../../../interface/account';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -58,7 +58,7 @@ const columns: ColumnsType<AccountItem> = [
 ];
 
 export default function AccountList() {
-  const [count, setCount] = useState(17);
+  const [count] = useState(17);
   const [data, setData] = useState<AccountItem[]>([]);
   const [selectedData, setSelectedData] = useState<AccountItem[]>([]);
 

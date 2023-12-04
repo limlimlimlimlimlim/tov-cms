@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Button,
   Checkbox,
@@ -9,10 +9,10 @@ import {
   Modal,
   Table,
   message,
-} from "antd";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+} from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
 
 const { confirm } = Modal;
 
@@ -23,72 +23,72 @@ const layout = {
 
 const defaultDataSource = [
   {
-    key: "1",
-    depth1: "계정관리",
-    depth2: "계정관리",
+    key: '1',
+    depth1: '계정관리',
+    depth2: '계정관리',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "2",
-    depth1: "계정관리",
-    depth2: "권한관리",
+    key: '2',
+    depth1: '계정관리',
+    depth2: '권한관리',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "3",
-    depth1: "스케줄",
-    depth2: "",
+    key: '3',
+    depth1: '스케줄',
+    depth2: '',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "4",
-    depth1: "게시물",
-    depth2: "",
+    key: '4',
+    depth1: '게시물',
+    depth2: '',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "5",
-    depth1: "지도관리",
-    depth2: "층별지도",
+    key: '5',
+    depth1: '지도관리',
+    depth2: '층별지도',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "6",
-    depth1: "지도관리",
-    depth2: "지도정보",
+    key: '6',
+    depth1: '지도관리',
+    depth2: '지도정보',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "7",
-    depth1: "시설관리",
-    depth2: "",
+    key: '7',
+    depth1: '시설관리',
+    depth2: '',
     read: false,
     write: false,
     update: false,
     delete: false,
   },
   {
-    key: "8",
-    depth1: "키오스크관리",
-    depth2: "",
+    key: '8',
+    depth1: '키오스크관리',
+    depth2: '',
     read: false,
     write: false,
     update: false,
@@ -111,7 +111,7 @@ export default function PermissionEdit() {
       target[type] = checked;
       setDataSource(data);
     },
-    [dataSource]
+    [dataSource],
   );
 
   const upatePermissionAll = useCallback(
@@ -125,81 +125,78 @@ export default function PermissionEdit() {
       target.delete = checked;
       setDataSource(data);
     },
-    [dataSource]
+    [dataSource],
   );
 
   const columns = [
     {
-      title: "대메뉴",
-      dataIndex: "depth1",
-      key: "depth1",
+      title: '대메뉴',
+      dataIndex: 'depth1',
+      key: 'depth1',
     },
     {
-      title: "소메뉴",
-      dataIndex: "depth2",
-      key: "depth2",
+      title: '소메뉴',
+      dataIndex: 'depth2',
+      key: 'depth2',
     },
     {
-      title: "보기",
-      key: "read",
+      title: '보기',
+      key: 'read',
       render: (value: any) => {
         return (
           <Checkbox
             checked={value.read}
-            onChange={() => upatePermission(value.key, "read", !value.read)}
+            onChange={() => upatePermission(value.key, 'read', !value.read)}
           />
         );
       },
     },
     {
-      title: "등록",
-      key: "write",
+      title: '등록',
+      key: 'write',
       render: (value: any) => (
         <Checkbox
           checked={value.write}
-          onChange={() => upatePermission(value.key, "write", !value.write)}
+          onChange={() => upatePermission(value.key, 'write', !value.write)}
         />
       ),
     },
     {
-      title: "수정",
-      key: "update",
+      title: '수정',
+      key: 'update',
       render: (value: any) => (
         <Checkbox
           checked={value.update}
-          onChange={() => upatePermission(value.key, "update", !value.update)}
+          onChange={() => upatePermission(value.key, 'update', !value.update)}
         />
       ),
     },
     {
-      title: "삭제",
-      key: "delete",
+      title: '삭제',
+      key: 'delete',
       render: (value: any) => (
         <Checkbox
           checked={value.delete}
-          onChange={() => upatePermission(value.key, "delete", !value.delete)}
+          onChange={() => upatePermission(value.key, 'delete', !value.delete)}
         />
       ),
     },
   ];
 
-  const onFinish = useCallback(
-    (values: any) => {
-      void message.success("권한이 수정됐습니다.");
-      router.push("/permission/list");
-    },
-    [router]
-  );
+  const onFinish = useCallback(() => {
+    void message.success('권한이 수정됐습니다.');
+    router.push('/permission/list');
+  }, [router]);
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: "권한 삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "권한을 삭제하시겠습니까?",
+      title: '권한 삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '권한을 삭제하시겠습니까?',
       onOk() {
-        void message.success("권한이 삭제됐습니다.");
-        router.push("/permission/list");
+        void message.success('권한이 삭제됐습니다.');
+        router.push('/permission/list');
       },
     });
   }, [router]);
@@ -224,7 +221,7 @@ export default function PermissionEdit() {
             columns={columns}
             pagination={false}
             rowSelection={{
-              type: "checkbox",
+              type: 'checkbox',
               ...rowSelection,
             }}
           />

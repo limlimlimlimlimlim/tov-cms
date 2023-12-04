@@ -1,8 +1,8 @@
-"use client";
-import { Button, Divider, Flex, Form, Input, Select, message } from "antd";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+'use client';
+import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 
 const layout = {
   labelCol: { span: 5 },
@@ -11,25 +11,21 @@ const layout = {
 
 const { Option } = Select;
 
-/* eslint-disable no-template-curly-in-string */
 const validateMessages = {
-  required: "필수 값을 입력해주세요",
+  required: '필수 값을 입력해주세요',
   types: {
-    email: "유효하지 않은 이메일 주소입니다.",
-    number: "유효하지 않은 값입니다.",
+    email: '유효하지 않은 이메일 주소입니다.',
+    number: '유효하지 않은 값입니다.',
   },
 };
 
 export default function AccountRegister() {
   const router = useRouter();
 
-  const onFinish = useCallback(
-    (values: any) => {
-      void message.success("계정이 생성됐습니다.");
-      router.push("/account/list");
-    },
-    [router]
-  );
+  const onFinish = useCallback(() => {
+    void message.success('계정이 생성됐습니다.');
+    router.push('/account/list');
+  }, [router]);
 
   return (
     <Flex vertical gap="middle">
@@ -39,8 +35,8 @@ export default function AccountRegister() {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Flex style={{ width: "100%" }}>
-          <Flex vertical style={{ width: "100%" }}>
+        <Flex style={{ width: '100%' }}>
+          <Flex vertical style={{ width: '100%' }}>
             <Form.Item name="id" label="아이디" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
@@ -68,7 +64,7 @@ export default function AccountRegister() {
               <Input.TextArea style={{ height: 200 }} />
             </Form.Item>
           </Flex>
-          <Flex vertical style={{ width: "100%" }}>
+          <Flex vertical style={{ width: '100%' }}>
             <Form.Item name="permission" label="권한" initialValue="user">
               <Select>
                 <Option key="user" value="user">

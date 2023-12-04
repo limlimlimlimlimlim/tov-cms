@@ -46,7 +46,7 @@ const columns: ColumnsType<PermissionItem> = [
 ];
 
 export default function PermissionList() {
-  const [count, setCount] = useState(17);
+  const [count] = useState(17);
   const [data, setData] = useState<PermissionItem[]>([]);
   const [selectedData, setSelectedData] = useState<PermissionItem[]>([]);
 

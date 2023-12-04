@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Button,
@@ -11,11 +11,11 @@ import {
   Modal,
   Switch,
   message,
-} from "antd";
-import Link from "next/link";
-import { useCallback } from "react";
-import { useRouter } from "next/navigation";
-import ContentsUploader from "../../../../component/contents-uploader/contentes-uploader";
+} from 'antd';
+import Link from 'next/link';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import ContentsUploader from '../../../../component/contents-uploader/contentes-uploader';
 
 const layout = {
   labelCol: { span: 3 },
@@ -26,33 +26,30 @@ const { RangePicker } = DatePicker;
 const { confirm } = Modal;
 
 const validateMessages = {
-  required: "필수 값을 입력해주세요",
+  required: '필수 값을 입력해주세요',
   types: {
-    email: "유효하지 않은 이메일 주소입니다.",
-    number: "유효하지 않은 값입니다.",
+    email: '유효하지 않은 이메일 주소입니다.',
+    number: '유효하지 않은 값입니다.',
   },
 };
 
 export default function EventEdit() {
   const router = useRouter();
 
-  const onFinish = useCallback(
-    (values: any) => {
-      void message.success("이벤트가 수정됐습니다.");
-      router.push("/schedule/list");
-    },
-    [router]
-  );
+  const onFinish = useCallback(() => {
+    void message.success('이벤트가 수정됐습니다.');
+    router.push('/schedule/list');
+  }, [router]);
 
   const onClickDeleteEvent = useCallback(() => {
     confirm({
-      title: "삭제 확인",
-      okText: "확인",
-      cancelText: "취소",
-      content: "이벤트를 삭제하겠습니까?",
+      title: '삭제 확인',
+      okText: '확인',
+      cancelText: '취소',
+      content: '이벤트를 삭제하겠습니까?',
       onOk() {
-        void message.success("이벤트가 삭제 됐습니다.");
-        router.push("/event/list");
+        void message.success('이벤트가 삭제 됐습니다.');
+        router.push('/event/list');
       },
     });
   }, [router]);
@@ -65,8 +62,8 @@ export default function EventEdit() {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Flex style={{ width: "100%" }}>
-          <Flex vertical style={{ width: "100%" }}>
+        <Flex style={{ width: '100%' }}>
+          <Flex vertical style={{ width: '100%' }}>
             <Form.Item name="title" label="제목" rules={[{ required: true }]}>
               <Input style={{ width: 300 }} />
             </Form.Item>
@@ -83,10 +80,10 @@ export default function EventEdit() {
               </Flex>
             </Form.Item>
             <Form.Item name="status" label="상태">
-              <Switch checked={true} />
+              <Switch checked />
             </Form.Item>
             <Form.Item name="useIntro" label="인트로 콘텐츠 노출">
-              <Switch checked={true} />
+              <Switch checked />
             </Form.Item>
           </Flex>
         </Flex>

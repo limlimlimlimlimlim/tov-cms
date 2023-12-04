@@ -147,6 +147,7 @@ model Facility {
   status          String?
   x               Int?
   y               Int?
+  tags            String?
   categoryId      Int?
   category        FacilityCategory? @relation(fields: [categoryId], references: [id])
   subCategoryId   Int?

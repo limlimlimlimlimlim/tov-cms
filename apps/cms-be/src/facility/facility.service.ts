@@ -95,6 +95,7 @@ export class FacilityService {
         phone: true,
         address: true,
         time: true,
+        tags: true,
         iconType: true,
         status: true,
         x: true,

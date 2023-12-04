@@ -35,6 +35,7 @@ const FacilityForm = ({ data }) => {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [time, setTime] = useState('');
+  const [tags, setTags] = useState('');
   const [iconType, setIconType] = useState('icon1');
   const [alwaysVisible, setAlwaysVisible] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -55,6 +56,7 @@ const FacilityForm = ({ data }) => {
       setAddress(data.address);
       setPhone(data.phone);
       setTime(data.time);
+      setTags(data.tags);
       setIconType(data.iconType);
       setAlwaysVisible(data.alwaysVisible);
       setPosition({ x: data.x, y: data.y });
@@ -71,6 +73,7 @@ const FacilityForm = ({ data }) => {
           phone,
           address,
           time,
+          tags,
           alwaysVisible,
           iconType,
           status,
@@ -90,6 +93,7 @@ const FacilityForm = ({ data }) => {
           phone,
           address,
           time,
+          tags,
           alwaysVisible,
           iconType,
           status,
@@ -116,6 +120,7 @@ const FacilityForm = ({ data }) => {
     phone,
     address,
     time,
+    tags,
     alwaysVisible,
     iconType,
     status,
@@ -236,6 +241,15 @@ const FacilityForm = ({ data }) => {
             style={{ width: 400 }}
             onChange={(e) => {
               setTime(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="태그">
+          <Input
+            value={tags}
+            style={{ width: 400 }}
+            onChange={(e) => {
+              setTags(e.target.value);
             }}
           />
         </Form.Item>

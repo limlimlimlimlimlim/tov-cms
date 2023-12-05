@@ -64,7 +64,12 @@ export default function MapInfoList() {
     {
       title: '설정 시설 수',
       width: 140,
-      render: () => 0,
+      render: (row) => {
+        const count = row.sections.filter((s) => {
+          return s.facilities.length > 0;
+        }).length;
+        return count;
+      },
     },
     {
       title: '미리보기',

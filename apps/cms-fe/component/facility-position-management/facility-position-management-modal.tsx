@@ -1,5 +1,5 @@
 import { Divider, Modal } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import FacilityPositionManagement from './facility-position-management';
 
 interface ComponentProps {
@@ -17,7 +17,8 @@ export default function FacilityPositionManagementModal({
   onCancel,
   onOk,
 }: ComponentProps) {
-  const [data, setData] = useState();
+  const facilityData = useRef();
+
   return (
     <Modal
       destroyOnClose
@@ -27,7 +28,7 @@ export default function FacilityPositionManagementModal({
       cancelText="취소"
       open={open}
       onOk={() => {
-        onOk(data);
+        onOk(facilityData.current);
         onCancel();
       }}
       onCancel={() => {
@@ -39,7 +40,7 @@ export default function FacilityPositionManagementModal({
         mapId={mapId}
         position={position}
         onChange={(data) => {
-          setData(data);
+          facilityData.current = data;
         }}
       />
     </Modal>

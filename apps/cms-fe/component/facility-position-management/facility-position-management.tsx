@@ -20,10 +20,10 @@ export default function FacilityPositionManagement({
       onChange({
         position: { x: data.originX, y: data.originY },
         alwaysVisible,
-        sectionId,
+        sectionId: data.section,
       });
     },
-    [alwaysVisible, onChange, sectionId],
+    [alwaysVisible, onChange],
   );
 
   useEffect(() => {

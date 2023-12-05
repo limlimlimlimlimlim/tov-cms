@@ -82,7 +82,12 @@ export class MapService {
             nameEn: true,
           },
         },
-        sections: true,
+        sections: {
+          select: {
+            id: true,
+            facilities: true,
+          },
+        },
       },
       where: where,
       skip: (+page - 1) * +count,
@@ -91,6 +96,7 @@ export class MapService {
         id: 'desc',
       },
     });
+
     return { total, data, page, count };
   }
 

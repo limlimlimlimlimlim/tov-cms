@@ -87,7 +87,6 @@ const FacilityForm = ({ data }) => {
         });
         void message.success('시설이 수정됐습니다.');
       } else {
-        console.log(sectionId);
         await createFacility({
           name,
           phone,

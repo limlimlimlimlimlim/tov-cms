@@ -184,7 +184,7 @@ model Section {
   disabled    Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  faciltis    Facility[]
+  facilities  Facility[]
 }
 
 model SectionGroup {

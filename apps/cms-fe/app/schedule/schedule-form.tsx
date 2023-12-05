@@ -67,6 +67,7 @@ const ScheduleForm = ({ data }) => {
       key: 'video',
       children: (
         <ContentsUploader
+          type="video"
           source={videoContents}
           onComplete={({ fileName }) => {
             setVideoContents(fileName);

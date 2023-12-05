@@ -78,7 +78,7 @@ const useMergeMode = () => {
   const validate = useCallback(() => {
     const keys = Object.keys(targetPolygons.current);
     const valid = keys.length >= 2;
-    return { valid, msg: '2개 구역 이상 선택해주세요.' };
+    return { valid, msg: !valid ? '2개 구역 이상 선택해주세요.' : '' };
   }, []);
 
   return {

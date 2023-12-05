@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
-import { disableSectionById, enableSectionById } from '../../../api/section';
+import { enableSectionById } from '../../../api/section';
 import { createSection } from '../../../util/section-renderer';
 
 const useEnableMode = () => {

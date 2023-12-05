@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
 import { addSection } from '../../../api/section';
+import { createSection } from '../../../util/section-renderer';
 
 const useAddMode = () => {
   const sections = useRef();
@@ -77,29 +78,7 @@ const useAddMode = () => {
 
   const render = useCallback(
     (sections) => {
-      if (!layer.current) return;
-      layer.current.destroyChildren();
-      points.current = [];
-
-      layer.current.add(
-        new window.Konva.Line({
-          points: [],
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.5,
-        }),
-      );
-
-      sections.forEach((s: any) => {
-        const poly: any = new window.Konva.Line({
-          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.3,
-          name: s.id,
-        });
-        layer.current.add(poly);
-      });
+      createSection(sections, layer.current, scale.current)!;
     },
     [layer],
   );
@@ -134,11 +113,20 @@ const useAddMode = () => {
     clear();
   }, [clear]);
 
+  const validate = useCallback(() => {
+    const valid = points.current.length >= 3;
+    return {
+      valid,
+      msg: !valid ? '구역을 설정하기 위해선 3개 이상의 좌표가 필요합니다.' : '',
+    };
+  }, []);
+
   return {
     init,
     setup,
     clear,
     apply,
+    validate,
   };
 };
 

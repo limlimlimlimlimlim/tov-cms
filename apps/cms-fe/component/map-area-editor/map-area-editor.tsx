@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex } from 'antd';
+import { Button, Flex, message } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
@@ -29,6 +29,7 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     apply: applyAddMode,
     setup: setupAddMode,
     clear: clearAddMode,
+    validate: validateAddMode,
   } = useAddMode();
 
   const {
@@ -109,9 +110,14 @@ export default function MapAreaEditor({ map }: ComponentProps) {
   }, [sections, setupDeleteMode]);
 
   const onClickApply = useCallback(async () => {
-    setMode('normal');
     switch (mode) {
       case 'new':
+        // eslint-disable-next-line no-case-declarations
+        const { valid, msg } = validateAddMode();
+        if (!valid) {
+          void message.error(msg);
+          return;
+        }
         await applyAddMode();
         break;
       case 'edit':
@@ -121,6 +127,7 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         await applyDeleteMode();
         break;
     }
+    setMode('normal');
     await fetchSections();
     const base64 = stage.toDataURL();
     await updateMap(map.id, { sectionBase64: base64 });
@@ -129,9 +136,10 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     applyDeleteMode,
     applyEditMode,
     fetchSections,
-    map,
+    map?.id,
     mode,
     stage,
+    validateAddMode,
   ]);
 
   const onClickCancel = useCallback(() => {

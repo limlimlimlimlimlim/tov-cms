@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
 import { updateSectionById } from '../../../api/section';
+import { createSection } from '../../../util/section-renderer';
 
 const useDeleteMode = () => {
   const sections = useRef();
@@ -80,19 +81,8 @@ const useDeleteMode = () => {
 
   const render = useCallback(
     (sections) => {
-      if (!layer.current) return;
-      layer.current.destroyChildren();
-      sections.forEach((s: any) => {
-        const poly: any = new window.Konva.Line({
-          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.5,
-          name: s.id,
-        });
-        layer.current.add(poly);
-        polygons.current.push(poly);
-      });
+      targetPolygons.current = {};
+      polygons.current = createSection(sections, layer.current, scale.current)!;
     },
     [layer],
   );

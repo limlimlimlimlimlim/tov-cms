@@ -10,7 +10,7 @@ const createSection = (sections, layer, scale) => {
     sections: [] as any[],
   };
   const disabled = {
-    color: '#eeeeee',
+    color: '#000000',
     sections: [] as any[],
   };
 

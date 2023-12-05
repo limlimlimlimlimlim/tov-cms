@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
 import { deleteSectionById } from '../../../api/section';
+import { createSection } from '../../../util/section-renderer';
 
 const useDeleteMode = () => {
   const sections = useRef();
@@ -18,17 +19,32 @@ const useDeleteMode = () => {
     scale.current = sca;
   }, []);
 
+  const getGroupId = useCallback(
+    (sectionId) => {
+      const sec = sections.current.find((sec) => sec.id === sectionId);
+      return sec.groupId;
+    },
+    [sections],
+  );
+
   const initEvent = useCallback(() => {
     polygons.current.forEach((p) => {
+      const id = p.getName();
+      const groupId = getGroupId(id);
+
       p.on('click', () => {
-        const id = p.getName();
-        if (targetPolygons[id]) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        if (groupId !== null) {
+          void message.warning('병합을 먼저 해제해주세요.');
+          return;
+        }
+        if (targetPolygons.current[id]) {
           delete targetPolygons.current[id];
-          p.fill('#aaff77');
+          p.stroke(null);
+          p.strokeWidth(0);
         } else {
           targetPolygons.current[id] = true;
-          p.fill('#ffaa22');
+          p.stroke('red');
+          p.strokeWidth(4);
         }
       });
     });
@@ -36,20 +52,8 @@ const useDeleteMode = () => {
 
   const render = useCallback(
     (sections) => {
-      if (!layer.current) return;
-      layer.current.destroyChildren();
-
-      sections.forEach((s: any) => {
-        const poly: any = new window.Konva.Line({
-          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.5,
-          name: s.id,
-        });
-        layer.current.add(poly);
-        polygons.current.push(poly);
-      });
+      targetPolygons.current = {};
+      polygons.current = createSection(sections, layer.current, scale.current)!;
     },
     [layer],
   );

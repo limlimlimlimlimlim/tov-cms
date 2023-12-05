@@ -63,7 +63,7 @@ const useDisableMode = () => {
         }
       });
     });
-  }, []);
+  }, [getGroupId, isDisabled]);
 
   const render = useCallback((sections) => {
     targetPolygons.current = {};

@@ -4,7 +4,7 @@ import { deleteSectionById } from '../../../api/section';
 import { createSection } from '../../../util/section-renderer';
 
 const useDeleteMode = () => {
-  const sections = useRef();
+  const sections = useRef<any[]>([]);
   const mapId = useRef<any>();
   const stage = useRef<any>();
   const layer = useRef<any>();
@@ -48,7 +48,7 @@ const useDeleteMode = () => {
         }
       });
     });
-  }, [targetPolygons]);
+  }, [getGroupId]);
 
   const render = useCallback(
     (sections) => {

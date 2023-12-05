@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
 import { deleteSectionGroup } from '../../../api/section';
+import { createSection } from '../../../util/section-renderer';
 
 const useSplitMode = () => {
   const sections = useRef<any[]>([]);
@@ -28,41 +29,38 @@ const useSplitMode = () => {
 
   const initEvent = useCallback(() => {
     polygons.current.forEach((p) => {
+      const id = p.getName();
+      const groupId = getGroupId(id);
       p.on('click', () => {
-        const id = p.getName();
-        const groupId = getGroupId(id);
-        if (!groupId) return;
-        if (targetPolygons[id]) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        if (!groupId) {
+          void message.warning('병합된 구역만 선택 가능합니다.');
+          return;
+        }
+        if (targetPolygons.current[groupId]) {
           delete targetPolygons.current[groupId];
-          p.fill('#aaff77');
+          polygons.current
+            .filter((p) => getGroupId(p.getName()) === groupId)
+            .forEach((p) => {
+              p.stroke(null);
+              p.strokeWidth(0);
+            });
         } else {
           targetPolygons.current[groupId] = true;
-          p.fill('#ffaa22');
+          polygons.current
+            .filter((p) => getGroupId(p.getName()) === groupId)
+            .forEach((p) => {
+              p.stroke('red');
+              p.strokeWidth(4);
+            });
         }
       });
     });
   }, [getGroupId]);
 
-  const render = useCallback(
-    (sections) => {
-      if (!layer.current) return;
-      layer.current.destroyChildren();
-
-      sections.forEach((s: any) => {
-        const poly: any = new window.Konva.Line({
-          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.5,
-          name: s.id,
-        });
-        layer.current.add(poly);
-        polygons.current.push(poly);
-      });
-    },
-    [layer],
-  );
+  const render = useCallback((sections) => {
+    targetPolygons.current = {};
+    polygons.current = createSection(sections, layer.current, scale.current)!;
+  }, []);
 
   const setup = useCallback(
     (s) => {

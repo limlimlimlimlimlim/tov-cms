@@ -1,9 +1,9 @@
 import { useCallback, useRef } from 'react';
 import { message } from 'antd';
-import { disableSectionById } from '../../../api/section';
+import { disableSectionById, enableSectionById } from '../../../api/section';
 import { createSection } from '../../../util/section-renderer';
 
-const useDisableMode = () => {
+const useEnableMode = () => {
   const sections = useRef<any[]>([]);
   const mapId = useRef<any>();
   const stage = useRef<any>();
@@ -47,8 +47,8 @@ const useDisableMode = () => {
 
         const disabled = isDisabled(id);
 
-        if (disabled) {
-          void message.warning('이미 비활성된 구역입니다.');
+        if (!disabled) {
+          void message.warning('이미 활성된 구역입니다.');
           return;
         }
 
@@ -63,7 +63,7 @@ const useDisableMode = () => {
         }
       });
     });
-  }, []);
+  }, [getGroupId, isDisabled]);
 
   const render = useCallback((sections) => {
     targetPolygons.current = {};
@@ -87,11 +87,11 @@ const useDisableMode = () => {
   const apply = useCallback(async () => {
     await Promise.all(
       Object.keys(targetPolygons.current).map((target) => {
-        return disableSectionById(target);
+        return enableSectionById(target);
       }),
     );
 
-    void message.success('구역이 비활성화 되었습니다.');
+    void message.success('구역이 활성화 되었습니다.');
     clear();
   }, [clear]);
 
@@ -103,4 +103,4 @@ const useDisableMode = () => {
   };
 };
 
-export default useDisableMode;
+export default useEnableMode;

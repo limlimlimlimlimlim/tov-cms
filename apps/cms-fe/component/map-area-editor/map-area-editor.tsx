@@ -3,6 +3,7 @@ import { Button, Flex } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
+import { updateMap } from '../../api/map';
 import useViewMode from './hooks/use-view-mode';
 import useAddMode from './hooks/use-add-mode';
 import useEditMode from './hooks/use-edit-mode';
@@ -106,7 +107,17 @@ export default function MapAreaEditor({ map }: ComponentProps) {
         break;
     }
     await fetchSections();
-  }, [applyAddMode, applyDeleteMode, applyEditMode, fetchSections, mode]);
+    const base64 = stage.toDataURL();
+    await updateMap(map.id, { sectionBase64: base64 });
+  }, [
+    applyAddMode,
+    applyDeleteMode,
+    applyEditMode,
+    fetchSections,
+    map,
+    mode,
+    stage,
+  ]);
 
   const onClickCancel = useCallback(() => {
     switch (mode) {

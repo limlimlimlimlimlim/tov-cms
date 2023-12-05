@@ -50,7 +50,6 @@ export class SectionService {
   }
 
   async updateSection(id: number, data: Prisma.SectionUncheckedUpdateInput) {
-    console.log(id, typeof data.disabled, data.disabled);
     return this.prisma.section.update({ where: { id }, data });
   }
 }

@@ -23,6 +23,7 @@ export class MapService {
         updatedAt: true,
         image: true,
         isUse: true,
+        sectionBase64: true,
         floor: {
           select: {
             id: true,

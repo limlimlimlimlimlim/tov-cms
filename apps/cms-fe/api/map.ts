@@ -19,6 +19,7 @@ export const createMap = async (data) => {
 };
 
 export const updateMap = async (id, data) => {
+  console.log('updateMap!!');
   return axiosClient.patch(`/maps/${id}`, data);
 };
 

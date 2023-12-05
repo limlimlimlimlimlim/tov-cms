@@ -120,15 +120,14 @@ const useAddMode = () => {
   }, []);
 
   const apply = useCallback(async () => {
-    await addSection(
-      mapId.current,
-      points.current
-        .map((p) => {
-          return [p.getX(), p.getY()];
-        })
-        .flat()
-        .join(','),
-    );
+    const path = points.current
+      .map((p) => {
+        return [p.getX(), p.getY()];
+      })
+      .flat()
+      .join(',');
+    points.current.forEach((p) => p.remove());
+    await addSection(mapId.current, path);
     void message.success('구역이 생성됐습니다.');
     clear();
   }, [clear]);

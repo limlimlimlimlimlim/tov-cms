@@ -9,7 +9,6 @@ export const createWing = async (data) => {
 };
 
 export const createFloor = async (data) => {
-  console.log(data);
   return axiosClient.post('/building-info/floor', data);
 };
 

@@ -3,7 +3,6 @@ import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { id } from 'date-fns/locale';
 import WingSelect from '../../component/wing-select/wing-select';
 import FloorSelect from '../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../api/map';

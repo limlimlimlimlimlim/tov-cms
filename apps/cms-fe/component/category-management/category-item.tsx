@@ -1,50 +1,105 @@
-import { Button, Flex, Input } from "antd";
-import { useCallback, useState } from "react";
-import CategoryList from "./category-list";
+import { Button, Flex, Form, Input, Modal, message } from 'antd';
+import { useCallback, useRef, useState } from 'react';
 import {
   CloseOutlined,
   EditOutlined,
   MinusOutlined,
-  PlusOutlined,
   SaveOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
+import {
+  createSubCategory,
+  deleteCategory,
+  updateCategory,
+} from '../../api/category';
+import SubCategoryList from './sub-category-list';
+
+const { confirm } = Modal;
 
 interface ComponentProps {
   id: string;
   name: string;
-  child: any[];
-  onAdd: (id) => void;
-  onRemove: (id) => void;
-  onChange: (id, value) => void;
+  subCategories: any[];
+  onChange: () => void;
 }
 
 export default function CategoryItem({
   id,
   name,
-  child,
-  onAdd,
-  onRemove,
+  subCategories,
   onChange,
 }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
-  const [categoryName, setCategoryName] = useState(name);
-
-  const onClickAdd = useCallback(() => {
-    onAdd(id);
-  }, [id, onAdd]);
-
-  const onClickRemove = useCallback(() => {
-    onRemove(id);
-  }, [id, onRemove]);
-
-  const onClickUpdate = useCallback(() => {
-    onChange(id, categoryName);
-    setIsEdit(false);
-  }, [categoryName, id, onChange]);
-
+  const [itemName, setItemName] = useState(name);
+  const newItemNameKr = useRef('');
   const onClickEdit = useCallback(() => {
     setIsEdit(true);
   }, []);
+
+  const onAddItem = () => {
+    confirm({
+      title: '상세 추가',
+      okText: '확인',
+      cancelText: '취소',
+      content: (
+        <Flex vertical gap="large">
+          <span>정보를 입력해주세요.</span>
+          <Form.Item label="이름" style={{ marginBottom: 0 }}>
+            <Input
+              onChange={(e) => {
+                newItemNameKr.current = e.target.value;
+              }}
+            />
+          </Form.Item>
+        </Flex>
+      ),
+      async onOk() {
+        await createSubCategory({
+          categoryId: id,
+          name: newItemNameKr.current,
+        });
+        onChange();
+        newItemNameKr.current = '';
+      },
+    });
+  };
+
+  const onDeleteCategory = useCallback(() => {
+    confirm({
+      title: '카테고리 삭제',
+      okText: '확인',
+      cancelText: '취소',
+      content:
+        '카테고리를 삭제하시겠습니까? 카테고리에 등록된 서브카테고리도 함께 삭제 됩니다.',
+      async onOk() {
+        try {
+          await deleteCategory(id);
+          onChange();
+          void message.success('카테고리가 삭제됐습니다.');
+        } catch (e) {
+          void message.error('카테고리를 삭제할 수 없습니다.');
+        }
+      },
+    });
+  }, [id, onChange]);
+
+  const onUpdateCategory = useCallback(() => {
+    confirm({
+      title: '카테고리 수정',
+      okText: '확인',
+      cancelText: '취소',
+      content: '카테고리를 수정하시겠습니까?',
+      async onOk() {
+        try {
+          await updateCategory(id, { name: itemName });
+          setIsEdit(false);
+          onChange();
+          void message.success('카테고리가 수정됐습니다.');
+        } catch (e) {
+          void message.error('카테고리를 수정할 수 없습니다.');
+        }
+      },
+    });
+  }, [id, itemName, onChange]);
 
   return (
     <Flex vertical gap="small">
@@ -52,17 +107,24 @@ export default function CategoryItem({
         <Input
           readOnly={!isEdit}
           onChange={(value: any) => {
-            setCategoryName(value.target.value as string);
+            setItemName(value.target.value as string);
           }}
-          value={categoryName}
+          value={itemName}
         />
 
         {!isEdit && (
           <>
-            <Button onClick={onClickAdd}>
-              <PlusOutlined />
+            <Button
+              onClick={() => {
+                onAddItem();
+              }}
+            >
+              층 추가
             </Button>
-            <Button onClick={onClickRemove}>
+            <Button onClick={onClickEdit}>
+              <EditOutlined />
+            </Button>
+            <Button onClick={onDeleteCategory}>
               <MinusOutlined />
             </Button>
           </>
@@ -70,27 +132,27 @@ export default function CategoryItem({
 
         {isEdit ? (
           <Flex gap="small">
-            <Button onClick={onClickUpdate}>
+            <Button onClick={onUpdateCategory}>
               <SaveOutlined />
             </Button>
             <Button
               onClick={() => {
-                setCategoryName(name);
+                setItemName(name);
                 setIsEdit(false);
               }}
             >
               <CloseOutlined />
             </Button>
           </Flex>
-        ) : (
-          <Button onClick={onClickEdit}>
-            <EditOutlined />
-          </Button>
-        )}
+        ) : null}
       </Flex>
-      {Boolean(child) && child.length > 0 && (
+      {Boolean(subCategories) && subCategories.length > 0 && (
         <Flex style={{ paddingLeft: 30 }}>
-          <CategoryList categories={child} />
+          <SubCategoryList
+            data={subCategories}
+            onChange={onChange}
+            onAddItem={onAddItem}
+          />
         </Flex>
       )}
     </Flex>

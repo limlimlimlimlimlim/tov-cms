@@ -24,6 +24,7 @@ import { CustomExceptionFilter } from './custom-exception/custom-exception.filte
 import { SectionModule } from './section/section.module';
 import { PostModule } from './post/post.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { FacilityCategoryModule } from './facility-category/facility-category.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     SectionModule,
     PostModule,
     ScheduleModule,
+    FacilityCategoryModule,
   ],
   controllers: [AppController, AuthController, FileUploadController],
   providers: [

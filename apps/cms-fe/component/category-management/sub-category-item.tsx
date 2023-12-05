@@ -1,4 +1,4 @@
-import { Button, Flex, Input } from 'antd';
+import { Button, Flex, Input, Modal, message } from 'antd';
 import { useCallback, useState } from 'react';
 import {
   CloseOutlined,
@@ -7,40 +7,51 @@ import {
   PlusOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
-import BuildingInfoList from './building-list';
+import { deleteSubCateogy, updateSubCateogy } from '../../api/category';
+
+const { confirm } = Modal;
 
 interface ComponentProps {
-  id: string;
-  name: string;
-  child: any[];
-  onAdd: (id) => void;
-  onDelete: (id) => void;
-  onUpdate: (id, value) => void;
+  data: any;
+  onChange: () => void;
+  onAdd: () => void;
 }
 
-export default function BuildingItem({
-  id,
-  name,
-  child,
+export default function SubCategoryItem({
+  data,
   onAdd,
-  onDelete,
-  onUpdate,
+  onChange,
 }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
-  const [itemName, setItemName] = useState(name);
+  const [itemName, setItemName] = useState(data.name);
 
   const onClickAdd = useCallback(() => {
-    onAdd(id);
-  }, [id, onAdd]);
+    onAdd();
+  }, [onAdd]);
 
   const onClickDelete = useCallback(() => {
-    onDelete(id);
-  }, [id, onDelete]);
+    confirm({
+      title: '서브카테고리 삭제',
+      okText: '확인',
+      cancelText: '취소',
+      content: '서브카테고리를 삭제하시겠습니까?',
+      async onOk() {
+        try {
+          await deleteSubCateogy(data.id);
+          onChange();
+          void message.success('서브카테고리가 삭제됐습니다.');
+        } catch (e) {
+          void message.error('서브카테고리를 삭제할 수 없습니다.');
+        }
+      },
+    });
+  }, [data, onChange]);
 
-  const onClickUpdate = useCallback(() => {
-    onUpdate(id, itemName);
+  const onClickUpdate = useCallback(async () => {
+    await updateSubCateogy(data.id, { name: itemName });
+    void message.success('서브카테고리가 수정 됐습니다.');
     setIsEdit(false);
-  }, [itemName, id, onUpdate]);
+  }, [data, itemName]);
 
   const onClickEdit = useCallback(() => {
     setIsEdit(true);
@@ -48,7 +59,7 @@ export default function BuildingItem({
 
   return (
     <Flex vertical gap="small">
-      <Flex gap="small">
+      <Flex>
         <Input
           readOnly={!isEdit}
           onChange={(value: any) => {

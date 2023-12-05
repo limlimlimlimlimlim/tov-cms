@@ -1,68 +1,68 @@
-import { Flex, Input, Modal, message } from 'antd';
-import { useCallback, useState } from 'react';
-// eslint-disable-next-line import/no-cycle
+import { Button, Flex, Form, Input, Modal } from 'antd';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createCategory, getCategoryTree } from '../../api/category';
 import CategoryItem from './category-item';
 
 const { confirm } = Modal;
 
-interface ComponentProps {
-  categories: any[];
-}
+export default function CategoryList() {
+  const [categoryData, setCategoryData] = useState([]);
+  const newItemNameKr = useRef('');
 
-export default function CategoryList({ categories }: ComponentProps) {
-  const [newCategoryName, setNewCategoryName] = useState('');
-  const onAdd = useCallback(() => {
+  const fetchData = useCallback(async () => {
+    const result = await getCategoryTree();
+
+    setCategoryData(result.data);
+  }, []);
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
+
+  const onAddItem = useCallback(() => {
     confirm({
       title: '카테고리 추가',
       okText: '확인',
       cancelText: '취소',
       content: (
-        <Flex vertical>
-          <span>카테고리 이름을 입력해주세요.</span>
-          <Input
-            onChange={(e) => {
-              setNewCategoryName(e.target.value);
-            }}
-          />
+        <Flex vertical gap="large">
+          <span>정보를 입력해주세요.</span>
+          <Form.Item label="이름" style={{ marginBottom: 0 }}>
+            <Input
+              onChange={(e) => {
+                newItemNameKr.current = e.target.value;
+              }}
+            />
+          </Form.Item>
         </Flex>
       ),
-      onOk() {
-        void message.success('카테고리가 생성됐습니다.');
+      async onOk() {
+        await createCategory({ name: newItemNameKr.current });
+        await fetchData();
       },
     });
-    confirm;
-  }, [newCategoryName]);
-
-  const onRemove = useCallback(() => {
-    confirm({
-      title: '카테고리 삭제',
-      okText: '확인',
-      cancelText: '취소',
-      content: '카테고리를 삭제하시겠습니까?',
-      onOk() {
-        void message.success('카테고리가 삭제됐습니다.');
-      },
-    });
-  }, []);
-  const onChange = useCallback(() => {}, []);
+  }, [fetchData, newItemNameKr]);
 
   const createItems = useCallback(() => {
-    return categories.map((category) => {
+    return categoryData.map((item: any) => {
       return (
         <CategoryItem
-          key={category.id}
-          id={category.id}
-          name={category.name}
-          child={category.child}
-          onAdd={onAdd}
-          onRemove={onRemove}
-          onChange={onChange}
+          key={item.id}
+          id={item.id}
+          name={item.name}
+          subCategories={item.subCategories}
+          onChange={() => {
+            void fetchData();
+          }}
         />
       );
     }, []);
-  }, [categories, onAdd, onChange, onRemove]);
+  }, [categoryData, fetchData]);
   return (
     <Flex vertical gap="small" style={{ width: '100%' }}>
+      <Button onClick={onAddItem} style={{ width: 130 }}>
+        카테고리 추가
+      </Button>
       {createItems()}
     </Flex>
   );

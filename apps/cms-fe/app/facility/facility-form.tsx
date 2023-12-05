@@ -3,12 +3,15 @@ import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { id } from 'date-fns/locale';
 import WingSelect from '../../component/wing-select/wing-select';
 import FloorSelect from '../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../api/map';
 import { createFacility, updateFacility } from '../../api/facility';
 import MapViewer from '../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../component/facility-position-management/facility-position-management-modal';
+import CategorySelect from '../../component/category-select/category-select';
+import SubCategorySelect from '../../component/sub-category-select/sub-category-select';
 
 const layout = {
   labelCol: { span: 4 },
@@ -29,8 +32,8 @@ const FacilityForm = ({ data }) => {
   const router = useRouter();
   const [floor, setFloor] = useState('');
   const [wing, setWing] = useState('');
-  const [category, setCategory] = useState(2);
-  const [subCategory, setSubCategory] = useState(1);
+  const [category, setCategory] = useState();
+  const [subCategory, setSubCategory] = useState();
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -50,8 +53,8 @@ const FacilityForm = ({ data }) => {
       setIsEdit(true);
       setWing(data.wingId);
       setFloor(data.floorId);
-      setCategory(data.categoryId);
-      setSubCategory(data.subCategoryId);
+      setCategory(data.category.id);
+      setSubCategory(data.subCategory.id);
       setName(data.name);
       setAddress(data.address);
       setPhone(data.phone);
@@ -160,30 +163,22 @@ const FacilityForm = ({ data }) => {
       >
         <Form.Item label="시설구분">
           <Flex gap="middle">
-            <Select
+            <CategorySelect
+              id={category}
               style={{ width: 150 }}
-              defaultValue={category}
-              placeholder="선택"
-              onChange={(e: any) => {
-                setCategory(e.value);
+              onChange={(e) => {
+                setCategory(e);
               }}
-            >
-              <Option key="2" value={2}>
-                Category2
-              </Option>
-            </Select>
-            <Select
+            />
+            <SubCategorySelect
+              id={subCategory}
+              categoryId={category}
               style={{ width: 150 }}
-              defaultValue={subCategory}
-              placeholder="선택"
-              onChange={(e: any) => {
-                setSubCategory(e.value);
+              onChange={(value: any) => {
+                console.log(value);
+                setSubCategory(value);
               }}
-            >
-              <Option key="test1-1" value={1}>
-                Sub Category1
-              </Option>
-            </Select>
+            />
           </Flex>
         </Form.Item>
 

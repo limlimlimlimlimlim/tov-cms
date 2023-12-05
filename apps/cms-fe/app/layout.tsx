@@ -7,7 +7,7 @@ import AppContainer from '../component/app-container/app-container';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'LG Twin Tower CMS',
+  title: 'LG 에너지솔루셩',
 };
 
 export default function RootLayout({

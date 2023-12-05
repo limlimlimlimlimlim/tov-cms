@@ -7,13 +7,15 @@ const useMergeMode = () => {
   const mapId = useRef<any>();
   const stage = useRef<any>();
   const layer = useRef<any>();
+  const scale = useRef<number>(1);
   const polygons = useRef<any[]>([]);
   const targetPolygons = useRef<any>({});
 
-  const init = useCallback((mid, s, l) => {
+  const init = useCallback((mid, stg, lay, sca) => {
     mapId.current = mid;
-    stage.current = s;
-    layer.current = l;
+    stage.current = stg;
+    layer.current = lay;
+    scale.current = sca;
   }, []);
 
   const initEvent = useCallback(() => {
@@ -21,7 +23,6 @@ const useMergeMode = () => {
       p.on('click', () => {
         const id = p.getName();
         if (targetPolygons[id]) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete targetPolygons.current[id];
           p.fill('#aaff77');
         } else {
@@ -39,7 +40,7 @@ const useMergeMode = () => {
 
       sections.forEach((s: any) => {
         const poly: any = new window.Konva.Line({
-          points: s.path.split(','),
+          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
           fill: '#aaff77',
           closed: true,
           opacity: 0.5,

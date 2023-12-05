@@ -1,25 +1,27 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef } from 'react';
 
 const useViewMode = () => {
-  const [layer, setLayer] = useState<any>();
+  const layer = useRef<any>();
+  const scale = useRef<number>(1);
 
-  const init = useCallback((l) => {
-    setLayer(l);
+  const init = useCallback((lay, sca) => {
+    layer.current = lay;
+    scale.current = sca;
   }, []);
 
   const render = useCallback(
     (sections) => {
-      if (!layer) return;
-      layer.destroyChildren();
+      if (!layer.current) return;
+      layer.current.destroyChildren();
       sections.forEach((s: any) => {
         const poly: any = new window.Konva.Line({
-          points: s.path.split(','),
+          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
           fill: '#aaff77',
           closed: true,
           opacity: 0.5,
           name: s.id,
         });
-        layer.add(poly);
+        layer.current.add(poly);
       });
     },
     [layer],

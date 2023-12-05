@@ -7,13 +7,15 @@ const useAddMode = () => {
   const mapId = useRef<any>();
   const stage = useRef<any>();
   const layer = useRef<any>();
+  const scale = useRef<number>(1);
   const points = useRef<any[]>([]);
   const addPloygon = useRef<any>(null);
 
-  const init = useCallback((mid, s, l) => {
+  const init = useCallback((mid, stg, lay, sca) => {
     mapId.current = mid;
-    stage.current = s;
-    layer.current = l;
+    stage.current = stg;
+    layer.current = lay;
+    scale.current = sca;
   }, []);
 
   const renderPolygon = useCallback(() => {
@@ -90,7 +92,7 @@ const useAddMode = () => {
 
       sections.forEach((s: any) => {
         const poly: any = new window.Konva.Line({
-          points: s.path.split(','),
+          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
           fill: '#aaff77',
           closed: true,
           opacity: 0.3,
@@ -122,7 +124,7 @@ const useAddMode = () => {
   const apply = useCallback(async () => {
     const path = points.current
       .map((p) => {
-        return [p.getX(), p.getY()];
+        return [p.getX() / scale.current, p.getY() / scale.current];
       })
       .flat()
       .join(',');

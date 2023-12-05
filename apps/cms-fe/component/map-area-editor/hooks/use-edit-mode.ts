@@ -7,15 +7,17 @@ const useDeleteMode = () => {
   const mapId = useRef<any>();
   const stage = useRef<any>();
   const layer = useRef<any>();
+  const scale = useRef<number>(1);
   const polygons = useRef<any[]>([]);
   const targetPolygons = useRef<any>({});
   const editPolygon = useRef<any>();
   const points = useRef<any[]>([]);
 
-  const init = useCallback((mid, s, l) => {
+  const init = useCallback((mid, stg, lay, sca) => {
     mapId.current = mid;
-    stage.current = s;
-    layer.current = l;
+    stage.current = stg;
+    layer.current = lay;
+    scale.current = sca;
   }, []);
 
   const renderPolygon = useCallback(() => {
@@ -82,7 +84,7 @@ const useDeleteMode = () => {
       layer.current.destroyChildren();
       sections.forEach((s: any) => {
         const poly: any = new window.Konva.Line({
-          points: s.path.split(','),
+          points: s.path.split(',').map((p) => parseFloat(p) * scale.current),
           fill: '#aaff77',
           closed: true,
           opacity: 0.5,
@@ -116,7 +118,10 @@ const useDeleteMode = () => {
         return updateSectionById(
           p.getName(),
           mapId.current,
-          p.getPoints().join(','),
+          p
+            .getPoints()
+            .map((p) => p / scale.current)
+            .join(','),
         );
       }),
     );

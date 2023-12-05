@@ -21,8 +21,6 @@ declare global {
 export default function MapSectionMerger({ map }: ComponentProps) {
   const [sections, setSections] = useState<any[]>([]);
   const [imgSrc, setImgSrc] = useState('');
-  const [stage, setStage] = useState<any>(null);
-  const [layer, setLayer] = useState<any>(null);
   const [mode, setMode] = useState('normal');
   const { init: initViewMode, render: renderViewMode } = useViewMode();
   const {
@@ -56,22 +54,40 @@ export default function MapSectionMerger({ map }: ComponentProps) {
     renderViewMode(sec.data);
   }, [map, renderViewMode]);
 
-  const createStage = useCallback((w, h) => {
-    const stg = new window.Konva.Stage({
-      container: 'canvas',
-      width: w,
-      height: h,
-    });
+  const createStage = useCallback(
+    (w, h, s) => {
+      const stg = new window.Konva.Stage({
+        container: 'canvas',
+        width: w,
+        height: h,
+      });
 
-    const l = new window.Konva.Layer();
-    stg.add(l);
-    setStage(stg);
-    setLayer(l);
-  }, []);
+      const lay = new window.Konva.Layer();
+      stg.add(lay);
+
+      initViewMode(lay, s);
+      initMergeMode(map.id, stg, lay, s);
+      initSplitMode(map.id, stg, lay, s);
+      initDisableMode(map.id, stg, lay, s);
+      void fetchSections();
+    },
+    [
+      fetchSections,
+      initDisableMode,
+      initMergeMode,
+      initSplitMode,
+      initViewMode,
+      map.id,
+    ],
+  );
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
-    createStage(imageRef.current.width, imageRef.current.height);
+    createStage(
+      imageRef.current.width,
+      imageRef.current.height,
+      imageRef.current.width / imageRef.current.naturalWidth,
+    );
   }, [createStage]);
 
   useEffect(() => {
@@ -132,27 +148,6 @@ export default function MapSectionMerger({ map }: ComponentProps) {
     sections,
   ]);
 
-  useEffect(() => {
-    if (!map) return;
-    void fetchSections();
-  }, [fetchSections, map]);
-
-  useEffect(() => {
-    if (!stage) return;
-    initViewMode(layer);
-    initMergeMode(map.id, stage, layer);
-    initSplitMode(map.id, stage, layer);
-    initDisableMode(map.id, stage, layer);
-  }, [
-    initMergeMode,
-    initDisableMode,
-    initSplitMode,
-    initViewMode,
-    layer,
-    map.id,
-    stage,
-  ]);
-
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
       <Flex justify="end" gap="middle">
@@ -181,6 +176,9 @@ export default function MapSectionMerger({ map }: ComponentProps) {
             alt="map"
             ref={imageRef}
             src={imgSrc}
+            style={{
+              maxWidth: 1000,
+            }}
             onLoad={() => {
               onLoadImage();
             }}

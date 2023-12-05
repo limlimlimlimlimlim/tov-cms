@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('CMS API')
-    .setDescription('The Lg Twin Tower API description')
+    .setDescription('The LG CMS API description')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

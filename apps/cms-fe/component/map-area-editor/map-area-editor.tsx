@@ -22,7 +22,6 @@ export default function MapAreaEditor({ map }: ComponentProps) {
   const [sections, setSections] = useState<any[]>([]);
   const [imgSrc, setImgSrc] = useState('');
   const [stage, setStage] = useState<any>(null);
-  const [layer, setLayer] = useState<any>(null);
   const [mode, setMode] = useState('normal');
   const { init: initViewMode, render: renderViewMode } = useViewMode();
   const {
@@ -56,22 +55,38 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     renderViewMode(sec.data);
   }, [map, renderViewMode]);
 
-  const createStage = useCallback((w, h) => {
-    const stg = new window.Konva.Stage({
-      container: 'canvas',
-      width: w,
-      height: h,
-    });
+  const createStage = useCallback(
+    (w, h, s) => {
+      const stg = new window.Konva.Stage({
+        container: 'canvas',
+        width: w,
+        height: h,
+      });
 
-    const l = new window.Konva.Layer();
-    stg.add(l);
-    setStage(stg);
-    setLayer(l);
-  }, []);
+      const lay = new window.Konva.Layer();
+      stg.add(lay);
+      setStage(stg);
+
+      initViewMode(lay, s);
+      initAddMode(map.id, stg, lay, s);
+      initEditMode(map.id, stg, lay, s);
+      initDeleteMode(map.id, stg, lay, s);
+    },
+    [initAddMode, initDeleteMode, initEditMode, initViewMode, map],
+  );
+
+  useEffect(() => {
+    if (!stage) return;
+    void fetchSections();
+  }, [fetchSections, stage]);
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
-    createStage(imageRef.current.width, imageRef.current.height);
+    createStage(
+      imageRef.current.width,
+      imageRef.current.height,
+      imageRef.current.width / imageRef.current.naturalWidth,
+    );
   }, [createStage]);
 
   useEffect(() => {
@@ -142,27 +157,6 @@ export default function MapAreaEditor({ map }: ComponentProps) {
     sections,
   ]);
 
-  useEffect(() => {
-    if (!map) return;
-    void fetchSections();
-  }, [fetchSections, map]);
-
-  useEffect(() => {
-    if (!stage) return;
-    initViewMode(layer);
-    initAddMode(map.id, stage, layer);
-    initEditMode(map.id, stage, layer);
-    initDeleteMode(map.id, stage, layer);
-  }, [
-    initAddMode,
-    initDeleteMode,
-    initEditMode,
-    initViewMode,
-    layer,
-    map.id,
-    stage,
-  ]);
-
   return (
     <Flex vertical gap="large" style={{ paddingTop: 20 }}>
       <Flex justify="end" gap="middle">
@@ -194,6 +188,9 @@ export default function MapAreaEditor({ map }: ComponentProps) {
             alt="map"
             ref={imageRef}
             src={imgSrc}
+            style={{
+              maxWidth: 1200,
+            }}
             onLoad={() => {
               onLoadImage();
             }}

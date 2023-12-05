@@ -22,7 +22,7 @@ const useMergeMode = () => {
     polygons.current.forEach((p) => {
       p.on('click', () => {
         const id = p.getName();
-        if (targetPolygons[id]) {
+        if (targetPolygons.current[id]) {
           delete targetPolygons.current[id];
           p.fill('#aaff77');
         } else {
@@ -73,11 +73,18 @@ const useMergeMode = () => {
     clear();
   }, [clear]);
 
+  const validate = useCallback(() => {
+    const keys = Object.keys(targetPolygons.current);
+    const valid = keys.length >= 2;
+    return { valid, msg: '2개 구역 이상 선택해주세요.' };
+  }, []);
+
   return {
     init,
     setup,
     clear,
     apply,
+    validate,
   };
 };
 

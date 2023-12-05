@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Flex } from 'antd';
+import { Button, Flex, message } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
@@ -28,6 +28,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
     apply: applyMergeMode,
     setup: setupMergeMode,
     clear: clearMergeMode,
+    validate: validateMergeMode,
   } = useMergeMode();
 
   const {
@@ -110,9 +111,14 @@ export default function MapSectionMerger({ map }: ComponentProps) {
   }, [sections, setupDisableMode]);
 
   const onClickApply = useCallback(async () => {
-    setMode('normal');
     switch (mode) {
       case 'merge':
+        // eslint-disable-next-line no-case-declarations
+        const { valid, msg } = validateMergeMode();
+        if (!valid) {
+          void message.error(msg);
+          return;
+        }
         await applyMergeMode();
         break;
       case 'split':
@@ -122,8 +128,16 @@ export default function MapSectionMerger({ map }: ComponentProps) {
         await applyDisableMode();
         break;
     }
+    setMode('normal');
     await fetchSections();
-  }, [applyMergeMode, applyDisableMode, applySplitMode, fetchSections, mode]);
+  }, [
+    mode,
+    fetchSections,
+    validateMergeMode,
+    applyMergeMode,
+    applySplitMode,
+    applyDisableMode,
+  ]);
 
   const onClickCancel = useCallback(() => {
     switch (mode) {

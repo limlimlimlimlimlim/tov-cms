@@ -169,8 +169,8 @@ const FacilityForm = ({ data }) => {
                 setCategory(e.value);
               }}
             >
-              <Option key="test2" value={2}>
-                test2
+              <Option key="2" value={2}>
+                Category2
               </Option>
             </Select>
             <Select
@@ -182,7 +182,7 @@ const FacilityForm = ({ data }) => {
               }}
             >
               <Option key="test1-1" value={1}>
-                test1-1
+                Sub Category1
               </Option>
             </Select>
           </Flex>

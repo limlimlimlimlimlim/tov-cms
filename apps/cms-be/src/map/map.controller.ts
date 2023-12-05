@@ -26,8 +26,8 @@ export class MapController {
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
-    @Query('floorId') floorId: string,
-    @Query('wingId') wingId: string,
+    @Query('floor') floorId: string,
+    @Query('wing') wingId: string,
   ) {
     return await this.mapService.getMaps({
       keyword,

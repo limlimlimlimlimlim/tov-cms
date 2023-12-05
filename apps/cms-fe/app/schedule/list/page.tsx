@@ -126,7 +126,11 @@ export default function ScheduleList() {
     <Flex vertical gap="middle">
       <Flex gap="large">
         <Form.Item label="건물 선택">
-          <WingSelect style={{ width: 200 }} onChange={onChangeWing} />
+          <WingSelect
+            wingId={wing}
+            style={{ width: 200 }}
+            onChange={onChangeWing}
+          />
         </Form.Item>
       </Flex>
       <Flex justify="space-between">

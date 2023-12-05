@@ -141,6 +141,7 @@ export default function KioskList() {
         <Form.Item label="층 선택">
           <FloorSelect
             wingId={wing}
+            floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeFloor}
             useAll

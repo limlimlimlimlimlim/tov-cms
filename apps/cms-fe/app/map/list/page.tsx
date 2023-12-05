@@ -171,6 +171,7 @@ export default function MapList() {
           <Flex gap="large">
             <Form.Item label="건물 선택">
               <WingSelect
+                wingId={wing}
                 style={{ width: 200 }}
                 onChange={onChangeWing}
                 useAll
@@ -179,6 +180,7 @@ export default function MapList() {
             <Form.Item label="층 선택">
               <FloorSelect
                 wingId={wing}
+                floorId={floor}
                 style={{ width: 200 }}
                 onChange={onChangeFloor}
                 useAll

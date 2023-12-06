@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { PostItem } from '../../../interface/post';
 import WingSelect from '../../../component/wing-select/wing-select';
-import { deletePost } from '../../../api/post';
 import { deleteSchedule, getSchedules } from '../../../api/schedule';
 
 const { Search } = Input;

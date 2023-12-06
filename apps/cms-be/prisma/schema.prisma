@@ -16,7 +16,7 @@ model User {
   password              String
   name                  String
   phone                 String?
-  description           String?
+  description           String? @db.Text
   permissionId          Int
   facilityCategoryId    Int?
   facilitySubCategoryId Int?
@@ -198,7 +198,7 @@ model Event {
   id            Int      @default(autoincrement()) @id
   title         String
   image         String?
-  description   String
+  description   String @db.Text
   startDate     DateTime?
   endDate       DateTime?
   noPeriod      Boolean?
@@ -229,7 +229,7 @@ model Post{
   name            String
   imageContents   String?
   videoContents   String?
-  textContents    String?
+  textContents    String?     @db.Text
   type            String
   contentsType    String
   startDate       DateTime?
@@ -251,7 +251,7 @@ model Schedule{
   imageContents   String?
   videoContents   String?
   contentsType    String
-  description     String?
+  description     String?     @db.Text
   startDate       DateTime?
   endDate         DateTime?
   status          String

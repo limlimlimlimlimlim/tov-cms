@@ -37,8 +37,9 @@ const useAddMode = () => {
       const c: any = new window.Konva.Circle({
         x,
         y,
-        radius: 6,
+        radius: 4,
         fill: '#ff9900',
+        opacity: 0.5,
         draggable: true,
       });
       points.current.push(c);
@@ -69,6 +70,8 @@ const useAddMode = () => {
     const poly: any = new window.Konva.Line({
       points: [],
       fill: '#aaff77',
+      stroke: '#555',
+      strokeWidth: 2,
       closed: true,
       opacity: 0.5,
     });

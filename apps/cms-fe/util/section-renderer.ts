@@ -58,6 +58,8 @@ const createPolygon = (s, color, scale) => {
   return new window.Konva.Line({
     points: s.path.split(',').map((p) => parseFloat(p) * scale),
     fill: color,
+    stroke: '#555',
+    strokeWidth: 2,
     closed: true,
     opacity: 0.5,
     name: s.id,

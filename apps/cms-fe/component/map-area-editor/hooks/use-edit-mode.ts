@@ -39,8 +39,9 @@ const useDeleteMode = () => {
       const c: any = new window.Konva.Circle({
         x,
         y,
-        radius: 6,
+        radius: 4,
         fill: '#ff9900',
+        opacity: 0.5,
         draggable: true,
       });
       points.current.push(c);

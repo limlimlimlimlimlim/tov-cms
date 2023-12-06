@@ -12,7 +12,7 @@ export default function CatrgoryManagementModal({
 }: ComponentProps) {
   return (
     <Modal
-      title="카테고리 관리!!"
+      title="카테고리 관리"
       open={open}
       cancelText="닫기"
       onCancel={onCancel}

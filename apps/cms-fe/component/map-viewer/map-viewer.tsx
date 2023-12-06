@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { getMapDetail } from '../../api/map';
 import { baseURL } from '../../util/axios-client';
+import { createSection } from '../../util/section-renderer';
 
 const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   const [data, setData] = useState<any>();
@@ -66,17 +67,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
       if (!secLayerRef.current || !facLayerRef.current) return;
       secLayerRef.current.destroyChildren();
       facLayerRef.current.destroyChildren();
-
-      data.sections.forEach((s: any) => {
-        const poly: any = new window.Konva.Line({
-          points: s.path.split(',').map((i) => parseFloat(i) * sca),
-          fill: '#aaff77',
-          closed: true,
-          opacity: 0.5,
-          name: s.id,
-        });
-        secLayerRef.current.add(poly);
-      });
+      createSection(data.sections, secLayerRef.current, sca);
     },
     [data, secLayerRef, facLayerRef],
   );

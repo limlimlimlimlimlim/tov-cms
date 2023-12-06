@@ -119,7 +119,7 @@ export default function CategoryItem({
                 onAddItem();
               }}
             >
-              층 추가
+              상세추가
             </Button>
             <Button onClick={onClickEdit}>
               <EditOutlined />

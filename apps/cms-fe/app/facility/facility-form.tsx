@@ -174,7 +174,6 @@ const FacilityForm = ({ data }) => {
               categoryId={category}
               style={{ width: 150 }}
               onChange={(value: any) => {
-                console.log(value);
                 setSubCategory(value);
               }}
             />

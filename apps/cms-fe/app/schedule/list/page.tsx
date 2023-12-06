@@ -8,7 +8,7 @@ import { EditOutlined } from '@ant-design/icons';
 import type { PostItem } from '../../../interface/post';
 import WingSelect from '../../../component/wing-select/wing-select';
 import { deletePost } from '../../../api/post';
-import { getSchedules } from '../../../api/schedule';
+import { deleteSchedule, getSchedules } from '../../../api/schedule';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -101,7 +101,7 @@ export default function ScheduleList() {
       cancelText: '취소',
       content: '선택된 스케쥴을 삭제하시겠습니까?',
       async onOk() {
-        await Promise.all(selectedData.map((row) => deletePost(row.id)));
+        await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
         void fetchData({ keyword, page, count, wing });
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },

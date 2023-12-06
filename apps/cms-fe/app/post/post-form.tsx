@@ -73,6 +73,7 @@ const PostForm = ({ data }) => {
       children: (
         <ContentsUploader
           source={videoContents}
+          type="video"
           onComplete={({ fileName }) => {
             setVideoContents(fileName);
           }}

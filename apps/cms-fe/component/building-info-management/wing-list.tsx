@@ -8,6 +8,7 @@ const { confirm } = Modal;
 export default function WingList() {
   const [buildingData, setBuildingData] = useState([]);
   const newItemNameKr = useRef('');
+  const newItemNameEn = useRef('');
 
   const fetchData = useCallback(async () => {
     const result = await getBuildingInfoTree();
@@ -26,21 +27,31 @@ export default function WingList() {
       content: (
         <Flex vertical gap="large">
           <span>정보를 입력해주세요.</span>
-          <Form.Item label="이름" style={{ marginBottom: 0 }}>
+          <Form.Item label="이름(한글)" style={{ marginBottom: 0 }}>
             <Input
               onChange={(e) => {
                 newItemNameKr.current = e.target.value;
               }}
             />
           </Form.Item>
+          <Form.Item label="이름(영어)" style={{ marginBottom: 0 }}>
+            <Input
+              onChange={(e) => {
+                newItemNameEn.current = e.target.value;
+              }}
+            />
+          </Form.Item>
         </Flex>
       ),
       async onOk() {
-        await createWing({ name: newItemNameKr.current });
+        await createWing({
+          name: newItemNameKr.current,
+          nameEn: newItemNameEn.current,
+        });
         await fetchData();
       },
     });
-  }, [fetchData, newItemNameKr]);
+  }, [fetchData, newItemNameKr, newItemNameEn]);
 
   const createItems = useCallback(() => {
     return buildingData.map((item: any) => {
@@ -49,6 +60,7 @@ export default function WingList() {
           key={item.id}
           id={item.id}
           name={item.name}
+          nameEn={item.nameEn}
           floors={item.floors}
           onChange={() => {
             void fetchData();

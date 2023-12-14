@@ -14,6 +14,7 @@ const { confirm } = Modal;
 interface ComponentProps {
   id: string;
   name: string;
+  nameEn: string;
   floors: any[];
   onChange: () => void;
 }
@@ -21,12 +22,15 @@ interface ComponentProps {
 export default function WingItem({
   id,
   name,
+  nameEn,
   floors,
   onChange,
 }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
   const [itemName, setItemName] = useState(name);
+  const [itemNameEn, setItemNameEn] = useState(nameEn);
   const newItemNameKr = useRef('');
+  const newItemNameEn = useRef('');
   const onClickEdit = useCallback(() => {
     setIsEdit(true);
   }, []);
@@ -39,10 +43,17 @@ export default function WingItem({
       content: (
         <Flex vertical gap="large">
           <span>정보를 입력해주세요.</span>
-          <Form.Item label="이름" style={{ marginBottom: 0 }}>
+          <Form.Item label="이름(한글)" style={{ marginBottom: 0 }}>
             <Input
               onChange={(e) => {
                 newItemNameKr.current = e.target.value;
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="이름(영어)" style={{ marginBottom: 0 }}>
+            <Input
+              onChange={(e) => {
+                newItemNameEn.current = e.target.value;
               }}
             />
           </Form.Item>
@@ -52,10 +63,12 @@ export default function WingItem({
         await createFloor({
           wingId: id,
           name: newItemNameKr.current,
+          nameEn: newItemNameEn.current,
           order,
         });
         onChange();
         newItemNameKr.current = '';
+        newItemNameEn.current = '';
       },
     });
   };
@@ -87,7 +100,7 @@ export default function WingItem({
       content: '건물(동)을 수정하시겠습니까?',
       async onOk() {
         try {
-          await updateWing(id, { name: itemName });
+          await updateWing(id, { name: itemName, nameEn: itemNameEn });
           setIsEdit(false);
           onChange();
           void message.success('건물(동)이 수정됐습니다.');
@@ -96,7 +109,7 @@ export default function WingItem({
         }
       },
     });
-  }, [id, itemName, onChange]);
+  }, [id, itemName, itemNameEn, onChange]);
 
   return (
     <Flex vertical gap="small">
@@ -107,6 +120,14 @@ export default function WingItem({
             setItemName(value.target.value as string);
           }}
           value={itemName}
+        />
+
+        <Input
+          readOnly={!isEdit}
+          onChange={(value: any) => {
+            setItemNameEn(value.target.value as string);
+          }}
+          value={itemNameEn}
         />
 
         {!isEdit && (

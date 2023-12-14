@@ -38,12 +38,14 @@ export class BuildingInfoService {
       select: {
         id: true,
         name: true,
+        nameEn: true,
         createdAt: true,
         updatedAt: true,
         floors: {
           select: {
             id: true,
             name: true,
+            nameEn: true,
             order: true,
             createdAt: true,
             updatedAt: true,

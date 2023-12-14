@@ -1,6 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { Tabs } from 'antd';
 import PostForm from '../../post-form';
 import { getPostDetail } from '../../../../api/post';
 
@@ -17,5 +18,20 @@ export default function PostEdit() {
     void fetchData();
   }, [fetchData]);
 
-  return <PostForm data={postData} />;
+  return (
+    <Tabs
+      items={[
+        {
+          key: 'ko',
+          label: '한글',
+          children: <PostForm data={postData} />,
+        },
+        {
+          key: 'en',
+          label: '영어',
+          children: <PostForm data={postData} />,
+        },
+      ]}
+    />
+  );
 }

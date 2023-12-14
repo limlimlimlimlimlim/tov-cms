@@ -20,6 +20,7 @@ interface ComponentProps {
 export default function FloorItem({ data, onAdd, onChange }: ComponentProps) {
   const [isEdit, setIsEdit] = useState(false);
   const [itemName, setItemName] = useState(data.name);
+  const [itemNameEn, setItemNameEn] = useState(data.nameEn);
 
   const onClickAdd = useCallback(() => {
     onAdd(data.order + 1);
@@ -43,10 +44,10 @@ export default function FloorItem({ data, onAdd, onChange }: ComponentProps) {
   }, [data, onChange]);
 
   const onClickUpdate = useCallback(async () => {
-    await updateFloor(data.id, { name: itemName });
+    await updateFloor(data.id, { name: itemName, nameEn: itemNameEn });
     void message.success('층이 수정 됐습니다.');
     setIsEdit(false);
-  }, [data, itemName]);
+  }, [data.id, itemName, itemNameEn]);
 
   const onClickEdit = useCallback(() => {
     setIsEdit(true);
@@ -61,6 +62,13 @@ export default function FloorItem({ data, onAdd, onChange }: ComponentProps) {
             setItemName(value.target.value as string);
           }}
           value={itemName}
+        />
+        <Input
+          readOnly={!isEdit}
+          onChange={(value: any) => {
+            setItemNameEn(value.target.value as string);
+          }}
+          value={itemNameEn}
         />
 
         {!isEdit && (

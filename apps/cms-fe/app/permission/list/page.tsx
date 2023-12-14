@@ -47,7 +47,6 @@ const columns: ColumnsType<PermissionItem> = [
 ];
 
 export default function PermissionList() {
-  const [total, setTotal] = useState(0);
   const [data, setData] = useState<PermissionItem[]>([]);
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);

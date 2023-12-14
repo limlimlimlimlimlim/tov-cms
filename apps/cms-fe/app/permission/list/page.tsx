@@ -1,11 +1,12 @@
 'use client';
 import { Button, Flex, Table, Modal, message } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { PermissionItem } from '../../../interface/permission';
+import { getPermissions } from '../../../api/permission';
 
 const { confirm } = Modal;
 
@@ -46,23 +47,22 @@ const columns: ColumnsType<PermissionItem> = [
 ];
 
 export default function PermissionList() {
-  const [count] = useState(17);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState<PermissionItem[]>([]);
+  const [page, setPage] = useState(1);
+  const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<PermissionItem[]>([]);
 
-  useEffect(() => {
-    const temp: PermissionItem[] = [];
-    for (let i = 0; i < 3; i++) {
-      temp.push({
-        key: i,
-        no: i,
-        name: `Permission ${i}`,
-        description: `Permission ${i}`,
-        updatedAt: new Date(),
-      });
-    }
-    setData(temp);
+  const fetchData = useCallback(async ({ page, count }) => {
+    const permissions = await getPermissions({ page, count });
+    setData(permissions.data);
+    // setTotal(permissions.data.total);
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+    void fetchData({ page, count });
+  }, [page, count, fetchData]);
 
   const onClickDelete = useCallback(() => {
     confirm({

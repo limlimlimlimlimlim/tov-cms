@@ -119,8 +119,8 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
           alt="facility-flag"
           style={{
             position: 'absolute',
-            width: 64 * scale,
-            height: 64 * scale,
+            width: 128 * scale,
+            height: 128 * scale,
             left: facility.x * scale - 32 * scale,
             top: facility.y * scale - 64 * scale,
           }}

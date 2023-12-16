@@ -1,7 +1,7 @@
 import axiosClient from '../util/axios-client';
 
-export const getPermissions = async (param: { page; count }) => {
-  return axiosClient.get(`/permission?page=${param.page}&count=${param.count}`);
+export const getPermissions = async () => {
+  return axiosClient.get('/permission');
 };
 
 export const getPermissionDetail = async (id) => {

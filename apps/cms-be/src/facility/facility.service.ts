@@ -87,6 +87,67 @@ export class FacilityService {
     return { total, data, page, count };
   }
 
+  async getFacilityAll() {
+    const total = await this.prisma.facility.count();
+    const data = await this.prisma.facility.findMany({
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        time: true,
+        iconType: true,
+        status: true,
+        x: true,
+        y: true,
+        createdAt: true,
+        updatedAt: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subCategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        floor: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        wing: {
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+          },
+        },
+        section: {
+          select: {
+            id: true,
+            path: true,
+            group: {
+              select: {
+                id: true,
+                sections: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return { total, data };
+  }
+
   async getFacilityById(id: number) {
     const result = await this.prisma.facility.findUnique({
       select: {

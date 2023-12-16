@@ -1,6 +1,6 @@
 'use client';
 import { Button, Flex, Table, Modal, message } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
@@ -49,20 +49,17 @@ const columns: ColumnsType<PermissionItem> = [
 export default function PermissionList() {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState<PermissionItem[]>([]);
-  const [page, setPage] = useState(1);
-  const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<PermissionItem[]>([]);
 
-  const fetchData = useCallback(async ({ page, count }) => {
-    const permissions = await getPermissions({ page, count });
+  const fetchData = useCallback(async () => {
+    const permissions = await getPermissions();
     setData(permissions.data);
     setTotal(permissions.data.length);
   }, []);
 
   useEffect(() => {
-    setPage(1);
-    void fetchData({ page, count });
-  }, [page, count, fetchData]);
+    void fetchData();
+  }, [fetchData]);
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -75,11 +72,10 @@ export default function PermissionList() {
           selectedData.map((select: any) => deletePermission(select.id)),
         );
         void message.success('선택된 권한이 삭제됐습니다.');
-        setPage(1);
-        await fetchData({ page, count });
+        await fetchData();
       },
     });
-  }, [count, fetchData, page, selectedData]);
+  }, [fetchData, selectedData]);
 
   const rowSelection = {
     onChange: (

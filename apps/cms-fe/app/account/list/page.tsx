@@ -1,11 +1,12 @@
 'use client';
 import { Button, Flex, Input, Modal, Table, message } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { AccountItem } from '../../../interface/account';
+import { deleteUser, getUsers } from '../../../api/account';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -13,12 +14,13 @@ const { confirm } = Modal;
 const columns: ColumnsType<AccountItem> = [
   {
     title: '번호',
-    dataIndex: 'no',
+    dataIndex: 'id',
     width: 80,
   },
   {
     title: '이름',
     dataIndex: 'name',
+    width: 150,
   },
   {
     title: '아이디',
@@ -28,26 +30,26 @@ const columns: ColumnsType<AccountItem> = [
   {
     title: '권한',
     width: 150,
-    dataIndex: 'permission',
+    render: (data: any) => data.permission.name,
   },
   {
     title: '등록일',
     dataIndex: 'createdAt',
     width: 180,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '최종 수정일',
     dataIndex: 'updatedAt',
     width: 180,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '',
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/account/edit/${(value as any).no}`}>
+        <Link href={`/account/edit/${(value as any).userId}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -58,25 +60,22 @@ const columns: ColumnsType<AccountItem> = [
 ];
 
 export default function AccountList() {
-  const [count] = useState(17);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState<AccountItem[]>([]);
+  const [page, setPage] = useState(1);
+  const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<AccountItem[]>([]);
 
-  useEffect(() => {
-    const temp: AccountItem[] = [];
-    for (let i = 0; i < 100; i++) {
-      temp.push({
-        key: i,
-        no: i,
-        name: `Edward King ${i}`,
-        id: `id-${i}`,
-        permission: `admin`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
-    setData(temp);
+  const fetchData = useCallback(async ({ page, count }) => {
+    const permissions = await getUsers({ page, count });
+    setData(permissions.data);
+    setTotal(permissions.data.length);
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+    void fetchData({ page, count });
+  }, [page, count, fetchData]);
 
   const onSearch = useCallback(() => {
     console.log('on search');
@@ -88,11 +87,16 @@ export default function AccountList() {
       okText: '확인',
       cancelText: '취소',
       content: '선택된 계정을 삭제하시겠습니까?',
-      onOk() {
+      async onOk() {
+        await Promise.all(
+          selectedData.map((select: any) => deleteUser(select.userId)),
+        );
         void message.success('선택된 계정이 삭제됐습니다.');
+        setPage(1);
+        await fetchData({ page, count });
       },
     });
-  }, []);
+  }, [count, fetchData, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: AccountItem[]) => {
@@ -115,7 +119,7 @@ export default function AccountList() {
             <Button type="primary">등록</Button>
           </Link>
 
-          <span>Total : {count}</span>
+          <span>Total : {total}</span>
         </Flex>
         <Flex>
           <Search
@@ -130,6 +134,7 @@ export default function AccountList() {
         dataSource={data}
         pagination={{ pageSize: 50 }}
         scroll={{ y: 750 }}
+        rowKey="id"
         rowSelection={{
           type: 'checkbox',
           ...rowSelection,

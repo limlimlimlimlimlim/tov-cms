@@ -46,6 +46,11 @@ export class FacilityController {
     });
   }
 
+  @Get('all')
+  async getFacilityAll() {
+    return this.facilityService.getFacilityAll();
+  }
+
   @Get(':id')
   async getFacilityById(@Param('id') id: string) {
     const facility = await this.facilityService.getFacilityById(+id);

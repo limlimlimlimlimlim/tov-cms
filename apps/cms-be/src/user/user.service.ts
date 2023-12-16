@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Prisma.UserCreateInput) {
@@ -11,7 +11,24 @@ export class UsersService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        userId: true,
+        createdAt: true,
+        updatedAt: true,
+        permission: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 
   async findOne(userId: string) {

@@ -8,10 +8,10 @@ import {
 } from 'nest-winston';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthController } from './auth/auth.controller';
-import { UsersService } from './users/users.service';
+import { UserService } from './user/user.service';
 import { FacilityModule } from './facility/facility.module';
 import { PermissionModule } from './permission/permission.module';
 import { BuildingInfoModule } from './building-info/building-info.module';
@@ -46,7 +46,7 @@ import { FacilityCategoryModule } from './facility-category/facility-category.mo
       rootPath: join(__dirname, '..', 'files'),
       serveRoot: '/files',
     }),
-    UsersModule,
+    UserModule,
     FacilityModule,
     PermissionModule,
     BuildingInfoModule,
@@ -62,7 +62,7 @@ import { FacilityCategoryModule } from './facility-category/facility-category.mo
   providers: [
     AppService,
     PrismaService,
-    UsersService,
+    UserService,
     { provide: APP_FILTER, useClass: CustomExceptionFilter },
   ],
 })

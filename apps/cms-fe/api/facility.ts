@@ -12,6 +12,10 @@ export const getFacilities = async (param: {
   );
 };
 
+export const getFacilityAll = async () => {
+  return axiosClient.get('/facility/all');
+};
+
 export const getFacilityDetail = async (id) => {
   return axiosClient.get(`/facility/${id}`);
 };

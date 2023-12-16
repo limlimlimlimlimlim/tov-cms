@@ -21,7 +21,11 @@ export class PermissionService {
   }
 
   async getAllPermissions() {
-    return this.prisma.permission.findMany();
+    return this.prisma.permission.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 
   async getPermissionById(id: number) {

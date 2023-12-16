@@ -25,8 +25,9 @@ model User {
 }
 
 model Permission {
-  id                Int      @default(autoincrement()) @id
+  id                Int     @default(autoincrement()) @id
   name              String
+  description       String
   readAccount       Boolean @default(false)
   writeAccount      Boolean @default(false)
   editAccount       Boolean @default(false)

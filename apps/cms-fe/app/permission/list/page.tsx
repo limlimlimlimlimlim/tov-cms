@@ -6,14 +6,14 @@ import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import type { PermissionItem } from '../../../interface/permission';
-import { getPermissions } from '../../../api/permission';
+import { deletePermission, getPermissions } from '../../../api/permission';
 
 const { confirm } = Modal;
 
 const columns: ColumnsType<PermissionItem> = [
   {
     title: '번호',
-    dataIndex: 'no',
+    dataIndex: 'id',
     width: 80,
   },
   {
@@ -29,14 +29,14 @@ const columns: ColumnsType<PermissionItem> = [
     title: '최종 수정일',
     dataIndex: 'updatedAt',
     width: 180,
-    render: (date: Date) => format(date, 'yyyy-MM-dd hh:mm:ss'),
+    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
   },
   {
     title: '',
     width: 80,
     render: (value: any) => {
       return (
-        <Link href={`/permission/edit/${(value as any).no}`}>
+        <Link href={`/permission/edit/${(value as any).id}`}>
           <Button size="small" type="text">
             <EditOutlined />
           </Button>
@@ -56,7 +56,7 @@ export default function PermissionList() {
   const fetchData = useCallback(async ({ page, count }) => {
     const permissions = await getPermissions({ page, count });
     setData(permissions.data);
-    // setTotal(permissions.data.total);
+    setTotal(permissions.data.length);
   }, []);
 
   useEffect(() => {
@@ -70,11 +70,16 @@ export default function PermissionList() {
       okText: '확인',
       cancelText: '취소',
       content: '선택된 권한을 삭제하시겠습니까?',
-      onOk() {
+      async onOk() {
+        await Promise.all(
+          selectedData.map((select: any) => deletePermission(select.id)),
+        );
         void message.success('선택된 권한이 삭제됐습니다.');
+        setPage(1);
+        await fetchData({ page, count });
       },
     });
-  }, []);
+  }, [count, fetchData, page, selectedData]);
 
   const rowSelection = {
     onChange: (
@@ -100,7 +105,7 @@ export default function PermissionList() {
             <Button type="primary">등록</Button>
           </Link>
 
-          <span>Total : {count}</span>
+          <span>Total : {total}</span>
         </Flex>
       </Flex>
       <Table
@@ -108,6 +113,7 @@ export default function PermissionList() {
         dataSource={data}
         pagination={{ pageSize: 50 }}
         scroll={{ y: 750 }}
+        rowKey="id"
         rowSelection={{
           type: 'checkbox',
           ...rowSelection,

@@ -8,6 +8,7 @@ import {
   Delete,
   ConflictException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
@@ -28,8 +29,12 @@ export class UserController {
   }
 
   @Get()
-  async findAll() {
-    return this.userService.findAll();
+  async getUsers(
+    @Query('keyword') keyword: string,
+    @Query('page') page: string = '1',
+    @Query('count') count: string = '50',
+  ) {
+    return this.userService.getUsers({ keyword, page, count });
   }
 
   @Get(':userId')

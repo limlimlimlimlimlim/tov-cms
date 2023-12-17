@@ -19,7 +19,7 @@ model User {
   description           String? @db.Text
   permissionId          Int
   permission            Permission @relation(fields: [permissionId], references: [id])
-  facilityId            Int
+  facilityId            Int?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   

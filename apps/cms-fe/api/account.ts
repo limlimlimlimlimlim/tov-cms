@@ -1,7 +1,9 @@
 import axiosClient from '../util/axios-client';
 
-export const getUsers = async (param: { page; count }) => {
-  return axiosClient.get(`/user?page=${param.page}&count=${param.count}`);
+export const getUsers = async (param: { keyword; page; count }) => {
+  return axiosClient.get(
+    `/user?keyword=${param.keyword}&page=${param.page}&count=${param.count}`,
+  );
 };
 
 export const getUserDetail = async (id) => {

@@ -16,6 +16,7 @@ const { confirm } = Modal;
 export default function AccountList() {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState<AccountItem[]>([]);
+  const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<AccountItem[]>([]);
@@ -25,10 +26,10 @@ export default function AccountList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
-  const fetchData = useCallback(async ({ page, count }) => {
-    const permissions = await getUsers({ page, count });
-    setData(permissions.data);
-    setTotal(permissions.data.length);
+  const fetchData = useCallback(async ({ keyword, page, count }) => {
+    const permissions = await getUsers({ keyword, page, count });
+    setData(permissions.data.data);
+    setTotal(permissions.data.total);
   }, []);
 
   useEffect(() => {
@@ -43,8 +44,8 @@ export default function AccountList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     setPage(1);
-    void fetchData({ page, count });
-  }, [count, fetchData, getAccountPermissions, page, ready, router]);
+    void fetchData({ keyword, page, count });
+  }, [count, fetchData, getAccountPermissions, keyword, page, ready, router]);
 
   const columns: ColumnsType<AccountItem> = useMemo(() => {
     return [
@@ -60,7 +61,7 @@ export default function AccountList() {
       },
       {
         title: '아이디',
-        dataIndex: 'id',
+        dataIndex: 'userId',
         width: 150,
       },
       {
@@ -100,8 +101,8 @@ export default function AccountList() {
     ];
   }, [updatable]);
 
-  const onSearch = useCallback(() => {
-    console.log('on search');
+  const onSearch = useCallback((value) => {
+    setKeyword(value);
   }, []);
 
   const onClickDelete = useCallback(() => {
@@ -116,10 +117,10 @@ export default function AccountList() {
         );
         void message.success('선택된 계정이 삭제됐습니다.');
         setPage(1);
-        await fetchData({ page, count });
+        await fetchData({ keyword, page, count });
       },
     });
-  }, [count, fetchData, page, selectedData]);
+  }, [count, fetchData, keyword, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: AccountItem[]) => {

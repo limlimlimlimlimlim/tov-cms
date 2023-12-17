@@ -10,8 +10,16 @@ export class UserService {
     return this.prisma.user.create({ data });
   }
 
-  async findAll() {
-    return this.prisma.user.findMany({
+  async getUsers({ keyword, page, count }) {
+    const where = {
+      AND: [],
+    };
+    if (keyword) {
+      where.AND.push({ name: { contains: keyword } });
+    }
+
+    const total = await this.prisma.user.count({ where });
+    const data = await this.prisma.user.findMany({
       select: {
         id: true,
         name: true,
@@ -25,10 +33,14 @@ export class UserService {
           },
         },
       },
+      where: where,
+      skip: (+page - 1) * +count,
+      take: +count,
       orderBy: {
         id: 'desc',
       },
     });
+    return { total, data, page, count };
   }
 
   async findOne(userId: string) {

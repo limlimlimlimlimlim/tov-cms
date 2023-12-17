@@ -161,4 +161,20 @@ export class BuildingInfoController {
     }
     return this.buildingInfoService.deleteWing(wingId);
   }
+
+  @Patch('/order/increment/:wingId/:floorId')
+  async incrementOrderSchedule(
+    @Param('wingId') wingId: string,
+    @Param('floorId') floorId: string,
+  ) {
+    return this.buildingInfoService.updateFloorOrder(+wingId, +floorId, +1);
+  }
+
+  @Patch('/order/decrement/:wingId/:floorId')
+  async decrementOrderSchedule(
+    @Param('wingId') wingId: string,
+    @Param('floorId') floorId: string,
+  ) {
+    return this.buildingInfoService.updateFloorOrder(+wingId, +floorId, -1);
+  }
 }

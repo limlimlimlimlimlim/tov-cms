@@ -43,3 +43,15 @@ export const updateWing = async (wingId: string, data) => {
 export const updateFloor = async (floorId: string, data) => {
   return axiosClient.patch(`/building-info/floor/${floorId}`, data);
 };
+
+export const incrementFloorOrder = async (wingId: string, floorId: string) => {
+  return axiosClient.patch(
+    `/building-info/order/increment/${wingId}/${floorId}`,
+  );
+};
+
+export const decrementFloorOrder = async (wingId: string, floorId: string) => {
+  return axiosClient.patch(
+    `/building-info/order/decrement/${wingId}/${floorId}`,
+  );
+};

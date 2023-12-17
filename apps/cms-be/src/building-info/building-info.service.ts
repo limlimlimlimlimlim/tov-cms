@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -29,37 +29,6 @@ export class BuildingInfoService {
     return this.prisma.floor.create({ data });
   }
 
-  async swapFloorOrder(floorId1: number, floorId2: number) {
-    const floor1 = await this.prisma.floor.findFirst({
-      where: { id: floorId1 },
-    });
-    const floor2 = await this.prisma.floor.findFirst({
-      where: { id: floorId2 },
-    });
-
-    const floor1Order = floor1.order;
-    const floor2Order = floor2.order;
-
-    return await this.prisma.$transaction([
-      this.prisma.floor.update({
-        where: {
-          id: floorId1,
-        },
-        data: {
-          order: floor2Order,
-        },
-      }),
-      this.prisma.floor.update({
-        where: {
-          id: floorId2,
-        },
-        data: {
-          order: floor1Order,
-        },
-      }),
-    ]);
-  }
-
   async createWing(data: Prisma.WingUncheckedCreateInput) {
     return this.prisma.wing.create({ data });
   }
@@ -76,11 +45,12 @@ export class BuildingInfoService {
             id: true,
             name: true,
             order: true,
+            wingId: true,
             createdAt: true,
             updatedAt: true,
           },
           orderBy: {
-            order: 'asc',
+            order: 'desc',
           },
         },
       },
@@ -174,29 +144,69 @@ export class BuildingInfoService {
     ]);
   }
 
-  // async swapWings(floorId: string, id1: string, id2: string) {
-  // const wings = await this.getWingsInFloor(floorId);
-  // const wing1 = wings.find((wing) => wing.id.toString() === id1);
-  // const wing2 = wings.find((wing) => wing.id.toString() === id2);
-  // return Promise.all([
-  //   this.prisma.wingOnFloor.update({
-  //     where: {
-  //       wingId_floorId: {
-  //         floorId: +floorId,
-  //         wingId: wing1.id,
-  //       },
-  //     },
-  //     data: { order: wing2.order },
-  //   }),
-  //   this.prisma.wingOnFloor.update({
-  //     where: {
-  //       wingId_floorId: {
-  //         floorId: +floorId,
-  //         wingId: wing2.id,
-  //       },
-  //     },
-  //     data: { order: wing1.order },
-  //   }),
-  // ]);
-  // }
+  async updateFloorOrder(wingId: number, floorId, displacement: number) {
+    const floor1 = await this.prisma.floor.findFirst({
+      where: { id: floorId },
+    });
+    const maxFloorOrder = await this.prisma.floor.findFirst({
+      where: {
+        wingId,
+      },
+      orderBy: {
+        order: 'desc',
+      },
+    });
+    const minFloorOrder = await this.prisma.floor.findFirst({
+      where: {
+        wingId,
+      },
+      orderBy: {
+        order: 'asc',
+      },
+    });
+    console.log(floor1.order, maxFloorOrder.order, minFloorOrder.order);
+    if (
+      floor1.order + displacement > maxFloorOrder.order ||
+      floor1.order + displacement < minFloorOrder.order
+    ) {
+      throw new InternalServerErrorException();
+    }
+
+    const floor2 = await this.prisma.floor.findFirst({
+      where: { order: floor1.order + displacement },
+    });
+
+    return await this.swapFloorOrder(floor1.id, floor2.id);
+  }
+
+  async swapFloorOrder(floorId1: number, floorId2: number) {
+    const floor1 = await this.prisma.floor.findFirst({
+      where: { id: floorId1 },
+    });
+    const floor2 = await this.prisma.floor.findFirst({
+      where: { id: floorId2 },
+    });
+
+    const floor1Order = floor1.order;
+    const floor2Order = floor2.order;
+
+    return await this.prisma.$transaction([
+      this.prisma.floor.update({
+        where: {
+          id: floorId1,
+        },
+        data: {
+          order: floor2Order,
+        },
+      }),
+      this.prisma.floor.update({
+        where: {
+          id: floorId2,
+        },
+        data: {
+          order: floor1Order,
+        },
+      }),
+    ]);
+  }
 }

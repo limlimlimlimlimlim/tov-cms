@@ -1,13 +1,20 @@
 import { Button, Flex, Input, Modal, message } from 'antd';
 import { useCallback, useState } from 'react';
 import {
+  CaretDownOutlined,
+  CaretUpOutlined,
   CloseOutlined,
   EditOutlined,
   MinusOutlined,
   PlusOutlined,
   SaveOutlined,
 } from '@ant-design/icons';
-import { deleteFloor, updateFloor } from '../../api/building-info';
+import {
+  decrementFloorOrder,
+  deleteFloor,
+  incrementFloorOrder,
+  updateFloor,
+} from '../../api/building-info';
 
 const { confirm } = Modal;
 
@@ -73,6 +80,32 @@ export default function FloorItem({ data, onAdd, onChange }: ComponentProps) {
             </Button>
           </>
         )}
+        <Flex gap="small">
+          <Button
+            onClick={async () => {
+              try {
+                await incrementFloorOrder(data.wingId, data.id);
+                onChange();
+              } catch (e) {
+                void message.warning('순서를 변경할 수 없습니다.');
+              }
+            }}
+          >
+            <CaretUpOutlined />
+          </Button>
+          <Button
+            onClick={async () => {
+              try {
+                await decrementFloorOrder(data.wingId, data.id);
+                onChange();
+              } catch (e) {
+                void message.warning('순서를 변경할 수 없습니다.');
+              }
+            }}
+          >
+            <CaretDownOutlined />
+          </Button>
+        </Flex>
 
         {isEdit ? (
           <Flex gap="small">

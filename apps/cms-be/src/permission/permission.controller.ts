@@ -27,7 +27,7 @@ export class PermissionController {
   }
 
   @Get(':id')
-  async getPermissionById(@Param('id') id: number) {
+  async getPermissionById(@Param('id') id: string) {
     return this.permissionService.getPermissionById(+id);
   }
 

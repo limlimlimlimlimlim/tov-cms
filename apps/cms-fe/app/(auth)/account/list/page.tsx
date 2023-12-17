@@ -25,9 +25,16 @@ export default function AccountList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
+  const fetchData = useCallback(async ({ page, count }) => {
+    const permissions = await getUsers({ page, count });
+    setData(permissions.data);
+    setTotal(permissions.data.length);
+  }, []);
+
   useEffect(() => {
     if (!ready) return;
     const result = getAccountPermissions();
+
     if (!result.read) {
       router.replace('/error/403');
       return;
@@ -35,7 +42,9 @@ export default function AccountList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-  }, [getAccountPermissions, ready, router]);
+    setPage(1);
+    void fetchData({ page, count });
+  }, [count, fetchData, getAccountPermissions, page, ready, router]);
 
   const columns: ColumnsType<AccountItem> = useMemo(() => {
     return [
@@ -90,17 +99,6 @@ export default function AccountList() {
       },
     ];
   }, [updatable]);
-
-  const fetchData = useCallback(async ({ page, count }) => {
-    const permissions = await getUsers({ page, count });
-    setData(permissions.data);
-    setTotal(permissions.data.length);
-  }, []);
-
-  useEffect(() => {
-    setPage(1);
-    void fetchData({ page, count });
-  }, [page, count, fetchData]);
 
   const onSearch = useCallback(() => {
     console.log('on search');

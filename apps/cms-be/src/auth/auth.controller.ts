@@ -25,12 +25,16 @@ export class AuthController {
       throw new NotFoundException('Invalid username or password');
     }
     const token = await this.auth.signPayload({ id: user.userId });
-    return { message: 'success', name: user.name, id: user.id, token };
+    return {
+      message: 'success',
+      name: user.name,
+      permissionId: user.permissionId,
+      token,
+    };
   }
 
   @Post('/verify-token')
   async verifyToken(@Body() { token }: any) {
-    console.log(token);
     return this.auth.verifyToken(token);
   }
 }

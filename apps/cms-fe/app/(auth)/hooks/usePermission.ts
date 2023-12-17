@@ -8,12 +8,13 @@ const usePermission = () => {
   const router = useRouter();
 
   const fetchPermission = useCallback(async () => {
-    const id = localStorage.getItem('cms-user-id');
-    if (!id) {
+    const permissionId = localStorage.getItem('cms-user-permission-id');
+    if (!permissionId) {
       router.replace('/login');
       return;
     }
-    const result = await getPermissionDetail(id);
+    const result = await getPermissionDetail(permissionId);
+    console.log('fetchPermission ::', result.data, permissionId);
     setPermission(result.data);
     setReady(true);
   }, [router]);

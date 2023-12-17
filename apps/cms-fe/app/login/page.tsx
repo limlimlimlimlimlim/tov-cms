@@ -17,7 +17,7 @@ const Login = () => {
       const user: any = await login({ userId, password: userPassword });
       if (user.data.message === 'success') {
         localStorage.setItem('cms-user-name', user.data.name);
-        localStorage.setItem('cms-user-id', user.data.id);
+        localStorage.setItem('cms-user-permission-id', user.data.permissionId);
         localStorage.setItem('cms-access-token', user.data.token);
         setToken(user.data.token);
         router.replace('/home');

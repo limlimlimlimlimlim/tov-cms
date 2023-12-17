@@ -2,7 +2,6 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
-import AppContainer from '../component/app-container/app-container';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Script src="https://unpkg.com/konva@9/konva.min.js" />
-        <AppContainer>{children}</AppContainer>
+        {children}
       </body>
     </html>
   );

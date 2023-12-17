@@ -25,6 +25,8 @@ import { SectionModule } from './section/section.module';
 import { PostModule } from './post/post.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { FacilityCategoryModule } from './facility-category/facility-category.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -46,6 +48,10 @@ import { FacilityCategoryModule } from './facility-category/facility-category.mo
       rootPath: join(__dirname, '..', 'files'),
       serveRoot: '/files',
     }),
+    JwtModule.register({
+      secret: 'lgcms',
+      signOptions: { expiresIn: '12h' },
+    }),
     UserModule,
     FacilityModule,
     PermissionModule,
@@ -63,6 +69,7 @@ import { FacilityCategoryModule } from './facility-category/facility-category.mo
     AppService,
     PrismaService,
     UserService,
+    AuthService,
     { provide: APP_FILTER, useClass: CustomExceptionFilter },
   ],
 })

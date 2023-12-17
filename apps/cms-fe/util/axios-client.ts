@@ -13,5 +13,9 @@ axiosClient.interceptors.request.use((config) => {
   return config;
 });
 
+const setToken = (token: string) => {
+  axiosClient.defaults.headers.common.Authorization = token;
+};
+
 export default axiosClient;
-export { baseURL };
+export { baseURL, setToken };

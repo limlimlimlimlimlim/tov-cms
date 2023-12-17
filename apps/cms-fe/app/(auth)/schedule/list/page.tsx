@@ -2,72 +2,16 @@
 import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import { deleteSchedule, getSchedules } from '../../../../api/schedule';
+import usePermission from '../../hooks/usePermission';
 
 const { Search } = Input;
 const { confirm } = Modal;
-
-const columns: ColumnsType<PostItem> = [
-  {
-    title: '번호',
-    dataIndex: 'id',
-    width: 80,
-  },
-  {
-    title: '건물명',
-    width: 100,
-    render: (row) => row.wing.name,
-  },
-  {
-    title: '스케쥴명',
-    width: 150,
-    dataIndex: 'name',
-  },
-  {
-    title: '상태',
-    width: 150,
-    dataIndex: 'status',
-    render(type) {
-      switch (type) {
-        case 'enabled':
-          return '활성';
-        case 'disabled':
-          return '비활성';
-      }
-      return '';
-    },
-  },
-  {
-    title: '등록일',
-    dataIndex: 'createdAt',
-    width: 180,
-    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
-  },
-  {
-    title: '최종 수정일',
-    dataIndex: 'updatedAt',
-    width: 180,
-    render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
-  },
-  {
-    title: '',
-    width: 80,
-    render: (value: any) => {
-      return (
-        <Link href={`/schedule/edit/${(value as any).id}`}>
-          <Button size="small" type="text">
-            <EditOutlined />
-          </Button>
-        </Link>
-      );
-    },
-  },
-];
 
 export default function ScheduleList() {
   const [total, setTotal] = useState(0);
@@ -77,6 +21,11 @@ export default function ScheduleList() {
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<PostItem[]>([]);
+  const { ready, getSchedulePermissions }: any = usePermission();
+  const [writable, setWritable] = useState(false);
+  const [deletable, setDeletable] = useState(false);
+  const [updatable, setUpdatable] = useState(false);
+  const router = useRouter();
 
   const fetchData = useCallback(async ({ keyword, page, count, wing }) => {
     const posts = await getSchedules({ keyword, page, count, wing });
@@ -85,9 +34,91 @@ export default function ScheduleList() {
   }, []);
 
   useEffect(() => {
+    if (!ready) return;
+    const result = getSchedulePermissions();
+
+    if (!result.read) {
+      router.replace('/error/403');
+      return;
+    }
+    setWritable(result.write);
+    setDeletable(result.delete);
+    setUpdatable(result.update);
     setPage(1);
     void fetchData({ keyword, page, count, wing });
-  }, [keyword, page, count, fetchData, wing]);
+  }, [
+    count,
+    fetchData,
+    getSchedulePermissions,
+    keyword,
+    page,
+    ready,
+    router,
+    wing,
+  ]);
+
+  const columns = useMemo(() => {
+    return [
+      {
+        title: '번호',
+        dataIndex: 'id',
+        width: 80,
+      },
+      {
+        title: '건물명',
+        width: 100,
+        render: (row) => row.wing.name,
+      },
+      {
+        title: '스케쥴명',
+        width: 150,
+        dataIndex: 'name',
+      },
+      {
+        title: '상태',
+        width: 150,
+        dataIndex: 'status',
+        render(type) {
+          switch (type) {
+            case 'enabled':
+              return '활성';
+            case 'disabled':
+              return '비활성';
+          }
+          return '';
+        },
+      },
+      {
+        title: '등록일',
+        dataIndex: 'createdAt',
+        width: 180,
+        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+      },
+      {
+        title: '최종 수정일',
+        dataIndex: 'updatedAt',
+        width: 180,
+        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+      },
+      {
+        title: '',
+        width: 80,
+        render: (value: any) => {
+          return (
+            <>
+              {updatable && (
+                <Link href={`/schedule/edit/${(value as any).id}`}>
+                  <Button size="small" type="text">
+                    <EditOutlined />
+                  </Button>
+                </Link>
+              )}
+            </>
+          );
+        },
+      },
+    ];
+  }, [updatable]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -134,16 +165,21 @@ export default function ScheduleList() {
       </Flex>
       <Flex justify="space-between">
         <Flex gap="small" align="center">
-          <Button
-            danger
-            disabled={data.length === 0 || selectedData.length === 0}
-            onClick={onClickDelete}
-          >
-            삭제
-          </Button>
-          <Link href="/schedule/register">
-            <Button type="primary">등록</Button>
-          </Link>
+          {deletable && (
+            <Button
+              danger
+              disabled={data.length === 0 || selectedData.length === 0}
+              onClick={onClickDelete}
+            >
+              삭제
+            </Button>
+          )}
+
+          {writable && (
+            <Link href="/schedule/register">
+              <Button type="primary">등록</Button>
+            </Link>
+          )}
 
           <span>Total : {total}</span>
         </Flex>

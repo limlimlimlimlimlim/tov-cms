@@ -168,7 +168,7 @@ export default function ScheduleList() {
         },
       },
     ];
-  }, [keyword, onSearch, updatable]);
+  }, [count, fetchData, keyword, page, updatable, wing]);
 
   const onClickDelete = useCallback(() => {
     confirm({

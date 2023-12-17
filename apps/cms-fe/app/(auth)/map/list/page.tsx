@@ -5,12 +5,14 @@ import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
 import type { MapItem } from '../../../../interface/map';
 import BuldingInfoManagementModal from '../../../../component/building-info-management/building-info-management-modal';
 import MapAreaEditorModal from '../../../../component/map-area-editor/map-area-editor-modal';
 import { deleteMap, getMaps } from '../../../../api/map';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
+import usePermission from '../../hooks/usePermission';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -28,6 +30,11 @@ export default function MapList() {
     useState(false);
   const [isOpenMapAreaModal, setIsOpenMapAreaModal] = useState(false);
   const [currentMap, setCurrentMap] = useState(null);
+  const { ready, getMapPermissions }: any = usePermission();
+  const [writable, setWritable] = useState(false);
+  const [deletable, setDeletable] = useState(false);
+  const [updatable, setUpdatable] = useState(false);
+  const router = useRouter();
 
   const fetchData = useCallback(
     async ({ keyword, page, count, floor, wing }) => {
@@ -39,83 +46,113 @@ export default function MapList() {
   );
 
   useEffect(() => {
+    if (!ready) return;
+    const result = getMapPermissions();
+
+    if (!result.read) {
+      router.replace('/error/403');
+      return;
+    }
+    setWritable(result.write);
+    setDeletable(result.delete);
+    setUpdatable(result.update);
     setPage(1);
     void fetchData({ keyword, page, count, floor, wing });
-  }, [keyword, page, count, floor, fetchData, wing]);
+  }, [
+    count,
+    fetchData,
+    floor,
+    getMapPermissions,
+    keyword,
+    page,
+    ready,
+    router,
+    wing,
+  ]);
 
-  const columns: ColumnsType<MapItem> = [
-    {
-      title: '번호',
-      dataIndex: 'id',
-      width: 80,
-    },
-    {
-      title: '층',
-      width: 100,
-      render: (row) => row.floor.name,
-    },
-    {
-      title: '건물',
-      width: 100,
-      render: (row) => row.wing.name,
-    },
-    {
-      title: '지도명',
-      width: 150,
-      dataIndex: 'name',
-    },
-    {
-      title: '상태',
-      dataIndex: 'isUse',
-      width: 100,
-      render: (isUse) => (isUse ? '사용' : '미사용'),
-    },
-    {
-      title: '미리보기',
-      width: 100,
-      render: () => <Button size="small">미리보기</Button>,
-    },
-    {
-      title: '등록일',
-      dataIndex: 'createdAt',
-      width: 180,
-      render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
-    },
-    {
-      title: '최종 수정일',
-      dataIndex: 'updatedAt',
-      width: 180,
-      render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
-    },
-    {
-      title: '구역설정',
-      width: 100,
-      render: (map) => (
-        <Button
-          size="small"
-          onClick={() => {
-            setCurrentMap({ ...map });
-            setIsOpenMapAreaModal(true);
-          }}
-        >
-          설정
-        </Button>
-      ),
-    },
-    {
-      title: '',
-      width: 80,
-      render: (value: any) => {
-        return (
-          <Link href={`/map/edit/${(value as any).id}`}>
-            <Button size="small" type="text">
-              <EditOutlined />
-            </Button>
-          </Link>
-        );
+  const columns: ColumnsType<MapItem> = useMemo(() => {
+    return [
+      {
+        title: '번호',
+        dataIndex: 'id',
+        width: 80,
       },
-    },
-  ];
+      {
+        title: '층',
+        width: 100,
+        render: (row) => row.floor.name,
+      },
+      {
+        title: '건물',
+        width: 100,
+        render: (row) => row.wing.name,
+      },
+      {
+        title: '지도명',
+        width: 150,
+        dataIndex: 'name',
+      },
+      {
+        title: '상태',
+        dataIndex: 'isUse',
+        width: 100,
+        render: (isUse) => (isUse ? '사용' : '미사용'),
+      },
+      {
+        title: '미리보기',
+        width: 100,
+        render: () => <Button size="small">미리보기</Button>,
+      },
+      {
+        title: '등록일',
+        dataIndex: 'createdAt',
+        width: 180,
+        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+      },
+      {
+        title: '최종 수정일',
+        dataIndex: 'updatedAt',
+        width: 180,
+        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+      },
+      {
+        title: '구역설정',
+        width: 100,
+        render: (map) => (
+          <>
+            {updatable && (
+              <Button
+                size="small"
+                onClick={() => {
+                  setCurrentMap({ ...map });
+                  setIsOpenMapAreaModal(true);
+                }}
+              >
+                설정
+              </Button>
+            )}
+          </>
+        ),
+      },
+      {
+        title: '',
+        width: 80,
+        render: (value: any) => {
+          return (
+            <>
+              {updatable && (
+                <Link href={`/map/edit/${(value as any).id}`}>
+                  <Button size="small" type="text">
+                    <EditOutlined />
+                  </Button>
+                </Link>
+              )}
+            </>
+          );
+        },
+      },
+    ];
+  }, []);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -198,16 +235,21 @@ export default function MapList() {
 
         <Flex justify="space-between">
           <Flex gap="small" align="center">
-            <Button
-              danger
-              disabled={data.length === 0 || selectedData.length === 0}
-              onClick={onClickDelete}
-            >
-              삭제
-            </Button>
-            <Link href="/map/register">
-              <Button type="primary">등록</Button>
-            </Link>
+            {deletable && (
+              <Button
+                danger
+                disabled={data.length === 0 || selectedData.length === 0}
+                onClick={onClickDelete}
+              >
+                삭제
+              </Button>
+            )}
+
+            {writable && (
+              <Link href="/map/register">
+                <Button type="primary">등록</Button>
+              </Link>
+            )}
 
             <span>Total : {total}</span>
           </Flex>

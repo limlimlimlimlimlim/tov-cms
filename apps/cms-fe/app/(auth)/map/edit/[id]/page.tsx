@@ -1,12 +1,15 @@
 'use client';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import MapForm from '../../map-form';
 import { getMapDetail } from '../../../../../api/map';
+import usePermission from '../../../hooks/usePermission';
 
 export default function MapEdit() {
   const { id } = useParams();
   const [mapData, setMapData] = useState();
+  const { ready, getMapPermissions }: any = usePermission();
+  const router = useRouter();
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -14,8 +17,13 @@ export default function MapEdit() {
   }, [id]);
 
   useEffect(() => {
+    if (!ready) return;
+    const result = getMapPermissions();
+    if (!result.update) {
+      router.replace('/error/403');
+    }
     void fetchData();
-  }, [fetchData]);
+  }, [fetchData, getMapPermissions, ready, router]);
 
   return <MapForm data={mapData} />;
 }

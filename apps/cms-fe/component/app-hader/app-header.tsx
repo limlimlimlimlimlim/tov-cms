@@ -35,6 +35,7 @@ export default function AppHeader({ collapsed, onChangeCollapse }) {
               size="small"
               onClick={() => {
                 localStorage.removeItem('cms-user-name');
+                localStorage.removeItem('cms-user-id');
                 localStorage.removeItem('cms-access-token');
                 router.replace('/login');
               }}

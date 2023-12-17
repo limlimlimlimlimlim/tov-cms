@@ -10,7 +10,7 @@ import type { MapInfoItem } from '../../../../interface/map-info';
 import { getMaps } from '../../../../api/map';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 

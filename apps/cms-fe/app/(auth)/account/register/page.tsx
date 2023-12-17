@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 import AccountForm from '../account-form';
 
 export default function AccountRegister() {

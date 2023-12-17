@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 import FacilityForm from '../facility-form';
 
 export default function FacilityRegister() {

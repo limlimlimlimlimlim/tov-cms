@@ -2,7 +2,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { getMapDetail } from '../../../../../api/map';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 import MapInfoForm from './map-info-form';
 
 export default function MapInfoEdit() {

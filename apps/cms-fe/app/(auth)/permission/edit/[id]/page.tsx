@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import PermissionForm from '../../permission-form';
 import { getPermissionDetail } from '../../../../../api/permission';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function PermissionEdit() {
   const { id } = useParams();

@@ -3,7 +3,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import MapForm from '../../map-form';
 import { getMapDetail } from '../../../../../api/map';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function MapEdit() {
   const { id } = useParams();

@@ -10,7 +10,7 @@ import WingSelect from '../../../../component/wing-select/wing-select';
 import { deleteFacility, getFacilities } from '../../../../api/facility';
 import CategoryManagementManagementModal from '../../../../component/category-management/category-management-modal';
 import type { FacilityItem } from '../../../../interface/facility';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 const { confirm } = Modal;

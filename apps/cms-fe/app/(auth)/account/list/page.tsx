@@ -8,7 +8,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { AccountItem } from '../../../../interface/account';
 import { deleteUser, getUsers } from '../../../../api/account';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 const { confirm } = Modal;

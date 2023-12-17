@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 import PostForm from '../post-form';
 
 export default function PostRegister() {

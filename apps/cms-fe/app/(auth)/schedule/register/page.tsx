@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 import ScheduleForm from '../schedule-form';
 
 export default function ScheduleRegister() {

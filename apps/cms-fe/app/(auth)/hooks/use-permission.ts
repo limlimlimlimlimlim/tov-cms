@@ -14,7 +14,6 @@ const usePermission = () => {
       return;
     }
     const result = await getPermissionDetail(permissionId);
-    console.log('fetchPermission ::', result.data, permissionId);
     setPermission(result.data);
     setReady(true);
   }, [router]);

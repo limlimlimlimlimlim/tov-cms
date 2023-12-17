@@ -9,7 +9,7 @@ import type { KioskItem } from '../../../../interface/kiosk';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import { deleteKiosk, getKiosks } from '../../../../api/kiosk';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 const { confirm } = Modal;

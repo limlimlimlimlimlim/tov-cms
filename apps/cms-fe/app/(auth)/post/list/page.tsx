@@ -9,7 +9,7 @@ import type { PostItem } from '../../../../interface/post';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import { deletePost, getPosts } from '../../../../api/post';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 const { confirm } = Modal;

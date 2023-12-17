@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import ScheduleForm from '../../schedule-form';
 import { getScheduleDetail } from '../../../../../api/schedule';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function ScheduleEdit() {
   const { id } = useParams();

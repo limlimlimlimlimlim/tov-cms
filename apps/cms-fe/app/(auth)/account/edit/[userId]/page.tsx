@@ -3,7 +3,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import AccountForm from '../../account-form';
 import { getUserDetail } from '../../../../../api/account';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function AccountEdit() {
   const { userId } = useParams();

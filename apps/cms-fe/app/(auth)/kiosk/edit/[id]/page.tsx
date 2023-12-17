@@ -3,7 +3,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import KioskForm from '../../kiosk-form';
 import { getKioskDetail } from '../../../../../api/kiosk';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function KioskEdit() {
   const { id } = useParams();

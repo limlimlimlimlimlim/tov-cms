@@ -3,7 +3,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import PostForm from '../../post-form';
 import { getPostDetail } from '../../../../../api/post';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function PostEdit() {
   const { id } = useParams();

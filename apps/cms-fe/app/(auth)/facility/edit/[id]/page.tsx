@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import FacilityForm from '../../facility-form';
 import { getFacilityDetail } from '../../../../../api/facility';
-import usePermission from '../../../hooks/usePermission';
+import usePermission from '../../../hooks/use-permission';
 
 export default function FacilityRegister() {
   const { id } = useParams();

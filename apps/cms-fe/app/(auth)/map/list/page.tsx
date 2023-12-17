@@ -12,7 +12,7 @@ import MapAreaEditorModal from '../../../../component/map-area-editor/map-area-e
 import { deleteMap, getMaps } from '../../../../api/map';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
 const { confirm } = Modal;

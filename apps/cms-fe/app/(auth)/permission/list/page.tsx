@@ -8,7 +8,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PermissionItem } from '../../../../interface/permission';
 import { deletePermission, getPermissions } from '../../../../api/permission';
-import usePermission from '../../hooks/usePermission';
+import usePermission from '../../hooks/use-permission';
 
 const { confirm } = Modal;
 

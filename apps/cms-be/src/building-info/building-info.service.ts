@@ -164,7 +164,7 @@ export class BuildingInfoService {
         order: 'asc',
       },
     });
-    console.log(floor1.order, maxFloorOrder.order, minFloorOrder.order);
+
     if (
       floor1.order + displacement > maxFloorOrder.order ||
       floor1.order + displacement < minFloorOrder.order

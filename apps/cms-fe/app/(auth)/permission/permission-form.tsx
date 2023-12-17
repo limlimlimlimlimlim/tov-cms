@@ -256,7 +256,7 @@ const PermissionForm = ({ data }) => {
       facility,
       kiosk,
     ]);
-  }, [data]);
+  }, [data, dataSource]);
 
   const onFinish = useCallback(async () => {
     try {

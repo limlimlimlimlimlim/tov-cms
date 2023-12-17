@@ -1,6 +1,8 @@
+'use client';
+
 import { Layout, Button, theme, Flex } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const { Header } = Layout;
@@ -10,8 +12,12 @@ export default function AppHeader({ collapsed, onChangeCollapse }) {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const [userName] = useState(localStorage.getItem('cms-user-name'));
+  const [userName, setUserName] = useState<string | null>('');
   const router = useRouter();
+
+  useEffect(() => {
+    setUserName(localStorage.getItem('cms-user-name') as string | null);
+  }, []);
 
   return (
     <Header style={{ padding: 0, background: colorBgContainer }}>

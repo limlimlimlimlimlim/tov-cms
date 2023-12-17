@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { getMapDetail } from '../../api/map';
 import { baseURL } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
+import { Flex } from 'antd';
 
 const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   const [data, setData] = useState<any>();
@@ -96,7 +97,11 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
   }, [fetchData, mapId]);
 
   return (
-    <div style={{ position: 'relative', overflow: 'scroll' }}>
+    <Flex
+      style={{ position: 'relative', overflow: 'scroll' }}
+      justify="center"
+      align="center"
+    >
       {data ? (
         <img
           alt="map"
@@ -126,7 +131,7 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
           }}
         />
       ) : null}
-    </div>
+    </Flex>
   );
 };
 

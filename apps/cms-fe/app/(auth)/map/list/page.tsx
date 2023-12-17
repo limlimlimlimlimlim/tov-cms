@@ -13,6 +13,7 @@ import { deleteMap, getMaps } from '../../../../api/map';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
+import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -34,6 +35,8 @@ export default function MapList() {
   const [writable, setWritable] = useState(false);
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
+  const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
 
   const fetchData = useCallback(
@@ -101,7 +104,17 @@ export default function MapList() {
       {
         title: '미리보기',
         width: 100,
-        render: () => <Button size="small">미리보기</Button>,
+        render: (data: any) => (
+          <Button
+            size="small"
+            onClick={() => {
+              setOpenPreview(true);
+              setPreviewMapId(data.id);
+            }}
+          >
+            미리보기
+          </Button>
+        ),
       },
       {
         title: '등록일',
@@ -152,7 +165,7 @@ export default function MapList() {
         },
       },
     ];
-  }, []);
+  }, [updatable]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -285,6 +298,13 @@ export default function MapList() {
         open={isOpenMapAreaModal}
         onOk={onOkMapAreaModal}
         onCancel={onCancelMapAreaModal}
+      />
+      <MapPreviewerModal
+        open={openPreview}
+        mapId={previewMapId}
+        onCancel={() => {
+          setOpenPreview(false);
+        }}
       />
     </>
   );

@@ -11,6 +11,7 @@ import { getMaps } from '../../../../api/map';
 import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
+import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
 
 const { Search } = Input;
 
@@ -24,6 +25,8 @@ export default function MapInfoList() {
   const [wing, setWing] = useState('');
   const { ready, getMapInfoPermissions }: any = usePermission();
   const [updatable, setUpdatable] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
+  const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
 
   const fetchData = useCallback(
@@ -98,7 +101,17 @@ export default function MapInfoList() {
       {
         title: '미리보기',
         width: 100,
-        render: () => <Button size="small">미리보기</Button>,
+        render: (data: any) => (
+          <Button
+            size="small"
+            onClick={() => {
+              setOpenPreview(true);
+              setPreviewMapId(data.id);
+            }}
+          >
+            미리보기
+          </Button>
+        ),
       },
       {
         title: '등록일',
@@ -180,6 +193,13 @@ export default function MapInfoList() {
         scroll={{ y: 750 }}
         rowKey="id"
         onChange={onChangePage}
+      />
+      <MapPreviewerModal
+        open={openPreview}
+        mapId={previewMapId}
+        onCancel={() => {
+          setOpenPreview(false);
+        }}
       />
     </Flex>
   );

@@ -71,11 +71,11 @@ export default function MapInfoList() {
         return count;
       },
     },
-    {
-      title: '미리보기',
-      width: 100,
-      render: () => <Button size="small">미리보기</Button>,
-    },
+    // {
+    //   title: '미리보기',
+    //   width: 100,
+    //   render: () => <Button size="small">미리보기</Button>,
+    // },
     {
       title: '등록일',
       dataIndex: 'createdAt',

@@ -43,8 +43,6 @@ export default function MapInfoList() {
       router.replace('/error/403');
       return;
     }
-    setWritable(result.write);
-    setDeletable(result.delete);
     setUpdatable(result.update);
     setPage(1);
     void fetchData({ keyword, page, count, floor, wing });

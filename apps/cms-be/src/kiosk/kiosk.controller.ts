@@ -45,7 +45,6 @@ export class KioskController {
 
   @Get('/code/:code')
   async getKioskByCode(@Param('code') code: string): Promise<Kiosk> {
-    console.log(code);
     return this.kioskService.getKioskByCode(code);
   }
 

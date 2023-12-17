@@ -29,8 +29,6 @@ export class PermissionService {
   }
 
   async getPermissionById(id: number) {
-    const aaa = await this.prisma.permission.findUnique({ where: { id } });
-    console.log(aaa);
     return this.prisma.permission.findUnique({ where: { id } });
   }
 

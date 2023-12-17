@@ -27,7 +27,6 @@ const AuthLayout = ({ children }) => {
     void verifyAccessToken();
   }, [verifyAccessToken]);
 
-  console.log('??');
   return <AppContainer>{children}</AppContainer>;
 };
 

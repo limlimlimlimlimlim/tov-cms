@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -7,9 +11,71 @@ export class ScheduleService {
   constructor(private prisma: PrismaService) {}
 
   async createSchedule(data: Prisma.ScheduleUncheckedCreateInput) {
+    const count = await this.prisma.schedule.count();
+    data.order = count + 1;
     return this.prisma.schedule.create({
       data,
     });
+  }
+
+  async swapScheduleOrder(scheduleId1: number, scheduleId2: number) {
+    const schedule1 = await this.prisma.schedule.findFirst({
+      where: { id: scheduleId1 },
+    });
+    const schedule2 = await this.prisma.schedule.findFirst({
+      where: { id: scheduleId2 },
+    });
+
+    const schedule1Order = schedule1.order;
+    const schedule2Order = schedule2.order;
+
+    return await this.prisma.$transaction([
+      this.prisma.schedule.update({
+        where: {
+          id: scheduleId1,
+        },
+        data: {
+          order: schedule2Order,
+        },
+      }),
+      this.prisma.schedule.update({
+        where: {
+          id: scheduleId2,
+        },
+        data: {
+          order: schedule1Order,
+        },
+      }),
+    ]);
+  }
+
+  async updateOrderSchedule(id: number, displacement: number) {
+    const schedule1 = await this.prisma.schedule.findFirst({
+      where: { id: id },
+    });
+    const maxOrderSchedule = await this.prisma.schedule.findFirst({
+      orderBy: {
+        order: 'desc',
+      },
+    });
+    const minOrderSchedule = await this.prisma.schedule.findFirst({
+      orderBy: {
+        order: 'asc',
+      },
+    });
+
+    if (
+      schedule1.order + displacement > maxOrderSchedule.order ||
+      schedule1.order + displacement < minOrderSchedule.order
+    ) {
+      throw new InternalServerErrorException();
+    }
+
+    const schedule2 = await this.prisma.schedule.findFirst({
+      where: { order: schedule1.order + displacement },
+    });
+
+    return await this.swapScheduleOrder(schedule1.id, schedule2.id);
   }
 
   async getSchedules({ keyword, page, count, floorId, wingId }) {
@@ -58,7 +124,7 @@ export class ScheduleService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        id: 'desc',
+        order: 'desc',
       },
     });
     return { total, data, page, count };

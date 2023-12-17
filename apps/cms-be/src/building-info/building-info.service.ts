@@ -29,6 +29,37 @@ export class BuildingInfoService {
     return this.prisma.floor.create({ data });
   }
 
+  async swapFloorOrder(floorId1: number, floorId2: number) {
+    const floor1 = await this.prisma.floor.findFirst({
+      where: { id: floorId1 },
+    });
+    const floor2 = await this.prisma.floor.findFirst({
+      where: { id: floorId2 },
+    });
+
+    const floor1Order = floor1.order;
+    const floor2Order = floor2.order;
+
+    return await this.prisma.$transaction([
+      this.prisma.floor.update({
+        where: {
+          id: floorId1,
+        },
+        data: {
+          order: floor2Order,
+        },
+      }),
+      this.prisma.floor.update({
+        where: {
+          id: floorId2,
+        },
+        data: {
+          order: floor1Order,
+        },
+      }),
+    ]);
+  }
+
   async createWing(data: Prisma.WingUncheckedCreateInput) {
     return this.prisma.wing.create({ data });
   }

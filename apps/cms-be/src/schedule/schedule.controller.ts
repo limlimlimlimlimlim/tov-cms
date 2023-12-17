@@ -16,7 +16,7 @@ export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   @Post()
-  async createSchedule(@Body() data: Prisma.PostUncheckedCreateInput) {
+  async createSchedule(@Body() data: Prisma.ScheduleUncheckedCreateInput) {
     return this.scheduleService.createSchedule(data);
   }
 
@@ -43,15 +43,30 @@ export class ScheduleController {
   }
 
   @Patch(':id')
-  async updatePost(
-    @Param('id') id: number,
+  async updateSchedule(
+    @Param('id') id: string,
     @Body() data: Prisma.KioskUpdateInput,
   ) {
     return this.scheduleService.updateSchedule(+id, data);
   }
 
   @Delete(':id')
-  async deletePost(@Param('id') id: number) {
+  async deleteSchedule(@Param('id') id: string) {
     return this.scheduleService.deleteSchedule(+id);
+  }
+
+  @Patch('/order/swap/:id1/:id2')
+  async swapSchedule(@Param('id1') id1: string, @Param('id2') id2: string) {
+    return this.scheduleService.swapScheduleOrder(+id1, +id2);
+  }
+
+  @Patch('/order/increment/:id')
+  async incrementOrderSchedule(@Param('id') id: string) {
+    return this.scheduleService.updateOrderSchedule(+id, +1);
+  }
+
+  @Patch('/order/decrement/:id')
+  async decrementOrderSchedule(@Param('id') id: string) {
+    return this.scheduleService.updateOrderSchedule(+id, -1);
   }
 }

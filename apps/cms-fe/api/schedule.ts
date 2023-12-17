@@ -21,3 +21,11 @@ export const updateSchedule = async (id, data) => {
 export const deleteSchedule = async (id) => {
   return axiosClient.delete(`/schedule/${id}`);
 };
+
+export const incrementScheduleOrder = async (id) => {
+  return axiosClient.patch(`/schedule/order/increment/${id}`);
+};
+
+export const decrementScheduleOrder = async (id) => {
+  return axiosClient.patch(`/schedule/order/decrement/${id}`);
+};

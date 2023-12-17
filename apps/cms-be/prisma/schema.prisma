@@ -259,6 +259,7 @@ model Schedule{
   endDate         DateTime?
   status          String
   noPeriod        Boolean
+  order           Int
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }

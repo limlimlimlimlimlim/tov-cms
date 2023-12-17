@@ -3,11 +3,20 @@ import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { EditOutlined } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
 import WingSelect from '../../../../component/wing-select/wing-select';
-import { deleteSchedule, getSchedules } from '../../../../api/schedule';
+import {
+  decrementScheduleOrder,
+  deleteSchedule,
+  getSchedules,
+  incrementScheduleOrder,
+} from '../../../../api/schedule';
 import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
@@ -57,6 +66,11 @@ export default function ScheduleList() {
     wing,
   ]);
 
+  const onSearch = useCallback((value) => {
+    console.log('onSearch');
+    setKeyword(value);
+  }, []);
+
   const columns = useMemo(() => {
     return [
       {
@@ -89,6 +103,42 @@ export default function ScheduleList() {
         },
       },
       {
+        title: '순서변경',
+        width: 150,
+        render(data) {
+          return (
+            <Flex gap="small">
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    await incrementScheduleOrder(data.id);
+                    await fetchData({ keyword, page, count, wing });
+                  } catch (e) {
+                    void message.warning('순서를 변경할 수 없습니다.');
+                  }
+                }}
+              >
+                <CaretUpOutlined />
+              </Button>
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    await decrementScheduleOrder(data.id);
+                    await fetchData({ keyword, page, count, wing });
+                  } catch (e) {
+                    void message.warning('순서를 변경할 수 없습니다.');
+                  }
+                }}
+              >
+                <CaretDownOutlined />
+              </Button>
+            </Flex>
+          );
+        },
+      },
+      {
         title: '등록일',
         dataIndex: 'createdAt',
         width: 180,
@@ -118,11 +168,7 @@ export default function ScheduleList() {
         },
       },
     ];
-  }, [updatable]);
-
-  const onSearch = useCallback((value) => {
-    setKeyword(value);
-  }, []);
+  }, [keyword, onSearch, updatable]);
 
   const onClickDelete = useCallback(() => {
     confirm({

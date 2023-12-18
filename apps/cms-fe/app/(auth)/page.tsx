@@ -2,10 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
-import AppContainer from '../../component/app-container/app-container';
 import { verifyToken } from '../../api/auth';
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
   const router = useRouter();
   const verifyAccessToken = useCallback(async () => {
     const token = localStorage.getItem('cms-access-token');
@@ -27,7 +26,7 @@ const AuthLayout = ({ children }) => {
     void verifyAccessToken();
   }, [verifyAccessToken]);
 
-  return <AppContainer>{children}</AppContainer>;
+  return <>loading</>;
 };
 
 export default AuthLayout;

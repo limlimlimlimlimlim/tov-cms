@@ -85,6 +85,7 @@ export class MapService {
         sections: {
           select: {
             id: true,
+            path: true,
             facilities: true,
           },
         },

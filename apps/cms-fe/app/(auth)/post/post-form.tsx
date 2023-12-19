@@ -188,6 +188,16 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item>
 
+        <Form.Item label="게시물명" rules={[{ required: true }]}>
+          <Input
+            value={name}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+        </Form.Item>
+
         <Form.Item label="게시물 타입">
           <Radio.Group
             value={contentsType}
@@ -203,15 +213,6 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="게시물명" rules={[{ required: true }]}>
-          <Input
-            value={name}
-            style={{ width: 300 }}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-        </Form.Item>
         <Form.Item label="콘텐츠">
           <Tabs items={items} />
         </Form.Item>

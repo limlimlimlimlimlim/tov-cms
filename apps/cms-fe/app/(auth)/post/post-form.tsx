@@ -16,8 +16,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import FloorSelect from '../../../component/floor-select/floor-select';
-import WingSelect from '../../../component/wing-select/wing-select';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
 
@@ -40,7 +38,7 @@ const PostForm = ({ data }) => {
   const router = useRouter();
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
-  const [type, setType] = useState('info');
+  const [type, setType] = useState('left');
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
   const [textContents, setTextContents] = useState('');
@@ -50,6 +48,11 @@ const PostForm = ({ data }) => {
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [useIntro, setUseIntro] = useState(false);
+  const [isDisabledIntro, setIsDisabledIntro] = useState(false);
+
+  // useEffect(() => {
+  //   setIsDisabledIntro(contentsType === 'text');
+  // }, [contentsType]);
 
   const items = [
     {
@@ -172,7 +175,7 @@ const PostForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="구분">
+        <Form.Item label="위치">
           <Radio.Group
             value={type}
             onChange={(e) => {
@@ -232,14 +235,17 @@ const PostForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="인트로 콘텐츠 노출">
-          <Switch
-            checked={useIntro}
-            onChange={(e) => {
-              setUseIntro(e);
-            }}
-          />
-        </Form.Item>
+        {!isDisabledIntro && (
+          <Form.Item label="인트로 콘텐츠 노출">
+            <Switch
+              checked={useIntro}
+              onChange={(e) => {
+                setUseIntro(e);
+              }}
+            />
+          </Form.Item>
+        )}
+
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">

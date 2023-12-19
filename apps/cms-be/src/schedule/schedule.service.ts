@@ -161,8 +161,32 @@ export class ScheduleService {
       throw new NotFoundException('Schedule not found.');
     }
 
-    return await this.prisma.schedule.delete({
+    const target = await this.prisma.schedule.findFirst({ where: { id } });
+    const { wingId } = target;
+
+    await this.prisma.schedule.delete({
       where: { id },
     });
+
+    const reorderTargets = await this.prisma.schedule.findMany({
+      where: {
+        wingId,
+      },
+      orderBy: {
+        order: 'desc',
+      },
+    });
+
+    let count = 0;
+    for (const i of reorderTargets) {
+      await this.prisma.schedule.update({
+        where: {
+          id: i.id,
+        },
+        data: {
+          order: ++count,
+        },
+      });
+    }
   }
 }

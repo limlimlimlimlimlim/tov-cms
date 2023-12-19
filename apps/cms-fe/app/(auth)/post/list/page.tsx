@@ -71,25 +71,17 @@ export default function PostList() {
         width: 80,
       },
       {
-        title: '건물명',
-        width: 100,
-        render: (row) => row.wing.name,
-      },
-      {
-        title: '시설명',
-        width: 100,
-        render: () => '-',
-      },
-      {
         title: '구분',
         width: 150,
         dataIndex: 'type',
         render(type) {
           switch (type) {
-            case 'info':
-              return '안내';
-            case 'event':
-              return '이벤트';
+            case 'left':
+              return '왼쪽';
+            case 'right':
+              return '오른쪽';
+            case 'top':
+              return '상단';
           }
           return '';
         },

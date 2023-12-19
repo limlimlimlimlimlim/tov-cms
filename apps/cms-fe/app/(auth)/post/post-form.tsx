@@ -179,8 +179,9 @@ const PostForm = ({ data }) => {
               setType(e.target.value);
             }}
           >
-            <Radio value="info">안내</Radio>
-            <Radio value="event">이벤트</Radio>
+            <Radio value="left">왼쪽</Radio>
+            <Radio value="right">오른쪽</Radio>
+            <Radio value="top">상단</Radio>
           </Radio.Group>
         </Form.Item>
 

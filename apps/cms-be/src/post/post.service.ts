@@ -41,13 +41,6 @@ export class PostService {
         endDate: true,
         status: true,
         useIntro: true,
-        wing: {
-          select: {
-            id: true,
-            name: true,
-            nameEn: true,
-          },
-        },
       },
       where: where,
       skip: (+page - 1) * +count,

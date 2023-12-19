@@ -223,8 +223,6 @@ model Kiosk {
 
 model Post{
   id              Int       @default(autoincrement()) @id
-  wingId          Int
-  facilityId      Int?
   name            String
   imageContents   String?
   videoContents   String?

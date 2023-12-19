@@ -37,6 +37,7 @@ export default function MapList() {
   const [updatable, setUpdatable] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [previewMapId, setPreviewMapId] = useState();
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const router = useRouter();
 
   const fetchData = useCallback(
@@ -47,6 +48,15 @@ export default function MapList() {
     },
     [],
   );
+
+  useEffect(() => {
+    const userName = localStorage.getItem('cms-user-name');
+    if (userName && userName.toLowerCase() === 'superadmin') {
+      setIsSuperAdmin(true);
+      return;
+    }
+    setIsSuperAdmin(false);
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -239,13 +249,15 @@ export default function MapList() {
               />
             </Form.Item>
           </Flex>
-          <Button
-            onClick={() => {
-              setIsBuildingManagementModalOpen(true);
-            }}
-          >
-            건물 정보 관리
-          </Button>
+          {isSuperAdmin && (
+            <Button
+              onClick={() => {
+                setIsBuildingManagementModalOpen(true);
+              }}
+            >
+              건물 정보 관리
+            </Button>
+          )}
         </Flex>
 
         <Flex justify="space-between">

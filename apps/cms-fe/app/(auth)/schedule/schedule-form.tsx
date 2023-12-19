@@ -92,6 +92,7 @@ const ScheduleForm = ({ data }) => {
       setStatus(data.status);
       setNoPeriod(data.noPeriod);
       setLayout(data.layout);
+      setContentsType(data.contentsType);
     }
   }, [data]);
 
@@ -177,14 +178,19 @@ const ScheduleForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="콘텐츠">
-          <Tabs
-            items={items}
-            activeKey={contentsType}
-            onChange={(key) => {
-              setContentsType(key);
+        <Form.Item label="콘텐츠 타입">
+          <Radio.Group
+            value={contentsType}
+            onChange={(e) => {
+              setContentsType(e.target.value);
             }}
-          />
+          >
+            <Radio value="image">이미지</Radio>
+            <Radio value="video">영상</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item label="콘텐츠">
+          <Tabs items={items} />
         </Form.Item>
         <Form.Item label="기간">
           <Flex gap="middle" align="center">

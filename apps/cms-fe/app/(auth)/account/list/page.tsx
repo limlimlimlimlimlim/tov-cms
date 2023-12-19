@@ -51,8 +51,10 @@ export default function AccountList() {
     return [
       {
         title: '번호',
-        dataIndex: 'id',
         width: 80,
+        render: (_, __, index) => {
+          return index + 1;
+        },
       },
       {
         title: '이름',

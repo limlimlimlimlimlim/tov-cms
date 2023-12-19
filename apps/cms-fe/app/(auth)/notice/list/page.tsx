@@ -13,8 +13,10 @@ const { confirm } = Modal;
 const columns: ColumnsType<NoticeItem> = [
   {
     title: '번호',
-    dataIndex: 'no',
     width: 80,
+    render: (_, __, index) => {
+      return index + 1;
+    },
   },
   {
     title: '제목',

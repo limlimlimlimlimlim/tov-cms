@@ -50,9 +50,9 @@ const PostForm = ({ data }) => {
   const [useIntro, setUseIntro] = useState(false);
   const [isDisabledIntro, setIsDisabledIntro] = useState(false);
 
-  // useEffect(() => {
-  //   setIsDisabledIntro(contentsType === 'text');
-  // }, [contentsType]);
+  useEffect(() => {
+    setIsDisabledIntro(contentsType === 'text');
+  }, [contentsType]);
 
   const items = [
     {
@@ -127,7 +127,7 @@ const PostForm = ({ data }) => {
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
           noPeriod,
-          useIntro,
+          useIntro: contentsType !== 'text' ? useIntro : false,
         });
         void message.success('게시물이 수정됐습니다.');
       } else {
@@ -188,6 +188,21 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item>
 
+        <Form.Item label="게시물 타입">
+          <Radio.Group
+            value={contentsType}
+            onChange={(e) => {
+              setContentsType(e.target.value);
+            }}
+          >
+            <Radio value="image">이미지</Radio>
+            <Radio value="video">비디오</Radio>
+            <Radio value="text">텍스트</Radio>
+            <Radio value="image_text">이미지+텍스트</Radio>
+            <Radio value="video_text">이미지+텍스트</Radio>
+          </Radio.Group>
+        </Form.Item>
+
         <Form.Item label="게시물명" rules={[{ required: true }]}>
           <Input
             value={name}
@@ -198,13 +213,7 @@ const PostForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="콘텐츠">
-          <Tabs
-            items={items}
-            activeKey={contentsType}
-            onChange={(key) => {
-              setContentsType(key);
-            }}
-          />
+          <Tabs items={items} />
         </Form.Item>
         <Form.Item label="기간">
           <Flex gap="middle" align="center">

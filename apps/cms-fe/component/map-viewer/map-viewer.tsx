@@ -111,26 +111,26 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
         />
       ) : null}
       <div
-        ref={canvasRef}
-        id={containerId}
         style={{
           position: 'absolute',
           top: 0,
         }}
-      />
-      {facility?.x && facility.y ? (
-        <img
-          src="/facility-flag.png"
-          alt="facility-flag"
-          style={{
-            position: 'absolute',
-            width: 128 * scale,
-            height: 128 * scale,
-            left: facility.x * scale - 32 * scale,
-            top: facility.y * scale - 64 * scale,
-          }}
-        />
-      ) : null}
+      >
+        <div ref={canvasRef} id={containerId} />
+        {facility?.x && facility.y ? (
+          <img
+            src="/facility-flag.png"
+            alt="facility-flag"
+            style={{
+              position: 'absolute',
+              width: 128 * scale,
+              height: 128 * scale,
+              left: facility.x * scale - 64 * scale,
+              top: facility.y * scale - 128 * scale,
+            }}
+          />
+        ) : null}
+      </div>
     </Flex>
   );
 };

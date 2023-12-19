@@ -86,7 +86,6 @@ model Wing{
   region      Region?    @relation(fields: [regionId], references: [id])
   map         Map[]
   kiosks      Kiosk[]
-  posts       Post[]
   facilities  Facility[]
   schedule    Schedule[]
   floors      Floor[]
@@ -157,7 +156,6 @@ model Facility {
   subCategory     FacilitySubCategory? @relation(fields: [subCategoryId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  posts           Post[]
   schedule        Schedule[]
 }
 
@@ -226,9 +224,7 @@ model Kiosk {
 model Post{
   id              Int       @default(autoincrement()) @id
   wingId          Int
-  wing            Wing      @relation(fields: [wingId], references: [id])
   facilityId      Int?
-  facility        Facility?   @relation(fields: [facilityId], references: [id])
   name            String
   imageContents   String?
   videoContents   String?

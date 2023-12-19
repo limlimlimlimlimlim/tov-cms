@@ -38,8 +38,6 @@ const validateMessages = {
 
 const PostForm = ({ data }) => {
   const router = useRouter();
-  const [floorId, setFloorId] = useState('');
-  const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [type, setType] = useState('info');
@@ -98,8 +96,6 @@ const PostForm = ({ data }) => {
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setFloorId(data.floorId);
-      setWingId(data.wingId);
       setName(data.name);
       setType(data.type);
       setImageContents(data.imageContents);
@@ -118,7 +114,6 @@ const PostForm = ({ data }) => {
     try {
       if (isEdit) {
         await updatePost(data.id, {
-          wingId,
           name,
           type,
           imageContents,
@@ -134,7 +129,6 @@ const PostForm = ({ data }) => {
         void message.success('게시물이 수정됐습니다.');
       } else {
         await createPost({
-          wingId,
           name,
           type,
           imageContents,
@@ -168,17 +162,7 @@ const PostForm = ({ data }) => {
     type,
     useIntro,
     videoContents,
-    wingId,
   ]);
-
-  const onChangeFloor = useCallback((floor) => {
-    setFloorId(floor);
-  }, []);
-
-  const onChangeWing = useCallback((wing) => {
-    setWingId(wing);
-    setFloorId('');
-  }, []);
 
   return (
     <Flex vertical gap="middle">
@@ -188,21 +172,6 @@ const PostForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="건물 선택">
-          <WingSelect
-            style={{ width: 200 }}
-            wingId={wingId}
-            onChange={onChangeWing}
-          />
-        </Form.Item>
-        <Form.Item label="층 선택">
-          <FloorSelect
-            wingId={wingId}
-            floorId={floorId}
-            style={{ width: 200 }}
-            onChange={onChangeFloor}
-          />
-        </Form.Item>
         <Form.Item label="구분">
           <Radio.Group
             value={type}

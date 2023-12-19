@@ -28,6 +28,7 @@ export default function ContentsUploader({
       action: `${baseURL}/files/upload`,
       name: 'file',
       multiple: false,
+      maxCount: 1,
       onChange(info) {
         if (info.file.status !== 'uploading') {
           console.log(info);

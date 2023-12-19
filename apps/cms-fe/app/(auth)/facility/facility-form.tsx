@@ -3,6 +3,7 @@ import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import TextArea from 'antd/es/input/TextArea';
 import WingSelect from '../../../component/wing-select/wing-select';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../../api/map';
@@ -11,7 +12,6 @@ import MapViewer from '../../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../../component/facility-position-management/facility-position-management-modal';
 import CategorySelect from '../../../component/category-select/category-select';
 import SubCategorySelect from '../../../component/sub-category-select/sub-category-select';
-import TextArea from 'antd/es/input/TextArea';
 
 const layout = {
   labelCol: { span: 4 },
@@ -37,7 +37,7 @@ const FacilityForm = ({ data }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [time, setTime] = useState('');
+  const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
   const [iconType, setIconType] = useState('icon1');
   const [alwaysVisible, setAlwaysVisible] = useState(true);
@@ -58,7 +58,7 @@ const FacilityForm = ({ data }) => {
       setName(data.name);
       setAddress(data.address);
       setPhone(data.phone);
-      setTime(data.time);
+      setDescription(data.description);
       setTags(data.tags);
       setIconType(data.iconType);
       setAlwaysVisible(data.alwaysVisible);
@@ -75,7 +75,7 @@ const FacilityForm = ({ data }) => {
           name,
           phone,
           address,
-          time,
+          description,
           tags,
           alwaysVisible,
           iconType,
@@ -94,7 +94,7 @@ const FacilityForm = ({ data }) => {
           name,
           phone,
           address,
-          time,
+          description,
           tags,
           alwaysVisible,
           iconType,
@@ -121,7 +121,7 @@ const FacilityForm = ({ data }) => {
     name,
     phone,
     address,
-    time,
+    description,
     tags,
     alwaysVisible,
     iconType,
@@ -228,12 +228,12 @@ const FacilityForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="운영시간">
+        <Form.Item label="설명">
           <TextArea
-            value={time}
-            style={{ width: 400 }}
+            value={description}
+            style={{ width: 400, height: 200 }}
             onChange={(e) => {
-              setTime(e.target.value);
+              setDescription(e.target.value);
             }}
           />
         </Form.Item>

@@ -11,6 +11,7 @@ import MapViewer from '../../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../../component/facility-position-management/facility-position-management-modal';
 import CategorySelect from '../../../component/category-select/category-select';
 import SubCategorySelect from '../../../component/sub-category-select/sub-category-select';
+import TextArea from 'antd/es/input/TextArea';
 
 const layout = {
   labelCol: { span: 4 },
@@ -228,7 +229,7 @@ const FacilityForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="운영시간">
-          <Input
+          <TextArea
             value={time}
             style={{ width: 400 }}
             onChange={(e) => {

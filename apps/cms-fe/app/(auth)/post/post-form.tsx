@@ -196,10 +196,10 @@ const PostForm = ({ data }) => {
             }}
           >
             <Radio value="image">이미지</Radio>
-            <Radio value="video">비디오</Radio>
+            <Radio value="video">영상</Radio>
             <Radio value="text">텍스트</Radio>
             <Radio value="image_text">이미지+텍스트</Radio>
-            <Radio value="video_text">이미지+텍스트</Radio>
+            <Radio value="video_text">영상+텍스트</Radio>
           </Radio.Group>
         </Form.Item>
 

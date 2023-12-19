@@ -63,10 +63,17 @@ export default function ContentsUploader({
     );
   }, [src, type]);
 
+  const getAccept = useCallback(() => {
+    if (type === 'image') {
+      return 'image/*';
+    }
+    return 'video/*';
+  }, [type]);
+
   return (
     <Flex vertical gap="small">
       {createPreview()}
-      <Upload {...uploadProps}>
+      <Upload {...uploadProps} accept={getAccept()}>
         <Button icon={<UploadOutlined />}>파일 선택</Button>
       </Upload>
     </Flex>

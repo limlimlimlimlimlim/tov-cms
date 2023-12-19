@@ -1,8 +1,10 @@
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { Button, Flex, Image, Upload, message } from 'antd';
+import { Button, Flex, Image, Typography, Upload, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { baseURL } from '../../util/axios-client';
+
+const { Text } = Typography;
 
 interface ComponentProps {
   source?: string;
@@ -76,6 +78,11 @@ export default function ContentsUploader({
       <Upload {...uploadProps} accept={getAccept()}>
         <Button icon={<UploadOutlined />}>파일 선택</Button>
       </Upload>
+      <Text type="secondary">* 권장 해상도: 3840 x 2160</Text>
+      <Text type="secondary">
+        * 이미지 또는 영상이 화면 비율 및 해상도가 맞지 않은 경우에는
+        키오스크에서 깨지거나 찌그러져 보일 수 있습니다.
+      </Text>
     </Flex>
   );
 }

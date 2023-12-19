@@ -5,12 +5,18 @@ const createSection = (sections, layer, scale) => {
   const polygons: any[] = [];
   const groupColors = [...colors];
   const groups = {};
+
   const normals = {
     color: '#aaff77',
     sections: [] as any[],
   };
   const disabled = {
     color: '#000000',
+    sections: [] as any[],
+  };
+
+  const hasFacility = {
+    color: '#00000',
     sections: [] as any[],
   };
 
@@ -27,6 +33,10 @@ const createSection = (sections, layer, scale) => {
       disabled.sections.push(s);
     } else {
       normals.sections.push(s);
+    }
+
+    if (s.facilities.length) {
+      hasFacility.sections.push(s);
     }
   });
 
@@ -49,6 +59,19 @@ const createSection = (sections, layer, scale) => {
       polygons.push(poly);
       layer.add(poly);
     });
+  });
+
+  hasFacility.sections.forEach((s: any) => {
+    const facility = s.facilities[0];
+    const marker = new window.Konva.Circle({
+      radius: 30 * scale,
+      fill: 'red',
+      stroke: 'black',
+      strokeWidth: 2,
+      x: facility.x * scale,
+      y: facility.y * scale,
+    });
+    layer.add(marker);
   });
 
   return polygons;

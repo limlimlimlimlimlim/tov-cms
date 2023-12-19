@@ -38,7 +38,21 @@ export class MapService {
             nameEn: true,
           },
         },
-        sections: true,
+
+        sections: {
+          select: {
+            id: true,
+            path: true,
+            facilities: true,
+            groupId: true,
+            group: {
+              select: {
+                id: true,
+                sections: true,
+              },
+            },
+          },
+        },
       },
       where: { id },
     });

@@ -33,6 +33,18 @@ export class SectionService {
 
   async getSectionsByMapId(mapId: number) {
     return this.prisma.section.findMany({
+      select: {
+        id: true,
+        path: true,
+        facilities: true,
+        groupId: true,
+        group: {
+          select: {
+            id: true,
+            sections: true,
+          },
+        },
+      },
       where: { mapId },
     });
   }

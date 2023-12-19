@@ -133,6 +133,7 @@ export class FacilityService {
           select: {
             id: true,
             path: true,
+            facilities: true,
             group: {
               select: {
                 id: true,
@@ -194,6 +195,7 @@ export class FacilityService {
           select: {
             id: true,
             path: true,
+            facilities: true,
             group: {
               select: {
                 id: true,

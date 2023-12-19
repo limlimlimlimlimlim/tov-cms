@@ -62,7 +62,14 @@ const useAddMode = () => {
     if (!stage.current) return;
     stage.current.off('click');
     stage.current.on('click', (e: any) => {
-      addPoint(e.evt.layerX, e.evt.layerY);
+      if (points.current.length === 0) {
+        addPoint(e.evt.layerX - 50, e.evt.layerY - 50);
+        addPoint(e.evt.layerX + 50, e.evt.layerY - 50);
+        addPoint(e.evt.layerX + 50, e.evt.layerY + 50);
+        addPoint(e.evt.layerX - 50, e.evt.layerY + 50);
+      } else {
+        addPoint(e.evt.layerX, e.evt.layerY);
+      }
     });
   }, [addPoint]);
 

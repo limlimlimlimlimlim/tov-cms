@@ -38,6 +38,7 @@ export class FacilityService {
         y: true,
         createdAt: true,
         updatedAt: true,
+        tags: true,
         category: {
           select: {
             id: true,

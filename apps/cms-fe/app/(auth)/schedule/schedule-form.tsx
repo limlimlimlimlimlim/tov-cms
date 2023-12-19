@@ -7,6 +7,7 @@ import {
   Flex,
   Form,
   Input,
+  Radio,
   Switch,
   Tabs,
   message,
@@ -21,7 +22,7 @@ import { createSchedule, updateSchedule } from '../../../api/schedule';
 
 const { RangePicker } = DatePicker;
 
-const layout = {
+const formLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 21 },
 };
@@ -47,6 +48,7 @@ const ScheduleForm = ({ data }) => {
   const [endDate, setEndDate] = useState<any>(dayjs());
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
+  const [layout, setLayout] = useState('landscape');
 
   const items = [
     {
@@ -89,6 +91,7 @@ const ScheduleForm = ({ data }) => {
       setEndDate(dayjs(data.endDate));
       setStatus(data.status);
       setNoPeriod(data.noPeriod);
+      setLayout(data.layout);
     }
   }, [data]);
 
@@ -102,6 +105,7 @@ const ScheduleForm = ({ data }) => {
           videoContents,
           contentsType,
           status,
+          layout,
           description,
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
@@ -116,6 +120,7 @@ const ScheduleForm = ({ data }) => {
           videoContents,
           contentsType,
           status,
+          layout,
           description,
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
@@ -134,6 +139,7 @@ const ScheduleForm = ({ data }) => {
     endDate,
     imageContents,
     isEdit,
+    layout,
     name,
     noPeriod,
     router,
@@ -150,7 +156,7 @@ const ScheduleForm = ({ data }) => {
   return (
     <Flex vertical gap="middle">
       <Form
-        {...layout}
+        {...formLayout}
         onFinish={onFinish}
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
@@ -162,18 +168,6 @@ const ScheduleForm = ({ data }) => {
             onChange={onChangeWing}
           />
         </Form.Item>
-        {/* <Form.Item label="구분">
-          <Radio.Group
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value);
-            }}
-          >
-            <Radio value="info">안내</Radio>
-            <Radio value="event">이벤트</Radio>
-          </Radio.Group>
-        </Form.Item> */}
-
         <Form.Item label="콘텐츠명" rules={[{ required: true }]}>
           <Input
             value={name}
@@ -221,6 +215,17 @@ const ScheduleForm = ({ data }) => {
             }}
           />
         </Form.Item>
+        <Form.Item label="레이아웃">
+          <Radio.Group
+            value={layout}
+            onChange={(e) => {
+              setLayout(e.target.value);
+            }}
+          >
+            <Radio value="landscape">가로</Radio>
+            <Radio value="portrait">세로</Radio>
+          </Radio.Group>
+        </Form.Item>
         <Form.Item label="메모">
           <Input.TextArea
             value={description}
@@ -231,7 +236,7 @@ const ScheduleForm = ({ data }) => {
           />
         </Form.Item>
         <Divider />
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
+        <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
             <Link href="/post/list">
               <Button>취소</Button>

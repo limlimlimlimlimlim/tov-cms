@@ -13,11 +13,8 @@ export default function MapInfoForm({ data }) {
       <Divider />
       <Flex gap="small" justify="end">
         <Link href="/map-info/list">
-          <Button>취소</Button>
+          <Button>확인</Button>
         </Link>
-        <Button type="primary" htmlType="submit">
-          저장
-        </Button>
       </Flex>
     </Flex>
   );

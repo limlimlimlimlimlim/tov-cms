@@ -119,6 +119,7 @@ export class ScheduleService {
             name: true,
           },
         },
+        layout: true,
       },
       where: where,
       skip: (+page - 1) * +count,

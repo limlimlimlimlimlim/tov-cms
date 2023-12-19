@@ -33,6 +33,7 @@ export class KioskService {
         id: true,
         name: true,
         code: true,
+        layout: true,
         createdAt: true,
         updatedAt: true,
         floor: {
@@ -68,6 +69,7 @@ export class KioskService {
         wingId: true,
         code: true,
         name: true,
+        layout: true,
         description: true,
         createdAt: true,
         updatedAt: true,

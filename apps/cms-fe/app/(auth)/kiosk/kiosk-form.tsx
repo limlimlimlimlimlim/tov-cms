@@ -1,5 +1,5 @@
 'use client';
-import { Button, Divider, Flex, Form, Input, message } from 'antd';
+import { Button, Divider, Flex, Form, Input, Radio, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,7 +7,7 @@ import { createKiosk, getKioskByCode, updateKiosk } from '../../../api/kiosk';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import WingSelect from '../../../component/wing-select/wing-select';
 
-const layout = {
+const formLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 21 },
 };
@@ -28,6 +28,7 @@ const KioskForm = ({ data }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isEdit, setIsEdit] = useState(false);
+  const [layout, setLayout] = useState('landscape');
 
   useEffect(() => {
     if (data) {
@@ -37,6 +38,7 @@ const KioskForm = ({ data }) => {
       setName(data.name);
       setCode(data.code);
       setDescription(data.description);
+      setLayout(data.layout);
     }
   }, [data, setCode]);
 
@@ -49,6 +51,7 @@ const KioskForm = ({ data }) => {
           code,
           name,
           description,
+          layout,
         });
         void message.success('키오스크가 수정됐습니다.');
       } else {
@@ -58,6 +61,7 @@ const KioskForm = ({ data }) => {
           code,
           name,
           description,
+          layout,
         });
         void message.success('키오스크가 생성됐습니다.');
       }
@@ -65,7 +69,7 @@ const KioskForm = ({ data }) => {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [code, data, description, floorId, isEdit, name, router, wingId]);
+  }, [code, data, description, floorId, isEdit, layout, name, router, wingId]);
 
   const onClickCheckDuplicate = useCallback(async () => {
     const kiosk = await getKioskByCode(code);
@@ -87,7 +91,7 @@ const KioskForm = ({ data }) => {
   return (
     <Flex vertical gap="middle">
       <Form
-        {...layout}
+        {...formLayout}
         onFinish={onFinish}
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
@@ -128,6 +132,17 @@ const KioskForm = ({ data }) => {
             }}
           />
         </Form.Item>
+        <Form.Item label="레이아웃">
+          <Radio.Group
+            value={layout}
+            onChange={(e) => {
+              setLayout(e.target.value);
+            }}
+          >
+            <Radio value="landscape">가로</Radio>
+            <Radio value="portrait">세로</Radio>
+          </Radio.Group>
+        </Form.Item>
         <Form.Item label="메모">
           <Input.TextArea
             value={description}
@@ -139,7 +154,7 @@ const KioskForm = ({ data }) => {
         </Form.Item>
 
         <Divider />
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
+        <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
             <Link href="/kiosk/list">
               <Button>취소</Button>

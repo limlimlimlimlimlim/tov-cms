@@ -217,6 +217,7 @@ model Kiosk {
   code            String    @unique
   name            String
   description     String
+  layout          String  @default("landscape")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

@@ -25,15 +25,11 @@ export class PostController {
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
-    @Query('floorId') floorId: string,
-    @Query('wingId') wingId: string,
   ) {
     return await this.postService.getPosts({
       keyword,
       page,
       count,
-      floorId,
-      wingId,
     });
   }
 

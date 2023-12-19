@@ -1,13 +1,11 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Input, Modal, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
-import FloorSelect from '../../../../component/floor-select/floor-select';
-import WingSelect from '../../../../component/wing-select/wing-select';
 import { deletePost, getPosts } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
 
@@ -18,8 +16,6 @@ export default function PostList() {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState<PostItem[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [floor, setFloor] = useState('');
-  const [wing, setWing] = useState('');
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<PostItem[]>([]);
@@ -29,14 +25,11 @@ export default function PostList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
-  const fetchData = useCallback(
-    async ({ keyword, page, count, floor, wing }) => {
-      const posts = await getPosts({ keyword, page, count, floor, wing });
-      setData(posts.data.data);
-      setTotal(posts.data.total);
-    },
-    [],
-  );
+  const fetchData = useCallback(async ({ keyword, page, count }) => {
+    const posts = await getPosts({ keyword, page, count });
+    setData(posts.data.data);
+    setTotal(posts.data.total);
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -50,18 +43,8 @@ export default function PostList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     setPage(1);
-    void fetchData({ keyword, page, count, floor, wing });
-  }, [
-    count,
-    fetchData,
-    floor,
-    getPostPermissions,
-    keyword,
-    page,
-    ready,
-    router,
-    wing,
-  ]);
+    void fetchData({ keyword, page, count });
+  }, [count, fetchData, getPostPermissions, keyword, page, ready, router]);
 
   const columns = useMemo(() => {
     return [
@@ -151,11 +134,11 @@ export default function PostList() {
       content: '선택된 게시물을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deletePost(row.id)));
-        void fetchData({ keyword, page, count, floor, wing });
+        void fetchData({ keyword, page, count });
         void message.success('선택된 게시물이 삭제됐습니다.');
       },
     });
-  }, [count, fetchData, floor, keyword, page, selectedData, wing]);
+  }, [count, fetchData, keyword, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -163,34 +146,12 @@ export default function PostList() {
     },
   };
 
-  const onChangeWing = useCallback((w) => {
-    setWing(w);
-    setFloor('');
-  }, []);
-
-  const onChangeFloor = useCallback((f: any) => {
-    setFloor(f);
-  }, []);
-
   const onChangePage = useCallback((p) => {
     setPage(p.current);
   }, []);
 
   return (
     <Flex vertical gap="middle">
-      <Flex gap="large">
-        <Form.Item label="건물 선택">
-          <WingSelect style={{ width: 200 }} onChange={onChangeWing} useAll />
-        </Form.Item>
-        <Form.Item label="층 선택">
-          <FloorSelect
-            wingId={wing}
-            style={{ width: 200 }}
-            onChange={onChangeFloor}
-            useAll
-          />
-        </Form.Item>
-      </Flex>
       <Flex justify="space-between">
         <Flex gap="small" align="center">
           {deletable && (

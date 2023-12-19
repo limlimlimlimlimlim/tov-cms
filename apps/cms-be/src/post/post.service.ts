@@ -12,18 +12,12 @@ export class PostService {
     });
   }
 
-  async getPosts({ keyword, page, count, floorId, wingId }) {
+  async getPosts({ keyword, page, count }) {
     const where = {
       AND: [],
     };
     if (keyword) {
       where.AND.push({ name: { contains: keyword } });
-    }
-    if (floorId) {
-      where.AND.push({ floorId: +floorId });
-    }
-    if (wingId) {
-      where.AND.push({ wingId: +wingId });
     }
 
     const total = await this.prisma.post.count({ where });

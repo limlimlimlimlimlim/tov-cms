@@ -175,7 +175,17 @@ const PostForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="위치">
+        <Form.Item label="게시물명" rules={[{ required: true }]}>
+          <Input
+            value={name}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item label="게시물 위치">
           <Radio.Group
             value={type}
             onChange={(e) => {
@@ -186,16 +196,6 @@ const PostForm = ({ data }) => {
             <Radio value="right">오른쪽</Radio>
             <Radio value="top">상단</Radio>
           </Radio.Group>
-        </Form.Item>
-
-        <Form.Item label="게시물명" rules={[{ required: true }]}>
-          <Input
-            value={name}
-            style={{ width: 300 }}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
         </Form.Item>
 
         <Form.Item label="게시물 타입">

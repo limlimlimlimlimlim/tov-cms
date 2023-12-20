@@ -2,7 +2,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, Flex, Image, Typography, Upload, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { baseURL } from '../../util/axios-client';
+import { getBaseUrl } from '../../util/axios-client';
 
 const { Text } = Typography;
 
@@ -21,13 +21,13 @@ export default function ContentsUploader({
 
   useEffect(() => {
     if (source) {
-      setSrc(`${baseURL}/files/upload/${source}`);
+      setSrc(`${getBaseUrl()}/files/upload/${source}`);
     }
   }, [source]);
 
   const uploadProps: UploadProps = useMemo(() => {
     return {
-      action: `${baseURL}/files/upload`,
+      action: `${getBaseUrl()}/files/upload`,
       name: 'file',
       multiple: false,
       maxCount: 1,
@@ -40,7 +40,7 @@ export default function ContentsUploader({
             onComplete({ fileName: info.file.response.fileName });
           }
 
-          setSrc(`${baseURL}/files/upload/${info.file.response.fileName}`);
+          setSrc(`${getBaseUrl()}/files/upload/${info.file.response.fileName}`);
         } else if (info.file.status === 'error') {
           void message.error(`${info.file.name} file upload failed.`);
         }

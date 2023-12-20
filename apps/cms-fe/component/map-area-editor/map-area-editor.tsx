@@ -1,7 +1,7 @@
 'use client';
 import { Button, Flex, message } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { baseURL } from '../../util/axios-client';
+import { getBaseUrl } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
 import { updateMap } from '../../api/map';
 import useViewMode from './hooks/use-view-mode';
@@ -91,7 +91,7 @@ export default function MapAreaEditor({ map }: ComponentProps) {
   }, [createStage]);
 
   useEffect(() => {
-    setImgSrc(`${baseURL}/files/upload/${map.image}?${Math.random()}`);
+    setImgSrc(`${getBaseUrl()}/files/upload/${map.image}?${Math.random()}`);
   }, [map]);
 
   const onClickAdd = useCallback(() => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { Flex } from 'antd';
 import { getMapDetail } from '../../api/map';
-import { baseURL } from '../../util/axios-client';
+import { getBaseUrl } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
 
 const MapViewer = ({
@@ -112,7 +112,7 @@ const MapViewer = ({
         <img
           alt="map"
           ref={imageRef}
-          src={`${baseURL}/files/upload/${data.image}`}
+          src={`${getBaseUrl()}/files/upload/${data.image}`}
           onLoad={onLoadImage}
         />
       ) : null}

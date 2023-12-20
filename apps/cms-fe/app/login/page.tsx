@@ -4,13 +4,20 @@ import { Button, Card, Flex, Form, Input, message } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login, verifyToken } from '../../api/auth';
-import { setToken } from '../../util/axios-client';
+import { setBaseUrl, setToken } from '../../util/axios-client';
 
 const Login = () => {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [verified, setVerified] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log(
+      `${window.location.protocol}//${window.location.hostname}:3001`,
+    );
+    setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
+  }, []);
 
   const onClickLogin = useCallback(async () => {
     try {

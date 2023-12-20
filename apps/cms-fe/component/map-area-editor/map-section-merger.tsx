@@ -2,7 +2,7 @@
 
 import { Button, Flex, message } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { baseURL } from '../../util/axios-client';
+import { getBaseUrl } from '../../util/axios-client';
 import { getSectionsByMapId } from '../../api/section';
 import useViewMode from './hooks/use-view-mode';
 import useMergeMode from './hooks/use-merge-mode';
@@ -102,7 +102,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
   }, [createStage]);
 
   useEffect(() => {
-    setImgSrc(`${baseURL}/files/upload/${map.image}?${Math.random()}`);
+    setImgSrc(`${getBaseUrl()}/files/upload/${map.image}?${Math.random()}`);
   }, [map]);
 
   const onClickMerge = useCallback(() => {

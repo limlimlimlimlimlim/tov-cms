@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const baseURL = `${window.location.protocol}://${window.location.hostname}:3001`;
-const axiosClient = axios.create({
-  baseURL,
-});
+let baseURL = '';
+const axiosClient = axios.create();
 
 axiosClient.interceptors.request.use((config) => {
   return config;
@@ -13,5 +11,14 @@ const setToken = (token: string) => {
   axiosClient.defaults.headers.common.Authorization = token;
 };
 
+const setBaseUrl = (url: string) => {
+  baseURL = url;
+  axiosClient.defaults.baseURL = url;
+};
+
+const getBaseUrl = () => {
+  return baseURL;
+};
+
 export default axiosClient;
-export { baseURL, setToken };
+export { setToken, setBaseUrl, getBaseUrl };

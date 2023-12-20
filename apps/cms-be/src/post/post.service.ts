@@ -22,20 +22,6 @@ export class PostService {
 
     const total = await this.prisma.post.count({ where });
     const data = await this.prisma.post.findMany({
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        imageContents: true,
-        videoContents: true,
-        textContents: true,
-        createdAt: true,
-        updatedAt: true,
-        startDate: true,
-        endDate: true,
-        status: true,
-        useIntro: true,
-      },
       where: where,
       skip: (+page - 1) * +count,
       take: +count,

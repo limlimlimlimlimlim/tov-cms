@@ -64,7 +64,7 @@ const createSection = (sections, layer, scale) => {
   hasFacility.sections.forEach((s: any) => {
     const facility = s.facilities[0];
     const marker = new window.Konva.Circle({
-      radius: 30 * scale,
+      radius: 20 * scale,
       fill: 'red',
       stroke: 'black',
       strokeWidth: 2,

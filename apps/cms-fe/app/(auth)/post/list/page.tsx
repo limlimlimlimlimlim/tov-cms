@@ -165,7 +165,7 @@ export default function PostList() {
         },
       },
     ];
-  }, [updatable]);
+  }, [count, fetchData, keyword, page, updatable]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);

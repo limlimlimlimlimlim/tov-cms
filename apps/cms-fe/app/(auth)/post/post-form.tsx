@@ -51,7 +51,11 @@ const PostForm = ({ data }) => {
   const [isDisabledIntro, setIsDisabledIntro] = useState(false);
 
   useEffect(() => {
-    setIsDisabledIntro(contentsType === 'text');
+    setIsDisabledIntro(
+      contentsType === 'text' ||
+        contentsType === 'image_text' ||
+        contentsType === 'video_text',
+    );
   }, [contentsType]);
 
   const items = [

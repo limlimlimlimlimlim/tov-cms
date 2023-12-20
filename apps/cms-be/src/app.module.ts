@@ -17,7 +17,6 @@ import { PermissionModule } from './permission/permission.module';
 import { BuildingInfoModule } from './building-info/building-info.module';
 import { FileUploadController } from './files-upload/files-upload.controller';
 import { MapModule } from './map/map.module';
-import { EventModule } from './event/event.module';
 import { KioskModule } from './kiosk/kiosk.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './custom-exception/custom-exception.filter';
@@ -57,7 +56,6 @@ import { AuthService } from './auth/auth.service';
     PermissionModule,
     BuildingInfoModule,
     MapModule,
-    EventModule,
     KioskModule,
     SectionModule,
     PostModule,

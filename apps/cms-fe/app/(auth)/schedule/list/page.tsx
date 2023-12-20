@@ -67,7 +67,6 @@ export default function ScheduleList() {
   ]);
 
   const onSearch = useCallback((value) => {
-    console.log('onSearch');
     setKeyword(value);
   }, []);
 

@@ -3,10 +3,19 @@ import { Button, Flex, Input, Modal, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { EditOutlined } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
-import { deletePost, getPosts } from '../../../../api/post';
+import {
+  decrementPostOrder,
+  deletePost,
+  getPosts,
+  incrementPostOrder,
+} from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
 
 const { Search } = Input;
@@ -56,7 +65,12 @@ export default function PostList() {
         },
       },
       {
-        title: '구분',
+        title: '게시물명',
+        width: 150,
+        dataIndex: 'name',
+      },
+      {
+        title: '게시물타입',
         width: 150,
         dataIndex: 'type',
         render(type) {
@@ -72,11 +86,6 @@ export default function PostList() {
         },
       },
       {
-        title: '게시물명',
-        width: 150,
-        dataIndex: 'name',
-      },
-      {
         title: '상태',
         width: 150,
         dataIndex: 'status',
@@ -88,6 +97,42 @@ export default function PostList() {
               return '비활성';
           }
           return '';
+        },
+      },
+      {
+        title: '순서변경',
+        width: 150,
+        render(data) {
+          return (
+            <Flex gap="small">
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    await incrementPostOrder(data.id);
+                    await fetchData({ keyword, page, count });
+                  } catch (e) {
+                    void message.warning('순서를 변경할 수 없습니다.');
+                  }
+                }}
+              >
+                <CaretUpOutlined />
+              </Button>
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    await decrementPostOrder(data.id);
+                    await fetchData({ keyword, page, count });
+                  } catch (e) {
+                    void message.warning('순서를 변경할 수 없습니다.');
+                  }
+                }}
+              >
+                <CaretDownOutlined />
+              </Button>
+            </Flex>
+          );
         },
       },
       {

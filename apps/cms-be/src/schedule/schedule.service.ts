@@ -153,11 +153,11 @@ export class ScheduleService {
   }
 
   async deleteSchedule(id: number) {
-    const post = await this.prisma.schedule.findUnique({
+    const schedule = await this.prisma.schedule.findUnique({
       where: { id },
     });
 
-    if (!post) {
+    if (!schedule) {
       throw new NotFoundException('Schedule not found.');
     }
 

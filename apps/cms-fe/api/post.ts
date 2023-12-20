@@ -21,3 +21,11 @@ export const updatePost = async (id, data) => {
 export const deletePost = async (id) => {
   return axiosClient.delete(`/post/${id}`);
 };
+
+export const incrementPostOrder = async (id) => {
+  return axiosClient.patch(`/post/order/increment/${id}`);
+};
+
+export const decrementPostOrder = async (id) => {
+  return axiosClient.patch(`/post/order/decrement/${id}`);
+};

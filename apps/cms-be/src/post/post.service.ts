@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -7,9 +11,72 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
 
   async createPost(data: Prisma.PostUncheckedCreateInput) {
+    const count = await this.prisma.post.count();
+    data.order = count + 1;
     return this.prisma.post.create({
       data,
     });
+  }
+
+  async swapPostOrder(postId1: number, postId2: number) {
+    const post1 = await this.prisma.post.findFirst({
+      where: { id: postId1 },
+    });
+    const post2 = await this.prisma.post.findFirst({
+      where: { id: postId2 },
+    });
+
+    const post1Order = post1.order;
+    const post2Order = post2.order;
+
+    return await this.prisma.$transaction([
+      this.prisma.post.update({
+        where: {
+          id: postId1,
+        },
+        data: {
+          order: post2Order,
+        },
+      }),
+      this.prisma.post.update({
+        where: {
+          id: postId2,
+        },
+        data: {
+          order: post1Order,
+        },
+      }),
+    ]);
+  }
+
+  async updateOrderPost(id: number, displacement: number) {
+    const post1 = await this.prisma.post.findFirst({
+      where: { id: id },
+    });
+
+    const maxOrderPost = await this.prisma.post.findFirst({
+      orderBy: {
+        order: 'desc',
+      },
+    });
+    const minOrderPost = await this.prisma.post.findFirst({
+      orderBy: {
+        order: 'asc',
+      },
+    });
+
+    if (
+      post1.order + displacement > maxOrderPost.order ||
+      post1.order + displacement < minOrderPost.order
+    ) {
+      throw new InternalServerErrorException();
+    }
+
+    const post2 = await this.prisma.post.findFirst({
+      where: { order: post1.order + displacement },
+    });
+
+    return await this.swapPostOrder(post1.id, post2.id);
   }
 
   async getPosts({ keyword, page, count }) {
@@ -26,7 +93,7 @@ export class PostService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        id: 'desc',
+        order: 'desc',
       },
     });
     return { total, data, page, count };
@@ -62,8 +129,26 @@ export class PostService {
       throw new NotFoundException('Post not found.');
     }
 
-    return await this.prisma.post.delete({
+    await this.prisma.post.delete({
       where: { id },
     });
+
+    const reorderTargets = await this.prisma.post.findMany({
+      orderBy: {
+        order: 'desc',
+      },
+    });
+
+    let count = 0;
+    for (const i of reorderTargets) {
+      await this.prisma.post.update({
+        where: {
+          id: i.id,
+        },
+        data: {
+          order: ++count,
+        },
+      });
+    }
   }
 }

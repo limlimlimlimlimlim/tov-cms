@@ -50,4 +50,14 @@ export class PostController {
   async deletePost(@Param('id') id: number) {
     return this.postService.deletePost(+id);
   }
+
+  @Patch('/order/increment/:id')
+  async incrementOrderSchedule(@Param('id') id: string) {
+    return this.postService.updateOrderPost(+id, +1);
+  }
+
+  @Patch('/order/decrement/:id')
+  async decrementOrderSchedule(@Param('id') id: string) {
+    return this.postService.updateOrderPost(+id, -1);
+  }
 }

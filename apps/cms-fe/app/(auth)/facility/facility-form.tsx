@@ -47,6 +47,7 @@ const FacilityForm = ({ data }) => {
   const [map, setMap] = useState<any>();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [iconUrl, setIconUrl] = useState('/pin01.png');
 
   useEffect(() => {
     if (data) {
@@ -67,6 +68,17 @@ const FacilityForm = ({ data }) => {
       setSectionId(data.section?.id);
     }
   }, [data]);
+
+  useEffect(() => {
+    switch (iconType) {
+      case 'icon1':
+        setIconUrl('/pin01.png');
+        break;
+      case 'icon2':
+        setIconUrl('/pin02.png');
+        break;
+    }
+  }, [iconType]);
 
   const onFinish = useCallback(async () => {
     try {
@@ -255,9 +267,27 @@ const FacilityForm = ({ data }) => {
             }}
           >
             <Option key="icon1" value="icon1">
+              <img
+                src="/pin01.png"
+                alt="pin01"
+                style={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 10,
+                }}
+              />
               아이콘1
             </Option>
             <Option key="icon2" value="icon2">
+              <img
+                src="/pin02.png"
+                alt="pin02"
+                style={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 10,
+                }}
+              />
               아이콘2
             </Option>
           </Select>
@@ -277,6 +307,7 @@ const FacilityForm = ({ data }) => {
                 mapId={map?.id}
                 width={400}
                 onClick={null}
+                facilityIconUrl={iconUrl}
                 facility={position}
               />
             </Flex>
@@ -298,6 +329,7 @@ const FacilityForm = ({ data }) => {
         mapId={map?.id}
         open={isOpenModal}
         position={position}
+        iconUrl={iconUrl}
         onOk={(data) => {
           setPosition(data.position);
           setAlwaysVisible(data.alwaysVisible);

@@ -7,6 +7,7 @@ import MapViewer from '../map-viewer/map-viewer';
 export default function FacilityPositionManagement({
   mapId,
   position,
+  iconUrl,
   onChange,
 }) {
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
@@ -78,6 +79,7 @@ export default function FacilityPositionManagement({
           mapId={mapId}
           width={900}
           facility={originPosition}
+          facilityIconUrl={iconUrl}
           onClick={enabledPositionSetting ? onClickMap : null}
         />
       </Flex>

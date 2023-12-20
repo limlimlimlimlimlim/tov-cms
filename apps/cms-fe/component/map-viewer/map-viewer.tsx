@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { Flex } from 'antd';
 import { getMapDetail } from '../../api/map';
 import { baseURL } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
-import { Flex } from 'antd';
 
-const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
+const MapViewer = ({
+  mapId,
+  width = 0,
+  facility,
+  facilityIconUrl,
+  onClick,
+}) => {
   const [data, setData] = useState<any>();
   const containerId = useMemo(() => `canvans-${Math.random()}`, []);
   const [scale, setScale] = useState(1);
@@ -119,8 +125,8 @@ const MapViewer = ({ mapId, width = 0, facility, onClick }) => {
         <div ref={canvasRef} id={containerId} />
         {facility?.x && facility.y ? (
           <img
-            src="/facility-flag.png"
-            alt="facility-flag"
+            src={facilityIconUrl}
+            alt="icon"
             style={{
               position: 'absolute',
               width: 128 * scale,

@@ -6,6 +6,7 @@ interface ComponentProps {
   mapId: string;
   open: boolean;
   position: any;
+  iconUrl: string;
   onCancel: () => void;
   onOk: (data) => void;
 }
@@ -14,11 +15,11 @@ export default function FacilityPositionManagementModal({
   mapId,
   open,
   position,
+  iconUrl,
   onCancel,
   onOk,
 }: ComponentProps) {
   const facilityData = useRef();
-
   return (
     <Modal
       destroyOnClose
@@ -39,6 +40,7 @@ export default function FacilityPositionManagementModal({
       <FacilityPositionManagement
         mapId={mapId}
         position={position}
+        iconUrl={iconUrl}
         onChange={(data) => {
           facilityData.current = data;
         }}

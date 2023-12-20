@@ -1,5 +1,5 @@
 import { Divider, Modal } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import FacilityPositionManagement from './facility-position-management';
 
 interface ComponentProps {

@@ -105,13 +105,16 @@ export default function FacilityPositionManagement({
         </Flex>
       </Flex>
       <Flex justify="center" style={{ overflow: 'auto' }}>
-        {enabledPositionSetting}
         <MapViewer
           mapId={mapId}
           width={900}
           facility={originPosition}
           facilityIconUrl={iconUrl}
-          onClick={enabledPositionSetting ? onClickMap : null}
+          onClick={(data) => {
+            if (enabledPositionSetting) {
+              onClickMap(data);
+            }
+          }}
         />
       </Flex>
     </Flex>

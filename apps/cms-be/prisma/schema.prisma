@@ -141,6 +141,9 @@ model Facility {
   x               Int?
   y               Int?
   tags            String?
+  iconColor       String @default("#000000")
+  tooltipColor    String @default("#000000")
+  fontSize        Int @default(12)
   categoryId      Int?
   category        FacilityCategory? @relation(fields: [categoryId], references: [id])
   subCategoryId   Int?
@@ -167,16 +170,21 @@ model Map {
 }
 
 model Section {
-  id          Int      @default(autoincrement()) @id
-  mapId       Int       
-  map         Map     @relation(fields: [mapId], references: [id])
-  groupId     Int?
-  group       SectionGroup? @relation(fields: [groupId], references: [id])
-  path        String
-  disabled    Boolean @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  facilities  Facility[]
+  id            Int           @default(autoincrement()) @id
+  mapId         Int       
+  map           Map           @relation(fields: [mapId], references: [id])
+  groupId       Int?
+  group         SectionGroup? @relation(fields: [groupId], references: [id])
+  path          String
+  color         String?     
+  strokeColor   String?     
+  strokeWidth   Int           @default(1)
+  alpha         Int           @default(1)
+  strokeAlpha   Int           @default(1)
+  disabled      Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  facilities    Facility[]
 }
 
 model SectionGroup {

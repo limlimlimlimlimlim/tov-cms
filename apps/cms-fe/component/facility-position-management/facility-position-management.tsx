@@ -34,27 +34,71 @@ export default function FacilityPositionManagement({
   const [currentSectionStrokeWidth, setCurrentSectionStrokeWidth] =
     useState<number>();
   const [sections, setSections] = useState<any>();
+  const [originSections, setOriginSections] = useState<any>();
+  const [currentOptions, setCurrentOptions] = useState<any>();
   const [image, setImage] = useState();
 
-  const updateCurrentSection = useCallback(
-    (currentSection) => {
+  const updateSection = useCallback(
+    (targetSection, options, setCurrent = true) => {
       if (!sections) return;
-      const index = sections.findIndex((s) => s.id === currentSection.id);
+      const isGroup = targetSection.group;
       const _sections = [...sections];
-      _sections[index] = { ...currentSection };
+      console.log(options);
+      if (isGroup) {
+        console.log('-----group----');
+        console.log(targetSection.group.sections);
+        targetSection.group.sections.forEach((target) => {
+          const index = sections.findIndex((s) => s.id === target.id);
+          _sections[index] = { ..._sections[index], ...options };
+        });
+        console.log('-----------');
+      } else {
+        const index = sections.findIndex((s) => s.id === targetSection.id);
+        _sections[index] = { ..._sections[index], ...options };
+      }
       setSections(_sections);
-      setCurrentSection(currentSection);
+      if (setCurrent) {
+        setCurrentSection(targetSection);
+      }
+      setCurrentOptions(options);
     },
     [sections],
   );
 
+  const reset = useCallback(() => {
+    console.log('::::::reset:::::');
+    updateSection(
+      prevSection,
+      {
+        color: prevSection.color,
+        alpha: prevSection.alpha,
+        strokeWidth: prevSection.strokeWidth,
+        strokeColor: prevSection.strokeColor,
+        strokeAlpha: prevSection.strokeAlpha,
+      },
+      false,
+    );
+  }, [prevSection, updateSection]);
+
   const onClickMap = useCallback(
     (data) => {
-      if (prevSection) {
-        updateCurrentSection(prevSection);
+      console.log(prevSection, data.section);
+      if (
+        prevSection &&
+        prevSection.id !== data.section.id &&
+        prevSection.groupId !== data.section.groupId
+      ) {
+        reset();
       }
       setOriginPosition({ x: data.originX, y: data.originY });
       setCurrentSection(data.section);
+      setCurrentOptions({
+        color: data.section.color,
+        alpha: data.section.alpha,
+        strokeWidth: data.section.strokeWidth,
+        strokeColor: data.section.strokeColor,
+        strokeAlpha: data.section.strokeAlpha,
+      });
       setPrevSection(JSON.parse(JSON.stringify(data.section)));
       onChange({
         position: { x: data.originX, y: data.originY },
@@ -63,7 +107,7 @@ export default function FacilityPositionManagement({
         section: data.section,
       });
     },
-    [alwaysVisible, fontSize, onChange, prevSection, updateCurrentSection],
+    [alwaysVisible, fontSize, onChange, prevSection, reset],
   );
 
   useEffect(() => {
@@ -71,6 +115,13 @@ export default function FacilityPositionManagement({
     setIconColor(facility.iconColor || '#ff9900');
     setTooltipColor(facility.tooltipColor || '#000000');
     setCurrentSection(facility.section || null);
+    setCurrentOptions({
+      color: facility.section.color,
+      alpha: facility.section.alpha,
+      strokeWidth: facility.section.strokeWidth,
+      strokeColor: facility.section.strokeColor,
+      strokeAlpha: facility.section.strokeAlpha,
+    });
     setPrevSection(JSON.parse(JSON.stringify(facility.section || null)));
   }, [
     facility.fontSize,
@@ -99,6 +150,7 @@ export default function FacilityPositionManagement({
   const fetchData = useCallback(async (mapId) => {
     const result = await getMapDetail(mapId);
     setSections(result.data.sections);
+    setOriginSections(JSON.parse(JSON.stringify(result.data.sections)));
     setImage(result.data.image);
   }, []);
 
@@ -155,10 +207,12 @@ export default function FacilityPositionManagement({
                 const hex = color.toHexString();
                 const alpha = color.metaColor.roundA * 100;
                 setCurrentSectionColor(hex);
-                updateCurrentSection({
-                  ...currentSection,
+                updateSection(currentSection, {
                   color: hex.substr(0, 7),
                   alpha,
+                  strokeColor: currentOptions.strokeColor,
+                  strokeAlpha: currentOptions.strokeAlpha,
+                  strokeWidth: currentOptions.strokeWidth,
                 });
               }}
             />
@@ -171,8 +225,10 @@ export default function FacilityPositionManagement({
                 const hex = color.toHexString();
                 const strokeAlpha = color.metaColor.roundA * 100;
                 setCurrentSectionStrokeColor(hex);
-                updateCurrentSection({
-                  ...currentSection,
+                updateSection(currentSection, {
+                  color: currentOptions.color,
+                  alpha: currentOptions.alpha,
+                  strokeWidth: currentOptions.strokeWidth,
                   strokeColor: hex.substr(0, 7),
                   strokeAlpha,
                 });
@@ -187,9 +243,12 @@ export default function FacilityPositionManagement({
               value={currentSectionStrokeWidth}
               onChange={(value) => {
                 setCurrentSectionStrokeWidth(value);
-                updateCurrentSection({
-                  ...currentSection,
+                updateSection(currentSection, {
                   strokeWidth: value,
+                  color: currentOptions.color,
+                  alpha: currentOptions.alpha,
+                  strokeColor: currentOptions.strokeColor,
+                  strokeAlpha: currentOptions.strokeAlpha,
                 });
               }}
             />

@@ -4,7 +4,7 @@ import { getMapDetail } from '../../api/map';
 import { getBaseUrl } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
 
-const MapViewer = ({
+export const MapViewer = ({
   mapId = null,
   sections = [],
   image = null,
@@ -71,16 +71,19 @@ const MapViewer = ({
     [containerId, onClick, onClickStage],
   );
 
-  const render = useCallback(
-    (sca) => {
-      if (!_sections.length) return;
-      if (!secLayerRef.current || !facLayerRef.current) return;
-      secLayerRef.current.destroyChildren();
-      facLayerRef.current.destroyChildren();
-      createSection(_sections, secLayerRef.current, sca);
-    },
-    [_sections],
-  );
+  const render = useCallback((sections, sca) => {
+    if (!sections) return;
+    if (!secLayerRef.current || !facLayerRef.current) return;
+    secLayerRef.current.destroyChildren();
+    facLayerRef.current.destroyChildren();
+    createSection(sections, secLayerRef.current, sca);
+  }, []);
+
+  useEffect(() => {
+    if (!mapId) {
+      render(sections, scale);
+    }
+  }, [mapId, render, scale, sections]);
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;
@@ -91,8 +94,8 @@ const MapViewer = ({
     setScale(_scale);
     imageRef.current.width *= _scale;
     createStage(imageRef.current.width, imageRef.current.height);
-    render(_scale);
-  }, [createStage, render, width]);
+    render(_sections, _scale);
+  }, [_sections, createStage, render, width]);
 
   const fetchData = useCallback(async (mapId) => {
     const result = await getMapDetail(mapId);

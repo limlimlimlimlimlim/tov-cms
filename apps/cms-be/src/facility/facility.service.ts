@@ -53,6 +53,7 @@ const select = {
       strokeColor: true,
       strokeAlpha: true,
       strokeWidth: true,
+      facilities: true,
       group: {
         select: {
           id: true,

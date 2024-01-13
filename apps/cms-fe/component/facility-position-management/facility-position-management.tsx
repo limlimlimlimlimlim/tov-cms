@@ -26,6 +26,7 @@ export default function FacilityPositionManagement({
   const [fontSize, setFontSize] = useState();
   const [iconColor, setIconColor] = useState();
   const [tooltipColor, setTooltipColor] = useState();
+  const [prevSection, setPrevSection] = useState<any>();
   const [currentSection, setCurrentSection] = useState<any>();
   const [currentSectionColor, setCurrentSectionColor] = useState<string>();
   const [currentSectionStrokeColor, setCurrentSectionStrokeColor] =
@@ -35,11 +36,26 @@ export default function FacilityPositionManagement({
   const [sections, setSections] = useState<any>();
   const [image, setImage] = useState();
 
+  const updateCurrentSection = useCallback(
+    (currentSection) => {
+      if (!sections) return;
+      const index = sections.findIndex((s) => s.id === currentSection.id);
+      const _sections = [...sections];
+      _sections[index] = { ...currentSection };
+      setSections(_sections);
+      setCurrentSection(currentSection);
+    },
+    [sections],
+  );
+
   const onClickMap = useCallback(
     (data) => {
-      console.log('currnetSection : ', data.section, sections);
+      if (prevSection) {
+        updateCurrentSection(prevSection);
+      }
       setOriginPosition({ x: data.originX, y: data.originY });
       setCurrentSection(data.section);
+      setPrevSection(JSON.parse(JSON.stringify(data.section)));
       onChange({
         position: { x: data.originX, y: data.originY },
         alwaysVisible,
@@ -47,7 +63,7 @@ export default function FacilityPositionManagement({
         section: data.section,
       });
     },
-    [alwaysVisible, fontSize, onChange, sections],
+    [alwaysVisible, fontSize, onChange, prevSection, updateCurrentSection],
   );
 
   useEffect(() => {
@@ -55,6 +71,7 @@ export default function FacilityPositionManagement({
     setIconColor(facility.iconColor || '#ff9900');
     setTooltipColor(facility.tooltipColor || '#000000');
     setCurrentSection(facility.section || null);
+    setPrevSection(JSON.parse(JSON.stringify(facility.section || null)));
   }, [
     facility.fontSize,
     facility.iconColor,
@@ -63,9 +80,7 @@ export default function FacilityPositionManagement({
   ]);
 
   useEffect(() => {
-    if (!currentSection) {
-      return;
-    }
+    if (!currentSection) return;
     setCurrentSectionColor(
       addAlpha(currentSection.color, currentSection.alpha),
     );
@@ -133,10 +148,36 @@ export default function FacilityPositionManagement({
             </Select>
           </Form.Item>
           <Form.Item label="영역 색상">
-            <ColorPicker format="hex" value={currentSectionColor} />
+            <ColorPicker
+              format="hex"
+              value={currentSectionColor}
+              onChangeComplete={(color: any) => {
+                const hex = color.toHexString();
+                const alpha = color.metaColor.roundA * 100;
+                setCurrentSectionColor(hex);
+                updateCurrentSection({
+                  ...currentSection,
+                  color: hex.substr(0, 7),
+                  alpha,
+                });
+              }}
+            />
           </Form.Item>
           <Form.Item label="테두리 색상">
-            <ColorPicker format="hex" value={currentSectionStrokeColor} />
+            <ColorPicker
+              format="hex"
+              value={currentSectionStrokeColor}
+              onChangeComplete={(color: any) => {
+                const hex = color.toHexString();
+                const strokeAlpha = color.metaColor.roundA * 100;
+                setCurrentSectionStrokeColor(hex);
+                updateCurrentSection({
+                  ...currentSection,
+                  strokeColor: hex.substr(0, 7),
+                  strokeAlpha,
+                });
+              }}
+            />
           </Form.Item>
           <Form.Item label="테두리 두께">
             <Slider
@@ -144,6 +185,13 @@ export default function FacilityPositionManagement({
               max={10}
               style={{ width: 80 }}
               value={currentSectionStrokeWidth}
+              onChange={(value) => {
+                setCurrentSectionStrokeWidth(value);
+                updateCurrentSection({
+                  ...currentSection,
+                  strokeWidth: value,
+                });
+              }}
             />
           </Form.Item>
           <Form.Item label="아이콘 색상">

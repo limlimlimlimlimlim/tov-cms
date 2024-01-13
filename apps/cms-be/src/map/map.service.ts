@@ -45,6 +45,11 @@ export class MapService {
             path: true,
             facilities: true,
             groupId: true,
+            color: true,
+            alpha: true,
+            strokeColor: true,
+            strokeAlpha: true,
+            strokeWidth: true,
             group: {
               select: {
                 id: true,
@@ -101,6 +106,11 @@ export class MapService {
             id: true,
             path: true,
             facilities: true,
+            color: true,
+            alpha: true,
+            strokeColor: true,
+            strokeAlpha: true,
+            strokeWidth: true,
           },
         },
       },

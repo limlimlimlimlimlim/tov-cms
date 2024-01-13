@@ -13,9 +13,6 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(
-      `${window.location.protocol}//${window.location.hostname}:3001`,
-    );
     setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
   }, []);
 

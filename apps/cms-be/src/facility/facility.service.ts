@@ -2,6 +2,67 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
+const select = {
+  id: true,
+  name: true,
+  phone: true,
+  address: true,
+  description: true,
+  iconType: true,
+  status: true,
+  x: true,
+  y: true,
+  wingId: true,
+  floorId: true,
+  createdAt: true,
+  updatedAt: true,
+  tags: true,
+  fontSize: true,
+  iconColor: true,
+  tooltipColor: true,
+  category: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  subCategory: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  floor: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  wing: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  section: {
+    select: {
+      id: true,
+      path: true,
+      color: true,
+      alpha: true,
+      strokeColor: true,
+      strokeAlpha: true,
+      strokeWidth: true,
+      group: {
+        select: {
+          id: true,
+          sections: true,
+        },
+      },
+    },
+  },
+};
+
 @Injectable()
 export class FacilityService {
   constructor(private prisma: PrismaService) {}
@@ -26,58 +87,7 @@ export class FacilityService {
 
     const total = await this.prisma.facility.count({ where });
     const data = await this.prisma.facility.findMany({
-      select: {
-        id: true,
-        name: true,
-        phone: true,
-        address: true,
-        description: true,
-        iconType: true,
-        status: true,
-        x: true,
-        y: true,
-        createdAt: true,
-        updatedAt: true,
-        tags: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        subCategory: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        floor: {
-          select: {
-            id: true,
-            name: true,
-            nameEn: true,
-          },
-        },
-        wing: {
-          select: {
-            id: true,
-            name: true,
-            nameEn: true,
-          },
-        },
-        section: {
-          select: {
-            id: true,
-            path: true,
-            group: {
-              select: {
-                id: true,
-                sections: true,
-              },
-            },
-          },
-        },
-      },
+      select: select,
       where: where,
       skip: (+page - 1) * +count,
       take: +count,
@@ -91,58 +101,7 @@ export class FacilityService {
   async getFacilityAll() {
     const total = await this.prisma.facility.count();
     const data = await this.prisma.facility.findMany({
-      select: {
-        id: true,
-        name: true,
-        phone: true,
-        address: true,
-        description: true,
-        iconType: true,
-        status: true,
-        x: true,
-        y: true,
-        createdAt: true,
-        updatedAt: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        subCategory: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        floor: {
-          select: {
-            id: true,
-            name: true,
-            nameEn: true,
-          },
-        },
-        wing: {
-          select: {
-            id: true,
-            name: true,
-            nameEn: true,
-          },
-        },
-        section: {
-          select: {
-            id: true,
-            path: true,
-            facilities: true,
-            group: {
-              select: {
-                id: true,
-                sections: true,
-              },
-            },
-          },
-        },
-      },
+      select: select,
       orderBy: {
         id: 'desc',
       },
@@ -152,59 +111,7 @@ export class FacilityService {
 
   async getFacilityById(id: number) {
     const result = await this.prisma.facility.findUnique({
-      select: {
-        id: true,
-        name: true,
-        phone: true,
-        address: true,
-        description: true,
-        tags: true,
-        iconType: true,
-        status: true,
-        x: true,
-        y: true,
-        createdAt: true,
-        updatedAt: true,
-        wingId: true,
-        floorId: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        subCategory: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        floor: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        wing: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        section: {
-          select: {
-            id: true,
-            path: true,
-            facilities: true,
-            group: {
-              select: {
-                id: true,
-                sections: true,
-              },
-            },
-          },
-        },
-      },
+      select: select,
       where: { id },
     });
 

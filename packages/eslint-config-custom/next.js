@@ -67,6 +67,7 @@ module.exports = {
     "jsx-a11y/anchor-is-valid": "off",
     "react/jsx-no-leaked-render": "off",
     "@typescript-eslint/no-dynamic-delete": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off",
     "react/function-component-definition": [
       2,
       { namedComponents: ["arrow-function", "function-declaration"] },

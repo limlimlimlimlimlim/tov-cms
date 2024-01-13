@@ -5,15 +5,18 @@ import { getBaseUrl } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
 
 const MapViewer = ({
-  mapId,
+  mapId = null,
+  sections = [],
+  image = null,
   width = 0,
   facility,
   facilityIconUrl,
   onClick,
 }) => {
-  const [data, setData] = useState<any>();
   const containerId = useMemo(() => `canvans-${Math.random()}`, []);
   const [scale, setScale] = useState(1);
+  const [_sections, setSections] = useState<any>(sections);
+  const [_image, setImage] = useState(image);
   const stageRef = useRef<any>(null);
   const secLayerRef = useRef<any>(null);
   const facLayerRef = useRef<any>(null);
@@ -29,10 +32,10 @@ const MapViewer = ({
         originX: e.evt.layerX * (1 / scale),
         originY: e.evt.layerY * (1 / scale),
         scale,
-        section: e.target.getName(),
+        section: _sections.find((s) => s.id == e.target.getName()),
       });
     },
-    [onClick, scale],
+    [_sections, onClick, scale],
   );
 
   useEffect(() => {
@@ -70,13 +73,13 @@ const MapViewer = ({
 
   const render = useCallback(
     (sca) => {
-      if (!data) return;
+      if (!_sections.length) return;
       if (!secLayerRef.current || !facLayerRef.current) return;
       secLayerRef.current.destroyChildren();
       facLayerRef.current.destroyChildren();
-      createSection(data.sections, secLayerRef.current, sca);
+      createSection(_sections, secLayerRef.current, sca);
     },
-    [data, secLayerRef, facLayerRef],
+    [_sections],
   );
 
   const onLoadImage = useCallback(() => {
@@ -93,7 +96,8 @@ const MapViewer = ({
 
   const fetchData = useCallback(async (mapId) => {
     const result = await getMapDetail(mapId);
-    setData(result.data);
+    setSections(result.data.sections);
+    setImage(result.data.image);
   }, []);
 
   useEffect(() => {
@@ -108,14 +112,15 @@ const MapViewer = ({
       justify="center"
       align="center"
     >
-      {data ? (
+      {_image && (
         <img
           alt="map"
           ref={imageRef}
-          src={`${getBaseUrl()}/files/upload/${data.image}`}
+          src={`${getBaseUrl()}/files/upload/${_image}`}
           onLoad={onLoadImage}
         />
-      ) : null}
+      )}
+
       <div
         style={{
           position: 'absolute',

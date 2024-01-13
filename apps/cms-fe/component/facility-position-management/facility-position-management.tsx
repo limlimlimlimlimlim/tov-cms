@@ -3,6 +3,7 @@
 import { Button, ColorPicker, Flex, Form, Select, Slider, Switch } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import MapViewer from '../map-viewer/map-viewer';
+import { getMapDetail } from '../../api/map';
 
 const { Option } = Select;
 const fontSizeOptions = [
@@ -12,32 +13,90 @@ const fontSizeOptions = [
 
 export default function FacilityPositionManagement({
   mapId,
-  position,
+  facility,
   iconUrl,
   onChange,
 }) {
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
-  const [originPosition, setOriginPosition] = useState<any>({ ...position });
+  const [originPosition, setOriginPosition] = useState<any>({
+    x: facility.x,
+    y: facility.y,
+  });
   const [alwaysVisible, setAlwaysVisible] = useState(false);
-  const [sectionId, setSectionId] = useState();
-  const [fontSize, setFontSize] = useState(12);
-  const [currentSection, setCurrentSection] = useState();
+  const [fontSize, setFontSize] = useState();
+  const [iconColor, setIconColor] = useState();
+  const [tooltipColor, setTooltipColor] = useState();
+  const [currentSection, setCurrentSection] = useState<any>();
+  const [currentSectionColor, setCurrentSectionColor] = useState<string>();
+  const [currentSectionStrokeColor, setCurrentSectionStrokeColor] =
+    useState<string>();
+  const [currentSectionStrokeWidth, setCurrentSectionStrokeWidth] =
+    useState<number>();
+  const [sections, setSections] = useState<any>();
+  const [image, setImage] = useState();
+
   const onClickMap = useCallback(
     (data) => {
-      setSectionId(data.section);
+      console.log('currnetSection : ', data.section, sections);
       setOriginPosition({ x: data.originX, y: data.originY });
+      setCurrentSection(data.section);
       onChange({
         position: { x: data.originX, y: data.originY },
         alwaysVisible,
-        sectionId: data.section,
+        fontSize,
+        section: data.section,
       });
     },
-    [alwaysVisible, onChange],
+    [alwaysVisible, fontSize, onChange, sections],
   );
 
   useEffect(() => {
-    setEnabledPositionSetting(true);
+    setFontSize(facility.fontSize || 12);
+    setIconColor(facility.iconColor || '#ff9900');
+    setTooltipColor(facility.tooltipColor || '#000000');
+    setCurrentSection(facility.section || null);
+  }, [
+    facility.fontSize,
+    facility.iconColor,
+    facility.section,
+    facility.tooltipColor,
+  ]);
+
+  useEffect(() => {
+    if (!currentSection) {
+      return;
+    }
+    setCurrentSectionColor(
+      addAlpha(currentSection.color, currentSection.alpha),
+    );
+    setCurrentSectionStrokeColor(currentSection.strokeColor);
+    setCurrentSectionStrokeWidth(currentSection.strokeWidth);
+  }, [currentSection]);
+
+  const addAlpha = (color: string, alpha: number) => {
+    // coerce values so ti is between 0 and 1.
+    const _alpha = Math.round(
+      Math.min(Math.max(alpha * 0.01 || 1, 0), 1) * 255,
+    );
+    return color + _alpha.toString(16).toUpperCase();
+  };
+
+  const fetchData = useCallback(async (mapId) => {
+    const result = await getMapDetail(mapId);
+    setSections(result.data.sections);
+    setImage(result.data.image);
   }, []);
+
+  useEffect(() => {
+    setEnabledPositionSetting(true);
+    if (mapId) {
+      void fetchData(mapId);
+    }
+  }, [fetchData, mapId]);
+
+  const hasResource = useCallback(() => {
+    return image && sections;
+  }, [image, sections]);
 
   return (
     <Flex vertical gap="middle">
@@ -74,49 +133,57 @@ export default function FacilityPositionManagement({
             </Select>
           </Form.Item>
           <Form.Item label="영역 색상">
-            <ColorPicker format="hex" />
+            <ColorPicker format="hex" value={currentSectionColor} />
           </Form.Item>
           <Form.Item label="테두리 색상">
-            <ColorPicker format="hex" />
+            <ColorPicker format="hex" value={currentSectionStrokeColor} />
           </Form.Item>
           <Form.Item label="테두리 두께">
-            <Slider min={1} max={10} style={{ width: 80 }} />
+            <Slider
+              min={1}
+              max={10}
+              style={{ width: 80 }}
+              value={currentSectionStrokeWidth}
+            />
           </Form.Item>
           <Form.Item label="아이콘 색상">
-            <ColorPicker format="hex" />
+            <ColorPicker format="hex" value={iconColor} />
           </Form.Item>
           <Form.Item label="말풍선 색상">
-            <ColorPicker format="hex" />
+            <ColorPicker format="hex" value={tooltipColor} />
           </Form.Item>
         </Flex>
 
         <Flex gap="middle">
           <Button
-            onClick={() => {
-              setOriginPosition(null);
-              onChange({
-                position: null,
-                alwaysVisible,
-                sectionId,
-              });
-            }}
+          // onClick={() => {
+          //   setOriginPosition(null);
+          //   onChange({
+          //     position: null,
+          //     alwaysVisible,
+          //     sectionId,
+          //   });
+          // }}
           >
             초기화
           </Button>
         </Flex>
       </Flex>
       <Flex justify="center" style={{ overflow: 'auto' }}>
-        <MapViewer
-          mapId={mapId}
-          width={900}
-          facility={originPosition}
-          facilityIconUrl={iconUrl}
-          onClick={(data) => {
-            if (enabledPositionSetting) {
-              onClickMap(data);
-            }
-          }}
-        />
+        {hasResource() && (
+          <MapViewer
+            sections={sections}
+            image={image}
+            width={900}
+            facility={originPosition}
+            facilityIconUrl={iconUrl}
+            onClick={(data) => {
+              if (enabledPositionSetting) {
+                onClickMap(data);
+              }
+            }}
+          />
+        )}
       </Flex>
     </Flex>
   );

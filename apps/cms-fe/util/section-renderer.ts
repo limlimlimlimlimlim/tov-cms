@@ -89,7 +89,7 @@ const createPolygon = (
     stroke: options?.strokeColor !== undefined ? options.strokeColor : '#555',
     strokeWidth: options?.strokeWidth !== undefined ? options.strokeWidth : 2,
     closed: true,
-    opacity: options?.alpha !== undefined ? options.alpha : 0.3,
+    opacity: options?.alpha !== undefined ? options.alpha * 0.01 : 0.3,
     name: s.id,
   });
 };

@@ -48,7 +48,7 @@ const FacilityForm = ({ data }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [iconUrl, setIconUrl] = useState('/pin01.png');
-
+  const [facility, setFacility] = useState();
   useEffect(() => {
     if (data) {
       setIsEdit(true);
@@ -66,6 +66,7 @@ const FacilityForm = ({ data }) => {
       setPosition({ x: data.x, y: data.y });
       setStatus(data.status);
       setSectionId(data.section?.id);
+      setFacility(data);
     }
   }, [data]);
 
@@ -328,7 +329,7 @@ const FacilityForm = ({ data }) => {
       <FacilityPositionManagementModal
         mapId={map?.id}
         open={isOpenModal}
-        position={position}
+        facility={facility}
         iconUrl={iconUrl}
         onOk={(data) => {
           setPosition(data.position);

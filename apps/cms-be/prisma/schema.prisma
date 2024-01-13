@@ -178,9 +178,9 @@ model Section {
   path          String
   color         String?       @default("#FFE699")
   strokeColor   String?       @default("#FFE699")
-  strokeWidth   Int?           @default(1)
-  alpha         Decimal?       @default(0.3)
-  strokeAlpha   Decimal?       @default(1)
+  strokeWidth   Int?          @default(1)
+  alpha         Int?          @default(30)
+  strokeAlpha   Int?          @default(1)
   disabled      Boolean       @default(false)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

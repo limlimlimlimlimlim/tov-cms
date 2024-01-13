@@ -5,7 +5,7 @@ import FacilityPositionManagement from './facility-position-management';
 interface ComponentProps {
   mapId: string;
   open: boolean;
-  position: any;
+  facility: any;
   iconUrl: string;
   onCancel: () => void;
   onOk: (data) => void;
@@ -14,7 +14,7 @@ interface ComponentProps {
 export default function FacilityPositionManagementModal({
   mapId,
   open,
-  position,
+  facility,
   iconUrl,
   onCancel,
   onOk,
@@ -39,7 +39,7 @@ export default function FacilityPositionManagementModal({
       <Divider />
       <FacilityPositionManagement
         mapId={mapId}
-        position={position}
+        facility={facility}
         iconUrl={iconUrl}
         onChange={(data) => {
           facilityData.current = data;

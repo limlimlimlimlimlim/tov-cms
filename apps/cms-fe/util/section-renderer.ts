@@ -42,7 +42,7 @@ const createSection = (sections, layer, scale) => {
 
   layer.destroyChildren();
   normals.sections.forEach((s: any) => {
-    const poly = createPolygon(s, normals.color, scale);
+    const poly = createPolygon(s, s.color, scale, { ...s });
     polygons.push(poly);
     layer.add(poly);
   });
@@ -55,7 +55,7 @@ const createSection = (sections, layer, scale) => {
 
   Object.values(groups).forEach((g: any) => {
     g.sections.forEach((s) => {
-      const poly = createPolygon(s, g.color, scale);
+      const poly = createPolygon(s, s.color, scale, { ...s });
       polygons.push(poly);
       layer.add(poly);
     });
@@ -77,14 +77,19 @@ const createSection = (sections, layer, scale) => {
   return polygons;
 };
 
-const createPolygon = (s, color, scale) => {
+const createPolygon = (
+  s,
+  color,
+  scale,
+  options?: { strokeColor?; strokeWidth?; alpha? },
+) => {
   return new window.Konva.Line({
     points: s.path.split(',').map((p) => parseFloat(p) * scale),
     fill: color,
-    stroke: '#555',
-    strokeWidth: 2,
+    stroke: options?.strokeColor !== undefined ? options.strokeColor : '#555',
+    strokeWidth: options?.strokeWidth !== undefined ? options.strokeWidth : 2,
     closed: true,
-    opacity: 0.5,
+    opacity: options?.alpha !== undefined ? options.alpha : 0.3,
     name: s.id,
   });
 };

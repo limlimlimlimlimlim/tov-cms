@@ -21,6 +21,7 @@ export default function FacilityPositionManagement({
   const [alwaysVisible, setAlwaysVisible] = useState(false);
   const [sectionId, setSectionId] = useState();
   const [fontSize, setFontSize] = useState(12);
+  const [currentSection, setCurrentSection] = useState();
   const onClickMap = useCallback(
     (data) => {
       setSectionId(data.section);

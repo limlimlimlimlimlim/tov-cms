@@ -43,15 +43,11 @@ export default function FacilityPositionManagement({
       if (!sections) return;
       const isGroup = targetSection.group;
       const _sections = [...sections];
-      console.log(options);
       if (isGroup) {
-        console.log('-----group----');
-        console.log(targetSection.group.sections);
         targetSection.group.sections.forEach((target) => {
           const index = sections.findIndex((s) => s.id === target.id);
           _sections[index] = { ..._sections[index], ...options };
         });
-        console.log('-----------');
       } else {
         const index = sections.findIndex((s) => s.id === targetSection.id);
         _sections[index] = { ..._sections[index], ...options };
@@ -66,7 +62,6 @@ export default function FacilityPositionManagement({
   );
 
   const reset = useCallback(() => {
-    console.log('::::::reset:::::');
     updateSection(
       prevSection,
       {
@@ -82,7 +77,6 @@ export default function FacilityPositionManagement({
 
   const onClickMap = useCallback(
     (data) => {
-      console.log(prevSection, data.section);
       if (
         prevSection &&
         prevSection.id !== data.section.id &&

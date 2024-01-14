@@ -27,7 +27,7 @@ const defaultStyle = {
   strokeAlpha: 30,
   strokeWidth: 5,
   fontSize: 18,
-  iconColor: '#a8c410',
+  iconColor: '#D91700',
   tooltipColor: '#000000',
 };
 

@@ -141,7 +141,7 @@ model Facility {
   x               Int?
   y               Int?
   tags            String?
-  iconColor       String? @default("#a8c410")
+  iconColor       String? @default("#D91700")
   tooltipColor    String? @default("#000000")
   fontSize        Int? @default(18)
   categoryId      Int?

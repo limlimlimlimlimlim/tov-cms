@@ -81,7 +81,6 @@ const useDeleteMode = () => {
           if (!stage.current) return;
           stage.current.off('click');
           stage.current.on('click', (e: any) => {
-            console.log('@@@@');
             if (points.current.length === 0) {
               addPoint(e.evt.layerX - 50, e.evt.layerY - 50);
               addPoint(e.evt.layerX + 50, e.evt.layerY - 50);
@@ -91,7 +90,7 @@ const useDeleteMode = () => {
               addPoint(e.evt.layerX, e.evt.layerY);
             }
           });
-        }, 10);
+        }, 500);
       });
     });
   }, [addPoint, removePoint, points]);

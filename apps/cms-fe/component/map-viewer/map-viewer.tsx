@@ -80,9 +80,11 @@ export const MapViewer = ({
   }, []);
 
   useEffect(() => {
-    setSections(sections);
-    render(sections, scale);
-  }, [render, scale, sections]);
+    if (!mapId) {
+      setSections(sections);
+      render(sections, scale);
+    }
+  }, [mapId, render, scale, sections]);
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;

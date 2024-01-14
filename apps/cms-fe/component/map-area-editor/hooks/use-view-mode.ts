@@ -11,7 +11,7 @@ const useViewMode = () => {
   }, []);
 
   const render = useCallback((sections) => {
-    createSection(sections, layer.current, scale.current)!;
+    createSection(sections, layer.current, scale.current);
   }, []);
 
   return {

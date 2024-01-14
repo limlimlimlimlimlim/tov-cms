@@ -44,6 +44,11 @@ export class SectionService {
             sections: true,
           },
         },
+        color: true,
+        strokeColor: true,
+        alpha: true,
+        strokeAlpha: true,
+        strokeWidth: true,
       },
       where: { mapId },
     });

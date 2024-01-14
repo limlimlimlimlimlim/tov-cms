@@ -118,8 +118,6 @@ const FacilityForm = ({ data }) => {
         delete temp.wing;
         delete temp.map;
 
-        console.log(section, temp);
-
         await updateFacility(facility.id, {
           ...temp,
         });
@@ -154,7 +152,6 @@ const FacilityForm = ({ data }) => {
         delete temp.section;
         delete temp.wing;
         delete temp.map;
-        console.log(temp);
         await createFacility({
           ...temp,
         });
@@ -366,15 +363,6 @@ const FacilityForm = ({ data }) => {
           setMapSections([...originMapSections]);
         }}
         onOk={(data) => {
-          console.log(data, {
-            ...facility,
-            ...data.position,
-            fontSize: data.fontSize,
-            iconColor: data.iconColor,
-            tooltipColor: data.tooltipColor,
-            section: data.section,
-            sectionId: data.section?.id,
-          });
           setFacility({
             ...facility,
             ...data.position,

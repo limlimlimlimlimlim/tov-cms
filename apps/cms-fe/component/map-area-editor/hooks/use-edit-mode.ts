@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { updateSectionById } from '../../../api/section';
 import { createSection } from '../../../util/section-renderer';
 
-const useDeleteMode = () => {
+const useEditMode = () => {
   const sections = useRef();
   const mapId = useRef<any>();
   const stage = useRef<any>();
@@ -11,8 +11,9 @@ const useDeleteMode = () => {
   const scale = useRef<number>(1);
   const polygons = useRef<any[]>([]);
   const targetPolygons = useRef<any>({});
-  const editPolygon = useRef<any>();
+  const selectedPolygon = useRef<any>();
   const points = useRef<any[]>([]);
+  const selectedPolygonAttrs = useRef<any>({});
 
   const init = useCallback((mid, stg, lay, sca) => {
     mapId.current = mid;
@@ -22,7 +23,7 @@ const useDeleteMode = () => {
   }, []);
 
   const renderPolygon = useCallback(() => {
-    editPolygon.current.setPoints([
+    selectedPolygon.current.setPoints([
       ...points.current.map((p: any) => [p.getX(), p.getY()]).flat(),
     ]);
   }, []);
@@ -62,24 +63,46 @@ const useDeleteMode = () => {
     [removePoint, renderPolygon],
   );
 
+  const destroySelectedPolygon = useCallback(() => {
+    if (selectedPolygon.current) {
+      selectedPolygon.current.fill(selectedPolygonAttrs.current.fill);
+      selectedPolygon.current.stroke(selectedPolygonAttrs.current.stroke);
+      selectedPolygon.current.strokeWidth(
+        selectedPolygonAttrs.current.strokeWidth,
+      );
+      selectedPolygon.current.opacity(selectedPolygonAttrs.current.opacity);
+      selectedPolygon.current = null;
+    }
+  }, []);
+
   const initEvent = useCallback(() => {
     polygons.current.forEach((p) => {
       p.on('click', () => {
         const id = p.getName();
-        editPolygon.current = null;
+
+        destroySelectedPolygon();
+
+        if (selectedPolygon.current !== p) {
+          stage.current.off('click');
+        }
+
         for (let i = points.current.length - 1; i >= 0; i -= 1) {
           removePoint(points.current[i]);
         }
         const path = p.getPoints();
         targetPolygons.current[id] = p;
-        editPolygon.current = p;
+        selectedPolygon.current = p;
+        selectedPolygonAttrs.current = { ...p.attrs };
+        selectedPolygon.current.fill('#aaff77');
+        selectedPolygon.current.stroke('#555');
+        selectedPolygon.current.strokeWidth(2);
+        selectedPolygon.current.opacity(0.5);
         for (let i = 0, count = path.length; i < count; i += 2) {
           addPoint(path[Number(i)], path[Number(i) + 1]);
         }
 
         setTimeout(() => {
           if (!stage.current) return;
-          stage.current.off('click');
           stage.current.on('click', (e: any) => {
             if (points.current.length === 0) {
               addPoint(e.evt.layerX - 50, e.evt.layerY - 50);
@@ -93,7 +116,7 @@ const useDeleteMode = () => {
         }, 500);
       });
     });
-  }, [addPoint, removePoint, points]);
+  }, [destroySelectedPolygon, removePoint, addPoint]);
 
   const render = useCallback(
     (sections) => {
@@ -114,9 +137,10 @@ const useDeleteMode = () => {
 
   const clear = useCallback(() => {
     layer.current.destroyChildren();
+    destroySelectedPolygon();
     targetPolygons.current = {};
     polygons.current = [];
-  }, []);
+  }, [destroySelectedPolygon]);
 
   const apply = useCallback(async () => {
     await Promise.all(
@@ -143,4 +167,4 @@ const useDeleteMode = () => {
   };
 };
 
-export default useDeleteMode;
+export default useEditMode;

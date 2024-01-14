@@ -19,13 +19,6 @@ export class FacilityController {
 
   @Post()
   async createFacility(@Body() data: Prisma.FacilityCreateInput) {
-    const sameFacility = await this.facilityService.getFacilityByName(
-      data.name,
-    );
-    if (sameFacility) {
-      throw new ConflictException('Facility already exists.');
-    }
-
     return await this.facilityService.createFacility(data);
   }
 

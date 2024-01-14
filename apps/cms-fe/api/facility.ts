@@ -21,6 +21,7 @@ export const getFacilityDetail = async (id) => {
 };
 
 export const createFacility = async (data) => {
+  console.log(':::::::::::::', data);
   return axiosClient.post('/facility', data);
 };
 

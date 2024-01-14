@@ -54,12 +54,13 @@ const FacilityForm = ({ data }) => {
     x: 0,
     y: 0,
     status: 'enabled',
-    sectionId: '',
+    sectionId: null,
   });
 
   const getMap = useCallback(
     async (wing, floor) => {
       if (!facility) return;
+      if (!wingId || !floorId) return;
       const result = await getMapByWingAndFloor({ wing, floor });
       const map = result.data.data[0];
       setMap(map);
@@ -141,9 +142,16 @@ const FacilityForm = ({ data }) => {
         void message.success('시설이 수정됐습니다.');
       } else {
         const { section } = facility;
+        const temp = { ...facility };
+        delete temp.category;
+        delete temp.subCategory;
+        delete temp.floor;
+        delete temp.section;
+        delete temp.wing;
+        delete temp.map;
+        console.log(temp);
         await createFacility({
-          ...facility,
-          sectionId: section.id,
+          ...temp,
         });
 
         const paintOptions = {
@@ -218,7 +226,7 @@ const FacilityForm = ({ data }) => {
               onChange={(wingId) => {
                 setFacility({ ...facility, wingId, floorId: '' });
                 setWingId(wingId);
-                setFloorId('');
+                setFloorId(null);
               }}
             />
             <Flex gap="small" align="middle">

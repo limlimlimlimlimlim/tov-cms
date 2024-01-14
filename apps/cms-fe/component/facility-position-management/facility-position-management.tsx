@@ -134,17 +134,22 @@ export default function FacilityPositionManagement({
   );
 
   useEffect(() => {
+    console.log(facility.section);
     setFontSize(facility.fontSize || 12);
     setIconColor(facility.iconColor || '#ff9900');
     setTooltipColor(facility.tooltipColor || '#000000');
     setCurrentSection(facility.section || null);
-    setCurrentOptions({
-      color: facility.section.color,
-      alpha: facility.section.alpha,
-      strokeWidth: facility.section.strokeWidth,
-      strokeColor: facility.section.strokeColor,
-      strokeAlpha: facility.section.strokeAlpha,
-    });
+    setCurrentOptions(
+      facility.section
+        ? {
+            color: facility.section.color,
+            alpha: facility.section.alpha,
+            strokeWidth: facility.section.strokeWidth,
+            strokeColor: facility.section.strokeColor,
+            strokeAlpha: facility.section.strokeAlpha,
+          }
+        : null,
+    );
   }, [facility]);
 
   useEffect(() => {

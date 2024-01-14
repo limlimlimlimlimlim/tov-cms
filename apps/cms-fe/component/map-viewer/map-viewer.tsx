@@ -3,6 +3,7 @@ import { Flex } from 'antd';
 import { getMapDetail } from '../../api/map';
 import { getBaseUrl } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
+import { kMaxLength } from 'buffer';
 
 export const MapViewer = ({
   mapId = null,
@@ -15,7 +16,7 @@ export const MapViewer = ({
 }) => {
   const containerId = useMemo(() => `canvans-${Math.random()}`, []);
   const [scale, setScale] = useState(1);
-  const [_sections, setSections] = useState<any>(sections);
+  const [_sections, setSections] = useState<any[]>();
   const [_image, setImage] = useState(image);
   const stageRef = useRef<any>(null);
   const secLayerRef = useRef<any>(null);
@@ -32,10 +33,10 @@ export const MapViewer = ({
         originX: e.evt.layerX * (1 / scale),
         originY: e.evt.layerY * (1 / scale),
         scale,
-        section: _sections.find((s) => s.id == e.target.getName()),
+        section: sections.find((s: any) => s.id == e.target.getName()),
       });
     },
-    [_sections, onClick, scale],
+    [onClick, scale, sections],
   );
 
   useEffect(() => {
@@ -80,10 +81,9 @@ export const MapViewer = ({
   }, []);
 
   useEffect(() => {
-    if (!mapId) {
-      render(sections, scale);
-    }
-  }, [mapId, render, scale, sections]);
+    setSections(sections);
+    render(sections, scale);
+  }, [render, scale, sections]);
 
   const onLoadImage = useCallback(() => {
     if (!imageRef.current) return;

@@ -16,6 +16,10 @@ export const updateSectionById = async (sectionId, mapId, path) => {
   return axiosClient.patch(`/section/${sectionId}`, { mapId, path });
 };
 
+export const updateSectionPaintOptionById = async (sectionId, options) => {
+  return axiosClient.patch(`/section/paint/${sectionId}`, options);
+};
+
 export const disableSectionById = async (sectionId) => {
   return axiosClient.patch(`/section/${sectionId}`, { disabled: true });
 };

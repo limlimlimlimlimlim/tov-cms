@@ -135,7 +135,7 @@ export class FacilityService {
     return this.prisma.facility.findFirst({ where: { name } });
   }
 
-  async updateFacility(id: number, data: Prisma.FacilityUpdateInput) {
+  async updateFacility(id: number, data: Prisma.FacilityUncheckedUpdateInput) {
     const facility = await this.prisma.facility.findUnique({
       where: { id },
     });

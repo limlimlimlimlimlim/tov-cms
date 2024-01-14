@@ -29,7 +29,7 @@ export default function SubCategorySelect({
   useEffect(() => {
     if (!categoryId) return;
     void fetchData();
-  }, [categoryId, fetchData, onChange]);
+  }, [categoryId, fetchData]);
 
   const createOptions = useCallback(() => {
     return subs?.map((fac: any) => (

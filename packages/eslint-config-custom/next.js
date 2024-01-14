@@ -56,7 +56,7 @@ module.exports = {
     "no-console": "off",
     "eslint-comments/require-description": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
-    eqeqeq: "off",
+    "prefer-promise-reject-errors": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "react/jsx-sort-props": "off",

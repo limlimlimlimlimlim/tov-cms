@@ -37,6 +37,18 @@ export class SectionController {
     return this.sectionService.updateSection(+id, data);
   }
 
+  @Patch('paint/:id')
+  async updateSectionPaint(
+    @Param('id') id: number,
+    @Body() data: Prisma.SectionUpdateInput,
+  ) {
+    const sameArea = await this.sectionService.getSectionById(+id);
+    if (!sameArea) {
+      throw new NotFoundException('Map section not found.');
+    }
+    return this.sectionService.updateSection(+id, data);
+  }
+
   @Delete(':id')
   async deleteSection(@Param('id') id: number) {
     const sameArea = await this.sectionService.getSectionById(+id);

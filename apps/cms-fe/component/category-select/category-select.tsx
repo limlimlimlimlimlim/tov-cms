@@ -21,7 +21,7 @@ export default function CategorySelect({
 
   useEffect(() => {
     void fetchData();
-  }, [onChange]);
+  }, []);
 
   const fetchData = async () => {
     const result = await getCategory();

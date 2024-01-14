@@ -12,6 +12,7 @@ import MapViewer from '../../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../../component/facility-position-management/facility-position-management-modal';
 import CategorySelect from '../../../component/category-select/category-select';
 import SubCategorySelect from '../../../component/sub-category-select/sub-category-select';
+import { updateSectionPaintOptionById } from '../../../api/section';
 
 const layout = {
   labelCol: { span: 4 },
@@ -30,48 +31,71 @@ const validateMessages = {
 
 const FacilityForm = ({ data }) => {
   const router = useRouter();
-  const [floor, setFloor] = useState('');
-  const [wing, setWing] = useState('');
-  const [category, setCategory] = useState();
-  const [subCategory, setSubCategory] = useState();
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('');
-  const [iconType, setIconType] = useState('icon1');
-  const [alwaysVisible, setAlwaysVisible] = useState(true);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [sectionId, setSectionId] = useState();
-  const [status, setStatus] = useState('enabled');
   const [map, setMap] = useState<any>();
+  const [mapSections, setMapSections] = useState<any>([]);
+  const [originMapSections, setOriginMapSections] = useState<any>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [iconUrl, setIconUrl] = useState('/pin01.png');
-  const [facility, setFacility] = useState();
+  const [wingId, setWingId] = useState();
+  const [floorId, setFloorId] = useState();
+  const [facility, setFacility] = useState<any>({
+    wingId: '',
+    floorId: '',
+    categoryId: '',
+    subCategoryId: '',
+    name: '',
+    address: '',
+    phone: '',
+    description: '',
+    tags: '',
+    iconType: 'icon1',
+    alwaysVisible: true,
+    x: 0,
+    y: 0,
+    status: 'enabled',
+    sectionId: '',
+  });
+
+  const getMap = useCallback(
+    async (wing, floor) => {
+      if (!facility) return;
+      const result = await getMapByWingAndFloor({ wing, floor });
+      const map = result.data.data[0];
+      setMap(map);
+      const sections = map.sections;
+      setMapSections(sections);
+      setOriginMapSections(JSON.parse(JSON.stringify(sections)));
+      // const f = sections
+      //   .map((s) => s.facilities)
+      //   .flat()
+      //   .find((f) => f.id === facility.id);
+      // setFacility({ ...facility, x: f.x, y: f.y });
+    },
+    [facility],
+  );
+
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setWing(data.wingId);
-      setFloor(data.floorId);
-      setCategory(data.category.id);
-      setSubCategory(data.subCategory.id);
-      setName(data.name);
-      setAddress(data.address);
-      setPhone(data.phone);
-      setDescription(data.description);
-      setTags(data.tags);
-      setIconType(data.iconType);
-      setAlwaysVisible(data.alwaysVisible);
-      setPosition({ x: data.x, y: data.y });
-      setStatus(data.status);
-      setSectionId(data.section?.id);
-      setFacility(data);
+
+      setFacility({
+        ...data,
+        categoryId: data.category.id,
+        subCategoryId: data.subCategory.id,
+        sectionId: data.section.id,
+      });
+      setWingId(data.wingId);
+      setFloorId(data.floorId);
     }
   }, [data]);
 
   useEffect(() => {
-    switch (iconType) {
+    void getMap(wingId, floorId);
+  }, [wingId, floorId]);
+
+  useEffect(() => {
+    switch (facility.iconType) {
       case 'icon1':
         setIconUrl('/pin01.png');
         break;
@@ -79,47 +103,67 @@ const FacilityForm = ({ data }) => {
         setIconUrl('/pin02.png');
         break;
     }
-  }, [iconType]);
+  }, [facility.iconType]);
 
   const onFinish = useCallback(async () => {
     try {
       if (isEdit) {
-        await updateFacility(data.id, {
-          name,
-          phone,
-          address,
-          description,
-          tags,
-          alwaysVisible,
-          iconType,
-          status,
-          floorId: floor,
-          wingId: wing,
-          categoryId: category,
-          subCategoryId: subCategory,
-          x: position.x,
-          y: position.y,
-          sectionId,
+        const { section } = facility;
+        const temp = { ...facility };
+        delete temp.category;
+        delete temp.subCategory;
+        delete temp.floor;
+        delete temp.section;
+        delete temp.wing;
+        delete temp.map;
+        await updateFacility(facility.id, {
+          ...temp,
         });
+
+        const paintOptions = {
+          color: section.color,
+          alpha: section.alpha,
+          strokeWidth: section.strokeWidth,
+          strokeColor: section.strokeColor,
+          strokeAlpha: section.strokeAlpha,
+        };
+
+        let promises;
+        if (section.group) {
+          promises = section.group.sections.map(async (s) =>
+            updateSectionPaintOptionById(s.id, paintOptions),
+          );
+        } else {
+          promises = [updateSectionPaintOptionById(section.id, paintOptions)];
+        }
+        await Promise.all(promises);
+
         void message.success('시설이 수정됐습니다.');
       } else {
+        const { section } = facility;
         await createFacility({
-          name,
-          phone,
-          address,
-          description,
-          tags,
-          alwaysVisible,
-          iconType,
-          status,
-          floorId: floor,
-          wingId: wing,
-          categoryId: category,
-          subCategoryId: subCategory,
-          x: position.x,
-          y: position.y,
-          sectionId,
+          ...facility,
+          sectionId: section.id,
         });
+
+        const paintOptions = {
+          color: section.color,
+          alpha: section.alpha,
+          strokeWidth: section.strokeWidth,
+          strokeColor: section.strokeColor,
+          strokeAlpha: section.strokeAlpha,
+        };
+
+        let promises;
+        if (section.group) {
+          promises = section.group.sections.map(async (s) =>
+            updateSectionPaintOptionById(s.id, paintOptions),
+          );
+        } else {
+          promises = [updateSectionPaintOptionById(section.id, paintOptions)];
+        }
+        await Promise.all(promises);
+
         void message.success('시설이 생성됐습니다.');
       }
 
@@ -127,45 +171,8 @@ const FacilityForm = ({ data }) => {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [
-    isEdit,
-    router,
-    data,
-    name,
-    phone,
-    address,
-    description,
-    tags,
-    alwaysVisible,
-    iconType,
-    status,
-    floor,
-    wing,
-    category,
-    subCategory,
-    position.x,
-    position.y,
-    sectionId,
-  ]);
+  }, [isEdit, router, facility]);
 
-  const onChangeFloor = useCallback((f: any) => {
-    setFloor(f);
-  }, []);
-
-  const onChangeWing = useCallback((w) => {
-    setWing(w);
-    setFloor('');
-  }, []);
-
-  const getMap = useCallback(async (wing, floor) => {
-    const result = await getMapByWingAndFloor({ wing, floor });
-    setMap(result.data.data[0]);
-  }, []);
-
-  useEffect(() => {
-    if (!wing || !floor) return;
-    void getMap(wing, floor);
-  }, [wing, floor, getMap]);
   return (
     <Flex vertical gap="middle">
       <Form
@@ -177,18 +184,18 @@ const FacilityForm = ({ data }) => {
         <Form.Item label="시설구분">
           <Flex gap="middle">
             <CategorySelect
-              id={category}
+              id={facility.categoryId}
               style={{ width: 150 }}
-              onChange={(e) => {
-                setCategory(e);
+              onChange={(value: any) => {
+                setFacility({ ...facility, categoryId: value });
               }}
             />
             <SubCategorySelect
-              id={subCategory}
-              categoryId={category}
+              id={facility.subCategoryId}
+              categoryId={facility.categoryId}
               style={{ width: 150 }}
               onChange={(value: any) => {
-                setSubCategory(value);
+                setFacility({ ...facility, subCategoryId: value });
               }}
             />
           </Flex>
@@ -196,28 +203,36 @@ const FacilityForm = ({ data }) => {
 
         <Form.Item label="시설명">
           <Input
-            value={name}
+            value={facility.name}
             style={{ width: 400 }}
             onChange={(e) => {
-              setName(e.target.value);
+              setFacility({ ...facility, name: e.target.value });
             }}
           />
         </Form.Item>
         <Form.Item label="건물선택">
           <Flex gap="middle">
             <WingSelect
-              wingId={wing}
+              wingId={facility.wingId}
               style={{ width: 150 }}
-              onChange={onChangeWing}
+              onChange={(wingId) => {
+                setFacility({ ...facility, wingId, floorId: '' });
+                setWingId(wingId);
+                setFloorId('');
+              }}
             />
             <Flex gap="small" align="middle">
               <span style={{ lineHeight: 2.2 }}>층 선택 :</span>
 
               <FloorSelect
-                wingId={wing}
-                floorId={floor}
+                wingId={facility.wingId}
+                floorId={facility.floorId}
                 style={{ width: 150 }}
-                onChange={onChangeFloor}
+                onChange={(f) => {
+                  setFacility({ ...facility, floorId: f });
+                  setWingId(wingId);
+                  setFloorId(f);
+                }}
               />
             </Flex>
           </Flex>
@@ -225,46 +240,46 @@ const FacilityForm = ({ data }) => {
 
         <Form.Item label="연락처">
           <Input
-            value={phone}
+            value={facility.phone}
             style={{ width: 400 }}
             onChange={(e) => {
-              setPhone(e.target.value);
+              setFacility({ ...facility, phone: e.target.value });
             }}
           />
         </Form.Item>
         <Form.Item label="주소">
           <Input
-            value={address}
+            value={facility.address}
             style={{ width: 400 }}
             onChange={(e) => {
-              setAddress(e.target.value);
+              setFacility({ ...facility, address: e.target.value });
             }}
           />
         </Form.Item>
         <Form.Item label="설명">
           <TextArea
-            value={description}
+            value={facility.description}
             style={{ width: 400, height: 200 }}
             onChange={(e) => {
-              setDescription(e.target.value);
+              setFacility({ ...facility, description: e.target.value });
             }}
           />
         </Form.Item>
         <Form.Item label="태그">
           <Input
-            value={tags}
+            value={facility.tags}
             style={{ width: 400 }}
             onChange={(e) => {
-              setTags(e.target.value);
+              setFacility({ ...facility, tags: e.target.value });
             }}
           />
         </Form.Item>
         <Form.Item label="시설 아이콘">
           <Select
             style={{ width: 150 }}
-            value={iconType}
+            value={facility.iconType}
             onChange={(value) => {
-              setIconType(value);
+              setFacility({ ...facility, iconType: value });
             }}
           >
             <Option key="icon1" value="icon1">
@@ -305,11 +320,12 @@ const FacilityForm = ({ data }) => {
                 위치설정
               </Button>
               <MapViewer
-                mapId={map?.id}
+                image={map.image}
+                sections={mapSections}
                 width={400}
                 onClick={null}
                 facilityIconUrl={iconUrl}
-                facility={position}
+                facility={facility}
               />
             </Flex>
           </Form.Item>
@@ -326,15 +342,50 @@ const FacilityForm = ({ data }) => {
           </Flex>
         </Form.Item>
       </Form>
+
       <FacilityPositionManagementModal
         mapId={map?.id}
         open={isOpenModal}
         facility={facility}
         iconUrl={iconUrl}
+        mapSections={mapSections}
+        onChangeSection={() => {
+          setMapSections([...originMapSections]);
+        }}
         onOk={(data) => {
-          setPosition(data.position);
-          setAlwaysVisible(data.alwaysVisible);
-          setSectionId(data.sectionId);
+          setFacility({
+            ...facility,
+            ...data.position,
+            fontSize: data.fontSize,
+            iconColor: data.iconColor,
+            tooltipColor: data.tooltipColor,
+            section: data.section,
+            sectionId: data.section.id,
+          });
+
+          const paintOptions = {
+            color: data.section.color,
+            alpha: data.section.alpha,
+            strokeWidth: data.section.strokeWidth,
+            strokeColor: data.section.strokeColor,
+            strokeAlpha: data.section.strokeAlpha,
+          };
+
+          const _mapSections = [...mapSections];
+          if (data.section.group) {
+            data.section.group.sections.forEach((s) => {
+              const index = _mapSections.findIndex((ss) => s.id === ss.id);
+              _mapSections[index] = { ..._mapSections[index], ...paintOptions };
+            });
+          } else {
+            const index = _mapSections.findIndex(
+              (s) => s.id === data.section.id,
+            );
+            _mapSections[index] = { ...data.section };
+          }
+
+          setMapSections(_mapSections);
+          setIsOpenModal(false);
         }}
         onCancel={() => {
           setIsOpenModal(false);

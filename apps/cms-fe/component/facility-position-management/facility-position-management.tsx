@@ -1,6 +1,15 @@
 'use client';
 
-import { Button, ColorPicker, Flex, Form, Select, Slider, Switch } from 'antd';
+import {
+  Button,
+  ColorPicker,
+  Flex,
+  Form,
+  Modal,
+  Select,
+  Slider,
+  Switch,
+} from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import MapViewer from '../map-viewer/map-viewer';
 import { getMapDetail } from '../../api/map';
@@ -14,8 +23,10 @@ const fontSizeOptions = [
 export default function FacilityPositionManagement({
   mapId,
   facility,
+  mapSections,
   iconUrl,
   onChange,
+  onChangeSection,
 }) {
   const [enabledPositionSetting, setEnabledPositionSetting] = useState<any>();
   const [originPosition, setOriginPosition] = useState<any>({
@@ -57,32 +68,40 @@ export default function FacilityPositionManagement({
         setCurrentSection(targetSection);
       }
       setCurrentOptions(options);
+      onChange({
+        position: originPosition,
+        alwaysVisible,
+        fontSize: options.fontSize,
+        iconColor: options.iconColor,
+        tooltipColor: options.tooltipColor,
+        section: { ...targetSection, ...options },
+      });
     },
-    [sections],
+
+    [alwaysVisible, onChange, originPosition, sections],
   );
 
-  const reset = useCallback(() => {
-    updateSection(
-      prevSection,
-      {
-        color: prevSection.color,
-        alpha: prevSection.alpha,
-        strokeWidth: prevSection.strokeWidth,
-        strokeColor: prevSection.strokeColor,
-        strokeAlpha: prevSection.strokeAlpha,
-      },
-      false,
-    );
-  }, [prevSection, updateSection]);
-
   const onClickMap = useCallback(
-    (data) => {
-      if (
-        prevSection &&
-        prevSection.id !== data.section.id &&
-        prevSection.groupId !== data.section.groupId
-      ) {
-        reset();
+    async (data) => {
+      if (prevSection && prevSection.id !== data.section.id) {
+        const result = await new Promise((res, rej) => {
+          Modal.confirm({
+            title: '구역 변경 안내',
+            okText: '확인',
+            cancelText: '취소',
+            content:
+              '구역을 변경하면 수정사항이 초기화됩니다. 계속 진행하시겠습니까?',
+            onOk() {
+              onChangeSection();
+              res(true);
+            },
+            onCancel() {
+              rej(false);
+            },
+          });
+        });
+        if (result) onChangeSection();
+        else return;
       }
       setOriginPosition({ x: data.originX, y: data.originY });
       setCurrentSection(data.section);
@@ -98,10 +117,20 @@ export default function FacilityPositionManagement({
         position: { x: data.originX, y: data.originY },
         alwaysVisible,
         fontSize,
+        iconColor,
+        tooltipColor,
         section: data.section,
       });
     },
-    [alwaysVisible, fontSize, onChange, prevSection, reset],
+    [
+      alwaysVisible,
+      fontSize,
+      iconColor,
+      onChange,
+      onChangeSection,
+      prevSection,
+      tooltipColor,
+    ],
   );
 
   useEffect(() => {
@@ -116,13 +145,7 @@ export default function FacilityPositionManagement({
       strokeColor: facility.section.strokeColor,
       strokeAlpha: facility.section.strokeAlpha,
     });
-    setPrevSection(JSON.parse(JSON.stringify(facility.section || null)));
-  }, [
-    facility.fontSize,
-    facility.iconColor,
-    facility.section,
-    facility.tooltipColor,
-  ]);
+  }, [facility]);
 
   useEffect(() => {
     if (!currentSection) return;
@@ -143,7 +166,7 @@ export default function FacilityPositionManagement({
 
   const fetchData = useCallback(async (mapId) => {
     const result = await getMapDetail(mapId);
-    setSections(result.data.sections);
+    // setSections(result.data.sections);
     setOriginSections(JSON.parse(JSON.stringify(result.data.sections)));
     setImage(result.data.image);
   }, []);
@@ -153,7 +176,8 @@ export default function FacilityPositionManagement({
     if (mapId) {
       void fetchData(mapId);
     }
-  }, [fetchData, mapId]);
+    setSections(mapSections);
+  }, [facility, fetchData, mapId, mapSections]);
 
   const hasResource = useCallback(() => {
     return image && sections;
@@ -185,7 +209,23 @@ export default function FacilityPositionManagement({
             />
           </Form.Item> */}
           <Form.Item label="폰트 사이즈">
-            <Select style={{ width: 80 }} value={fontSize}>
+            <Select
+              style={{ width: 80 }}
+              value={fontSize}
+              onChange={(value) => {
+                setFontSize(value);
+                updateSection(currentSection, {
+                  color: currentOptions.color,
+                  alpha: currentOptions.alpha,
+                  strokeWidth: currentOptions.strokeWidth,
+                  strokeColor: currentOptions.strokeColor,
+                  strokeAlpha: currentOptions.strokeAlpha,
+                  fontSize: value,
+                  iconColor,
+                  tooltipColor,
+                });
+              }}
+            >
               {fontSizeOptions.map((fontSize) => (
                 <Option key={fontSize} value={fontSize}>
                   {fontSize}
@@ -207,6 +247,9 @@ export default function FacilityPositionManagement({
                   strokeColor: currentOptions.strokeColor,
                   strokeAlpha: currentOptions.strokeAlpha,
                   strokeWidth: currentOptions.strokeWidth,
+                  fontSize,
+                  iconColor,
+                  tooltipColor,
                 });
               }}
             />
@@ -225,6 +268,9 @@ export default function FacilityPositionManagement({
                   strokeWidth: currentOptions.strokeWidth,
                   strokeColor: hex.substr(0, 7),
                   strokeAlpha,
+                  fontSize,
+                  iconColor,
+                  tooltipColor,
                 });
               }}
             />
@@ -243,15 +289,52 @@ export default function FacilityPositionManagement({
                   alpha: currentOptions.alpha,
                   strokeColor: currentOptions.strokeColor,
                   strokeAlpha: currentOptions.strokeAlpha,
+                  fontSize,
+                  iconColor,
+                  tooltipColor,
                 });
               }}
             />
           </Form.Item>
           <Form.Item label="아이콘 색상">
-            <ColorPicker format="hex" value={iconColor} />
+            <ColorPicker
+              format="hex"
+              value={iconColor}
+              onChangeComplete={(color: any) => {
+                const hex = color.toHexString();
+                setIconColor(hex);
+                updateSection(currentSection, {
+                  color: currentOptions.color,
+                  alpha: currentOptions.alpha,
+                  strokeWidth: currentOptions.strokeWidth,
+                  strokeColor: currentOptions.strokeColor,
+                  strokeAlpha: currentOptions.strokeAlpha,
+                  fontSize,
+                  iconColor: hex,
+                  tooltipColor,
+                });
+              }}
+            />
           </Form.Item>
           <Form.Item label="말풍선 색상">
-            <ColorPicker format="hex" value={tooltipColor} />
+            <ColorPicker
+              format="hex"
+              value={tooltipColor}
+              onChangeComplete={(color: any) => {
+                const hex = color.toHexString();
+                setTooltipColor(hex);
+                updateSection(currentSection, {
+                  color: currentOptions.color,
+                  alpha: currentOptions.alpha,
+                  strokeWidth: currentOptions.strokeWidth,
+                  strokeColor: currentOptions.strokeColor,
+                  strokeAlpha: currentOptions.strokeAlpha,
+                  fontSize,
+                  iconColor,
+                  tooltipColor: hex,
+                });
+              }}
+            />
           </Form.Item>
         </Flex>
 
@@ -280,7 +363,7 @@ export default function FacilityPositionManagement({
             facilityIconUrl={iconUrl}
             onClick={(data) => {
               if (enabledPositionSetting) {
-                onClickMap(data);
+                void onClickMap(data);
               }
             }}
           />

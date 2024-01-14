@@ -111,6 +111,13 @@ export class MapService {
             strokeColor: true,
             strokeAlpha: true,
             strokeWidth: true,
+            group: {
+              select: {
+                id: true,
+                sections: true,
+              },
+            },
+            groupId: true,
           },
         },
       },

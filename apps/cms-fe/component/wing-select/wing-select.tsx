@@ -21,7 +21,7 @@ export default function WingSelect({
 
   useEffect(() => {
     void fetchData();
-  }, [onChange]);
+  }, []);
 
   const fetchData = async () => {
     const result = await getWings();

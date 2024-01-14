@@ -3,7 +3,6 @@ import { Flex } from 'antd';
 import { getMapDetail } from '../../api/map';
 import { getBaseUrl } from '../../util/axios-client';
 import { createSection } from '../../util/section-renderer';
-import { kMaxLength } from 'buffer';
 
 export const MapViewer = ({
   mapId = null,

@@ -38,7 +38,7 @@ const FacilityForm = ({ data }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [iconUrl, setIconUrl] = useState('/pin01.png');
   const [wingId, setWingId] = useState();
-  const [floorId, setFloorId] = useState();
+  const [floorId, setFloorId] = useState<any>();
   const [facility, setFacility] = useState<any>({
     wingId: '',
     floorId: '',

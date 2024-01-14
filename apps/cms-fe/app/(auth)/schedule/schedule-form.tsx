@@ -215,7 +215,7 @@ const ScheduleForm = ({ data }) => {
         </Form.Item>
         <Form.Item label="상태">
           <Switch
-            checked={status == 'enabled'}
+            checked={status === 'enabled'}
             onChange={(e) => {
               setStatus(e ? 'enabled' : 'disabled');
             }}

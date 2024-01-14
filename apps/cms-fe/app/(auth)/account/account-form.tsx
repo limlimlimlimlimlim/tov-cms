@@ -229,7 +229,7 @@ const AccountForm = ({ data }) => {
       <Form
         {...layout}
         onFinish={onFinish}
-        style={{ maxWidth: 1000 }}
+        style={{ maxWidth: 500 }}
         validateMessages={validateMessages}
       >
         <Flex style={{ width: '100%' }}>
@@ -261,7 +261,11 @@ const AccountForm = ({ data }) => {
                 />
               </Form.Item>
             )}
-
+            <Form.Item label="권한">
+              <Select onChange={onChangePermission} value={permissionId}>
+                {createPermissionItems()}
+              </Select>
+            </Form.Item>
             <Form.Item label="이름" rules={[{ required: true }]}>
               <Input value={name} onChange={onChangeName} />
             </Form.Item>
@@ -274,18 +278,6 @@ const AccountForm = ({ data }) => {
                 style={{ height: 200 }}
                 onChange={onChangeDecription}
               />
-            </Form.Item>
-          </Flex>
-          <Flex vertical style={{ width: '100%' }}>
-            <Form.Item label="권한">
-              <Select onChange={onChangePermission} value={permissionId}>
-                {createPermissionItems()}
-              </Select>
-            </Form.Item>
-            <Form.Item label="시설 선택">
-              <Select onChange={onChangeFacility} value={facilityId}>
-                {createFacilityItems()}
-              </Select>
             </Form.Item>
           </Flex>
         </Flex>

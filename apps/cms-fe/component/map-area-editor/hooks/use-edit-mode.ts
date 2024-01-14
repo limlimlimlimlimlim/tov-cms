@@ -76,6 +76,22 @@ const useDeleteMode = () => {
         for (let i = 0, count = path.length; i < count; i += 2) {
           addPoint(path[Number(i)], path[Number(i) + 1]);
         }
+
+        setTimeout(() => {
+          if (!stage.current) return;
+          stage.current.off('click');
+          stage.current.on('click', (e: any) => {
+            console.log('@@@@');
+            if (points.current.length === 0) {
+              addPoint(e.evt.layerX - 50, e.evt.layerY - 50);
+              addPoint(e.evt.layerX + 50, e.evt.layerY - 50);
+              addPoint(e.evt.layerX + 50, e.evt.layerY + 50);
+              addPoint(e.evt.layerX - 50, e.evt.layerY + 50);
+            } else {
+              addPoint(e.evt.layerX, e.evt.layerY);
+            }
+          });
+        }, 10);
       });
     });
   }, [addPoint, removePoint, points]);

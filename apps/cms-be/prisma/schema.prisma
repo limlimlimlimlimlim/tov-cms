@@ -175,7 +175,7 @@ model Section {
   map           Map           @relation(fields: [mapId], references: [id])
   groupId       Int?
   group         SectionGroup? @relation(fields: [groupId], references: [id])
-  path          String
+  path          String        @db.Text
   color         String?       @default("#FFE699")
   strokeColor   String?       @default("#FFE699")
   strokeWidth   Int?          @default(1)

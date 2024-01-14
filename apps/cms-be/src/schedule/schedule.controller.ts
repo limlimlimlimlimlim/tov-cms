@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Prisma } from '@prisma/client';
+import * as fs from 'fs'; // fs 모듈 추가
 
 @Controller('schedule')
 export class ScheduleController {
@@ -45,13 +46,50 @@ export class ScheduleController {
   @Patch(':id')
   async updateSchedule(
     @Param('id') id: string,
-    @Body() data: Prisma.KioskUpdateInput,
+    @Body() data: Prisma.ScheduleUpdateInput,
   ) {
+    const s = await this.scheduleService.getScheduleById(+id);
+    const { imageContents, videoContents } = s;
+    const uploadDirectory = './files/upload/'; // 업로드 폴더 경로
+
+    if (
+      data.imageContents &&
+      imageContents &&
+      data.imageContents !== imageContents
+    ) {
+      if (fs.existsSync(`${uploadDirectory}${imageContents}`)) {
+        fs.unlinkSync(`${uploadDirectory}${imageContents}`);
+      }
+    }
+
+    if (
+      data.videoContents &&
+      videoContents &&
+      data.videoContents !== videoContents
+    ) {
+      if (fs.existsSync(`${uploadDirectory}${videoContents}`)) {
+        fs.unlinkSync(`${uploadDirectory}${videoContents}`);
+      }
+    }
     return this.scheduleService.updateSchedule(+id, data);
   }
 
   @Delete(':id')
   async deleteSchedule(@Param('id') id: string) {
+    const s = await this.scheduleService.getScheduleById(+id);
+    const { imageContents, videoContents } = s;
+    const uploadDirectory = './files/upload/'; // 업로드 폴더 경로
+    if (imageContents) {
+      if (fs.existsSync(`${uploadDirectory}${imageContents}`)) {
+        fs.unlinkSync(`${uploadDirectory}${imageContents}`);
+      }
+    }
+
+    if (videoContents) {
+      if (fs.existsSync(`${uploadDirectory}${videoContents}`)) {
+        fs.unlinkSync(`${uploadDirectory}${videoContents}`);
+      }
+    }
     return this.scheduleService.deleteSchedule(+id);
   }
 

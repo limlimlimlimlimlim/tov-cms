@@ -123,6 +123,7 @@ export default function FacilityPositionManagement({
         strokeColor: data.section.strokeColor,
         strokeAlpha: data.section.strokeAlpha,
       });
+      console.log(data.section);
       setPrevSection(JSON.parse(JSON.stringify(data.section)));
       onChange({
         position: { x: data.originX, y: data.originY },
@@ -167,7 +168,9 @@ export default function FacilityPositionManagement({
     setCurrentSectionColor(
       addAlpha(currentSection.color, currentSection.alpha),
     );
-    setCurrentSectionStrokeColor(currentSection.strokeColor);
+    setCurrentSectionStrokeColor(
+      addAlpha(currentSection.strokeColor, currentSection.strokeAlpha),
+    );
     setCurrentSectionStrokeWidth(currentSection.strokeWidth);
   }, [currentSection]);
 
@@ -278,6 +281,7 @@ export default function FacilityPositionManagement({
                   onChangeComplete={(color: any) => {
                     const hex = color.toHexString();
                     const strokeAlpha = color.metaColor.roundA * 100;
+                    // console.log(strokeAlpha);
                     setCurrentSectionStrokeColor(hex);
                     updateSection(currentSection, {
                       color: currentOptions.color,

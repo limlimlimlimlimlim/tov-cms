@@ -53,7 +53,7 @@ export default function AccountList() {
         title: '번호',
         width: 80,
         render: (_, __, index) => {
-          return index + 1;
+          return index + 1 + (page - 1) * count;
         },
       },
       {
@@ -101,7 +101,7 @@ export default function AccountList() {
         },
       },
     ];
-  }, [updatable]);
+  }, [count, page, updatable]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);

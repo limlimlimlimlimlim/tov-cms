@@ -61,7 +61,7 @@ export default function PostList() {
         title: '번호',
         width: 80,
         render: (_, __, index) => {
-          return index + 1;
+          return index + 1 + (page - 1) * count;
         },
       },
       {

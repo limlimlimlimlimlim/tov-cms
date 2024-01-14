@@ -49,7 +49,6 @@ export default function KioskList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    setPage(1);
     void fetchData({ keyword, page, count, floor, wing });
   }, [
     count,
@@ -69,7 +68,7 @@ export default function KioskList() {
         title: '번호',
         width: 80,
         render: (_, __, index) => {
-          return index + 1;
+          return index + 1 + (page - 1) * count;
         },
       },
       {
@@ -122,7 +121,7 @@ export default function KioskList() {
         },
       },
     ];
-  }, [updatable]);
+  }, [count, page, updatable]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);

@@ -320,6 +320,7 @@ export default function FacilityPositionManagement({
             <ColorPicker
               format="hex"
               value={iconColor}
+              disabledAlpha
               onChangeComplete={(color: any) => {
                 const hex = color.toHexString();
                 setIconColor(hex);
@@ -340,6 +341,7 @@ export default function FacilityPositionManagement({
             <ColorPicker
               format="hex"
               value={tooltipColor}
+              disabledAlpha
               onChangeComplete={(color: any) => {
                 const hex = color.toHexString();
                 setTooltipColor(hex);

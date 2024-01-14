@@ -34,9 +34,9 @@ export default function FacilityPositionManagement({
     y: facility.y,
   });
   const [alwaysVisible, setAlwaysVisible] = useState(false);
-  const [fontSize, setFontSize] = useState();
-  const [iconColor, setIconColor] = useState();
-  const [tooltipColor, setTooltipColor] = useState();
+  const [fontSize, setFontSize] = useState<any>();
+  const [iconColor, setIconColor] = useState<any>();
+  const [tooltipColor, setTooltipColor] = useState<any>();
   const [prevSection, setPrevSection] = useState<any>();
   const [currentSection, setCurrentSection] = useState<any>();
   const [currentSectionColor, setCurrentSectionColor] = useState<string>();
@@ -134,7 +134,6 @@ export default function FacilityPositionManagement({
   );
 
   useEffect(() => {
-    console.log(facility.section);
     setFontSize(facility.fontSize || 12);
     setIconColor(facility.iconColor || '#ff9900');
     setTooltipColor(facility.tooltipColor || '#000000');
@@ -238,69 +237,74 @@ export default function FacilityPositionManagement({
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="영역 색상">
-            <ColorPicker
-              format="hex"
-              value={currentSectionColor}
-              onChangeComplete={(color: any) => {
-                const hex = color.toHexString();
-                const alpha = color.metaColor.roundA * 100;
-                setCurrentSectionColor(hex);
-                updateSection(currentSection, {
-                  color: hex.substr(0, 7),
-                  alpha,
-                  strokeColor: currentOptions.strokeColor,
-                  strokeAlpha: currentOptions.strokeAlpha,
-                  strokeWidth: currentOptions.strokeWidth,
-                  fontSize,
-                  iconColor,
-                  tooltipColor,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="테두리 색상">
-            <ColorPicker
-              format="hex"
-              value={currentSectionStrokeColor}
-              onChangeComplete={(color: any) => {
-                const hex = color.toHexString();
-                const strokeAlpha = color.metaColor.roundA * 100;
-                setCurrentSectionStrokeColor(hex);
-                updateSection(currentSection, {
-                  color: currentOptions.color,
-                  alpha: currentOptions.alpha,
-                  strokeWidth: currentOptions.strokeWidth,
-                  strokeColor: hex.substr(0, 7),
-                  strokeAlpha,
-                  fontSize,
-                  iconColor,
-                  tooltipColor,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="테두리 두께">
-            <Slider
-              min={1}
-              max={10}
-              style={{ width: 80 }}
-              value={currentSectionStrokeWidth}
-              onChange={(value) => {
-                setCurrentSectionStrokeWidth(value);
-                updateSection(currentSection, {
-                  strokeWidth: value,
-                  color: currentOptions.color,
-                  alpha: currentOptions.alpha,
-                  strokeColor: currentOptions.strokeColor,
-                  strokeAlpha: currentOptions.strokeAlpha,
-                  fontSize,
-                  iconColor,
-                  tooltipColor,
-                });
-              }}
-            />
-          </Form.Item>
+          {currentSection && (
+            <>
+              <Form.Item label="영역 색상">
+                <ColorPicker
+                  format="hex"
+                  value={currentSectionColor}
+                  onChangeComplete={(color: any) => {
+                    const hex = color.toHexString();
+                    const alpha = color.metaColor.roundA * 100;
+                    setCurrentSectionColor(hex);
+                    updateSection(currentSection, {
+                      color: hex.substr(0, 7),
+                      alpha,
+                      strokeColor: currentOptions.strokeColor,
+                      strokeAlpha: currentOptions.strokeAlpha,
+                      strokeWidth: currentOptions.strokeWidth,
+                      fontSize,
+                      iconColor,
+                      tooltipColor,
+                    });
+                  }}
+                />
+              </Form.Item>
+              <Form.Item label="테두리 색상">
+                <ColorPicker
+                  format="hex"
+                  value={currentSectionStrokeColor}
+                  onChangeComplete={(color: any) => {
+                    const hex = color.toHexString();
+                    const strokeAlpha = color.metaColor.roundA * 100;
+                    setCurrentSectionStrokeColor(hex);
+                    updateSection(currentSection, {
+                      color: currentOptions.color,
+                      alpha: currentOptions.alpha,
+                      strokeWidth: currentOptions.strokeWidth,
+                      strokeColor: hex.substr(0, 7),
+                      strokeAlpha,
+                      fontSize,
+                      iconColor,
+                      tooltipColor,
+                    });
+                  }}
+                />
+              </Form.Item>
+              <Form.Item label="테두리 두께">
+                <Slider
+                  min={1}
+                  max={10}
+                  style={{ width: 80 }}
+                  value={currentSectionStrokeWidth}
+                  onChange={(value) => {
+                    setCurrentSectionStrokeWidth(value);
+                    updateSection(currentSection, {
+                      strokeWidth: value,
+                      color: currentOptions.color,
+                      alpha: currentOptions.alpha,
+                      strokeColor: currentOptions.strokeColor,
+                      strokeAlpha: currentOptions.strokeAlpha,
+                      fontSize,
+                      iconColor,
+                      tooltipColor,
+                    });
+                  }}
+                />
+              </Form.Item>
+            </>
+          )}
+
           <Form.Item label="아이콘 색상">
             <ColorPicker
               format="hex"
@@ -345,14 +349,18 @@ export default function FacilityPositionManagement({
 
         <Flex gap="middle">
           <Button
-          // onClick={() => {
-          //   setOriginPosition(null);
-          //   onChange({
-          //     position: null,
-          //     alwaysVisible,
-          //     sectionId,
-          //   });
-          // }}
+            onClick={() => {
+              setOriginPosition(null);
+              setCurrentSection(null);
+              onChange({
+                position: { x: null, y: null },
+                alwaysVisible,
+                fontSize,
+                iconColor,
+                tooltipColor,
+                section: null,
+              });
+            }}
           >
             초기화
           </Button>

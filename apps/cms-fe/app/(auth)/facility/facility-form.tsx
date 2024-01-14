@@ -84,7 +84,7 @@ const FacilityForm = ({ data }) => {
         ...data,
         categoryId: data.category.id,
         subCategoryId: data.subCategory.id,
-        sectionId: data.section.id,
+        sectionId: data.section?.id,
       });
       setWingId(data.wingId);
       setFloorId(data.floorId);
@@ -117,27 +117,32 @@ const FacilityForm = ({ data }) => {
         delete temp.section;
         delete temp.wing;
         delete temp.map;
+
+        console.log(section, temp);
+
         await updateFacility(facility.id, {
           ...temp,
         });
 
-        const paintOptions = {
-          color: section.color,
-          alpha: section.alpha,
-          strokeWidth: section.strokeWidth,
-          strokeColor: section.strokeColor,
-          strokeAlpha: section.strokeAlpha,
-        };
+        if (section) {
+          const paintOptions = {
+            color: section.color,
+            alpha: section.alpha,
+            strokeWidth: section.strokeWidth,
+            strokeColor: section.strokeColor,
+            strokeAlpha: section.strokeAlpha,
+          };
 
-        let promises;
-        if (section.group) {
-          promises = section.group.sections.map(async (s) =>
-            updateSectionPaintOptionById(s.id, paintOptions),
-          );
-        } else {
-          promises = [updateSectionPaintOptionById(section.id, paintOptions)];
+          let promises;
+          if (section.group) {
+            promises = section.group.sections.map(async (s) =>
+              updateSectionPaintOptionById(s.id, paintOptions),
+            );
+          } else {
+            promises = [updateSectionPaintOptionById(section.id, paintOptions)];
+          }
+          await Promise.all(promises);
         }
-        await Promise.all(promises);
 
         void message.success('시설이 수정됐습니다.');
       } else {
@@ -361,6 +366,15 @@ const FacilityForm = ({ data }) => {
           setMapSections([...originMapSections]);
         }}
         onOk={(data) => {
+          console.log(data, {
+            ...facility,
+            ...data.position,
+            fontSize: data.fontSize,
+            iconColor: data.iconColor,
+            tooltipColor: data.tooltipColor,
+            section: data.section,
+            sectionId: data.section?.id,
+          });
           setFacility({
             ...facility,
             ...data.position,
@@ -368,31 +382,37 @@ const FacilityForm = ({ data }) => {
             iconColor: data.iconColor,
             tooltipColor: data.tooltipColor,
             section: data.section,
-            sectionId: data.section.id,
+            sectionId: data.section?.id,
           });
 
-          const paintOptions = {
-            color: data.section.color,
-            alpha: data.section.alpha,
-            strokeWidth: data.section.strokeWidth,
-            strokeColor: data.section.strokeColor,
-            strokeAlpha: data.section.strokeAlpha,
-          };
+          if (data.section) {
+            const paintOptions = {
+              color: data.section.color,
+              alpha: data.section.alpha,
+              strokeWidth: data.section.strokeWidth,
+              strokeColor: data.section.strokeColor,
+              strokeAlpha: data.section.strokeAlpha,
+            };
 
-          const _mapSections = [...mapSections];
-          if (data.section.group) {
-            data.section.group.sections.forEach((s) => {
-              const index = _mapSections.findIndex((ss) => s.id === ss.id);
-              _mapSections[index] = { ..._mapSections[index], ...paintOptions };
-            });
-          } else {
-            const index = _mapSections.findIndex(
-              (s) => s.id === data.section.id,
-            );
-            _mapSections[index] = { ...data.section };
+            const _mapSections = [...mapSections];
+            if (data.section.group) {
+              data.section.group.sections.forEach((s) => {
+                const index = _mapSections.findIndex((ss) => s.id === ss.id);
+                _mapSections[index] = {
+                  ..._mapSections[index],
+                  ...paintOptions,
+                };
+              });
+            } else {
+              const index = _mapSections.findIndex(
+                (s) => s.id === data.section.id,
+              );
+              _mapSections[index] = { ...data.section };
+            }
+
+            setMapSections(_mapSections);
           }
 
-          setMapSections(_mapSections);
           setIsOpenModal(false);
         }}
         onCancel={() => {

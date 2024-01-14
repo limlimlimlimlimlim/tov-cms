@@ -59,7 +59,9 @@ const useSplitMode = () => {
 
   const render = useCallback((sections) => {
     targetPolygons.current = {};
-    polygons.current = createSection(sections, layer.current, scale.current)!;
+    polygons.current = createSection(sections, layer.current, scale.current, {
+      showGroup: true,
+    }) as any;
   }, []);
 
   const setup = useCallback(

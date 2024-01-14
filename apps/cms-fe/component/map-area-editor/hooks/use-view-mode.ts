@@ -10,8 +10,8 @@ const useViewMode = () => {
     scale.current = sca;
   }, []);
 
-  const render = useCallback((sections) => {
-    createSection(sections, layer.current, scale.current);
+  const render = useCallback((sections, options = null) => {
+    createSection(sections, layer.current, scale.current, options);
   }, []);
 
   return {

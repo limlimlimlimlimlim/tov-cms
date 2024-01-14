@@ -50,6 +50,7 @@ export class MapService {
             strokeColor: true,
             strokeAlpha: true,
             strokeWidth: true,
+            disabled: true,
             group: {
               select: {
                 id: true,

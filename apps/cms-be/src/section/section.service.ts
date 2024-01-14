@@ -38,6 +38,7 @@ export class SectionService {
         path: true,
         facilities: true,
         groupId: true,
+        disabled: true,
         group: {
           select: {
             id: true,

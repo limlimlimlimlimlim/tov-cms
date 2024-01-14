@@ -60,7 +60,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
     if (!map) return;
     const sec = await getSectionsByMapId(map.id);
     setSections(sec.data);
-    renderViewMode(sec.data);
+    renderViewMode(sec.data, { showGroup: true } as any);
   }, [map, renderViewMode]);
 
   const createStage = useCallback(
@@ -174,7 +174,7 @@ export default function MapSectionMerger({ map }: ComponentProps) {
         break;
     }
     setMode('normal');
-    renderViewMode(sections);
+    renderViewMode(sections, { showGroup: true } as any);
   }, [
     mode,
     renderViewMode,

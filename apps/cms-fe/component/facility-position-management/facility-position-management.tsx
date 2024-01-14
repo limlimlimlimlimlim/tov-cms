@@ -20,6 +20,17 @@ const fontSizeOptions = [
   27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 ];
 
+const defaultStyle = {
+  color: '#D2C60C',
+  strokeColor: '#D2C60C',
+  alpha: 30,
+  strokeAlpha: 30,
+  strokeWidth: 5,
+  fontSize: 18,
+  iconColor: '#a8c410',
+  tooltipColor: '#000000',
+};
+
 export default function FacilityPositionManagement({
   mapId,
   facility,
@@ -134,9 +145,9 @@ export default function FacilityPositionManagement({
   );
 
   useEffect(() => {
-    setFontSize(facility.fontSize || 12);
-    setIconColor(facility.iconColor || '#ff9900');
-    setTooltipColor(facility.tooltipColor || '#000000');
+    setFontSize(facility.fontSize || defaultStyle.fontSize);
+    setIconColor(facility.iconColor || defaultStyle.iconColor);
+    setTooltipColor(facility.tooltipColor || defaultStyle.tooltipColor);
     setCurrentSection(facility.section || null);
     setCurrentOptions(
       facility.section

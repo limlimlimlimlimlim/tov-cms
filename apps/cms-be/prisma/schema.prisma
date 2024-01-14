@@ -141,9 +141,9 @@ model Facility {
   x               Int?
   y               Int?
   tags            String?
-  iconColor       String? @default("#000000")
+  iconColor       String? @default("#a8c410")
   tooltipColor    String? @default("#000000")
-  fontSize        Int? @default(12)
+  fontSize        Int? @default(18)
   categoryId      Int?
   category        FacilityCategory? @relation(fields: [categoryId], references: [id])
   subCategoryId   Int?
@@ -176,11 +176,11 @@ model Section {
   groupId       Int?
   group         SectionGroup? @relation(fields: [groupId], references: [id])
   path          String        @db.Text
-  color         String?       @default("#FFE699")
-  strokeColor   String?       @default("#FFE699")
-  strokeWidth   Int?          @default(1)
+  color         String?       @default("#D2C60C")
+  strokeColor   String?       @default("#D2C60C")
+  strokeWidth   Int?          @default(5)
   alpha         Int?          @default(30)
-  strokeAlpha   Int?          @default(1)
+  strokeAlpha   Int?          @default(30)
   disabled      Boolean       @default(false)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

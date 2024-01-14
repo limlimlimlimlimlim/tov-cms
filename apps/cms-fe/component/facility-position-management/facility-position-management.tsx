@@ -123,7 +123,6 @@ export default function FacilityPositionManagement({
         strokeColor: data.section.strokeColor,
         strokeAlpha: data.section.strokeAlpha,
       });
-      console.log(data.section);
       setPrevSection(JSON.parse(JSON.stringify(data.section)));
       onChange({
         position: { x: data.originX, y: data.originY },

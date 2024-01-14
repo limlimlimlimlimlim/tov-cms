@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createUser, updateUser } from '../../../api/account';
 import { getPermissions } from '../../../api/permission';
-import { getFacilityAll } from '../../../api/facility';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -40,9 +39,7 @@ const AccountForm = ({ data }) => {
   const [phone, setPhone] = useState('');
   const [description, setDescription] = useState('');
   const [permissionId, setPermissionId] = useState('');
-  const [facilityId, setFacilityId] = useState('');
   const [permissions, setPermissions] = useState([]);
-  const [facilities, setFacilities] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
 
   const newPassword = useRef('');
@@ -57,7 +54,6 @@ const AccountForm = ({ data }) => {
     setPhone(data.phone);
     setDescription(data.description);
     setPermissionId(data.permissionId);
-    setFacilityId(data.facilityId);
   }, [data]);
 
   const onFinish = useCallback(async () => {
@@ -72,7 +68,6 @@ const AccountForm = ({ data }) => {
           phone,
           description,
           permissionId,
-          facilityId,
         });
         void message.success('계정이 수정됐습니다.');
       } else {
@@ -83,7 +78,6 @@ const AccountForm = ({ data }) => {
           phone,
           description,
           permissionId,
-          facilityId,
         });
         void message.success('계정이 생성됐습니다.');
       }
@@ -94,7 +88,6 @@ const AccountForm = ({ data }) => {
   }, [
     data,
     description,
-    facilityId,
     isEdit,
     name,
     password,
@@ -110,15 +103,9 @@ const AccountForm = ({ data }) => {
     setPermissions(result.data);
   }, []);
 
-  const fetchFacilities = useCallback(async () => {
-    const result = await getFacilityAll();
-    setFacilities(result.data.data);
-  }, []);
-
   useEffect(() => {
     void fetchPermissions();
-    void fetchFacilities();
-  }, [fetchFacilities, fetchPermissions]);
+  }, [fetchPermissions]);
 
   const onChangeUserId = useCallback(({ target }) => {
     setUserId(target.value);
@@ -148,10 +135,6 @@ const AccountForm = ({ data }) => {
     setPermissionId(value);
   }, []);
 
-  const onChangeFacility = useCallback((value: string) => {
-    setFacilityId(value);
-  }, []);
-
   const createPermissionItems = useCallback(() => {
     return permissions.map((permission: any) => {
       return (
@@ -161,16 +144,6 @@ const AccountForm = ({ data }) => {
       );
     });
   }, [permissions]);
-
-  const createFacilityItems = useCallback(() => {
-    return facilities.map((facility: any) => {
-      return (
-        <Option key={facility.id} value={facility.id}>
-          {facility.name}
-        </Option>
-      );
-    });
-  }, [facilities]);
 
   //   const confirmChangePassword = useCallback(() => {
   //     confirm({

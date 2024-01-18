@@ -139,7 +139,7 @@ model Facility {
   status          String?
   x               Int?
   y               Int?
-  tags            String?
+  tags            String? @db.Text
   iconColor       String? @default("#D91700")
   tooltipColor    String? @default("#000000")
   fontSize        Int? @default(18)

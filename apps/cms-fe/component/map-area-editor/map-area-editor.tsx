@@ -18,6 +18,13 @@ declare global {
   }
 }
 
+const sectionOptions = {
+  color: '#aaff77',
+  strokeColor: '#555',
+  strokeWidth: 2,
+  alpha: 50,
+};
+
 export default function MapAreaEditor({ map }: ComponentProps) {
   const [sections, setSections] = useState<any[]>([]);
   const [imgSrc, setImgSrc] = useState('');
@@ -96,12 +103,12 @@ export default function MapAreaEditor({ map }: ComponentProps) {
 
   const onClickAdd = useCallback(() => {
     setMode('new');
-    setupAddMode(sections);
+    setupAddMode(sections, sectionOptions);
   }, [sections, setupAddMode]);
 
   const onClickEdit = useCallback(() => {
     setMode('edit');
-    setupEditMode(sections);
+    setupEditMode(sections, sectionOptions);
   }, [sections, setupEditMode]);
 
   const onClickDelete = useCallback(() => {

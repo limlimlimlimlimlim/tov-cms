@@ -87,18 +87,18 @@ const useAddMode = () => {
   }, [layer]);
 
   const render = useCallback(
-    (sections) => {
-      createSection(sections, layer.current, scale.current)!;
+    (sections, options?) => {
+      createSection(sections, layer.current, scale.current, options);
     },
     [layer],
   );
 
   const setup = useCallback(
-    (s) => {
+    (s, o?) => {
       sections.current = s;
       initAddPolygon();
       initEvent();
-      render(sections.current);
+      render(sections.current, o);
     },
     [initAddPolygon, initEvent, render],
   );

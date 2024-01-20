@@ -1,7 +1,7 @@
 const colors = ['#9900ff', '#00ff99', '#ff0099', '#99ff00', '#0099ff'];
 
 const createSection = (sections, layer, scale, options?) => {
-  if (!layer) return;
+  if (!layer) return [];
   const polygons: any[] = [];
   const groupColors = [...colors];
   const groups = {};
@@ -42,13 +42,16 @@ const createSection = (sections, layer, scale, options?) => {
 
   layer.destroyChildren();
   normals.sections.forEach((s: any) => {
-    const poly = createPolygon(s, s.color, scale, { ...s });
+    const poly = createPolygon(s, options?.color || s.color, scale, {
+      ...s,
+      ...options,
+    });
     polygons.push(poly);
     layer.add(poly);
   });
 
   disabled.sections.forEach((s: any) => {
-    const poly = createPolygon(s, disabled.color, scale);
+    const poly = createPolygon(s, options?.color || disabled.color, scale);
     polygons.push(poly);
     layer.add(poly);
   });
@@ -57,9 +60,9 @@ const createSection = (sections, layer, scale, options?) => {
     g.sections.forEach((s) => {
       const poly = createPolygon(
         s,
-        options?.showGroup ? g.color : s.color,
+        options?.color || options?.showGroup ? g.color : s.color,
         scale,
-        { ...s },
+        { ...s, ...options },
       );
       polygons.push(poly);
       layer.add(poly);

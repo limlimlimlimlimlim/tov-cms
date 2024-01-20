@@ -119,17 +119,22 @@ const useEditMode = () => {
   }, [destroySelectedPolygon, removePoint, addPoint]);
 
   const render = useCallback(
-    (sections) => {
+    (sections, options?) => {
       targetPolygons.current = {};
-      polygons.current = createSection(sections, layer.current, scale.current)!;
+      polygons.current = createSection(
+        sections,
+        layer.current,
+        scale.current,
+        options,
+      );
     },
     [layer],
   );
 
   const setup = useCallback(
-    (s) => {
+    (s, o?) => {
       sections.current = s;
-      render(sections.current);
+      render(sections.current, o);
       initEvent();
     },
     [initEvent, render],

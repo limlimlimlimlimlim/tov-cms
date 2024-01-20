@@ -73,7 +73,7 @@ const FacilityForm = ({ data }) => {
       //   .find((f) => f.id === facility.id);
       // setFacility({ ...facility, x: f.x, y: f.y });
     },
-    [facility],
+    [facility, floorId, wingId],
   );
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const FacilityForm = ({ data }) => {
 
   useEffect(() => {
     void getMap(wingId, floorId);
-  }, [wingId, floorId]);
+  }, [wingId, floorId, getMap]);
 
   useEffect(() => {
     switch (facility.iconType) {
@@ -369,6 +369,7 @@ const FacilityForm = ({ data }) => {
             fontSize: data.fontSize,
             iconColor: data.iconColor,
             tooltipColor: data.tooltipColor,
+            padding: data.padding,
             section: data.section,
             sectionId: data.section?.id,
           });

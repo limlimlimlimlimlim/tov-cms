@@ -20,6 +20,10 @@ const select = {
   fontSize: true,
   iconColor: true,
   tooltipColor: true,
+  paddingTop: true,
+  paddingBottom: true,
+  paddingRight: true,
+  paddingLeft: true,
   category: {
     select: {
       id: true,

@@ -5,6 +5,7 @@ import {
   ColorPicker,
   Flex,
   Form,
+  Input,
   Modal,
   Select,
   Slider,
@@ -29,6 +30,12 @@ const defaultStyle = {
   fontSize: 18,
   iconColor: '#D91700',
   tooltipColor: '#000000',
+  padding: {
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 };
 
 export default function FacilityPositionManagement({
@@ -48,6 +55,7 @@ export default function FacilityPositionManagement({
   const [fontSize, setFontSize] = useState<any>();
   const [iconColor, setIconColor] = useState<any>();
   const [tooltipColor, setTooltipColor] = useState<any>();
+  const [padding, setPadding] = useState<any>(defaultStyle.padding);
   const [prevSection, setPrevSection] = useState<any>();
   const [currentSection, setCurrentSection] = useState<any>();
   const [currentSectionColor, setCurrentSectionColor] = useState<string>();
@@ -85,6 +93,7 @@ export default function FacilityPositionManagement({
         fontSize: options.fontSize,
         iconColor: options.iconColor,
         tooltipColor: options.tooltipColor,
+        padding: options.padding,
         section: { ...targetSection, ...options },
       });
     },
@@ -148,6 +157,16 @@ export default function FacilityPositionManagement({
     setFontSize(facility.fontSize || defaultStyle.fontSize);
     setIconColor(facility.iconColor || defaultStyle.iconColor);
     setTooltipColor(facility.tooltipColor || defaultStyle.tooltipColor);
+    setPadding(
+      facility
+        ? {
+            top: facility.paddingTop,
+            bottom: facility.paddingBottom,
+            left: facility.paddingLeft,
+            right: facility.paddingRight,
+          }
+        : defaultStyle.padding,
+    );
     setCurrentSection(facility.section || null);
     setCurrentOptions(
       facility.section
@@ -203,16 +222,17 @@ export default function FacilityPositionManagement({
   return (
     <Flex vertical gap="middle">
       <Flex justify="space-between">
-        <Flex gap="middle">
-          <Form.Item label="위치 설정">
-            <Switch
-              checked={enabledPositionSetting}
-              onChange={(checked) => {
-                setEnabledPositionSetting(checked);
-              }}
-            />
-          </Form.Item>
-          {/* <Form.Item label="상시표시">
+        <Flex gap="small" vertical>
+          <Flex gap="middle">
+            <Form.Item label="위치 설정">
+              <Switch
+                checked={enabledPositionSetting}
+                onChange={(checked) => {
+                  setEnabledPositionSetting(checked);
+                }}
+              />
+            </Form.Item>
+            {/* <Form.Item label="상시표시">
             <Switch
               checked={alwaysVisible}
               onChange={(check) => {
@@ -225,142 +245,250 @@ export default function FacilityPositionManagement({
               }}
             />
           </Form.Item> */}
-          <Form.Item label="폰트 사이즈">
-            <Select
-              style={{ width: 80 }}
-              value={fontSize}
-              onChange={(value) => {
-                setFontSize(value);
-                updateSection(currentSection, {
-                  color: currentOptions.color,
-                  alpha: currentOptions.alpha,
-                  strokeWidth: currentOptions.strokeWidth,
-                  strokeColor: currentOptions.strokeColor,
-                  strokeAlpha: currentOptions.strokeAlpha,
-                  fontSize: value,
-                  iconColor,
-                  tooltipColor,
-                });
-              }}
-            >
-              {fontSizeOptions.map((fontSize) => (
-                <Option key={fontSize} value={fontSize}>
-                  {fontSize}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          {currentSection && (
-            <>
-              <Form.Item label="영역 색상">
-                <ColorPicker
-                  format="hex"
-                  value={currentSectionColor}
-                  onChangeComplete={(color: any) => {
-                    const hex = color.toHexString();
-                    const alpha = color.metaColor.roundA * 100;
-                    setCurrentSectionColor(hex);
-                    updateSection(currentSection, {
-                      color: hex.substr(0, 7),
-                      alpha,
-                      strokeColor: currentOptions.strokeColor,
-                      strokeAlpha: currentOptions.strokeAlpha,
-                      strokeWidth: currentOptions.strokeWidth,
-                      fontSize,
-                      iconColor,
-                      tooltipColor,
-                    });
-                  }}
-                />
-              </Form.Item>
-              <Form.Item label="테두리 색상">
-                <ColorPicker
-                  format="hex"
-                  value={currentSectionStrokeColor}
-                  onChangeComplete={(color: any) => {
-                    const hex = color.toHexString();
-                    const strokeAlpha = color.metaColor.roundA * 100;
-                    // console.log(strokeAlpha);
-                    setCurrentSectionStrokeColor(hex);
-                    updateSection(currentSection, {
-                      color: currentOptions.color,
-                      alpha: currentOptions.alpha,
-                      strokeWidth: currentOptions.strokeWidth,
-                      strokeColor: hex.substr(0, 7),
-                      strokeAlpha,
-                      fontSize,
-                      iconColor,
-                      tooltipColor,
-                    });
-                  }}
-                />
-              </Form.Item>
-              <Form.Item label="테두리 두께">
-                <Slider
-                  min={1}
-                  max={10}
-                  style={{ width: 80 }}
-                  value={currentSectionStrokeWidth}
-                  onChange={(value) => {
-                    setCurrentSectionStrokeWidth(value);
-                    updateSection(currentSection, {
-                      strokeWidth: value,
-                      color: currentOptions.color,
-                      alpha: currentOptions.alpha,
-                      strokeColor: currentOptions.strokeColor,
-                      strokeAlpha: currentOptions.strokeAlpha,
-                      fontSize,
-                      iconColor,
-                      tooltipColor,
-                    });
-                  }}
-                />
-              </Form.Item>
-            </>
-          )}
+            <Form.Item label="폰트 사이즈">
+              <Select
+                style={{ width: 80 }}
+                value={fontSize}
+                onChange={(value) => {
+                  setFontSize(value);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    fontSize: value,
+                    iconColor,
+                    tooltipColor,
+                    padding,
+                  });
+                }}
+              >
+                {fontSizeOptions.map((fontSize) => (
+                  <Option key={fontSize} value={fontSize}>
+                    {fontSize}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-          <Form.Item label="아이콘 색상">
-            <ColorPicker
-              format="hex"
-              value={iconColor}
-              disabledAlpha
-              onChangeComplete={(color: any) => {
-                const hex = color.toHexString();
-                setIconColor(hex);
-                updateSection(currentSection, {
-                  color: currentOptions.color,
-                  alpha: currentOptions.alpha,
-                  strokeWidth: currentOptions.strokeWidth,
-                  strokeColor: currentOptions.strokeColor,
-                  strokeAlpha: currentOptions.strokeAlpha,
-                  fontSize,
-                  iconColor: hex,
-                  tooltipColor,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="말풍선 색상">
-            <ColorPicker
-              format="hex"
-              value={tooltipColor}
-              disabledAlpha
-              onChangeComplete={(color: any) => {
-                const hex = color.toHexString();
-                setTooltipColor(hex);
-                updateSection(currentSection, {
-                  color: currentOptions.color,
-                  alpha: currentOptions.alpha,
-                  strokeWidth: currentOptions.strokeWidth,
-                  strokeColor: currentOptions.strokeColor,
-                  strokeAlpha: currentOptions.strokeAlpha,
-                  fontSize,
-                  iconColor,
-                  tooltipColor: hex,
-                });
-              }}
-            />
-          </Form.Item>
+            {currentSection && (
+              <>
+                <Form.Item label="영역 색상">
+                  <ColorPicker
+                    format="hex"
+                    value={currentSectionColor}
+                    onChangeComplete={(color: any) => {
+                      const hex = color.toHexString();
+                      const alpha = color.metaColor.roundA * 100;
+                      setCurrentSectionColor(hex);
+                      updateSection(currentSection, {
+                        color: hex.substr(0, 7),
+                        alpha,
+                        strokeColor: currentOptions.strokeColor,
+                        strokeAlpha: currentOptions.strokeAlpha,
+                        strokeWidth: currentOptions.strokeWidth,
+                        fontSize,
+                        iconColor,
+                        tooltipColor,
+                        padding,
+                      });
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item label="테두리 색상">
+                  <ColorPicker
+                    format="hex"
+                    value={currentSectionStrokeColor}
+                    onChangeComplete={(color: any) => {
+                      const hex = color.toHexString();
+                      const strokeAlpha = color.metaColor.roundA * 100;
+                      // console.log(strokeAlpha);
+                      setCurrentSectionStrokeColor(hex);
+                      updateSection(currentSection, {
+                        color: currentOptions.color,
+                        alpha: currentOptions.alpha,
+                        strokeWidth: currentOptions.strokeWidth,
+                        strokeColor: hex.substr(0, 7),
+                        strokeAlpha,
+                        fontSize,
+                        iconColor,
+                        tooltipColor,
+                        padding,
+                      });
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item label="테두리 두께">
+                  <Slider
+                    min={1}
+                    max={10}
+                    style={{ width: 80 }}
+                    value={currentSectionStrokeWidth}
+                    onChange={(value) => {
+                      setCurrentSectionStrokeWidth(value);
+                      updateSection(currentSection, {
+                        strokeWidth: value,
+                        color: currentOptions.color,
+                        alpha: currentOptions.alpha,
+                        strokeColor: currentOptions.strokeColor,
+                        strokeAlpha: currentOptions.strokeAlpha,
+                        fontSize,
+                        iconColor,
+                        tooltipColor,
+                        padding,
+                      });
+                    }}
+                  />
+                </Form.Item>
+              </>
+            )}
+
+            <Form.Item label="아이콘 색상">
+              <ColorPicker
+                format="hex"
+                value={iconColor}
+                disabledAlpha
+                onChangeComplete={(color: any) => {
+                  const hex = color.toHexString();
+                  setIconColor(hex);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    fontSize,
+                    iconColor: hex,
+                    tooltipColor,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="말풍선 색상">
+              <ColorPicker
+                format="hex"
+                value={tooltipColor}
+                disabledAlpha
+                onChangeComplete={(color: any) => {
+                  const hex = color.toHexString();
+                  setTooltipColor(hex);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    fontSize,
+                    iconColor,
+                    tooltipColor: hex,
+                  });
+                }}
+              />
+            </Form.Item>
+          </Flex>
+          <Flex gap="middle">
+            <Form.Item label="Padding Top">
+              <Input
+                type="number"
+                style={{ width: 80 }}
+                value={padding.top}
+                onChange={(e) => {
+                  const padd = {
+                    ...padding,
+                    top: parseInt(e.currentTarget.value),
+                  };
+                  setPadding(padd);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    fontSize,
+                    iconColor,
+                    tooltipColor,
+                    padding: padd,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="Padding Bottom">
+              <Input
+                type="number"
+                style={{ width: 80 }}
+                value={padding.bottom}
+                onChange={(e) => {
+                  const padd = {
+                    ...padding,
+                    bottom: parseInt(e.currentTarget.value),
+                  };
+                  setPadding(padd);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    fontSize,
+                    iconColor,
+                    tooltipColor,
+                    padding: padd,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="Padding Left">
+              <Input
+                type="number"
+                style={{ width: 80 }}
+                value={padding.left}
+                onChange={(e) => {
+                  const padd = {
+                    ...padding,
+                    left: parseInt(e.currentTarget.value),
+                  };
+                  setPadding(padd);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    fontSize,
+                    iconColor,
+                    tooltipColor,
+                    padding: padd,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="Padding Right">
+              <Input
+                type="number"
+                style={{ width: 80 }}
+                value={padding.right}
+                onChange={(e) => {
+                  const padd = {
+                    ...padding,
+                    right: parseInt(e.currentTarget.value),
+                  };
+                  setPadding(padd);
+                  updateSection(currentSection, {
+                    color: currentOptions.color,
+                    alpha: currentOptions.alpha,
+                    strokeColor: currentOptions.strokeColor,
+                    strokeAlpha: currentOptions.strokeAlpha,
+                    strokeWidth: currentOptions.strokeWidth,
+                    fontSize,
+                    iconColor,
+                    tooltipColor,
+                    padding: padd,
+                  });
+                }}
+              />
+            </Form.Item>
+          </Flex>
         </Flex>
 
         <Flex gap="middle">

@@ -143,6 +143,10 @@ model Facility {
   iconColor       String? @default("#D91700")
   tooltipColor    String? @default("#000000")
   fontSize        Int? @default(18)
+  paddingTop      Int? @default(0)
+  paddingBottom   Int? @default(0)
+  paddingLeft     Int? @default(0)
+  paddingRight    Int? @default(0)
   categoryId      Int?
   category        FacilityCategory? @relation(fields: [categoryId], references: [id])
   subCategoryId   Int?

@@ -96,7 +96,7 @@ const KioskForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="건물 선택">
+        <Form.Item label="전시홀 선택">
           <WingSelect
             style={{ width: 200 }}
             wingId={wingId}

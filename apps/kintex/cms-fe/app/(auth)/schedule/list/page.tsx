@@ -202,7 +202,7 @@ export default function ScheduleList() {
   return (
     <Flex vertical gap="middle">
       <Flex gap="large">
-        <Form.Item label="건물 선택">
+        <Form.Item label="전시홀 선택">
           <WingSelect
             wingId={wing}
             style={{ width: 200 }}

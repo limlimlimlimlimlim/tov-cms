@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:: twin tower ::</title>
+
+    <!-- css -->
+    <link href="../css/style.css" rel="stylesheet"/>
+    
+    <!-- js -->
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    
+</head>
+<body>
+    <!-- header -->
+    <header class="header">
+        <div>
+            <button class="btn-back" onclick="history.back();"></button>
+            <h2>빌딩안내</h2>
+            <button class="btn-home"></button>
+            <button class="btn-menu"></button>
+        </div>
+    </header>
+
+    <!-- 검색 폼 - 검색 페이지로 이동 버튼 -->
+    <section class="form-search">
+        <input type="button" class="ip-srchForm" value="초성만 입력해도 검색이 가능합니다." onclick="location.href='./BD-search.html'"/>
+    </section>
+
+    <!-- 메인 내용 -->
+    <section class="content">
+        <div class="floor-menu">
+            <ul>
+                <li>B3</li>
+                <li>B2</li>
+                <li>B1</li>
+                <li class="active">1F</li>
+                <li>2F</li>
+                <li>3F</li>
+                <li>5F</li>
+            </ul>
+        </div>
+        <div class="area-menu">
+            <table>
+                <tr>
+                    <td class="on" data-target=".tab-all">전체</td>
+                    <td data-target=".tab-east">동관</td>
+                    <td data-target=".tab-center">중원</td>
+                    <td data-target=".tab-west">서관</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tab-wrap">
+            <div class="tab tab-all view">
+                <div class="map-box list">
+                    <img src="../images/img-map-all.png" alt="지도">
+                </div>
+                <div class="list-store">
+                    <h3>1F 전체</h3>
+                    <ul>
+                        <li>
+                            <b>사내병원</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                        <li>
+                            <b>사내약국</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                        <li>
+                            <b>사내은행</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                        <li>
+                            <b>라운지</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="" class="ic_location"></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab tab-west">
+                <div class="map-box list">
+                    <img src="../images/img-map-west.jpg" alt="지도">
+                </div>
+                <div class="list-store">
+                    <h3>1F 서관</h3>
+                    <ul>
+                        <li>
+                            <b>사내병원</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                        <li>
+                            <b>사내약국</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                        <li>
+                            <b>사내은행</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="BD-detailView.html" class="ic_location"></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab tab-center">
+                <div class="map-box list">
+                    <img src="../images/img-map-center.jpg" alt="지도">
+                </div>
+                <div class="list-store">
+                    <h3>1F 중원</h3>
+                    <ul>
+                        <div class="noData">그랜드스테어 공간입니다.</div>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab tab-east">
+                <div class="map-box list">
+                    <img src="../images/img-map-west.jpg" alt="지도">
+                </div>
+                <div class="list-store">
+                    <h3>1F 동관</h3>
+                    <ul>
+                        <li>
+                            <b>라운지</b>
+                            <div>
+                                <a href="tel:000-0000" class="ic_phone"></a>
+                                <a href="" class="ic_location"></a>
+                            </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+<script>
+$(document).ready(function() {
+    
+    // 층메뉴 floor-menu --- 가로로 스크롤(메뉴 넘침)
+    $('.floor-menu li').on('click', function(){
+
+        $('.floor-menu li').removeClass('active');
+        $(this).addClass('active');
+
+        var left = $('.floor-menu li.active').offset().left - 20;
+        var curLeft = $('.floor-menu').scrollLeft();
+
+        $('.floor-menu').animate({scrollLeft : curLeft+left}, 400);
+
+        // 해당 탭 콘텐츠 로드
+        // var content = $(this).data('target');
+        // $('.tab-wrap > div').removeClass('on');
+        // $(content).addClass('on');
+    });
+
+    // 관메뉴 area-menu --- 메뉴 선택 > 해당 탭 컨텐츠 On 
+    // $('.tab-menu.area li').click(function(){
+    //     var content = $(this).data('target');
+
+    //     $('.tab-menu.area li').removeClass('active');
+    //     $(this).addClass('active');
+        
+    //     $('.tab-wrap > div').removeClass('on');
+    //     $(content).addClass('on');
+    // });
+    $('.area-menu td').click(function(){
+        var content = $(this).data('target');
+
+        $('.area-menu td').removeClass('on');
+        $(this).addClass('on');
+        
+        $('.tab-wrap > div').removeClass('view');
+        $(content).addClass('view');
+    });
+    
+    
+});
+
+
+</script>
+</body>
+</html>

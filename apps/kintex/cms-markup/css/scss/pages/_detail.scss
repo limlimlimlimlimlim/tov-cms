@@ -1,0 +1,217 @@
+/* map.scss */
+// bdGuide-detailView.html 지도 영역
+.map-box.detail {
+    position: relative;
+    .btn-location {
+        position: absolute;
+        top: 24%;
+        left: 30%;
+        width: 36px;
+        height: 36px;
+        background: url(#{$img-path}/ic_location_color.svg) no-repeat;
+    }
+    .map-area {
+        height: calc(100vh - 274px);
+        overflow: hidden;
+    }
+
+    .aside {
+        position: absolute;
+        top: 16px;
+        z-index: 900;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+        transition: .3s;
+        .btn-close {
+            display: none;
+            float: right;
+            position: unset;
+            width: 20px;
+            height: 20px;
+        }
+        img {
+            display: none;
+        }
+        .btn-aside {
+            padding: 0px 16px;
+            height: 32px;
+            font-size: 1.3rem;
+            // line-height: 2rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        &.on {
+            padding: 8px 8px 8px;
+            border-radius: 4px;
+            z-index: 901;
+
+            .btn-aside {
+                padding: 0px;
+                height: auto;
+            }
+            .btn-tit {
+                padding: 0;
+            }
+            .btn-close {
+                display: block;
+            }
+        }
+    }
+    .miniMap {
+        left: $sidePadding;
+        &.on {
+            @include clear;
+            padding-right: 4px;
+            background-color: #fafafa;
+            .btn-tit {
+                display: none;
+            }
+            .btn-aside {
+                display: none;
+            }
+            img {
+                display: block;
+                float: left;
+                width: calc(100% - 24px);
+                max-width: 158px;
+            }
+            .btn-close {
+                float: right;
+                margin-left: 4px;
+            }
+        }
+    }
+    .legend {
+        transform-origin: right;
+        right: $sidePadding;
+        
+        .btn-close {
+            background: url(../images/ic_tipclose-b.svg) no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+        ul {
+            margin-top: 12px;
+            display: none;
+            li {
+                margin-bottom: 4px;
+                font-size: 1.2rem;
+            }
+            img {
+                display: inline-block;
+                margin-right: 4px;
+                width: 18px;
+            }
+        }
+        &.on {
+            ul {
+                display: block;
+            }
+        }
+    }
+}
+
+// 하단 건물 정보창
+.aside-infowrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 900;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    .btn-close {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+    }
+    h3 {
+        padding: 16px 16px 8px;
+        font-size: 1.8rem;
+        font-weight: 600;
+        line-height: 3.2rem;
+    }
+    & > div {
+        @include clear;
+        // margin-top: 20px;
+        padding: 8px 20px 40px;
+        max-height: 560px;
+        overflow: auto;
+    }
+    .profile-box {
+        float: left;
+        padding: 4px;
+        width: 80px;
+        height: 80px;
+        text-align: center;
+        background: #eee;
+        border-radius: 4px;
+        img {
+            width: 100%;
+        }
+    }
+    .text-box {
+        float: left;
+        padding-left: 16px;
+        width: calc(100% - 80px);
+        li {
+            @include clear;
+            margin-bottom: 8px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        i {
+            float: left;
+        }
+        p {
+            float: left;
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 1.3rem;
+            line-height: 2rem;
+        }
+        .ic_note + p {
+            width: calc(100% - 24px);
+        }
+    }
+}
+
+.ic_phone {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: url(#{$img-path}/ic_phone.svg) no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.ic_location {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: url(#{$img-path}/ic_location.svg) no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.ic_note {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: url(#{$img-path}/ic_note.svg) no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+@media screen and (min-width: 768px) {
+    
+    .aside-infowrap {
+        left: calc((100% - 768px)/2);
+        width: 768px;
+    }
+}

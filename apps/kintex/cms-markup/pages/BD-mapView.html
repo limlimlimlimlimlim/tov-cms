@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:: twin tower ::</title>
+
+    <!-- css -->
+    <link href="../css/style.css" rel="stylesheet"/>
+    
+    <!-- js -->
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    
+</head>
+<body>
+    <!-- header -->
+    <header class="header">
+        <div>
+            <button class="btn-back" onclick="history.back();"></button>
+            <h2>빌딩안내</h2>
+            <button class="btn-home"></button>
+            <button class="btn-menu"></button>
+        </div>
+    </header>
+
+    <!-- 검색 폼 - 검색 페이지로 이동 버튼 -->
+    <section class="form-search">
+        <input type="button" class="btn-srchForm" value="초성만 입력해도 검색이 가능합니다." onclick="location.href='./BD-search.html'"/>
+    </section>
+
+    <!-- 메인 내용 -->
+    <section class="content">
+        <div class="tab-menu floor">
+            <ul>
+                <li>B3</li>
+                <li>B2</li>
+                <li>B1</li>
+                <li>1F</li>
+                <li class="active">2F</li>
+                <li>3F</li>
+                <li>5F</li>
+            </ul>
+        </div>
+        <div class="tab-wrap">
+            <div class="map-box view">
+                <div class="map-area"><img src="../images/map-2F_west.png" alt="지도"></div>
+
+                <div class="aside miniMap">
+                    <button type="button" class="btn-aside">미니맵</button>
+                    <button type="button" class="btn-close"></button>
+                    <img src="../images/img-miniMap.jpg" alt="">
+                </div>
+                <div class="aside legend">
+                    <button type="button" class="btn-aside">범 례</button>
+                    <button type="button" class="btn-close"></button>
+                    <img src="../images/img-legend.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+$(document).ready(function() {
+
+    // 탭메뉴.area ---탭메뉴 선택 > 해당 탭 컨텐츠 On 
+    $('.tab-menu.area li').click(function(){
+        var content = $(this).data('target');
+
+        $('.tab-menu.area li').removeClass('active');
+        $(this).addClass('active');
+        
+        $('.tab-wrap > div').removeClass('on');
+        $(content).addClass('on');
+    });
+    
+    // 탭메뉴.floor --- 가로로 스크롤(메뉴 넘침)
+    $('.tab-menu.floor li').on('click', function(){
+
+        $('.tab-menu.floor li').removeClass('active');
+        $(this).addClass('active');
+
+        var left = $('.tab-menu.floor li.active').offset().left - 20;
+        var curLeft = $('.tab-menu.floor').scrollLeft();
+
+        $('.tab-menu.floor').animate({scrollLeft : curLeft+left}, 400);
+        
+        // 해당 탭 콘텐츠 로드
+        // var content = $(this).data('target');
+        // $('.tab-wrap > div').removeClass('on');
+        // $(content).addClass('on');
+    });
+    
+    // 지도 미니맵, 범례 버튼 on/off
+    $('.map-box .btn-aside').click(function(){
+        $('.map-box .aside').removeClass('on');
+        $(this).parents('.aside').addClass('on');
+    });
+    $('.map-box .btn-close').click(function(){
+        $(this).parents('.aside').removeClass('on');
+    });
+    
+});
+
+</script>
+</body>
+</html>

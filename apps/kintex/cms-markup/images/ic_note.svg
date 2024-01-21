@@ -1,0 +1,20 @@
+<svg id="ico-text" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <path id="패스_57" data-name="패스 57" d="M0,0H20V20H0Z" fill="none"/>
+  <g id="그룹_58" data-name="그룹 58" transform="translate(-900.09 -786.498)">
+    <rect id="사각형_85" data-name="사각형 85" width="13.002" height="13.002" rx="1" transform="translate(903.565 790.429)" fill="#fff"/>
+    <g id="_38df22352ea02d6a350bb627818feeee" data-name="38df22352ea02d6a350bb627818feeee" transform="translate(903 789)">
+      <rect id="사각형_206" data-name="사각형 206" width="14" height="14" transform="translate(0.09 0.498)" fill="#fff"/>
+      <path id="사각형_206_-_윤곽선" data-name="사각형 206 - 윤곽선" d="M1,1V13H13V1H1M0,0H14V14H0Z" transform="translate(0.09 0.498)"/>
+      <rect id="사각형_207" data-name="사각형 207" width="1" height="3" transform="translate(3.09 -0.502)" fill="#fff"/>
+      <path id="사각형_207_-_윤곽선" data-name="사각형 207 - 윤곽선" d="M0,0H1V3H0Z" transform="translate(3.09 -0.502)"/>
+      <rect id="사각형_208" data-name="사각형 208" width="1" height="3" transform="translate(10.09 -0.502)" fill="#fff"/>
+      <path id="사각형_208_-_윤곽선" data-name="사각형 208 - 윤곽선" d="M0,0H1V3H0Z" transform="translate(10.09 -0.502)"/>
+      <rect id="사각형_209" data-name="사각형 209" width="8" height="1" transform="translate(3.09 4.498)" fill="#fff"/>
+      <path id="사각형_209_-_윤곽선" data-name="사각형 209 - 윤곽선" d="M0,0H8V1H0Z" transform="translate(3.09 4.498)"/>
+      <rect id="사각형_210" data-name="사각형 210" width="8" height="1" transform="translate(3.09 7.498)" fill="#fff"/>
+      <path id="사각형_210_-_윤곽선" data-name="사각형 210 - 윤곽선" d="M0,0H8V1H0Z" transform="translate(3.09 7.498)"/>
+      <rect id="사각형_211" data-name="사각형 211" width="8" height="1" transform="translate(3.09 10.498)" fill="#fff"/>
+      <path id="사각형_211_-_윤곽선" data-name="사각형 211 - 윤곽선" d="M0,0H8V1H0Z" transform="translate(3.09 10.498)"/>
+    </g>
+  </g>
+</svg>

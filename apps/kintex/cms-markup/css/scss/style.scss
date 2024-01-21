@@ -1,0 +1,36 @@
+@charset "utf-8";
+$img-path: "../images" !default;
+$font-path: "../css/fonts" !default;
+$font-type: 'Pretendard', 'Malgun Gothic', 'sans-serif', 'Arial';
+
+@import "common/base";
+@import "common/typo";
+@import "common/mixin";
+
+/* 공통사항 */
+html, body {
+    font-family: $font-type;
+    font-size: 0.625em;
+    line-height: 1;
+    font-weight: 400;
+    color: #000;
+    margin: 0 auto;
+    max-width: 768px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+section.content {
+    padding-bottom: 40px;
+}
+$sidePadding: 5.556%; //가로 20px/360px
+
+@import "pages/header";                 // header영역
+@import "pages/search";                 // 검색창 버튼 및 페이지
+@import "pages/main";                   // 빌딩안내 메인
+@import "pages/list";                   // 빌딩안내 리스트페이지 + map-box.view
+@import "pages/detail";                 // 빌딩안내 지도 상세페이지
+@import "pages/popup";                  // 팝업

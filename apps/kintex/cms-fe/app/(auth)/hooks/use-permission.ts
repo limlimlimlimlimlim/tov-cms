@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getPermissionDetail } from '../../../api/permission';
 
 const usePermission = () => {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [permission, setPermission] = useState<any>({});
   const router = useRouter();
 

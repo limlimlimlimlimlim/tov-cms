@@ -202,7 +202,7 @@ export default function PostList() {
           {deletable && (
             <Button
               danger
-              disabled={data.length === 0 || selectedData.length === 0}
+              disabled={data?.length === 0 || selectedData.length === 0}
               onClick={onClickDelete}
             >
               삭제

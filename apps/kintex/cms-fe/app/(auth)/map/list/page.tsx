@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import { EditOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { MapItem } from '../../../../interface/map';
 import BuldingInfoManagementModal from '../../../../component/building-info-management/building-info-management-modal';
 import MapAreaEditorModal from '../../../../component/map-area-editor/map-area-editor-modal';
@@ -37,8 +37,10 @@ export default function MapList() {
   const [updatable, setUpdatable] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [previewMapId, setPreviewMapId] = useState();
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  // const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const router = useRouter();
+  const params = useSearchParams();
+  const [isMaster] = useState(params.get('isMaster') === 'true');
 
   const fetchData = useCallback(
     async ({ keyword, page, count, floor, wing }) => {
@@ -49,14 +51,14 @@ export default function MapList() {
     [],
   );
 
-  useEffect(() => {
-    const userName = localStorage.getItem('cms-user-name');
-    if (userName && userName.toLowerCase() === 'superadmin') {
-      setIsSuperAdmin(true);
-      return;
-    }
-    setIsSuperAdmin(false);
-  }, []);
+  // useEffect(() => {
+  //   const userName = localStorage.getItem('cms-user-name');
+  //   if (userName && userName.toLowerCase() === 'superadmin') {
+  //     setIsSuperAdmin(true);
+  //     return;
+  //   }
+  //   setIsSuperAdmin(false);
+  // }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -248,7 +250,7 @@ export default function MapList() {
               />
             </Form.Item>
           </Flex>
-          {isSuperAdmin && (
+          {isMaster && (
             <Button
               onClick={() => {
                 setIsBuildingManagementModalOpen(true);

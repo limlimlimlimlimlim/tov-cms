@@ -27,75 +27,75 @@ const usePermission = () => {
 
   const getAccountPermissions = useCallback(() => {
     return {
-      read: permission.readAccount,
-      write: permission.writeAccount,
-      delete: permission.deleteAccount,
-      update: permission.editAccount,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getPermissionPermissions = useCallback(() => {
     return {
-      read: permission.readPermission,
-      write: permission.writePermission,
-      delete: permission.deletePermission,
-      update: permission.editPermission,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getSchedulePermissions = useCallback(() => {
     return {
-      read: permission.readSchedule,
-      write: permission.writeSchedule,
-      delete: permission.deleteSchedule,
-      update: permission.editSchedule,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getPostPermissions = useCallback(() => {
     return {
-      read: permission.readPost,
-      write: permission.writePost,
-      delete: permission.deletePost,
-      update: permission.editPost,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getMapPermissions = useCallback(() => {
     return {
-      read: permission.readMap,
-      write: permission.writeMap,
-      delete: permission.deleteMap,
-      update: permission.editMap,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getMapInfoPermissions = useCallback(() => {
     return {
-      read: permission.readMapInfo,
-      write: permission.writeMapInfo,
-      delete: permission.deleteMapInfo,
-      update: permission.editMapInfo,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getFacilityPermissions = useCallback(() => {
     return {
-      read: permission.readFacility,
-      write: permission.writeFacility,
-      delete: permission.deleteFacility,
-      update: permission.editFacility,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   const getKioskPermissions = useCallback(() => {
     return {
-      read: permission.readKiosk,
-      write: permission.writeKiosk,
-      delete: permission.deleteKiosk,
-      update: permission.editKiosk,
+      read: true,
+      write: true,
+      delete: true,
+      update: true,
     };
-  }, [permission]);
+  }, []);
 
   return {
     ready,

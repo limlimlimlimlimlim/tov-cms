@@ -5,9 +5,12 @@ import { Prisma } from '@prisma/client';
 const select = {
   id: true,
   name: true,
+  nameEn: true,
   phone: true,
   address: true,
+  addressEn: true,
   description: true,
+  descriptionEn: true,
   iconType: true,
   status: true,
   x: true,

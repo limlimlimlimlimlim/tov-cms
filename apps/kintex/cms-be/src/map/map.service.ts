@@ -19,6 +19,7 @@ export class MapService {
       select: {
         id: true,
         name: true,
+        nameEn: true,
         createdAt: true,
         updatedAt: true,
         image: true,
@@ -84,6 +85,7 @@ export class MapService {
       select: {
         id: true,
         name: true,
+        nameEn: true,
         createdAt: true,
         updatedAt: true,
         image: true,

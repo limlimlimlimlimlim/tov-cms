@@ -119,9 +119,12 @@ const FacilityForm = ({ data }) => {
 
       await updateFacility(facility.id, {
         name: facility.name,
+        nameEn: facility.nameEn,
         phone: facility.phone,
         address: facility.address,
+        addressEn: facility.addressEn,
         description: facility.description,
+        descriptionEn: facility.descriptionEn,
         iconType: facility.iconType,
         status: facility.status,
         x: facility.x,
@@ -167,9 +170,12 @@ const FacilityForm = ({ data }) => {
 
       await createFacility({
         name: facility.name,
+        nameEn: facility.nameEn,
         phone: facility.phone,
         address: facility.address,
+        addressEn: facility.addressEn,
         description: facility.description,
+        descriptionEn: facility.descriptionEn,
         iconType: facility.iconType,
         status: facility.status,
         x: facility.x,
@@ -252,6 +258,15 @@ const FacilityForm = ({ data }) => {
             }}
           />
         </Form.Item>
+        <Form.Item label="시설명(영문)">
+          <Input
+            value={facility.nameEn}
+            style={{ width: 400 }}
+            onChange={(e) => {
+              setFacility({ ...facility, nameEn: e.target.value });
+            }}
+          />
+        </Form.Item>
         <Form.Item label="건물선택">
           <Flex gap="middle">
             <WingSelect
@@ -298,12 +313,30 @@ const FacilityForm = ({ data }) => {
             }}
           />
         </Form.Item>
+        <Form.Item label="주소(영문)">
+          <Input
+            value={facility.addressEn}
+            style={{ width: 400 }}
+            onChange={(e) => {
+              setFacility({ ...facility, addressEn: e.target.value });
+            }}
+          />
+        </Form.Item>
         <Form.Item label="설명">
           <TextArea
             value={facility.description}
-            style={{ width: 400, height: 200 }}
+            style={{ width: 400, height: 120 }}
             onChange={(e) => {
               setFacility({ ...facility, description: e.target.value });
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="설명(영문)">
+          <TextArea
+            value={facility.descriptionEn}
+            style={{ width: 400, height: 120 }}
+            onChange={(e) => {
+              setFacility({ ...facility, descriptionEn: e.target.value });
             }}
           />
         </Form.Item>

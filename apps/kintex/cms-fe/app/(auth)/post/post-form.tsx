@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
+import { getWings } from '../../../api/building-info';
 
 const { RangePicker } = DatePicker;
 
@@ -63,8 +64,8 @@ const PostForm = ({ data }) => {
   const [postType, setPostType] = useState(PostType.Exhibition);
   const [type, setType] = useState(ContentPostion.Left);
   const [eventPlaceCodes, setEventPlaceCodes] = useState({});
-  const [eventPlaceText, setEventPlaceText] = useState({});
-  const [eventPlaceTextEn, setEventPlaceTextEn] = useState({});
+  const [eventPlaceText, setEventPlaceText] = useState('');
+  const [eventPlaceTextEn, setEventPlaceTextEn] = useState('');
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
   const [textContents, setTextContents] = useState('');
@@ -73,11 +74,44 @@ const PostForm = ({ data }) => {
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
   const [eventStartDate, setEventStartDate] = useState<any>(dayjs());
-  const [evnetEndDate, setEventEndDate] = useState<any>(dayjs());
+  const [eventEndDate, setEventEndDate] = useState<any>(dayjs());
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [useIntro, setUseIntro] = useState(false);
   const [isDisabledIntro, setIsDisabledIntro] = useState(false);
+  const [wings, setWings] = useState([]);
+
+  const fetchData = async () => {
+    const result = await getWings();
+    setWings(result.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+    if (data?.eventPlaceCodes) {
+      const codes = data.eventPlaceCodes.split(',');
+      const codeMap = codes.reduce((acc, data) => {
+        acc[data] = true;
+        return acc;
+      }, {});
+      setEventPlaceCodes(codeMap);
+    }
+  }, [data]);
+
+  const createEventPlaceCheckbox = useCallback(() => {
+    return wings.map((w: any) => (
+      <Checkbox
+        key={w.id}
+        value={w.id}
+        checked={eventPlaceCodes[w.id]}
+        onChange={(e) => {
+          setEventPlaceCodes({ ...eventPlaceCodes, [w.id]: e.target.checked });
+        }}
+      >
+        {w.name}
+      </Checkbox>
+    ));
+  }, [eventPlaceCodes, wings]);
 
   useEffect(() => {
     setIsDisabledIntro(
@@ -91,6 +125,7 @@ const PostForm = ({ data }) => {
     if (data) {
       setIsEdit(true);
       setName(data.name);
+      setNameEn(data.nameEn);
       setType(data.type);
       setImageContents(data.imageContents);
       setVideoContents(data.videoContents);
@@ -101,6 +136,11 @@ const PostForm = ({ data }) => {
       setStatus(data.status);
       setNoPeriod(data.noPeriod);
       setUseIntro(data.useIntro);
+      setPostType(data.postType);
+      setEventPlaceText(data.eventPlaceText);
+      setEventPlaceTextEn(data.eventPlaceTextEn);
+      setTextContents(data.textContents);
+      setTextContentsEn(data.textContentsEn);
     }
   }, [data]);
 
@@ -118,12 +158,15 @@ const PostForm = ({ data }) => {
             textContents,
             textContentsEn,
             contentsType,
-            eventPlaceCodes: Object.keys(eventPlaceCodes).join(),
+            eventPlaceCodes: Object.entries(eventPlaceCodes)
+              .filter((e) => e[1])
+              .map((e) => e[0])
+              .join(),
             status,
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
-            eventEndDate: evnetEndDate.toDate(),
+            eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
           });
@@ -139,7 +182,7 @@ const PostForm = ({ data }) => {
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
-            eventEndDate: evnetEndDate.toDate(),
+            eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
           });
@@ -158,12 +201,15 @@ const PostForm = ({ data }) => {
             textContents,
             textContentsEn,
             contentsType,
-            eventPlaceCodes: Object.keys(eventPlaceCodes).join(),
+            eventPlaceCodes: Object.entries(eventPlaceCodes)
+              .filter((e) => e[1])
+              .map((e) => e[0])
+              .join(),
             status,
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
-            eventEndDate: evnetEndDate.toDate(),
+            eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
           });
@@ -180,7 +226,7 @@ const PostForm = ({ data }) => {
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
-            eventEndDate: evnetEndDate.toDate(),
+            eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
           });
@@ -195,7 +241,11 @@ const PostForm = ({ data }) => {
     contentsType,
     data,
     endDate,
+    eventEndDate,
     eventPlaceCodes,
+    eventPlaceText,
+    eventPlaceTextEn,
+    eventStartDate,
     imageContents,
     isEdit,
     name,
@@ -285,22 +335,13 @@ const PostForm = ({ data }) => {
 
         <Form.Item label="행사 장소">
           <Flex gap="small" wrap="wrap" style={{ width: 500 }}>
-            <Checkbox>전시홀 1</Checkbox>
-            <Checkbox>전시홀 2</Checkbox>
-            <Checkbox>전시홀 3</Checkbox>
-            <Checkbox>전시홀 4</Checkbox>
-            <Checkbox>전시홀 5</Checkbox>
-            <Checkbox>전시홀 6</Checkbox>
-            <Checkbox>전시홀 7</Checkbox>
-            <Checkbox>전시홀 8</Checkbox>
-            <Checkbox>전시홀 9</Checkbox>
-            <Checkbox>전시홀 10</Checkbox>
+            {createEventPlaceCheckbox()}
           </Flex>
         </Form.Item>
 
         <Form.Item label="행사 기간">
           <RangePicker
-            value={[eventStartDate, evnetEndDate]}
+            value={[eventStartDate, eventEndDate]}
             onChange={(values) => {
               if (!values) return;
               setEventStartDate(values[0]);
@@ -361,19 +402,20 @@ const PostForm = ({ data }) => {
       </>
     );
   }, [
-    contentsType,
-    endDate,
-    eventStartDate,
-    evnetEndDate,
     imageContents,
-    isDisabledIntro,
-    noPeriod,
-    startDate,
+    videoContents,
     textContents,
     textContentsEn,
     type,
+    createEventPlaceCheckbox,
+    eventStartDate,
+    eventEndDate,
+    contentsType,
+    startDate,
+    endDate,
+    noPeriod,
+    isDisabledIntro,
     useIntro,
-    videoContents,
   ]);
 
   const createConferenceForm = useCallback(() => {
@@ -382,6 +424,7 @@ const PostForm = ({ data }) => {
         <Form.Item label="행사 장소">
           <Input
             style={{ width: 300 }}
+            value={eventPlaceText}
             onChange={(e) => {
               setEventPlaceText(e.target.value);
             }}
@@ -390,6 +433,7 @@ const PostForm = ({ data }) => {
         <Form.Item label="행사 장소(영문)">
           <Input
             style={{ width: 300 }}
+            value={eventPlaceTextEn}
             onChange={(e) => {
               setEventPlaceTextEn(e.target.value);
             }}
@@ -397,7 +441,7 @@ const PostForm = ({ data }) => {
         </Form.Item>
         <Form.Item label="행사 기간">
           <RangePicker
-            value={[startDate, endDate]}
+            value={[eventStartDate, eventEndDate]}
             onChange={(values) => {
               if (!values) return;
               setEventStartDate(values[0]);
@@ -428,7 +472,15 @@ const PostForm = ({ data }) => {
         </Form.Item>
       </>
     );
-  }, [endDate, noPeriod, startDate]);
+  }, [
+    endDate,
+    eventEndDate,
+    eventPlaceText,
+    eventPlaceTextEn,
+    eventStartDate,
+    noPeriod,
+    startDate,
+  ]);
 
   return (
     <Flex vertical gap="middle">

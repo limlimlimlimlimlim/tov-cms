@@ -205,6 +205,7 @@ model Kiosk {
 
 model Post{
   id                  Int         @default(autoincrement()) @id
+  postType            String?
   name                String
   nameEn              String?
   imageContents       String?
@@ -218,6 +219,8 @@ model Post{
   contentsType        String
   startDate           DateTime?
   endDate             DateTime?
+  eventStartDate      DateTime?
+  eventEndDate        DateTime?
   status              String
   noPeriod            Boolean
   useIntro            Boolean

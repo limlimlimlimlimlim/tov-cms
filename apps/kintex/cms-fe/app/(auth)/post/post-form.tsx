@@ -45,12 +45,14 @@ enum ContentType {
   Text = 'text',
   ImageText = 'image_text',
   VideoText = 'video_text',
+  None = 'none',
 }
 
 enum ContentPostion {
   Left = 'left',
   Right = 'right',
   Top = 'top',
+  None = 'none',
 }
 
 const PostForm = ({ data }) => {
@@ -60,6 +62,9 @@ const PostForm = ({ data }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [postType, setPostType] = useState(PostType.Exhibition);
   const [type, setType] = useState(ContentPostion.Left);
+  const [eventPlaceCodes, setEventPlaceCodes] = useState({});
+  const [eventPlaceText, setEventPlaceText] = useState({});
+  const [eventPlaceTextEn, setEventPlaceTextEn] = useState({});
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
   const [textContents, setTextContents] = useState('');
@@ -67,6 +72,8 @@ const PostForm = ({ data }) => {
   const [contentsType, setContentsType] = useState(ContentType.Image);
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
+  const [eventStartDate, setEventStartDate] = useState<any>(dayjs());
+  const [evnetEndDate, setEventEndDate] = useState<any>(dayjs());
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [useIntro, setUseIntro] = useState(false);
@@ -100,34 +107,84 @@ const PostForm = ({ data }) => {
   const onFinish = useCallback(async () => {
     try {
       if (isEdit) {
-        await updatePost(data.id, {
-          name,
-          type,
-          imageContents,
-          videoContents,
-          textContents,
-          contentsType,
-          status,
-          startDate: startDate.toDate(),
-          endDate: endDate.toDate(),
-          noPeriod,
-          useIntro: contentsType !== ContentType.Text ? useIntro : false,
-        });
+        if (postType === PostType.Exhibition) {
+          await updatePost(data.id, {
+            name,
+            nameEn,
+            postType,
+            type,
+            imageContents,
+            videoContents,
+            textContents,
+            textContentsEn,
+            contentsType,
+            eventPlaceCodes: Object.keys(eventPlaceCodes).join(),
+            status,
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            eventStartDate: eventStartDate.toDate(),
+            eventEndDate: evnetEndDate.toDate(),
+            noPeriod,
+            useIntro: contentsType !== ContentType.Text ? useIntro : false,
+          });
+        } else if (postType === PostType.Conference) {
+          await updatePost(data.id, {
+            name,
+            nameEn,
+            postType,
+            type: ContentPostion.None,
+            status,
+            eventPlaceText,
+            eventPlaceTextEn,
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            eventStartDate: eventStartDate.toDate(),
+            eventEndDate: evnetEndDate.toDate(),
+            noPeriod,
+            useIntro: contentsType !== ContentType.Text ? useIntro : false,
+          });
+        }
+
         void message.success('게시물이 수정됐습니다.');
       } else {
-        await createPost({
-          name,
-          type,
-          imageContents,
-          videoContents,
-          textContents,
-          contentsType,
-          status,
-          startDate: startDate.toDate(),
-          endDate: endDate.toDate(),
-          noPeriod,
-          useIntro,
-        });
+        if (postType === PostType.Exhibition) {
+          await createPost({
+            name,
+            nameEn,
+            postType,
+            type,
+            imageContents,
+            videoContents,
+            textContents,
+            textContentsEn,
+            contentsType,
+            eventPlaceCodes: Object.keys(eventPlaceCodes).join(),
+            status,
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            eventStartDate: eventStartDate.toDate(),
+            eventEndDate: evnetEndDate.toDate(),
+            noPeriod,
+            useIntro: contentsType !== ContentType.Text ? useIntro : false,
+          });
+        } else if (postType === PostType.Conference) {
+          await createPost({
+            name,
+            nameEn,
+            postType,
+            type: ContentPostion.None,
+            status,
+            contentsType: ContentType.None,
+            eventPlaceText,
+            eventPlaceTextEn,
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            eventStartDate: eventStartDate.toDate(),
+            eventEndDate: evnetEndDate.toDate(),
+            noPeriod,
+            useIntro: contentsType !== ContentType.Text ? useIntro : false,
+          });
+        }
         void message.success('게시물이 생성됐습니다.');
       }
       router.push('/post/list');
@@ -138,14 +195,18 @@ const PostForm = ({ data }) => {
     contentsType,
     data,
     endDate,
+    eventPlaceCodes,
     imageContents,
     isEdit,
     name,
+    nameEn,
     noPeriod,
+    postType,
     router,
     startDate,
     status,
     textContents,
+    textContentsEn,
     type,
     useIntro,
     videoContents,
@@ -239,11 +300,11 @@ const PostForm = ({ data }) => {
 
         <Form.Item label="행사 기간">
           <RangePicker
-            value={[startDate, endDate]}
+            value={[eventStartDate, evnetEndDate]}
             onChange={(values) => {
               if (!values) return;
-              setStartDate(values[0]);
-              setEndDate(values[1]);
+              setEventStartDate(values[0]);
+              setEventEndDate(values[1]);
             }}
           />
         </Form.Item>
@@ -302,12 +363,14 @@ const PostForm = ({ data }) => {
   }, [
     contentsType,
     endDate,
+    eventStartDate,
+    evnetEndDate,
     imageContents,
     isDisabledIntro,
     noPeriod,
     startDate,
-    status,
     textContents,
+    textContentsEn,
     type,
     useIntro,
     videoContents,
@@ -317,15 +380,28 @@ const PostForm = ({ data }) => {
     return (
       <>
         <Form.Item label="행사 장소">
-          <Input style={{ width: 300 }} />
+          <Input
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setEventPlaceText(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="행사 장소(영문)">
+          <Input
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setEventPlaceTextEn(e.target.value);
+            }}
+          />
         </Form.Item>
         <Form.Item label="행사 기간">
           <RangePicker
             value={[startDate, endDate]}
             onChange={(values) => {
               if (!values) return;
-              setStartDate(values[0]);
-              setEndDate(values[1]);
+              setEventStartDate(values[0]);
+              setEventEndDate(values[1]);
             }}
           />
         </Form.Item>

@@ -106,6 +106,7 @@ export class PostService {
   }
 
   async updatePost(id: number, data: Prisma.PostUpdateInput) {
+    console.log(data);
     const post = await this.prisma.post.findUnique({
       where: { id },
     });

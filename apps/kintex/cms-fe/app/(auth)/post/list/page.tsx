@@ -70,17 +70,15 @@ export default function PostList() {
         dataIndex: 'name',
       },
       {
-        title: '게시물타입',
+        title: '유형',
         width: 150,
-        dataIndex: 'type',
+        dataIndex: 'postType',
         render(type) {
           switch (type) {
-            case 'left':
-              return '왼쪽';
-            case 'right':
-              return '오른쪽';
-            case 'top':
-              return '상단';
+            case 'exhibition':
+              return '전시안내';
+            case 'conference':
+              return '회의안내';
           }
           return '';
         },

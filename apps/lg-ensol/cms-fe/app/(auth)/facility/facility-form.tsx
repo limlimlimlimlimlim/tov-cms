@@ -8,7 +8,7 @@ import WingSelect from '../../../component/wing-select/wing-select';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import { getMapByWingAndFloor } from '../../../api/map';
 import { createFacility, updateFacility } from '../../../api/facility';
-import MapViewer from '../../../component/map-viewer/map-viewer';
+import { MapViewer } from '../../../component/map-viewer/map-viewer';
 import FacilityPositionManagementModal from '../../../component/facility-position-management/facility-position-management-modal';
 import CategorySelect from '../../../component/category-select/category-select';
 import SubCategorySelect from '../../../component/sub-category-select/sub-category-select';
@@ -55,6 +55,13 @@ const FacilityForm = ({ data }) => {
     y: 0,
     status: 'enabled',
     sectionId: null,
+    section: null,
+    padding: {
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+    },
   });
 
   const getMap = useCallback(
@@ -107,55 +114,34 @@ const FacilityForm = ({ data }) => {
   }, [facility.iconType]);
 
   const onFinish = useCallback(async () => {
-    try {
-      if (isEdit) {
-        const { section } = facility;
-        const temp = { ...facility };
-        delete temp.category;
-        delete temp.subCategory;
-        delete temp.floor;
-        delete temp.section;
-        delete temp.wing;
-        delete temp.map;
+    if (isEdit) {
+      const { section } = facility;
 
-        await updateFacility(facility.id, {
-          ...temp,
-        });
+      await updateFacility(facility.id, {
+        name: facility.name,
+        phone: facility.phone,
+        address: facility.address,
+        description: facility.description,
+        iconType: facility.iconType,
+        status: facility.status,
+        x: facility.x,
+        y: facility.y,
+        wingId,
+        floorId,
+        tags: facility.tags,
+        fontSize: facility.fontSize,
+        iconColor: facility.iconColor,
+        tooltipColor: facility.tooltipColor,
+        paddingTop: facility.paddingTop,
+        paddingBottom: facility.paddingBottom,
+        paddingRight: facility.paddingRight,
+        paddingLeft: facility.paddingLeft,
+        categoryId: facility.categoryId,
+        subCategoryId: facility.subCategoryId,
+        sectionId: facility.section?.id,
+      });
 
-        if (section) {
-          const paintOptions = {
-            color: section.color,
-            alpha: section.alpha,
-            strokeWidth: section.strokeWidth,
-            strokeColor: section.strokeColor,
-            strokeAlpha: section.strokeAlpha,
-          };
-
-          let promises;
-          if (section.group) {
-            promises = section.group.sections.map(async (s) =>
-              updateSectionPaintOptionById(s.id, paintOptions),
-            );
-          } else {
-            promises = [updateSectionPaintOptionById(section.id, paintOptions)];
-          }
-          await Promise.all(promises);
-        }
-
-        void message.success('시설이 수정됐습니다.');
-      } else {
-        const { section } = facility;
-        const temp = { ...facility };
-        delete temp.category;
-        delete temp.subCategory;
-        delete temp.floor;
-        delete temp.section;
-        delete temp.wing;
-        delete temp.map;
-        await createFacility({
-          ...temp,
-        });
-
+      if (section) {
         const paintOptions = {
           color: section.color,
           alpha: section.alpha,
@@ -173,15 +159,61 @@ const FacilityForm = ({ data }) => {
           promises = [updateSectionPaintOptionById(section.id, paintOptions)];
         }
         await Promise.all(promises);
-
-        void message.success('시설이 생성됐습니다.');
       }
 
-      router.push('/facility/list');
-    } catch (e) {
-      void message.error(e.message);
+      void message.success('시설이 수정됐습니다.');
+    } else {
+      const { section } = facility;
+
+      await createFacility({
+        name: facility.name,
+        phone: facility.phone,
+        address: facility.address,
+        description: facility.description,
+        iconType: facility.iconType,
+        status: facility.status,
+        x: facility.x,
+        y: facility.y,
+        wingId,
+        floorId,
+        tags: facility.tags,
+        fontSize: facility.fontSize,
+        iconColor: facility.iconColor,
+        tooltipColor: facility.tooltipColor,
+        paddingTop: facility.paddingTop,
+        paddingBottom: facility.paddingBottom,
+        paddingRight: facility.paddingRight,
+        paddingLeft: facility.paddingLeft,
+        categoryId: facility.categoryId,
+        subCategoryId: facility.subCategoryId,
+        sectionId: facility.section?.id,
+      });
+
+      if (section) {
+        const paintOptions = {
+          color: section.color,
+          alpha: section.alpha,
+          strokeWidth: section.strokeWidth,
+          strokeColor: section.strokeColor,
+          strokeAlpha: section.strokeAlpha,
+        };
+
+        let promises;
+        if (section.group) {
+          promises = section.group.sections.map(async (s) =>
+            updateSectionPaintOptionById(s.id, paintOptions),
+          );
+        } else {
+          promises = [updateSectionPaintOptionById(section.id, paintOptions)];
+        }
+        await Promise.all(promises);
+      }
+
+      void message.success('시설이 생성됐습니다.');
     }
-  }, [isEdit, router, facility]);
+
+    router.push('/facility/list');
+  }, [isEdit, router, facility, wingId, floorId]);
 
   return (
     <Flex vertical gap="middle">
@@ -363,6 +395,10 @@ const FacilityForm = ({ data }) => {
           setMapSections([...originMapSections]);
         }}
         onOk={(data) => {
+          if (!data) {
+            setIsOpenModal(false);
+            return;
+          }
           setFacility({
             ...facility,
             ...data.position,
@@ -372,6 +408,10 @@ const FacilityForm = ({ data }) => {
             padding: data.padding,
             section: data.section,
             sectionId: data.section?.id,
+            paddingTop: data.padding.top,
+            paddingBottom: data.padding.bottom,
+            paddingLeft: data.padding.left,
+            paddingRight: data.padding.right,
           });
 
           if (data.section) {

@@ -1,5 +1,5 @@
 import { Divider, Modal } from 'antd';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import FacilityPositionManagement from './facility-position-management';
 
 interface ComponentProps {
@@ -34,9 +34,7 @@ export default function FacilityPositionManagementModal({
       cancelText="취소"
       open={open}
       onOk={() => {
-        onOk({
-          ...facilityData.current,
-        });
+        onOk(facilityData.current);
       }}
       onCancel={() => {
         onCancel();

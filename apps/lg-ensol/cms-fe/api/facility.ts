@@ -21,21 +21,10 @@ export const getFacilityDetail = async (id) => {
 };
 
 export const createFacility = async (data) => {
-  data.paddingTop = data.padding.top;
-  data.paddingBottom = data.padding.bottom;
-  data.paddingLeft = data.padding.left;
-  data.paddingRight = data.padding.right;
-  delete data.padding;
   return axiosClient.post('/facility', data);
 };
 
 export const updateFacility = async (id, data) => {
-  console.log(data);
-  data.paddingTop = data.padding.top;
-  data.paddingBottom = data.padding.bottom;
-  data.paddingLeft = data.padding.left;
-  data.paddingRight = data.padding.right;
-  delete data.padding;
   return axiosClient.patch(`/facility/${id}`, data);
 };
 

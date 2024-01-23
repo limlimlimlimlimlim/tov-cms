@@ -56,7 +56,7 @@ export class FacilityController {
   @Patch(':id')
   async updateFacility(
     @Param('id') id: number,
-    @Body() data: Prisma.FacilityUpdateInput,
+    @Body() data: Prisma.FacilityUncheckedUpdateInput,
   ) {
     const sameFacility = await this.facilityService.getFacilityById(+id);
     if (!sameFacility) {

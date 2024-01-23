@@ -37,6 +37,7 @@ export default function MapForm({ data }) {
   const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');
+  const [nameEn, setNameEn] = useState('');
   const [image, setImage] = useState('');
   const [isUse, setIsUse] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -47,6 +48,7 @@ export default function MapForm({ data }) {
       setWingId(data.wing.id);
       setFloorId(data.floor.id);
       setName(data.name);
+      setNameEn(data.nameEn);
       setImage(data.image);
       setIsUse(data.isUse);
     }
@@ -59,6 +61,7 @@ export default function MapForm({ data }) {
           floorId,
           wingId,
           name,
+          nameEn,
           isUse,
           image,
         });
@@ -68,6 +71,7 @@ export default function MapForm({ data }) {
           floorId,
           wingId,
           name,
+          nameEn,
           isUse,
           image,
         });
@@ -78,7 +82,7 @@ export default function MapForm({ data }) {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [isEdit, router, data?.id, floorId, wingId, name, isUse, image]);
+  }, [isEdit, router, data, floorId, wingId, name, nameEn, isUse, image]);
 
   const onChangeFloor = useCallback((floor) => {
     setFloorId(floor);
@@ -91,6 +95,10 @@ export default function MapForm({ data }) {
 
   const onChageName = useCallback((e) => {
     setName(e.target.value);
+  }, []);
+
+  const onChageNameEn = useCallback((e) => {
+    setNameEn(e.target.value);
   }, []);
 
   const onCompleteUpload = useCallback(({ fileName }) => {
@@ -143,6 +151,13 @@ export default function MapForm({ data }) {
         </Form.Item>
         <Form.Item label="지도 이름" rules={[{ required: true }]}>
           <Input value={name} style={{ width: 200 }} onChange={onChageName} />
+        </Form.Item>
+        <Form.Item label="지도 이름(영문)" rules={[{ required: true }]}>
+          <Input
+            value={nameEn}
+            style={{ width: 200 }}
+            onChange={onChageNameEn}
+          />
         </Form.Item>
         <Form.Item label="지도파일 등록">
           <ContentsUploader source={image} onComplete={onCompleteUpload} />

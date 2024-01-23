@@ -100,7 +100,7 @@ const FacilityForm = ({ data }) => {
 
   useEffect(() => {
     void getMap(wingId, floorId);
-  }, [wingId, floorId, getMap]);
+  }, [wingId, floorId]);
 
   useEffect(() => {
     switch (facility.iconType) {

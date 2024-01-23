@@ -100,7 +100,7 @@ const FacilityForm = ({ data }) => {
 
   useEffect(() => {
     void getMap(wingId, floorId);
-  }, [wingId, floorId, getMap]);
+  }, [wingId, floorId]); //getMap 의존성 추가하지 않음
 
   useEffect(() => {
     switch (facility.iconType) {

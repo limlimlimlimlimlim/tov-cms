@@ -240,6 +240,8 @@ const PostForm = ({ data }) => {
       setVideoContents(data.videoContents);
       setTextContents(data.textContents);
       setContentsType(data.contentsType);
+      setEventStartDate(dayjs(data.eventStartDate));
+      setEventEndDate(dayjs(data.eventEndDate));
       setStartDate(dayjs(data.startDate));
       setEndDate(dayjs(data.endDate));
       setStatus(data.status);
@@ -583,7 +585,6 @@ const PostForm = ({ data }) => {
               <Radio.Group
                 value={exhibitionType}
                 onChange={(e) => {
-                  setEventPlaceCodes({});
                   setExhibitionType(e.target.value);
                 }}
               >
@@ -602,6 +603,7 @@ const PostForm = ({ data }) => {
             value={[eventStartDate, eventEndDate]}
             onChange={(values) => {
               if (!values) return;
+              console.log(values);
               setEventStartDate(values[0]);
               setEventEndDate(values[1]);
             }}

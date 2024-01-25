@@ -57,8 +57,8 @@ enum ContentPostion {
 }
 
 enum ExhibitionType {
-  Exh1 = 'exh1',
-  Exh2 = 'exh2',
+  Exh1 = 'EXH1',
+  Exh2 = 'EXH2',
 }
 
 const PostForm = ({ data }) => {

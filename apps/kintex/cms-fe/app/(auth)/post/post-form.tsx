@@ -277,50 +277,50 @@ const PostForm = ({ data }) => {
         ),
       },
 
-      {
-        label: '영상',
-        key: 'video',
-        children: (
-          <ContentsUploader
-            source={videoContents}
-            type="video"
-            onComplete={({ fileName }) => {
-              setVideoContents(fileName);
-            }}
-          />
-        ),
-      },
-      {
-        label: '텍스트',
-        key: 'text',
-        children: (
-          <Flex vertical>
-            <Form.Item label="한글">
-              <Input.TextArea
-                defaultValue={textContents}
-                style={{ height: 150 }}
-                onChange={(e) => {
-                  setTextContents(e.target.value);
-                }}
-              />
-            </Form.Item>
+      // {
+      //   label: '영상',
+      //   key: 'video',
+      //   children: (
+      //     <ContentsUploader
+      //       source={videoContents}
+      //       type="video"
+      //       onComplete={({ fileName }) => {
+      //         setVideoContents(fileName);
+      //       }}
+      //     />
+      //   ),
+      // },
+      // {
+      //   label: '텍스트',
+      //   key: 'text',
+      //   children: (
+      //     <Flex vertical>
+      //       <Form.Item label="한글">
+      //         <Input.TextArea
+      //           defaultValue={textContents}
+      //           style={{ height: 150 }}
+      //           onChange={(e) => {
+      //             setTextContents(e.target.value);
+      //           }}
+      //         />
+      //       </Form.Item>
 
-            <Form.Item label="영문">
-              <Input.TextArea
-                defaultValue={textContentsEn}
-                style={{ height: 150 }}
-                onChange={(e) => {
-                  setTextContentsEn(e.target.value);
-                }}
-              />
-            </Form.Item>
-          </Flex>
-        ),
-      },
+      //       <Form.Item label="영문">
+      //         <Input.TextArea
+      //           defaultValue={textContentsEn}
+      //           style={{ height: 150 }}
+      //           onChange={(e) => {
+      //             setTextContentsEn(e.target.value);
+      //           }}
+      //         />
+      //       </Form.Item>
+      //     </Flex>
+      //   ),
+      // },
     ];
     return (
       <>
-        <Form.Item label="게시물 위치">
+        {/* <Form.Item label="게시물 위치">
           <Radio.Group
             value={type}
             onChange={(e) => {
@@ -331,7 +331,7 @@ const PostForm = ({ data }) => {
             <Radio value={ContentPostion.Right}>오른쪽</Radio>
             <Radio value={ContentPostion.Top}>상단</Radio>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item label="행사 장소">
           <Flex gap="small" wrap="wrap" style={{ width: 500 }}>
@@ -350,7 +350,7 @@ const PostForm = ({ data }) => {
           />
         </Form.Item>
 
-        <Form.Item label="게시물 타입">
+        {/* <Form.Item label="게시물 타입">
           <Radio.Group
             value={contentsType}
             onChange={(e) => {
@@ -363,7 +363,7 @@ const PostForm = ({ data }) => {
             <Radio value={ContentType.ImageText}>이미지+텍스트</Radio>
             <Radio value={ContentType.VideoText}>영상+텍스트</Radio>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item label="콘텐츠">
           <Tabs items={items} />
@@ -389,7 +389,7 @@ const PostForm = ({ data }) => {
             </Checkbox>
           </Flex>
         </Form.Item>
-        {!isDisabledIntro && (
+        {/* {!isDisabledIntro && (
           <Form.Item label="인트로 콘텐츠 노출">
             <Switch
               checked={useIntro}
@@ -398,24 +398,17 @@ const PostForm = ({ data }) => {
               }}
             />
           </Form.Item>
-        )}
+        )} */}
       </>
     );
   }, [
     imageContents,
-    videoContents,
-    textContents,
-    textContentsEn,
-    type,
     createEventPlaceCheckbox,
     eventStartDate,
     eventEndDate,
-    contentsType,
     startDate,
     endDate,
     noPeriod,
-    isDisabledIntro,
-    useIntro,
   ]);
 
   const createConferenceForm = useCallback(() => {

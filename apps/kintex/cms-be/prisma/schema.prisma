@@ -223,6 +223,7 @@ model Post{
   feeEn               String?     @db.Text
   cast                String?     @db.Text
   castEn              String?     @db.Text
+  exhibitionType      String?     
   type                String
   contentsType        String
   startDate           DateTime?

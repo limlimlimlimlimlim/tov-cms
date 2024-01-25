@@ -56,6 +56,11 @@ enum ContentPostion {
   None = 'none',
 }
 
+enum ExhibitionType {
+  Exh1 = 'exh1',
+  Exh2 = 'exh2',
+}
+
 const PostForm = ({ data }) => {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -88,6 +93,7 @@ const PostForm = ({ data }) => {
   const [feeEn, setFeeEn] = useState('');
   const [cast, setCast] = useState('');
   const [castEn, setCastEn] = useState('');
+  const [exhibitionType, setExhibitionType] = useState(ExhibitionType.Exh1);
 
   const fetchData = async () => {
     const result = await getWings();
@@ -106,20 +112,44 @@ const PostForm = ({ data }) => {
     }
   }, [data]);
 
-  const createEventPlaceCheckbox = useCallback(() => {
-    return wings.map((w: any) => (
-      <Checkbox
-        key={w.id}
-        value={w.id}
-        checked={eventPlaceCodes[w.id]}
-        onChange={(e) => {
-          setEventPlaceCodes({ ...eventPlaceCodes, [w.id]: e.target.checked });
-        }}
-      >
-        {w.name}
-      </Checkbox>
-    ));
-  }, [eventPlaceCodes, wings]);
+  const createEventPlaceCheckbox = useCallback(
+    (type) => {
+      const data = {
+        [ExhibitionType.Exh1]: [
+          { name: '전시홀1', value: 'H1' },
+          { name: '전시홀2', value: 'H2' },
+          { name: '전시홀3', value: 'H3' },
+          { name: '전시홀4', value: 'H4' },
+          { name: '전시홀5A', value: 'H5A' },
+          { name: '전시홀5B', value: 'H5B' },
+        ],
+        [ExhibitionType.Exh2]: [
+          { name: '전시홀6', value: 'H6' },
+          { name: '전시홀7', value: 'H7' },
+          { name: '전시홀8', value: 'H8' },
+          { name: '전시홀9', value: 'H9' },
+          { name: '전시홀10', value: 'H10' },
+        ],
+      };
+
+      return data[type].map((exh: any) => (
+        <Checkbox
+          key={exh.value}
+          value={exh.value}
+          checked={eventPlaceCodes[exh.value]}
+          onChange={(e) => {
+            setEventPlaceCodes({
+              ...eventPlaceCodes,
+              [exh.value]: e.target.checked,
+            });
+          }}
+        >
+          {exh.name}
+        </Checkbox>
+      ));
+    },
+    [eventPlaceCodes],
+  );
 
   useEffect(() => {
     setIsDisabledIntro(
@@ -157,6 +187,7 @@ const PostForm = ({ data }) => {
       setFeeEn(data.feeEn);
       setCast(data.cast);
       setCastEn(data.castEn);
+      setExhibitionType(data.exhibitionType);
     }
   }, [data]);
 
@@ -185,6 +216,15 @@ const PostForm = ({ data }) => {
             eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
+            organizer,
+            organizerEn,
+            viewingTime,
+            viewingTimeEn,
+            fee,
+            feeEn,
+            cast,
+            castEn,
+            exhibitionType,
           });
         } else if (postType === PostType.Conference) {
           await updatePost(data.id, {
@@ -201,6 +241,15 @@ const PostForm = ({ data }) => {
             eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
+            organizer,
+            organizerEn,
+            viewingTime,
+            viewingTimeEn,
+            fee,
+            feeEn,
+            cast,
+            castEn,
+            exhibitionType,
           });
         }
 
@@ -228,6 +277,15 @@ const PostForm = ({ data }) => {
             eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
+            organizer,
+            organizerEn,
+            viewingTime,
+            viewingTimeEn,
+            fee,
+            feeEn,
+            cast,
+            castEn,
+            exhibitionType,
           });
         } else if (postType === PostType.Conference) {
           await createPost({
@@ -245,6 +303,15 @@ const PostForm = ({ data }) => {
             eventEndDate: eventEndDate.toDate(),
             noPeriod,
             useIntro: contentsType !== ContentType.Text ? useIntro : false,
+            organizer,
+            organizerEn,
+            viewingTime,
+            viewingTimeEn,
+            fee,
+            feeEn,
+            cast,
+            castEn,
+            exhibitionType,
           });
         }
         void message.success('게시물이 생성됐습니다.');
@@ -254,6 +321,8 @@ const PostForm = ({ data }) => {
       void message.error(e.message);
     }
   }, [
+    cast,
+    castEn,
     contentsType,
     data,
     endDate,
@@ -262,11 +331,16 @@ const PostForm = ({ data }) => {
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
+    exhibitionType,
+    fee,
+    feeEn,
     imageContents,
     isEdit,
     name,
     nameEn,
     noPeriod,
+    organizer,
+    organizerEn,
     postType,
     router,
     startDate,
@@ -276,6 +350,8 @@ const PostForm = ({ data }) => {
     type,
     useIntro,
     videoContents,
+    viewingTime,
+    viewingTimeEn,
   ]);
 
   const createExhibitionForm = useCallback(() => {
@@ -386,18 +462,18 @@ const PostForm = ({ data }) => {
           />
         </Form.Item>
         <Form.Item label="입장료" rules={[{ required: true }]}>
-          <Input
+          <Input.TextArea
             value={fee}
-            style={{ width: 300 }}
+            style={{ width: 300, height: 60 }}
             onChange={(e) => {
               setFee(e.target.value);
             }}
           />
         </Form.Item>
         <Form.Item label="입장료(영문)" rules={[{ required: true }]}>
-          <Input
+          <Input.TextArea
             value={feeEn}
-            style={{ width: 300 }}
+            style={{ width: 300, height: 60 }}
             onChange={(e) => {
               setFeeEn(e.target.value);
             }}
@@ -423,8 +499,22 @@ const PostForm = ({ data }) => {
         </Form.Item>
 
         <Form.Item label="행사 장소">
-          <Flex gap="small" wrap="wrap" style={{ width: 500 }}>
-            {createEventPlaceCheckbox()}
+          <Flex vertical gap="small">
+            <div>
+              <Radio.Group
+                value={exhibitionType}
+                onChange={(e) => {
+                  setEventPlaceCodes({});
+                  setExhibitionType(e.target.value);
+                }}
+              >
+                <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
+                <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
+              </Radio.Group>
+            </div>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
+              {createEventPlaceCheckbox(exhibitionType)}
+            </Flex>
           </Flex>
         </Form.Item>
 
@@ -492,6 +582,15 @@ const PostForm = ({ data }) => {
     );
   }, [
     imageContents,
+    organizer,
+    organizerEn,
+    viewingTime,
+    viewingTimeEn,
+    fee,
+    feeEn,
+    cast,
+    castEn,
+    exhibitionType,
     createEventPlaceCheckbox,
     eventStartDate,
     eventEndDate,

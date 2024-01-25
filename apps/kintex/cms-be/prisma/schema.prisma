@@ -215,6 +215,14 @@ model Post{
   eventPlaceCodes     String?
   eventPlaceText      String?     @db.Text
   eventPlaceTextEn    String?     @db.Text
+  organizer           String?     @db.Text
+  organizerEn         String?     @db.Text
+  viewingTime         String?     @db.Text
+  viewingTimeEn       String?     @db.Text
+  fee                 String?     @db.Text
+  feeEn               String?     @db.Text
+  cast                String?     @db.Text
+  castEn              String?     @db.Text
   type                String
   contentsType        String
   startDate           DateTime?

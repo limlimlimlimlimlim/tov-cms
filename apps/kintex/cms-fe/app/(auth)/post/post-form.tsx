@@ -80,6 +80,14 @@ const PostForm = ({ data }) => {
   const [useIntro, setUseIntro] = useState(false);
   const [isDisabledIntro, setIsDisabledIntro] = useState(false);
   const [wings, setWings] = useState([]);
+  const [organizer, setOrganizer] = useState('');
+  const [organizerEn, setOrganizerEn] = useState('');
+  const [viewingTime, setViewingTime] = useState('');
+  const [viewingTimeEn, setViewingTimeEn] = useState('');
+  const [fee, setFee] = useState('');
+  const [feeEn, setFeeEn] = useState('');
+  const [cast, setCast] = useState('');
+  const [castEn, setCastEn] = useState('');
 
   const fetchData = async () => {
     const result = await getWings();
@@ -141,6 +149,14 @@ const PostForm = ({ data }) => {
       setEventPlaceTextEn(data.eventPlaceTextEn);
       setTextContents(data.textContents);
       setTextContentsEn(data.textContentsEn);
+      setOrganizer(data.organizer);
+      setOrganizerEn(data.organizerEn);
+      setViewingTime(data.viewingTime);
+      setViewingTimeEn(data.viewingTimeEn);
+      setFee(data.fee);
+      setFeeEn(data.feeEn);
+      setCast(data.cast);
+      setCastEn(data.castEn);
     }
   }, [data]);
 
@@ -333,6 +349,79 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item> */}
 
+        <Form.Item label="주최" rules={[{ required: true }]}>
+          <Input
+            value={organizer}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setOrganizer(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="주최(영문)" rules={[{ required: true }]}>
+          <Input
+            value={organizerEn}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setOrganizerEn(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="관람시간" rules={[{ required: true }]}>
+          <Input
+            value={viewingTime}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setViewingTime(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="관람시간(영문)" rules={[{ required: true }]}>
+          <Input
+            value={viewingTimeEn}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setViewingTimeEn(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="입장료" rules={[{ required: true }]}>
+          <Input
+            value={fee}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setFee(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="입장료(영문)" rules={[{ required: true }]}>
+          <Input
+            value={feeEn}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setFeeEn(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="출연진" rules={[{ required: true }]}>
+          <Input
+            value={cast}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setCast(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="출연진(영문)" rules={[{ required: true }]}>
+          <Input
+            value={castEn}
+            style={{ width: 300 }}
+            onChange={(e) => {
+              setCastEn(e.target.value);
+            }}
+          />
+        </Form.Item>
+
         <Form.Item label="행사 장소">
           <Flex gap="small" wrap="wrap" style={{ width: 500 }}>
             {createEventPlaceCheckbox()}
@@ -512,6 +601,7 @@ const PostForm = ({ data }) => {
             }}
           />
         </Form.Item>
+
         {postType === PostType.Exhibition
           ? createExhibitionForm()
           : createConferenceForm()}

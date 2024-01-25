@@ -116,19 +116,84 @@ const PostForm = ({ data }) => {
     (type) => {
       const data = {
         [ExhibitionType.Exh1]: [
-          { name: '전시홀1', value: 'H1' },
-          { name: '전시홀2', value: 'H2' },
-          { name: '전시홀3', value: 'H3' },
-          { name: '전시홀4', value: 'H4' },
-          { name: '전시홀5A', value: 'H5A' },
-          { name: '전시홀5B', value: 'H5B' },
+          { name: '전시홀1', value: 'EXH1_H1' },
+          { name: '전시홀2', value: 'EXH1_H2' },
+          { name: '전시홀3', value: 'EXH1_H3' },
+          { name: '전시홀4', value: 'EXH1_H4' },
+          { name: '전시홀5A', value: 'EXH1_H5A' },
+          { name: '전시홀5B', value: 'EXH1_H5B' },
         ],
         [ExhibitionType.Exh2]: [
-          { name: '전시홀6', value: 'H6' },
-          { name: '전시홀7', value: 'H7' },
-          { name: '전시홀8', value: 'H8' },
-          { name: '전시홀9', value: 'H9' },
-          { name: '전시홀10', value: 'H10' },
+          { name: '전시홀6', value: 'EXH2_H6' },
+          { name: '전시홀7', value: 'EXH2_H7' },
+          { name: '전시홀8', value: 'EXH2_H8' },
+          { name: '전시홀9', value: 'EXH2_H9' },
+          { name: '전시홀10', value: 'EXH2_H10' },
+        ],
+      };
+
+      return data[type].map((exh: any) => (
+        <Checkbox
+          key={exh.value}
+          value={exh.value}
+          checked={eventPlaceCodes[exh.value]}
+          onChange={(e) => {
+            setEventPlaceCodes({
+              ...eventPlaceCodes,
+              [exh.value]: e.target.checked,
+            });
+          }}
+        >
+          {exh.name}
+        </Checkbox>
+      ));
+    },
+    [eventPlaceCodes],
+  );
+
+  const createMeetingRoomCheckbox = useCallback(
+    (type) => {
+      const data = {
+        [ExhibitionType.Exh1]: [
+          { name: '201', value: 'EXH1_M201' },
+          { name: '202', value: 'EXH1_M202' },
+          { name: '203', value: 'EXH1_M203' },
+          { name: '204', value: 'EXH1_M204' },
+          { name: '205', value: 'EXH1_M205' },
+          { name: '206', value: 'EXH1_M206' },
+          { name: '207', value: 'EXH1_M207' },
+          { name: '208', value: 'EXH1_M208' },
+          { name: '209', value: 'EXH1_M209' },
+          { name: '210', value: 'EXH1_M210' },
+          { name: '211', value: 'EXH1_M211' },
+          { name: '301', value: 'EXH1_M301' },
+          { name: '302', value: 'EXH1_M302' },
+          { name: '303', value: 'EXH1_M303' },
+          { name: '304', value: 'EXH1_M304' },
+          { name: '305', value: 'EXH1_M305' },
+          { name: '306', value: 'EXH1_M306' },
+          { name: '307', value: 'EXH1_M307' },
+          { name: '308', value: 'EXH1_M308' },
+          { name: '309', value: 'EXH1_M309' },
+          { name: '그랜드볼룸', value: 'MGRD' },
+        ],
+        [ExhibitionType.Exh2]: [
+          { name: '301', value: 'EXH2_M301' },
+          { name: '302', value: 'EXH2_M302' },
+          { name: '303', value: 'EXH2_M303' },
+          { name: '304', value: 'EXH2_M304' },
+          { name: '305', value: 'EXH2_M305' },
+          { name: '306', value: 'EXH2_M306' },
+          { name: '307', value: 'EXH2_M307' },
+          { name: '308', value: 'EXH2_M308' },
+          { name: '401', value: 'EXH2_M401' },
+          { name: '402', value: 'EXH2_M402' },
+          { name: '403', value: 'EXH2_M403' },
+          { name: '404', value: 'EXH2_M404' },
+          { name: '405', value: 'EXH2_M405' },
+          { name: '406', value: 'EXH2_M406' },
+          { name: '407', value: 'EXH2_M407' },
+          { name: '408', value: 'EXH2_M408' },
         ],
       };
 
@@ -235,6 +300,10 @@ const PostForm = ({ data }) => {
             status,
             eventPlaceText,
             eventPlaceTextEn,
+            eventPlaceCodes: Object.entries(eventPlaceCodes)
+              .filter((e) => e[1])
+              .map((e) => e[0])
+              .join(),
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
@@ -297,6 +366,10 @@ const PostForm = ({ data }) => {
             contentsType: ContentType.None,
             eventPlaceText,
             eventPlaceTextEn,
+            eventPlaceCodes: Object.entries(eventPlaceCodes)
+              .filter((e) => e[1])
+              .map((e) => e[0])
+              .join(),
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             eventStartDate: eventStartDate.toDate(),
@@ -620,6 +693,25 @@ const PostForm = ({ data }) => {
             }}
           />
         </Form.Item>
+        <Form.Item label="회의 장소">
+          <Flex vertical gap="small">
+            <div>
+              <Radio.Group
+                value={exhibitionType}
+                onChange={(e) => {
+                  setEventPlaceCodes({});
+                  setExhibitionType(e.target.value);
+                }}
+              >
+                <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
+                <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
+              </Radio.Group>
+            </div>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
+              {createMeetingRoomCheckbox(exhibitionType)}
+            </Flex>
+          </Flex>
+        </Form.Item>
         <Form.Item label="행사 기간">
           <RangePicker
             value={[eventStartDate, eventEndDate]}
@@ -654,11 +746,13 @@ const PostForm = ({ data }) => {
       </>
     );
   }, [
+    createMeetingRoomCheckbox,
     endDate,
     eventEndDate,
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
+    exhibitionType,
     noPeriod,
     startDate,
   ]);

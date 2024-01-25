@@ -113,7 +113,10 @@ const PostForm = ({ data }) => {
   }, [data]);
 
   const createEventPlaceCheckbox = useCallback(
-    (type = ExhibitionType.Exh1) => {
+    (type) => {
+      if (!type) {
+        return;
+      }
       const data = {
         [ExhibitionType.Exh1]: [
           { name: '전시홀1', value: 'EXH1_H1' },
@@ -152,7 +155,10 @@ const PostForm = ({ data }) => {
   );
 
   const createMeetingRoomCheckbox = useCallback(
-    (type = ExhibitionType.Exh1) => {
+    (type) => {
+      if (!type) {
+        return;
+      }
       const data = {
         [ExhibitionType.Exh1]: [
           { name: '201', value: 'EXH1_M201' },

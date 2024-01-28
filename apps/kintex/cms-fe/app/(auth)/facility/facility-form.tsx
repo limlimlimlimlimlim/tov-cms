@@ -398,7 +398,8 @@ const FacilityForm = ({ data }) => {
                 image={map.image}
                 sections={mapSections}
                 width={400}
-                onClick={null}
+                onClickSection={null}
+                onClickMap={null}
                 markers={
                   [{ x: facility.x, y: facility.y, icon: iconUrl }] as never
                 }

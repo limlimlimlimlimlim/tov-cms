@@ -8,6 +8,7 @@ import FloorSelect from '../../../component/floor-select/floor-select';
 import WingSelect from '../../../component/wing-select/wing-select';
 import { MapViewer } from '../../../component/map-viewer/map-viewer';
 import { getMapByWingAndFloor } from '../../../api/map';
+import KioskPositionManagementModal from '../../../component/kiosk-position-management/kiosk-position-management-modal';
 
 const formLayout = {
   labelCol: { span: 5 },
@@ -61,6 +62,8 @@ const KioskForm = ({ data }) => {
           name,
           description,
           layout,
+          x,
+          y,
         });
         void message.success('키오스크가 수정됐습니다.');
       } else {
@@ -71,6 +74,8 @@ const KioskForm = ({ data }) => {
           name,
           description,
           layout,
+          x,
+          y,
         });
         void message.success('키오스크가 생성됐습니다.');
       }
@@ -78,7 +83,19 @@ const KioskForm = ({ data }) => {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [code, data, description, floorId, isEdit, layout, name, router, wingId]);
+  }, [
+    code,
+    data,
+    description,
+    floorId,
+    isEdit,
+    layout,
+    name,
+    router,
+    wingId,
+    x,
+    y,
+  ]);
 
   const onClickCheckDuplicate = useCallback(async () => {
     const kiosk = await getKioskByCode(code);
@@ -193,7 +210,8 @@ const KioskForm = ({ data }) => {
                 image={map.image}
                 sections={mapSections}
                 width={400}
-                onClick={null}
+                onClickSection={null}
+                onClickMap={null}
                 markers={[{ x, y, icon: '/pin02.png' }] as any}
               />
             </Flex>
@@ -212,6 +230,25 @@ const KioskForm = ({ data }) => {
           </Flex>
         </Form.Item>
       </Form>
+
+      <KioskPositionManagementModal
+        mapId={map?.id}
+        open={isOpenModal}
+        kiosk={data}
+        mapSections={mapSections}
+        onOk={(data) => {
+          if (!data) {
+            setIsOpenModal(false);
+            return;
+          }
+          setX(data.position.x);
+          setY(data.position.y);
+          setIsOpenModal(false);
+        }}
+        onCancel={() => {
+          setIsOpenModal(false);
+        }}
+      />
     </Flex>
   );
 };

@@ -34,6 +34,9 @@ export class KioskService {
         name: true,
         code: true,
         layout: true,
+        description: true,
+        x: true,
+        y: true,
         createdAt: true,
         updatedAt: true,
         floor: {
@@ -71,6 +74,8 @@ export class KioskService {
         name: true,
         layout: true,
         description: true,
+        x: true,
+        y: true,
         createdAt: true,
         updatedAt: true,
         floor: {

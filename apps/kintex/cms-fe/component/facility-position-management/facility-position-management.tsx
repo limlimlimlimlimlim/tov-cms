@@ -106,7 +106,7 @@ export default function FacilityPositionManagement({
     [alwaysVisible, onChange, originPosition, sections],
   );
 
-  const onClickMap = useCallback(
+  const onClickSection = useCallback(
     async (data) => {
       if (prevSection && prevSection.id !== data.section.id) {
         const result = await new Promise((res, rej) => {
@@ -529,11 +529,12 @@ export default function FacilityPositionManagement({
                 { x: originPosition.x, y: originPosition.y, icon: iconUrl },
               ] as any
             }
-            onClick={(data) => {
+            onClickSection={(data) => {
               if (enabledPositionSetting) {
-                void onClickMap(data);
+                void onClickSection(data);
               }
             }}
+            onClickMap={null}
           />
         )}
       </Flex>

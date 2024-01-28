@@ -11,7 +11,13 @@ const MapPreviewerModal = ({ mapId, open, onCancel }) => {
       onCancel={onCancel}
       onOk={onCancel}
     >
-      <MapViewer mapId={mapId} width={1100} markers={[]} onClick={null} />
+      <MapViewer
+        mapId={mapId}
+        width={1100}
+        markers={[]}
+        onClickSection={null}
+        onClickMap={null}
+      />
     </Modal>
   );
 };

@@ -120,9 +120,11 @@ const KioskForm = ({ data }) => {
       if (!wingId || !floorId) return;
       const result = await getMapByWingAndFloor({ wing, floor });
       const map = result.data.data[0];
-      setMap(map);
-      const sections = map.sections;
-      setMapSections(sections);
+      if (map) {
+        setMap(map);
+        const sections = map.sections;
+        setMapSections(sections);
+      }
     },
     [floorId, wingId],
   );

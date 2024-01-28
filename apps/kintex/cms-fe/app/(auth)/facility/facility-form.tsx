@@ -71,14 +71,11 @@ const FacilityForm = ({ data }) => {
       const result = await getMapByWingAndFloor({ wing, floor });
       const map = result.data.data[0];
       setMap(map);
-      const sections = map.sections;
-      setMapSections(sections);
-      setOriginMapSections(JSON.parse(JSON.stringify(sections)));
-      // const f = sections
-      //   .map((s) => s.facilities)
-      //   .flat()
-      //   .find((f) => f.id === facility.id);
-      // setFacility({ ...facility, x: f.x, y: f.y });
+      if (map) {
+        const sections = map.sections;
+        setMapSections(sections);
+        setOriginMapSections(JSON.parse(JSON.stringify(sections)));
+      }
     },
     [facility, floorId, wingId],
   );

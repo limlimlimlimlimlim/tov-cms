@@ -41,9 +41,13 @@ export default function KioskPositionManagement({
         <Flex gap="middle">
           <Button
             onClick={() => {
-              setOriginPosition(null);
+              setOriginPosition({
+                ...originPosition,
+                x: -1,
+                y: -1,
+              });
               onChange({
-                position: { x: null, y: null },
+                position: { x: -1, y: -1 },
               });
             }}
           >

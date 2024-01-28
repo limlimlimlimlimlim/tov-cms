@@ -399,8 +399,9 @@ const FacilityForm = ({ data }) => {
                 sections={mapSections}
                 width={400}
                 onClick={null}
-                facilityIconUrl={iconUrl}
-                facility={facility}
+                markers={
+                  [{ x: facility.x, y: facility.y, icon: iconUrl }] as never
+                }
               />
             </Flex>
           </Form.Item>

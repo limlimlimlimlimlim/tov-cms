@@ -9,8 +9,7 @@ export const MapViewer = ({
   sections = [],
   image = null,
   width = 0,
-  facility,
-  facilityIconUrl,
+  markers = [],
   onClick,
 }) => {
   const containerId = useMemo(() => `canvans-${Math.random()}`, []);
@@ -124,7 +123,6 @@ export const MapViewer = ({
           onLoad={onLoadImage}
         />
       )}
-
       <div
         style={{
           position: 'absolute',
@@ -132,19 +130,22 @@ export const MapViewer = ({
         }}
       >
         <div ref={canvasRef} id={containerId} />
-        {facility?.x && facility.y ? (
-          <img
-            src={facilityIconUrl}
-            alt="icon"
-            style={{
-              position: 'absolute',
-              width: 128 * scale,
-              height: 128 * scale,
-              left: facility.x * scale - 64 * scale,
-              top: facility.y * scale - 128 * scale,
-            }}
-          />
-        ) : null}
+        {markers.map((marker: any, index) => {
+          return (
+            <img
+              key={index}
+              src={marker.icon}
+              alt="icon"
+              style={{
+                position: 'absolute',
+                width: 128 * scale,
+                height: 128 * scale,
+                left: marker.x * scale - 64 * scale,
+                top: marker.y * scale - 128 * scale,
+              }}
+            />
+          );
+        })}
       </div>
     </Flex>
   );

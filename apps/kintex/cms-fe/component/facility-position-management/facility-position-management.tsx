@@ -524,8 +524,11 @@ export default function FacilityPositionManagement({
             sections={sections}
             image={image}
             width={900}
-            facility={originPosition}
-            facilityIconUrl={iconUrl}
+            markers={
+              [
+                { x: originPosition.x, y: originPosition.y, icon: iconUrl },
+              ] as any
+            }
             onClick={(data) => {
               if (enabledPositionSetting) {
                 void onClickMap(data);

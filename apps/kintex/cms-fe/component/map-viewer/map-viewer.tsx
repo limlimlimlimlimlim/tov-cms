@@ -9,9 +9,9 @@ export const MapViewer = ({
   sections = [],
   image = null,
   width = 0,
-  facility,
-  facilityIconUrl,
-  onClick,
+  markers = [],
+  onClickSection,
+  onClickMap,
 }) => {
   const containerId = useMemo(() => `canvans-${Math.random()}`, []);
   const [scale, setScale] = useState(1);
@@ -25,26 +25,37 @@ export const MapViewer = ({
 
   const onClickStage = useCallback(
     (e) => {
+      if (onClickMap) {
+        onClickMap({
+          x: e.evt.layerX,
+          y: e.evt.layerY,
+          originX: e.evt.layerX * (1 / scale),
+          originY: e.evt.layerY * (1 / scale),
+          scale,
+        });
+      }
       if (e.target.nodeType !== 'Shape') return;
-      onClick({
-        x: e.evt.layerX,
-        y: e.evt.layerY,
-        originX: e.evt.layerX * (1 / scale),
-        originY: e.evt.layerY * (1 / scale),
-        scale,
-        section: sections.find((s: any) => s.id == e.target.getName()),
-      });
+      if (onClickSection) {
+        onClickSection({
+          x: e.evt.layerX,
+          y: e.evt.layerY,
+          originX: e.evt.layerX * (1 / scale),
+          originY: e.evt.layerY * (1 / scale),
+          scale,
+          section: sections.find((s: any) => s.id == e.target.getName()),
+        });
+      }
     },
-    [onClick, scale, sections],
+    [onClickMap, onClickSection, scale, sections],
   );
 
   useEffect(() => {
     if (!stageRef.current) return;
-    if (onClick) {
+    if (onClickSection || onClickMap) {
       stageRef.current.off('click');
       stageRef.current.on('click', onClickStage);
     }
-  }, [onClick, onClickStage]);
+  }, [onClickMap, onClickSection, onClickStage]);
 
   const createStage = useCallback(
     (w, h) => {
@@ -59,7 +70,7 @@ export const MapViewer = ({
 
       stg.add(_secLayer);
       stg.add(_facLayer);
-      if (onClick) {
+      if (onClickSection || onClickMap) {
         stg.off('click');
         stg.on('click', onClickStage);
       }
@@ -68,7 +79,7 @@ export const MapViewer = ({
       secLayerRef.current = _secLayer;
       facLayerRef.current = _facLayer;
     },
-    [containerId, onClick, onClickStage],
+    [containerId, onClickMap, onClickSection, onClickStage],
   );
 
   const render = useCallback((sections, sca) => {
@@ -124,7 +135,6 @@ export const MapViewer = ({
           onLoad={onLoadImage}
         />
       )}
-
       <div
         style={{
           position: 'absolute',
@@ -132,19 +142,22 @@ export const MapViewer = ({
         }}
       >
         <div ref={canvasRef} id={containerId} />
-        {facility?.x && facility.y ? (
-          <img
-            src={facilityIconUrl}
-            alt="icon"
-            style={{
-              position: 'absolute',
-              width: 128 * scale,
-              height: 128 * scale,
-              left: facility.x * scale - 64 * scale,
-              top: facility.y * scale - 128 * scale,
-            }}
-          />
-        ) : null}
+        {markers.map((marker: any, index) => {
+          return (
+            <img
+              key={index}
+              src={marker.icon}
+              alt="icon"
+              style={{
+                position: 'absolute',
+                width: 128 * scale,
+                height: 128 * scale,
+                left: marker.x * scale - 64 * scale,
+                top: marker.y * scale - 128 * scale,
+              }}
+            />
+          );
+        })}
       </div>
     </Flex>
   );

@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import MapViewer from '../map-viewer/map-viewer';
+import { MapViewer } from '../map-viewer/map-viewer';
 
 const MapPreviewerModal = ({ mapId, open, onCancel }) => {
   return (
@@ -14,9 +14,9 @@ const MapPreviewerModal = ({ mapId, open, onCancel }) => {
       <MapViewer
         mapId={mapId}
         width={1100}
-        facility={null}
-        facilityIconUrl={null}
-        onClick={null}
+        markers={[]}
+        onClickSection={null}
+        onClickMap={null}
       />
     </Modal>
   );

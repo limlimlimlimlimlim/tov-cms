@@ -6,6 +6,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { createKiosk, getKioskByCode, updateKiosk } from '../../../api/kiosk';
 import FloorSelect from '../../../component/floor-select/floor-select';
 import WingSelect from '../../../component/wing-select/wing-select';
+import { MapViewer } from '../../../component/map-viewer/map-viewer';
+import { getMapByWingAndFloor } from '../../../api/map';
+import KioskPositionManagementModal from '../../../component/kiosk-position-management/kiosk-position-management-modal';
 
 const formLayout = {
   labelCol: { span: 5 },
@@ -22,6 +25,8 @@ const validateMessages = {
 
 const KioskForm = ({ data }) => {
   const router = useRouter();
+  const [map, setMap] = useState<any>();
+  const [mapSections, setMapSections] = useState<any>([]);
   const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
   const [code, setCode] = useState('');
@@ -29,6 +34,9 @@ const KioskForm = ({ data }) => {
   const [description, setDescription] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [layout, setLayout] = useState('landscape');
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [x, setX] = useState(-1);
+  const [y, setY] = useState(-1);
 
   useEffect(() => {
     if (data) {
@@ -39,6 +47,8 @@ const KioskForm = ({ data }) => {
       setCode(data.code);
       setDescription(data.description);
       setLayout(data.layout);
+      setX(data.x);
+      setY(data.y);
     }
   }, [data, setCode]);
 
@@ -52,6 +62,8 @@ const KioskForm = ({ data }) => {
           name,
           description,
           layout,
+          x,
+          y,
         });
         void message.success('키오스크가 수정됐습니다.');
       } else {
@@ -62,6 +74,8 @@ const KioskForm = ({ data }) => {
           name,
           description,
           layout,
+          x,
+          y,
         });
         void message.success('키오스크가 생성됐습니다.');
       }
@@ -69,7 +83,19 @@ const KioskForm = ({ data }) => {
     } catch (e) {
       void message.error(e.message);
     }
-  }, [code, data, description, floorId, isEdit, layout, name, router, wingId]);
+  }, [
+    code,
+    data,
+    description,
+    floorId,
+    isEdit,
+    layout,
+    name,
+    router,
+    wingId,
+    x,
+    y,
+  ]);
 
   const onClickCheckDuplicate = useCallback(async () => {
     const kiosk = await getKioskByCode(code);
@@ -88,6 +114,23 @@ const KioskForm = ({ data }) => {
     setWingId(wing);
     setFloorId('');
   }, []);
+
+  const getMap = useCallback(
+    async (wing, floor) => {
+      if (!wingId || !floorId) return;
+      const result = await getMapByWingAndFloor({ wing, floor });
+      const map = result.data.data[0];
+      setMap(map);
+      const sections = map.sections;
+      setMapSections(sections);
+    },
+    [floorId, wingId],
+  );
+
+  useEffect(() => {
+    void getMap(wingId, floorId);
+  }, [wingId, floorId]); //getMap 의존성 추가하지 않음
+
   return (
     <Flex vertical gap="middle">
       <Form
@@ -146,12 +189,34 @@ const KioskForm = ({ data }) => {
         <Form.Item label="메모">
           <Input.TextArea
             value={description}
-            style={{ width: 500, height: 200 }}
+            style={{ width: 500, height: 100 }}
             onChange={(e) => {
               setDescription(e.target.value);
             }}
           />
         </Form.Item>
+        {map ? (
+          <Form.Item label="지도">
+            <Flex vertical gap="small">
+              <Button
+                style={{ width: 100 }}
+                onClick={() => {
+                  setIsOpenModal(true);
+                }}
+              >
+                위치설정
+              </Button>
+              <MapViewer
+                image={map.image}
+                sections={mapSections}
+                width={400}
+                onClickSection={null}
+                onClickMap={null}
+                markers={[{ x, y, icon: '/pin02.png' }] as any}
+              />
+            </Flex>
+          </Form.Item>
+        ) : null}
 
         <Divider />
         <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 6 }}>
@@ -165,6 +230,25 @@ const KioskForm = ({ data }) => {
           </Flex>
         </Form.Item>
       </Form>
+
+      <KioskPositionManagementModal
+        mapId={map?.id}
+        open={isOpenModal}
+        kiosk={data}
+        mapSections={mapSections}
+        onOk={(data) => {
+          if (!data) {
+            setIsOpenModal(false);
+            return;
+          }
+          setX(data.position.x);
+          setY(data.position.y);
+          setIsOpenModal(false);
+        }}
+        onCancel={() => {
+          setIsOpenModal(false);
+        }}
+      />
     </Flex>
   );
 };

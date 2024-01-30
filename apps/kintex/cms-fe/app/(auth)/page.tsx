@@ -25,7 +25,7 @@ const AuthLayout = () => {
   useEffect(() => {
     // void verifyAccessToken();
     router.replace('/home');
-  }, [verifyAccessToken]);
+  }, [router, verifyAccessToken]);
 
   return <>loading</>;
 };

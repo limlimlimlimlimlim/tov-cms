@@ -82,7 +82,7 @@ const ScheduleForm = ({ data }) => {
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setWingId(data.wingId);
+      // setWingId(data.wingId);
       setName(data.name);
       setImageContents(data.imageContents);
       setVideoContents(data.videoContents);
@@ -100,7 +100,7 @@ const ScheduleForm = ({ data }) => {
     try {
       if (isEdit) {
         await updateSchedule(data.id, {
-          wingId,
+          // wingId,
           name,
           imageContents,
           videoContents,
@@ -115,7 +115,7 @@ const ScheduleForm = ({ data }) => {
         void message.success('게시물이 수정됐습니다.');
       } else {
         await createSchedule({
-          wingId,
+          // wingId,
           name,
           imageContents,
           videoContents,
@@ -147,12 +147,11 @@ const ScheduleForm = ({ data }) => {
     startDate,
     status,
     videoContents,
-    wingId,
   ]);
 
-  const onChangeWing = useCallback((wing) => {
-    setWingId(wing);
-  }, []);
+  // const onChangeWing = useCallback((wing) => {
+  //   setWingId(wing);
+  // }, []);
 
   return (
     <Flex vertical gap="middle">
@@ -162,13 +161,13 @@ const ScheduleForm = ({ data }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="전시홀 선택">
+        {/* <Form.Item label="전시홀 선택">
           <WingSelect
             style={{ width: 200 }}
             wingId={wingId}
             onChange={onChangeWing}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="콘텐츠명" rules={[{ required: true }]}>
           <Input
             value={name}
@@ -221,7 +220,7 @@ const ScheduleForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="레이아웃">
+        {/* <Form.Item label="레이아웃">
           <Radio.Group
             value={layout}
             onChange={(e) => {
@@ -231,7 +230,7 @@ const ScheduleForm = ({ data }) => {
             <Radio value="landscape">가로</Radio>
             <Radio value="portrait">세로</Radio>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="메모">
           <Input.TextArea
             value={description}

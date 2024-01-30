@@ -242,8 +242,8 @@ model Post{
 
 model Schedule{
   id              Int       @default(autoincrement()) @id
-  wingId          Int
-  wing            Wing      @relation(fields: [wingId], references: [id])
+  wingId          Int?
+  wing            Wing?      @relation(fields: [wingId], references: [id])
   facilityId      Int?
   facility        Facility?   @relation(fields: [facilityId], references: [id])
   name            String
@@ -256,7 +256,7 @@ model Schedule{
   status          String
   noPeriod        Boolean
   order           Int
-  layout          String  @default("landscape")
+  layout          String?  @default("landscape")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }

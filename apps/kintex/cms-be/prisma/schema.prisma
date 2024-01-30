@@ -214,7 +214,7 @@ model Post{
   videoContents       String?
   textContents        String?     @db.Text
   textContentsEn      String?     @db.Text
-  eventPlaceCodes     String?
+  eventPlaceCodes     String?     @db.Text
   eventPlaceText      String?     @db.Text
   eventPlaceTextEn    String?     @db.Text
   organizer           String?     @db.Text

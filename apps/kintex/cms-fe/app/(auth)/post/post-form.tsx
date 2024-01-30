@@ -161,56 +161,59 @@ const PostForm = ({ data }) => {
     [eventPlaceCodes, exhibitionData],
   );
 
+  const meetiongRoomData = useMemo(() => {
+    return {
+      [ExhibitionType.Exh1]: [
+        { name: '201', value: 'EXH1_M201' },
+        { name: '202', value: 'EXH1_M202' },
+        { name: '203', value: 'EXH1_M203' },
+        { name: '204', value: 'EXH1_M204' },
+        { name: '205', value: 'EXH1_M205' },
+        { name: '206', value: 'EXH1_M206' },
+        { name: '207', value: 'EXH1_M207' },
+        { name: '208', value: 'EXH1_M208' },
+        { name: '209', value: 'EXH1_M209' },
+        { name: '210', value: 'EXH1_M210' },
+        { name: '211', value: 'EXH1_M211' },
+        { name: '301', value: 'EXH1_M301' },
+        { name: '302', value: 'EXH1_M302' },
+        { name: '303', value: 'EXH1_M303' },
+        { name: '304', value: 'EXH1_M304' },
+        { name: '305', value: 'EXH1_M305' },
+        { name: '306', value: 'EXH1_M306' },
+        { name: '307', value: 'EXH1_M307' },
+        { name: '308', value: 'EXH1_M308' },
+        { name: '309', value: 'EXH1_M309' },
+        { name: '그랜드볼룸', value: 'MGRD' },
+      ],
+      [ExhibitionType.Exh2]: [
+        { name: '301', value: 'EXH2_M301' },
+        { name: '302', value: 'EXH2_M302' },
+        { name: '303', value: 'EXH2_M303' },
+        { name: '304', value: 'EXH2_M304' },
+        { name: '305', value: 'EXH2_M305' },
+        { name: '306', value: 'EXH2_M306' },
+        { name: '307', value: 'EXH2_M307' },
+        { name: '308', value: 'EXH2_M308' },
+        { name: '401', value: 'EXH2_M401' },
+        { name: '402', value: 'EXH2_M402' },
+        { name: '403', value: 'EXH2_M403' },
+        { name: '404', value: 'EXH2_M404' },
+        { name: '405', value: 'EXH2_M405' },
+        { name: '406', value: 'EXH2_M406' },
+        { name: '407', value: 'EXH2_M407' },
+        { name: '408', value: 'EXH2_M408' },
+      ],
+    };
+  }, []);
+
   const createMeetingRoomCheckbox = useCallback(
     (type) => {
       if (!type) {
         return;
       }
-      const data = {
-        [ExhibitionType.Exh1]: [
-          { name: '201', value: 'EXH1_M201' },
-          { name: '202', value: 'EXH1_M202' },
-          { name: '203', value: 'EXH1_M203' },
-          { name: '204', value: 'EXH1_M204' },
-          { name: '205', value: 'EXH1_M205' },
-          { name: '206', value: 'EXH1_M206' },
-          { name: '207', value: 'EXH1_M207' },
-          { name: '208', value: 'EXH1_M208' },
-          { name: '209', value: 'EXH1_M209' },
-          { name: '210', value: 'EXH1_M210' },
-          { name: '211', value: 'EXH1_M211' },
-          { name: '301', value: 'EXH1_M301' },
-          { name: '302', value: 'EXH1_M302' },
-          { name: '303', value: 'EXH1_M303' },
-          { name: '304', value: 'EXH1_M304' },
-          { name: '305', value: 'EXH1_M305' },
-          { name: '306', value: 'EXH1_M306' },
-          { name: '307', value: 'EXH1_M307' },
-          { name: '308', value: 'EXH1_M308' },
-          { name: '309', value: 'EXH1_M309' },
-          { name: '그랜드볼룸', value: 'MGRD' },
-        ],
-        [ExhibitionType.Exh2]: [
-          { name: '301', value: 'EXH2_M301' },
-          { name: '302', value: 'EXH2_M302' },
-          { name: '303', value: 'EXH2_M303' },
-          { name: '304', value: 'EXH2_M304' },
-          { name: '305', value: 'EXH2_M305' },
-          { name: '306', value: 'EXH2_M306' },
-          { name: '307', value: 'EXH2_M307' },
-          { name: '308', value: 'EXH2_M308' },
-          { name: '401', value: 'EXH2_M401' },
-          { name: '402', value: 'EXH2_M402' },
-          { name: '403', value: 'EXH2_M403' },
-          { name: '404', value: 'EXH2_M404' },
-          { name: '405', value: 'EXH2_M405' },
-          { name: '406', value: 'EXH2_M406' },
-          { name: '407', value: 'EXH2_M407' },
-          { name: '408', value: 'EXH2_M408' },
-        ],
-      };
 
-      return data[type].map((exh: any) => (
+      return meetiongRoomData[type].map((exh: any) => (
         <Checkbox
           key={exh.value}
           value={exh.value}
@@ -226,7 +229,7 @@ const PostForm = ({ data }) => {
         </Checkbox>
       ));
     },
-    [eventPlaceCodes],
+    [eventPlaceCodes, meetiongRoomData],
   );
 
   useEffect(() => {
@@ -740,13 +743,15 @@ const PostForm = ({ data }) => {
     feeEn,
     cast,
     castEn,
-    exhibitionType,
     createEventPlaceCheckbox,
     eventStartDate,
     eventEndDate,
     startDate,
     endDate,
     noPeriod,
+    checkExhibition,
+    exhibitionData,
+    eventPlaceCodes,
   ]);
 
   const createConferenceForm = useCallback(() => {
@@ -772,20 +777,81 @@ const PostForm = ({ data }) => {
         </Form.Item>
         <Form.Item label="회의 장소">
           <Flex vertical gap="small">
-            <div>
-              <Radio.Group
-                value={exhibitionType}
-                onChange={(e) => {
-                  setEventPlaceCodes({});
-                  setExhibitionType(e.target.value);
-                }}
-              >
-                <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
-                <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
-              </Radio.Group>
-            </div>
+            <Checkbox
+              value={ExhibitionType.Exh1}
+              onChange={(e: any) => {
+                const checked = e.target.checked;
+                setCheckExhibition({
+                  ...checkExhibition,
+                  [ExhibitionType.Exh1]: checked,
+                });
+                if (checked) {
+                  const exh1PlaceCodes = Object.values(
+                    meetiongRoomData[ExhibitionType.Exh1],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = true;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh1PlaceCodes,
+                  });
+                } else {
+                  const exh1PlaceCodes = Object.values(
+                    meetiongRoomData[ExhibitionType.Exh1],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = false;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh1PlaceCodes,
+                  });
+                }
+              }}
+            >
+              제1 전시장
+            </Checkbox>
             <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createMeetingRoomCheckbox(exhibitionType)}
+              {createMeetingRoomCheckbox(ExhibitionType.Exh1)}
+            </Flex>
+            <Checkbox
+              value={ExhibitionType.Exh2}
+              onChange={(e: any) => {
+                const checked = e.target.checked;
+                setCheckExhibition({
+                  ...checkExhibition,
+                  [ExhibitionType.Exh2]: checked,
+                });
+                if (checked) {
+                  const exh2PlaceCodes = Object.values(
+                    meetiongRoomData[ExhibitionType.Exh2],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = true;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh2PlaceCodes,
+                  });
+                } else {
+                  const exh2PlaceCodes = Object.values(
+                    meetiongRoomData[ExhibitionType.Exh2],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = false;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh2PlaceCodes,
+                  });
+                }
+              }}
+            >
+              제2 전시장
+            </Checkbox>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
+              {createMeetingRoomCheckbox(ExhibitionType.Exh2)}
             </Flex>
           </Flex>
         </Form.Item>
@@ -823,13 +889,15 @@ const PostForm = ({ data }) => {
       </>
     );
   }, [
+    checkExhibition,
     createMeetingRoomCheckbox,
     endDate,
     eventEndDate,
+    eventPlaceCodes,
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
-    exhibitionType,
+    meetiongRoomData,
     noPeriod,
     startDate,
   ]);
@@ -847,6 +915,11 @@ const PostForm = ({ data }) => {
             value={postType}
             onChange={(e) => {
               setPostType(e.target.value);
+              setEventPlaceCodes({});
+              setCheckExhibition({
+                [ExhibitionType.Exh1]: false,
+                [ExhibitionType.Exh2]: false,
+              });
             }}
           >
             <Radio value={PostType.Exhibition}>전시안내</Radio>

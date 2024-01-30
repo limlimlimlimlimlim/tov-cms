@@ -16,7 +16,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import WingSelect from '../../../component/wing-select/wing-select';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createSchedule, updateSchedule } from '../../../api/schedule';
 
@@ -37,7 +36,6 @@ const validateMessages = {
 
 const ScheduleForm = ({ data }) => {
   const router = useRouter();
-  const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [imageContents, setImageContents] = useState('');
@@ -52,19 +50,6 @@ const ScheduleForm = ({ data }) => {
 
   const items = [
     {
-      label: '이미지',
-      key: 'image',
-      children: (
-        <ContentsUploader
-          source={imageContents}
-          onComplete={({ fileName }) => {
-            setImageContents(fileName);
-          }}
-        />
-      ),
-    },
-
-    {
       label: '영상',
       key: 'video',
       children: (
@@ -73,6 +58,18 @@ const ScheduleForm = ({ data }) => {
           source={videoContents}
           onComplete={({ fileName }) => {
             setVideoContents(fileName);
+          }}
+        />
+      ),
+    },
+    {
+      label: '이미지',
+      key: 'image',
+      children: (
+        <ContentsUploader
+          source={imageContents}
+          onComplete={({ fileName }) => {
+            setImageContents(fileName);
           }}
         />
       ),

@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Input, Modal, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
-import WingSelect from '../../../../component/wing-select/wing-select';
 import {
   decrementScheduleOrder,
   deleteSchedule,
@@ -26,7 +25,7 @@ export default function ScheduleList() {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState<PostItem[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [wing, setWing] = useState('');
+  // const [wing, setWing] = useState('');
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
   const [selectedData, setSelectedData] = useState<PostItem[]>([]);
@@ -36,8 +35,8 @@ export default function ScheduleList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
-  const fetchData = useCallback(async ({ keyword, page, count, wing }) => {
-    const posts = await getSchedules({ keyword, page, count, wing });
+  const fetchData = useCallback(async ({ keyword, page, count }) => {
+    const posts = await getSchedules({ keyword, page, count });
     setData(posts.data.data);
     setTotal(posts.data.total);
   }, []);
@@ -54,17 +53,8 @@ export default function ScheduleList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     setPage(1);
-    void fetchData({ keyword, page, count, wing });
-  }, [
-    count,
-    fetchData,
-    getSchedulePermissions,
-    keyword,
-    page,
-    ready,
-    router,
-    wing,
-  ]);
+    void fetchData({ keyword, page, count });
+  }, [count, fetchData, getSchedulePermissions, keyword, page, ready, router]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -79,11 +69,11 @@ export default function ScheduleList() {
           return index + 1 + (page - 1) * count;
         },
       },
-      {
-        title: '건물명',
-        width: 100,
-        render: (row) => row.wing.name,
-      },
+      // {
+      //   title: '건물명',
+      //   width: 100,
+      //   render: (row) => row.wing.name,
+      // },
       {
         title: '스케쥴명',
         width: 150,
@@ -114,7 +104,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await incrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, count, wing });
+                    await fetchData({ keyword, page, count });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -127,7 +117,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await decrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, count, wing });
+                    await fetchData({ keyword, page, count });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -169,7 +159,7 @@ export default function ScheduleList() {
         },
       },
     ];
-  }, [count, fetchData, keyword, page, updatable, wing]);
+  }, [count, fetchData, keyword, page, updatable]);
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -179,11 +169,11 @@ export default function ScheduleList() {
       content: '선택된 스케쥴을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
-        void fetchData({ keyword, page, count, wing });
+        void fetchData({ keyword, page, count });
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });
-  }, [count, fetchData, keyword, page, selectedData, wing]);
+  }, [count, fetchData, keyword, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -191,9 +181,9 @@ export default function ScheduleList() {
     },
   };
 
-  const onChangeWing = useCallback((w) => {
-    setWing(w);
-  }, []);
+  // const onChangeWing = useCallback((w) => {
+  //   setWing(w);
+  // }, []);
 
   const onChangePage = useCallback((p) => {
     setPage(p.current);
@@ -201,7 +191,7 @@ export default function ScheduleList() {
 
   return (
     <Flex vertical gap="middle">
-      <Flex gap="large">
+      {/* <Flex gap="large">
         <Form.Item label="전시홀 선택">
           <WingSelect
             wingId={wing}
@@ -209,7 +199,7 @@ export default function ScheduleList() {
             onChange={onChangeWing}
           />
         </Form.Item>
-      </Flex>
+      </Flex> */}
       <Flex justify="space-between">
         <Flex gap="small" align="center">
           {deletable && (

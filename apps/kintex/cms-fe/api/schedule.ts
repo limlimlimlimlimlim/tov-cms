@@ -1,8 +1,8 @@
 import axiosClient from '../util/axios-client';
 
-export const getSchedules = async (param: { keyword; page; count; wing }) => {
+export const getSchedules = async (param: { keyword; page; count }) => {
   return axiosClient.get(
-    `/schedule?keyword=${param.keyword}&page=${param.page}&count=${param.count}&wingId=${param.wing}`,
+    `/schedule?keyword=${param.keyword}&page=${param.page}&count=${param.count}`,
   );
 };
 

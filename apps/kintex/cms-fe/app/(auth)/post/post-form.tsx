@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
@@ -94,6 +94,10 @@ const PostForm = ({ data }) => {
   const [cast, setCast] = useState('');
   const [castEn, setCastEn] = useState('');
   const [exhibitionType, setExhibitionType] = useState(ExhibitionType.Exh1);
+  const [checkExhibition, setCheckExhibition] = useState({
+    [ExhibitionType.Exh1]: false,
+    [ExhibitionType.Exh2]: false,
+  });
 
   const fetchData = async () => {
     const result = await getWings();
@@ -112,30 +116,33 @@ const PostForm = ({ data }) => {
     }
   }, [data]);
 
+  const exhibitionData = useMemo(() => {
+    return {
+      [ExhibitionType.Exh1]: [
+        { name: '전시홀1', value: 'EXH1_H1' },
+        { name: '전시홀2', value: 'EXH1_H2' },
+        { name: '전시홀3', value: 'EXH1_H3' },
+        { name: '전시홀4', value: 'EXH1_H4' },
+        { name: '전시홀5A', value: 'EXH1_H5A' },
+        { name: '전시홀5B', value: 'EXH1_H5B' },
+      ],
+      [ExhibitionType.Exh2]: [
+        { name: '전시홀6', value: 'EXH2_H6' },
+        { name: '전시홀7', value: 'EXH2_H7' },
+        { name: '전시홀8', value: 'EXH2_H8' },
+        { name: '전시홀9', value: 'EXH2_H9' },
+        { name: '전시홀10', value: 'EXH2_H10' },
+      ],
+    };
+  }, []);
+
   const createEventPlaceCheckbox = useCallback(
     (type) => {
       if (!type) {
         return;
       }
-      const data = {
-        [ExhibitionType.Exh1]: [
-          { name: '전시홀1', value: 'EXH1_H1' },
-          { name: '전시홀2', value: 'EXH1_H2' },
-          { name: '전시홀3', value: 'EXH1_H3' },
-          { name: '전시홀4', value: 'EXH1_H4' },
-          { name: '전시홀5A', value: 'EXH1_H5A' },
-          { name: '전시홀5B', value: 'EXH1_H5B' },
-        ],
-        [ExhibitionType.Exh2]: [
-          { name: '전시홀6', value: 'EXH2_H6' },
-          { name: '전시홀7', value: 'EXH2_H7' },
-          { name: '전시홀8', value: 'EXH2_H8' },
-          { name: '전시홀9', value: 'EXH2_H9' },
-          { name: '전시홀10', value: 'EXH2_H10' },
-        ],
-      };
 
-      return data[type].map((exh: any) => (
+      return exhibitionData[type].map((exh: any) => (
         <Checkbox
           key={exh.value}
           value={exh.value}
@@ -151,7 +158,7 @@ const PostForm = ({ data }) => {
         </Checkbox>
       ));
     },
-    [eventPlaceCodes],
+    [eventPlaceCodes, exhibitionData],
   );
 
   const createMeetingRoomCheckbox = useCallback(
@@ -581,19 +588,81 @@ const PostForm = ({ data }) => {
 
         <Form.Item label="행사 장소">
           <Flex vertical gap="small">
-            <div>
-              <Radio.Group
-                value={exhibitionType}
-                onChange={(e) => {
-                  setExhibitionType(e.target.value);
-                }}
-              >
-                <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
-                <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
-              </Radio.Group>
-            </div>
+            <Checkbox
+              value={ExhibitionType.Exh1}
+              onChange={(e: any) => {
+                const checked = e.target.checked;
+                setCheckExhibition({
+                  ...checkExhibition,
+                  [ExhibitionType.Exh1]: checked,
+                });
+                if (checked) {
+                  const exh1PlaceCodes = Object.values(
+                    exhibitionData[ExhibitionType.Exh1],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = true;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh1PlaceCodes,
+                  });
+                } else {
+                  const exh1PlaceCodes = Object.values(
+                    exhibitionData[ExhibitionType.Exh1],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = false;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh1PlaceCodes,
+                  });
+                }
+              }}
+            >
+              제1 전시장
+            </Checkbox>
             <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createEventPlaceCheckbox(exhibitionType)}
+              {createEventPlaceCheckbox(ExhibitionType.Exh1)}
+            </Flex>
+            <Checkbox
+              value={ExhibitionType.Exh2}
+              onChange={(e: any) => {
+                const checked = e.target.checked;
+                setCheckExhibition({
+                  ...checkExhibition,
+                  [ExhibitionType.Exh2]: checked,
+                });
+                if (checked) {
+                  const exh2PlaceCodes = Object.values(
+                    exhibitionData[ExhibitionType.Exh2],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = true;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh2PlaceCodes,
+                  });
+                } else {
+                  const exh2PlaceCodes = Object.values(
+                    exhibitionData[ExhibitionType.Exh2],
+                  ).reduce((acc, item) => {
+                    acc[item.value] = false;
+                    return acc;
+                  }, {});
+                  setEventPlaceCodes({
+                    ...eventPlaceCodes,
+                    ...exh2PlaceCodes,
+                  });
+                }
+              }}
+            >
+              제2 전시장
+            </Checkbox>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
+              {createEventPlaceCheckbox(ExhibitionType.Exh2)}
             </Flex>
           </Flex>
         </Form.Item>

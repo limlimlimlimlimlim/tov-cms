@@ -42,7 +42,7 @@ const PostForm = ({ data }) => {
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
   const [textContents, setTextContents] = useState('');
-  const [contentsType, setContentsType] = useState('video');
+  const [contentsType, setContentsType] = useState('image');
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
   const [status, setStatus] = useState('enabled');
@@ -60,6 +60,18 @@ const PostForm = ({ data }) => {
 
   const items = [
     {
+      label: '이미지',
+      key: 'image',
+      children: (
+        <ContentsUploader
+          source={imageContents}
+          onComplete={({ fileName }) => {
+            setImageContents(fileName);
+          }}
+        />
+      ),
+    },
+    {
       label: '영상',
       key: 'video',
       children: (
@@ -68,18 +80,6 @@ const PostForm = ({ data }) => {
           type="video"
           onComplete={({ fileName }) => {
             setVideoContents(fileName);
-          }}
-        />
-      ),
-    },
-    {
-      label: '이미지',
-      key: 'image',
-      children: (
-        <ContentsUploader
-          source={imageContents}
-          onComplete={({ fileName }) => {
-            setImageContents(fileName);
           }}
         />
       ),

@@ -231,8 +231,9 @@ model Post{
 
 model Schedule{
   id              Int       @default(autoincrement()) @id
-  wingId          Int
-  wing            Wing      @relation(fields: [wingId], references: [id])
+  wingCodes       String?   @db.Text
+  wingId          Int?
+  wing            Wing?      @relation(fields: [wingId], references: [id])
   facilityId      Int?
   facility        Facility?   @relation(fields: [facilityId], references: [id])
   name            String

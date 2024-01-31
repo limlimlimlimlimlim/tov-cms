@@ -16,9 +16,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import WingSelect from '../../../component/wing-select/wing-select';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createSchedule, updateSchedule } from '../../../api/schedule';
+import { scheduleWingCodes } from './data';
 
 const { RangePicker } = DatePicker;
 
@@ -37,7 +37,7 @@ const validateMessages = {
 
 const ScheduleForm = ({ data }) => {
   const router = useRouter();
-  const [wingId, setWingId] = useState('');
+  const [wingCodes, setWingCodes] = useState({});
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [imageContents, setImageContents] = useState('');
@@ -81,7 +81,12 @@ const ScheduleForm = ({ data }) => {
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setWingId(data.wingId);
+      setWingCodes(
+        data.wingCodes.split(',').reduce((acc, data) => {
+          acc[data] = true;
+          return acc;
+        }, {}),
+      );
       setName(data.name);
       setImageContents(data.imageContents);
       setVideoContents(data.videoContents);
@@ -97,9 +102,13 @@ const ScheduleForm = ({ data }) => {
 
   const onFinish = useCallback(async () => {
     try {
+      const codes = Object.entries(wingCodes)
+        .filter((entry) => entry[1])
+        .map((entry) => entry[0])
+        .join();
       if (isEdit) {
         await updateSchedule(data.id, {
-          wingId,
+          wingCodes: codes,
           name,
           imageContents,
           videoContents,
@@ -114,7 +123,7 @@ const ScheduleForm = ({ data }) => {
         void message.success('게시물이 수정됐습니다.');
       } else {
         await createSchedule({
-          wingId,
+          wingCodes: codes,
           name,
           imageContents,
           videoContents,
@@ -146,12 +155,25 @@ const ScheduleForm = ({ data }) => {
     startDate,
     status,
     videoContents,
-    wingId,
+    wingCodes,
   ]);
 
-  const onChangeWing = useCallback((wing) => {
-    setWingId(wing);
-  }, []);
+  const createWingCodesCheck = useCallback(() => {
+    return scheduleWingCodes.map((code) => {
+      return (
+        <Checkbox
+          key={code.code}
+          value={code.code}
+          checked={wingCodes[code.code]}
+          onChange={(e) => {
+            setWingCodes({ ...wingCodes, [code.code]: e.target.checked });
+          }}
+        >
+          {code.label}
+        </Checkbox>
+      );
+    });
+  }, [wingCodes]);
 
   return (
     <Flex vertical gap="middle">
@@ -162,11 +184,19 @@ const ScheduleForm = ({ data }) => {
         validateMessages={validateMessages}
       >
         <Form.Item label="건물 선택">
-          <WingSelect
-            style={{ width: 200 }}
-            wingId={wingId}
-            onChange={onChangeWing}
-          />
+          <Checkbox
+            onChange={(e) => {
+              setWingCodes(
+                scheduleWingCodes.reduce((acc, code) => {
+                  acc[code.code] = e.target.checked;
+                  return acc;
+                }, {}),
+              );
+            }}
+          >
+            전체
+          </Checkbox>
+          {createWingCodesCheck()}
         </Form.Item>
         <Form.Item label="콘텐츠명" rules={[{ required: true }]}>
           <Input
@@ -184,8 +214,8 @@ const ScheduleForm = ({ data }) => {
               setContentsType(e.target.value);
             }}
           >
-            <Radio value="image">이미지</Radio>
             <Radio value="video">영상</Radio>
+            <Radio value="image">이미지</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="콘텐츠">

@@ -78,7 +78,7 @@ export class ScheduleService {
     return await this.swapScheduleOrder(schedule1.id, schedule2.id);
   }
 
-  async getSchedules({ keyword, page, count, floorId, wingId }) {
+  async getSchedules({ keyword, page, count, floorId, wingCode }) {
     const where = {
       AND: [],
     };
@@ -88,8 +88,13 @@ export class ScheduleService {
     if (floorId) {
       where.AND.push({ floorId: +floorId });
     }
-    if (wingId) {
-      where.AND.push({ wingId: +wingId });
+
+    if (wingCode) {
+      where.AND.push({
+        wingCodes: {
+          contains: wingCode,
+        },
+      });
     }
 
     const total = await this.prisma.schedule.count({ where });
@@ -106,6 +111,7 @@ export class ScheduleService {
         noPeriod: true,
         endDate: true,
         status: true,
+        wingCodes: true,
         wing: {
           select: {
             id: true,

@@ -27,14 +27,14 @@ export class ScheduleController {
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
     @Query('floorId') floorId: string,
-    @Query('wingId') wingId: string,
+    @Query('wingCode') wingCode: string,
   ) {
     return await this.scheduleService.getSchedules({
       keyword,
       page,
       count,
       floorId,
-      wingId,
+      wingCode,
     });
   }
 

@@ -81,12 +81,15 @@ const ScheduleForm = ({ data }) => {
   useEffect(() => {
     if (data) {
       setIsEdit(true);
-      setWingCodes(
-        data.wingCodes.split(',').reduce((acc, data) => {
-          acc[data] = true;
-          return acc;
-        }, {}),
-      );
+      if (data.wingCodes) {
+        setWingCodes(
+          data.wingCodes.split(',').reduce((acc, data) => {
+            acc[data] = true;
+            return acc;
+          }, {}),
+        );
+      }
+
       setName(data.name);
       setImageContents(data.imageContents);
       setVideoContents(data.videoContents);

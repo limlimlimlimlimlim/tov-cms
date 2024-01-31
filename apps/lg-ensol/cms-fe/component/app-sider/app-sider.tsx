@@ -52,11 +52,11 @@ const items: MenuItem[] = [
     'facility',
     <ShopOutlined />,
   ),
-  getItem(
-    <Link href="/kiosk">키오스크 관리</Link>,
-    'kiosk',
-    <DesktopOutlined />,
-  ),
+  // getItem(
+  //   <Link href="/kiosk">키오스크 관리</Link>,
+  //   'kiosk',
+  //   <DesktopOutlined />,
+  // ),
 ];
 
 export default function AppSider({ collapsed }) {

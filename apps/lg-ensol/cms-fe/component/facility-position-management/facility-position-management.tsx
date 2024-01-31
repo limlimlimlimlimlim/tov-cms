@@ -26,9 +26,9 @@ const defaultStyle = {
   color: '#D2C60C',
   strokeColor: '#D2C60C',
   alpha: 30,
-  strokeAlpha: 30,
+  strokeAlpha: 100,
   strokeWidth: 5,
-  fontSize: 18,
+  fontSize: 10,
   iconColor: '#D91700',
   tooltipColor: '#000000',
   padding: {

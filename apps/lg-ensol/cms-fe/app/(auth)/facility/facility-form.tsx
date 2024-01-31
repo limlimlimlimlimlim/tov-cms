@@ -1,5 +1,5 @@
 'use client';
-import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
+import { Button, Divider, Flex, Form, Input, message } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -18,8 +18,6 @@ const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
-
-const { Option } = Select;
 
 const validateMessages = {
   required: '필수 값을 입력해주세요',
@@ -316,7 +314,7 @@ const FacilityForm = ({ data }) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="시설 아이콘">
+        {/* <Form.Item label="시설 아이콘">
           <Select
             style={{ width: 150 }}
             value={facility.iconType}
@@ -349,7 +347,7 @@ const FacilityForm = ({ data }) => {
               아이콘2
             </Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         {map ? (
           <Form.Item label="지도">
             <Flex vertical gap="small">

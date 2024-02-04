@@ -12,6 +12,7 @@
     <!-- js -->
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/slick.min.js"></script>
+    <script src="/js/axios.min.js"></script>
   </head>
   <body>
     <div class="wrap exhi">
@@ -19,7 +20,7 @@
 
       <section class="content">
         <ul class="slide-wrap">
-          <li class="silde p1">
+          <!-- <li class="silde p1">
             <div class="img-box">
               <div><img src="/images/exhibition03.jpg" alt="" /></div>
             </div>
@@ -57,25 +58,97 @@
               <span class="place">제2전시장</span>
               <p>제46회 맘앤베이비엑스포 ㈜유아림</p>
             </div>
-          </li>
+          </li> -->
         </ul>
       </section>
     </div>
 
     <script>
-      $(".slide-wrap").slick({
-        // slide: '.slide-wrap > .slide',
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        infinite: true,
-        autoplay: true,
-        autoplaySpeed: 5000,
-        speed: 1000,
-        variableWidth: true,
-        dots: false,
-        prevArrow: false,
-        nextArrow: false,
-      });
+      const placeCodeList = [
+        { exh: 1, name: "전시홀1", value: "EXH1_H1" },
+        { exh: 1, name: "전시홀2", value: "EXH1_H2" },
+        { exh: 1, name: "전시홀3", value: "EXH1_H3" },
+        { exh: 1, name: "전시홀4", value: "EXH1_H4" },
+        { exh: 1, name: "전시홀5A", value: "EXH1_H5A" },
+        { exh: 1, name: "전시홀5B", value: "EXH1_H5B" },
+
+        { exh: 2, name: "전시홀6", value: "EXH2_H6" },
+        { exh: 2, name: "전시홀7", value: "EXH2_H7" },
+        { exh: 2, name: "전시홀8", value: "EXH2_H8" },
+        { exh: 2, name: "전시홀9", value: "EXH2_H9" },
+        { exh: 2, name: "전시홀10", value: "EXH2_H10" },
+      ];
+
+      const port = 4001;
+      loadData();
+
+      function loadData() {
+        axios
+          .get(
+            "http://" +
+              window.location.hostname +
+              ":" +
+              port +
+              "/post/type/exhibition"
+          )
+          .then(function (res) {
+            const items = createItems(res.data.data);
+            $(".slide-wrap").html(items);
+            startSlide();
+          });
+      }
+
+      function createItems(data) {
+        const items = data.map((item) => {
+          const exh = getExhibition(item.eventPlaceCodes)[0];
+          const domain = `${window.location.protocol}//${window.location.hostname}:4001`;
+          return `
+          <li class="silde p${exh}">
+            <div class="img-box">
+              <div><img src="${domain}/files/upload/${item.imageContents}" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제${exh}전시장</span>
+              <p>
+                ${item.name}
+              </p>
+            </div>
+          </li>`;
+        });
+        return items;
+      }
+
+      function getExhibition(codes) {
+        const codesArr = codes.split(",").sort();
+
+        return [
+          ...new Set(
+            codesArr.map((code) => {
+              const result = placeCodeList.find((c) => c.value === code);
+              if (result) {
+                return result.exh;
+              }
+              return "";
+            })
+          ),
+        ];
+      }
+
+      function startSlide() {
+        $(".slide-wrap").slick({
+          // slide: '.slide-wrap > .slide',
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: true,
+          autoplay: true,
+          autoplaySpeed: 5000,
+          speed: 1000,
+          variableWidth: true,
+          dots: false,
+          prevArrow: false,
+          nextArrow: false,
+        });
+      }
     </script>
   </body>
 </html>

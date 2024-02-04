@@ -33,6 +33,13 @@ export class PostController {
     });
   }
 
+  @Get('/type/:type')
+  async getPostsByType(@Param('type') type: string = 'conference') {
+    return await this.postService.getPostsByType({
+      type,
+    });
+  }
+
   @Get(':id')
   async getPostById(@Param('id') id: string) {
     return this.postService.getPostById(+id);

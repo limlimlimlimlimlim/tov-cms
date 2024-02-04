@@ -99,6 +99,18 @@ export class PostService {
     return { total, data, page, count };
   }
 
+  async getPostsByType({ type }) {
+    const data = await this.prisma.post.findMany({
+      where: {
+        postType: type,
+      },
+      orderBy: {
+        order: 'desc',
+      },
+    });
+    return { data };
+  }
+
   async getPostById(id: number) {
     return await this.prisma.post.findUnique({
       where: { id },

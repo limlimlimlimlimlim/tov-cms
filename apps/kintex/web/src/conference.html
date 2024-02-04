@@ -13,22 +13,24 @@
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/slick.min.js"></script>
     <script src="/js/jquery.marquee.min.js"></script>
+    <script src="/js/axios.min.js"></script>
   </head>
   <body>
     <div class="wrap meet">
       <h1>회의 일정</h1>
-
+      <!-- 가로형: 한 화면에 8개 항목 표출, 세로형: 한 화면에 25개 항목 표출 -->
       <section class="content">
         <div class="slide-tbl">
-          <div class="slide mq-wrap">
-            <!-- 가로형: 한 화면에 8개 항목 표출, 세로형: 한 화면에 25개 항목 표출 -->
+          <!-- <div class="slide mq-wrap">
+            
             <table>
               <tbody>
                 <tr class="p2">
                   <td>
                     <span class="tit"
                       >로스트아크 2023 디어 프렌즈 페스타 로스트아크 2023 디어
-                      프렌즈 페스타 로스트아크 2023 디어 프렌즈 페스타</span
+                      프렌즈 페스타 로스트아크 2023 디어 프렌즈
+                      페스타?????????</span
                     >
                   </td>
                   <td>
@@ -40,7 +42,7 @@
                   <td>2023-12-09 ~ 2023-12-10</td>
                 </tr>
                 <tr class="p1">
-                  <td><span class="tit">굿모닝코리아 강연</span></td>
+                  <td><span class="tit">굿모닝코리아 강연@@@@@@@@@</span></td>
                   <td><span class="place">406</span></td>
                   <td>제<i>1</i>전시장</td>
                   <td>2023-12-09 ~ 2023-12-10</td>
@@ -120,13 +122,15 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> -->
 
-          <div class="slide mq-wrap">
+          <!-- <div class="slide mq-wrap">
             <table>
               <tbody>
                 <tr class="p1">
-                  <td><span class="tit">2 슬라이드 굿모닝코리아 강연</span></td>
+                  <td>
+                    <span class="tit">2 슬라이드 굿모닝코리아 강연!!!!</span>
+                  </td>
                   <td><span class="place">406</span></td>
                   <td>제<i>1</i>전시장</td>
                   <td>2023-12-09 ~ 2023-12-10</td>
@@ -217,54 +221,192 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> -->
         </div>
       </section>
     </div>
 
     <script>
-      // 페이지 슬라이드
-      $(".slide-tbl").slick({
-        slide: ".slide-tbl > .slide",
-        slidesToShow: 1,
-        // slidesToScroll: 1,
-        infinite: true,
-        autoplay: true,
-        autoplaySpeed: 19500,
-        speed: 1000,
-        dots: false,
-        prevArrow: false,
-        nextArrow: false,
-        fade: true,
-      });
+      const placeCodeList = [
+        { exh: 1, name: "201", value: "EXH1_M201" },
+        { exh: 1, name: "202", value: "EXH1_M202" },
+        { exh: 1, name: "203", value: "EXH1_M203" },
+        { exh: 1, name: "204", value: "EXH1_M204" },
+        { exh: 1, name: "205", value: "EXH1_M205" },
+        { exh: 1, name: "206", value: "EXH1_M206" },
+        { exh: 1, name: "207", value: "EXH1_M207" },
+        { exh: 1, name: "208", value: "EXH1_M208" },
+        { exh: 1, name: "209", value: "EXH1_M209" },
+        { exh: 1, name: "210", value: "EXH1_M210" },
+        { exh: 1, name: "211", value: "EXH1_M211" },
+        { exh: 1, name: "301", value: "EXH1_M301" },
+        { exh: 1, name: "302", value: "EXH1_M302" },
+        { exh: 1, name: "303", value: "EXH1_M303" },
+        { exh: 1, name: "304", value: "EXH1_M304" },
+        { exh: 1, name: "305", value: "EXH1_M305" },
+        { exh: 1, name: "306", value: "EXH1_M306" },
+        { exh: 1, name: "307", value: "EXH1_M307" },
+        { exh: 1, name: "308", value: "EXH1_M308" },
+        { exh: 1, name: "309", value: "EXH1_M309" },
+        { exh: 1, name: "그랜드볼룸", value: "MGRD" },
+        { exh: 2, name: "301", value: "EXH2_M301" },
+        { exh: 2, name: "302", value: "EXH2_M302" },
+        { exh: 2, name: "303", value: "EXH2_M303" },
+        { exh: 2, name: "304", value: "EXH2_M304" },
+        { exh: 2, name: "305", value: "EXH2_M305" },
+        { exh: 2, name: "306", value: "EXH2_M306" },
+        { exh: 2, name: "307", value: "EXH2_M307" },
+        { exh: 2, name: "308", value: "EXH2_M308" },
+        { exh: 2, name: "401", value: "EXH2_M401" },
+        { exh: 2, name: "402", value: "EXH2_M402" },
+        { exh: 2, name: "403", value: "EXH2_M403" },
+        { exh: 2, name: "404", value: "EXH2_M404" },
+        { exh: 2, name: "405", value: "EXH2_M405" },
+        { exh: 2, name: "406", value: "EXH2_M406" },
+        { exh: 2, name: "407", value: "EXH2_M407" },
+        { exh: 2, name: "408", value: "EXH2_M408" },
+      ];
 
-      // 글자수 넘침 감지
-      $(".slide.mq-wrap td span").each(function () {
-        if ($(this).width() > $(this).parents("td").width()) {
-          $(this).addClass("marquee");
+      const port = 4001;
+      loadData();
+
+      function loadData() {
+        axios
+          .get(
+            "http://" +
+              window.location.hostname +
+              ":" +
+              port +
+              "/post/type/conference"
+          )
+          .then(function (res) {
+            const pages = createPages(res.data.data);
+            $(".slide-tbl").html(pages);
+            startSlide();
+          });
+      }
+
+      function createPages(data) {
+        const viewNum = 10;
+        const pages = new Array(Math.ceil(data.length / viewNum))
+          .fill({})
+          .map((_, index) => {
+            return `
+                <div class="slide mq-wrap">
+                  <table>
+                    <tbody>
+                      ${createItems(data.slice(index * viewNum, index * viewNum + viewNum))}
+                    </tbody>
+                  </table>
+                </div>`;
+          });
+
+        function createItems(data) {
+          const items = data.map((item) => {
+            const exh = getExhibition(item.eventPlaceCodes)[0];
+            console.log(exh);
+            return `
+                <tr class="p${exh}">
+                  <td><span class="tit">${item.name}</span></td>
+                  <td><span class="place">${getPlace(item.eventPlaceCodes)}</span></td>
+                  <td>제<i>${exh}</i>전시장</td>
+                  <td>${toStringDate(new Date(item.eventStartDate))} ~ ${toStringDate(new Date(item.eventEndDate))}</td>
+                </tr>`;
+          });
+          return items;
         }
-      });
+        return pages;
+      }
 
-      // 글자수 넘치면 슬라이딩
-      // 회의명
-      $(".tit.marquee").marquee({
-        duration: 19000,
-        gap: 200,
-        delayBeforeStart: 500,
-        direction: "left",
-        duplicated: true,
-        startVisible: true,
-      });
+      function getPlace(codes) {
+        const codesArr = codes.split(",").sort();
+        return codesArr
+          .map((code) => {
+            const result = placeCodeList.find((c) => c.value === code);
+            if (result) {
+              return result.name;
+            }
+            return "";
+          })
+          .join(", ");
+      }
 
-      // 회의장소
-      $(".place.marquee").marquee({
-        duration: 9000,
-        gap: 50,
-        delayBeforeStart: 500,
-        direction: "left",
-        duplicated: true,
-        startVisible: true,
-      });
+      function getExhibition(codes) {
+        const codesArr = codes.split(",").sort();
+
+        return [
+          ...new Set(
+            codesArr.map((code) => {
+              const result = placeCodeList.find((c) => c.value === code);
+              if (result) {
+                return result.exh;
+              }
+              return "";
+            })
+          ),
+        ];
+      }
+
+      function toStringDate(source, delimiter = "-") {
+        const year = source.getFullYear();
+        const month = leftPad(source.getMonth() + 1);
+        const day = leftPad(source.getDate());
+
+        function leftPad(value) {
+          if (value >= 10) {
+            return value;
+          }
+
+          return `0${value}`;
+        }
+
+        return [year, month, day].join(delimiter);
+      }
+
+      function startSlide() {
+        // 페이지 슬라이드
+        $(".slide-tbl").slick({
+          slide: ".slide-tbl > .slide",
+          slidesToShow: 1,
+          // slidesToScroll: 1,
+          infinite: true,
+          autoplay: true,
+          autoplaySpeed: 19500,
+          speed: 1000,
+          dots: false,
+          prevArrow: false,
+          nextArrow: false,
+          fade: true,
+        });
+
+        // 글자수 넘침 감지
+        $(".slide.mq-wrap td span").each(function () {
+          if ($(this).width() > $(this).parents("td").width()) {
+            $(this).addClass("marquee");
+          }
+        });
+
+        // 글자수 넘치면 슬라이딩
+        // 회의명
+        $(".tit.marquee").marquee({
+          duration: 19000,
+          gap: 200,
+          delayBeforeStart: 500,
+          direction: "left",
+          duplicated: true,
+          startVisible: true,
+        });
+
+        // 회의장소
+        $(".place.marquee").marquee({
+          duration: 9000,
+          gap: 50,
+          delayBeforeStart: 500,
+          direction: "left",
+          duplicated: true,
+          startVisible: true,
+        });
+      }
     </script>
   </body>
 </html>

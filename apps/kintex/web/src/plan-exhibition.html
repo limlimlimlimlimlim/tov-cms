@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>전시 안내</title>
+
+    <!-- css -->
+    <link href="/css/style.css" rel="stylesheet" />
+
+    <!-- js -->
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+  </head>
+  <body>
+    <div class="wrap exhi">
+      <h1>전시 안내</h1>
+
+      <section class="content">
+        <ul class="slide-wrap">
+          <li class="silde p1">
+            <div class="img-box">
+              <div><img src="/images/exhibition03.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제1전시장</span>
+              <p>2024 캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람</p>
+            </div>
+          </li>
+          <li class="silde p2">
+            <div class="img-box">
+              <div><img src="/images/exhibition02.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제2전시장</span>
+              <p>제46회 맘앤베이비엑스포 ㈜유아림</p>
+            </div>
+          </li>
+          <li class="silde p1">
+            <div class="img-box">
+              <div><img src="/images/exhibition01.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제1전시장</span>
+              <p>
+                2024 캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람 2024
+                캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람
+              </p>
+            </div>
+          </li>
+          <li class="silde p2">
+            <div class="img-box">
+              <div><img src="/images/exhibition01.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제2전시장</span>
+              <p>제46회 맘앤베이비엑스포 ㈜유아림</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <script>
+      $(".slide-wrap").slick({
+        // slide: '.slide-wrap > .slide',
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        speed: 1000,
+        variableWidth: true,
+        dots: false,
+        prevArrow: false,
+        nextArrow: false,
+      });
+    </script>
+  </body>
+</html>

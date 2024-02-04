@@ -1,0 +1,86 @@
+/* exhibition 전시안내 style */
+
+.wrap.exhi {
+    height: 100vh;
+    background: url(#{$img-path}/bg-exhibition.jpg) no-repeat;
+    background-size: 100%;
+    background-position: center top;
+
+    .slide-wrap {
+        @include clear;
+        margin: 190px auto 0;
+        width: 1590px;
+        overflow: hidden;
+
+        li {
+            float: left;
+            margin-right: 135px;
+            width: 437px;
+            text-align: center;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .img-box {
+            position: relative;
+            height: 545px;
+            overflow: hidden;
+            background: #eee;
+
+            div {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                -webkit-transform: translate(50%,50%);
+                -ms-transform: translate(50%,50%);
+                transform: translate(50%,50%);
+            }
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                // max-width: 150%;
+                width: 100%;
+                -webkit-transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+                transform: translate(-50%,-50%);
+            }
+        }
+        .txt-box {
+            padding: 0 15px 15px;
+            height: 230px;
+            font-size: 3.3rem;
+            font-weight: 700;
+            background-color: #fff;
+            p {
+                @include txtElpsis(3);
+            }
+        }
+        .place {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 13px 50px 7px;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: #fff;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        li.p1 {
+            color: #0947ba;
+            .place{
+                background-color: #0947ba;
+            }
+        }
+        li.p2 {
+            color: #ff6000;
+            .place {
+                background-color: #ff6000;
+            }
+        }
+    }
+}

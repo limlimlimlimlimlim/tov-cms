@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-  <g id="btn_del" transform="translate(-272 -4)">
-    <g id="btn_del-2" data-name="btn_del" transform="translate(272 4)">
-      <circle id="타원_25" data-name="타원 25" cx="10" cy="10" r="10" transform="translate(10 10)" fill="#ddd"/>
-      <path id="패스_74" data-name="패스 74" d="M24.243,16.461l-.707-.707L20,19.29l-3.535-3.536-.707.707L19.293,20l-3.536,3.536.707.707L20,20.7l3.535,3.536.707-.707L20.707,20Z" fill="#fff" fill-rule="evenodd"/>
-    </g>
-    <rect id="사각형_163" data-name="사각형 163" width="40" height="40" transform="translate(272 4)" fill="none"/>
-  </g>
-</svg>

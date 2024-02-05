@@ -103,6 +103,7 @@ export class PostService {
     const data = await this.prisma.post.findMany({
       where: {
         postType: type,
+        status: 'enabled',
       },
       orderBy: {
         order: 'desc',

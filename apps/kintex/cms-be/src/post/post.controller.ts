@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { Prisma } from '@prisma/client';
+import * as dayjs from 'dayjs';
 
 @Controller('post')
 export class PostController {
@@ -35,9 +36,24 @@ export class PostController {
 
   @Get('/type/:type')
   async getPostsByType(@Param('type') type: string = 'conference') {
-    return await this.postService.getPostsByType({
+    const posts = await this.postService.getPostsByType({
       type,
     });
+
+    const now = dayjs().valueOf();
+    const result = posts.data.filter((post: any) => {
+      if (post.noPeriod) {
+        return true;
+      }
+      if (
+        dayjs(post.startDate).startOf('day').valueOf() < now &&
+        now < dayjs(post.endDate).endOf('day').valueOf()
+      ) {
+        return true;
+      }
+      return false;
+    });
+    return result;
   }
 
   @Get(':id')

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx -y http-server ./src -p 4002 -a localhost",
+    "start": "npx -y http-server ./src -p 4002",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

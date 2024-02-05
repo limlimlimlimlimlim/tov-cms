@@ -92,7 +92,7 @@
               "/post/type/exhibition"
           )
           .then(function (res) {
-            const items = createItems(res.data.data);
+            const items = createItems(res.data);
             $(".slide-wrap").html(items);
             startSlide();
           });

@@ -78,13 +78,14 @@
               "/post/type/conference"
           )
           .then(function (res) {
-            const pages = createPages(res.data.data);
+            const pages = createPages(res.data);
             $(".slide-tbl").html(pages);
             startSlide();
           });
       }
 
       function createPages(data) {
+        if (!data || !data.length) return null;
         const viewNum = 10;
         const pages = new Array(Math.ceil(data.length / viewNum))
           .fill({})

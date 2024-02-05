@@ -31,6 +31,7 @@
     "@types/uuid": "^9.0.6",
     "@types/winston": "^2.4.4",
     "class-validator": "^0.14.0",
+    "dayjs": "^1.11.10",
     "jsonwebtoken": "^9.0.2",
     "nest-winston": "^1.9.4",
     "passport": "^0.7.0",

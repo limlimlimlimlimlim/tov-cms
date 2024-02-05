@@ -10,6 +10,7 @@ import {
   Radio,
   Switch,
   Tabs,
+  Typography,
   message,
 } from 'antd';
 import Link from 'next/link';
@@ -20,6 +21,7 @@ import ContentsUploader from '../../../component/contents-uploader/contentes-upl
 import { createSchedule, updateSchedule } from '../../../api/schedule';
 
 const { RangePicker } = DatePicker;
+const { Text } = Typography;
 
 const formLayout = {
   labelCol: { span: 5 },
@@ -56,6 +58,15 @@ const ScheduleForm = ({ data }) => {
         <ContentsUploader
           type="video"
           source={videoContents}
+          desc={
+            <>
+              <Text type="secondary">* 권장 해상도: 3840 * 2160</Text>
+              <Text type="secondary">
+                * 이미지 또는 영상이 화면 비율 및 해상도가 맞지 않은 경우에는
+                키오스크에서 깨지거나 찌그러져 보일 수 있습니다.
+              </Text>
+            </>
+          }
           onComplete={({ fileName }) => {
             setVideoContents(fileName);
           }}
@@ -68,6 +79,15 @@ const ScheduleForm = ({ data }) => {
       children: (
         <ContentsUploader
           source={imageContents}
+          desc={
+            <>
+              <Text type="secondary">* 권장 해상도: 3840 * 2160</Text>
+              <Text type="secondary">
+                * 이미지 또는 영상이 화면 비율 및 해상도가 맞지 않은 경우에는
+                키오스크에서 깨지거나 찌그러져 보일 수 있습니다.
+              </Text>
+            </>
+          }
           onComplete={({ fileName }) => {
             setImageContents(fileName);
           }}

@@ -7,6 +7,7 @@ import {
   Input,
   Modal,
   Switch,
+  Typography,
   message,
 } from 'antd';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ import WingSelect from '../../../component/wing-select/wing-select';
 import { createMap, deleteMap, updateMap } from '../../../api/map';
 
 const { confirm } = Modal;
+const { Text } = Typography;
 
 const layout = {
   labelCol: { span: 4 },
@@ -160,7 +162,19 @@ export default function MapForm({ data }) {
           />
         </Form.Item>
         <Form.Item label="지도파일 등록">
-          <ContentsUploader source={image} onComplete={onCompleteUpload} />
+          <ContentsUploader
+            source={image}
+            onComplete={onCompleteUpload}
+            desc={
+              <>
+                <Text type="secondary">* 권장 해상도: 3840 * 2160</Text>
+                <Text type="secondary">
+                  * 이미지 또는 영상이 화면 비율 및 해상도가 맞지 않은 경우에는
+                  키오스크에서 깨지거나 찌그러져 보일 수 있습니다.
+                </Text>
+              </>
+            }
+          />
         </Form.Item>
 
         <Form.Item label="상태">

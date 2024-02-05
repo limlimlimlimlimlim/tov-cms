@@ -212,7 +212,6 @@ const PostForm = ({ data }) => {
       if (!type) {
         return;
       }
-
       return meetiongRoomData[type].map((exh: any) => (
         <Checkbox
           key={exh.value}
@@ -591,81 +590,53 @@ const PostForm = ({ data }) => {
 
         <Form.Item label="행사 장소">
           <Flex vertical gap="small">
-            <Checkbox
-              value={ExhibitionType.Exh1}
-              onChange={(e: any) => {
-                const checked = e.target.checked;
-                setCheckExhibition({
-                  ...checkExhibition,
-                  [ExhibitionType.Exh1]: checked,
-                });
-                if (checked) {
-                  const exh1PlaceCodes = Object.values(
-                    exhibitionData[ExhibitionType.Exh1],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = true;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh1PlaceCodes,
-                  });
-                } else {
-                  const exh1PlaceCodes = Object.values(
-                    exhibitionData[ExhibitionType.Exh1],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = false;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh1PlaceCodes,
-                  });
-                }
+            <Radio.Group
+              onChange={(e) => {
+                setExhibitionType(e.target.value);
+                setEventPlaceCodes({});
               }}
+              value={exhibitionType}
             >
-              제1 전시장
-            </Checkbox>
-            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createEventPlaceCheckbox(ExhibitionType.Exh1)}
-            </Flex>
-            <Checkbox
-              value={ExhibitionType.Exh2}
-              onChange={(e: any) => {
-                const checked = e.target.checked;
-                setCheckExhibition({
-                  ...checkExhibition,
-                  [ExhibitionType.Exh2]: checked,
-                });
-                if (checked) {
-                  const exh2PlaceCodes = Object.values(
-                    exhibitionData[ExhibitionType.Exh2],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = true;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh2PlaceCodes,
+              <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
+              <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
+            </Radio.Group>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }} vertical>
+              <Checkbox
+                value={exhibitionType}
+                onChange={(e: any) => {
+                  const checked = e.target.checked;
+                  setCheckExhibition({
+                    ...checkExhibition,
+                    [exhibitionType]: checked,
                   });
-                } else {
-                  const exh2PlaceCodes = Object.values(
-                    exhibitionData[ExhibitionType.Exh2],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = false;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh2PlaceCodes,
-                  });
-                }
-              }}
-            >
-              제2 전시장
-            </Checkbox>
-            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createEventPlaceCheckbox(ExhibitionType.Exh2)}
+                  if (checked) {
+                    const exhPlaceCodes = Object.values(
+                      exhibitionData[exhibitionType],
+                    ).reduce((acc, item) => {
+                      acc[item.value] = true;
+                      return acc;
+                    }, {});
+                    setEventPlaceCodes({
+                      ...eventPlaceCodes,
+                      ...exhPlaceCodes,
+                    });
+                  } else {
+                    const exhPlaceCodes = Object.values(
+                      exhibitionData[exhibitionType],
+                    ).reduce((acc, item) => {
+                      acc[item.value] = false;
+                      return acc;
+                    }, {});
+                    setEventPlaceCodes({
+                      ...eventPlaceCodes,
+                      ...exhPlaceCodes,
+                    });
+                  }
+                }}
+              >
+                전체선택
+              </Checkbox>
+              <div>{createEventPlaceCheckbox(exhibitionType)}</div>
             </Flex>
           </Flex>
         </Form.Item>
@@ -743,6 +714,7 @@ const PostForm = ({ data }) => {
     feeEn,
     cast,
     castEn,
+    exhibitionType,
     createEventPlaceCheckbox,
     eventStartDate,
     eventEndDate,
@@ -777,81 +749,52 @@ const PostForm = ({ data }) => {
         </Form.Item>
         <Form.Item label="회의 장소">
           <Flex vertical gap="small">
-            <Checkbox
-              value={ExhibitionType.Exh1}
-              onChange={(e: any) => {
-                const checked = e.target.checked;
-                setCheckExhibition({
-                  ...checkExhibition,
-                  [ExhibitionType.Exh1]: checked,
-                });
-                if (checked) {
-                  const exh1PlaceCodes = Object.values(
-                    meetiongRoomData[ExhibitionType.Exh1],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = true;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh1PlaceCodes,
-                  });
-                } else {
-                  const exh1PlaceCodes = Object.values(
-                    meetiongRoomData[ExhibitionType.Exh1],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = false;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh1PlaceCodes,
-                  });
-                }
+            <Radio.Group
+              onChange={(e) => {
+                setExhibitionType(e.target.value);
+                setEventPlaceCodes({});
               }}
+              value={exhibitionType}
             >
-              제1 전시장
-            </Checkbox>
-            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createMeetingRoomCheckbox(ExhibitionType.Exh1)}
-            </Flex>
-            <Checkbox
-              value={ExhibitionType.Exh2}
-              onChange={(e: any) => {
-                const checked = e.target.checked;
-                setCheckExhibition({
-                  ...checkExhibition,
-                  [ExhibitionType.Exh2]: checked,
-                });
-                if (checked) {
-                  const exh2PlaceCodes = Object.values(
-                    meetiongRoomData[ExhibitionType.Exh2],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = true;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh2PlaceCodes,
+              <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
+              <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
+            </Radio.Group>
+            <Flex gap="small" wrap="wrap" style={{ width: 600 }} vertical>
+              <Checkbox
+                onChange={(e: any) => {
+                  const checked = e.target.checked;
+                  setCheckExhibition({
+                    ...checkExhibition,
+                    [exhibitionType]: checked,
                   });
-                } else {
-                  const exh2PlaceCodes = Object.values(
-                    meetiongRoomData[ExhibitionType.Exh2],
-                  ).reduce((acc, item) => {
-                    acc[item.value] = false;
-                    return acc;
-                  }, {});
-                  setEventPlaceCodes({
-                    ...eventPlaceCodes,
-                    ...exh2PlaceCodes,
-                  });
-                }
-              }}
-            >
-              제2 전시장
-            </Checkbox>
-            <Flex gap="small" wrap="wrap" style={{ width: 600 }}>
-              {createMeetingRoomCheckbox(ExhibitionType.Exh2)}
+                  if (checked) {
+                    const exhPlaceCodes = Object.values(
+                      meetiongRoomData[exhibitionType],
+                    ).reduce((acc, item) => {
+                      acc[item.value] = true;
+                      return acc;
+                    }, {});
+                    setEventPlaceCodes({
+                      ...eventPlaceCodes,
+                      ...exhPlaceCodes,
+                    });
+                  } else {
+                    const exhPlaceCodes = Object.values(
+                      meetiongRoomData[exhibitionType],
+                    ).reduce((acc, item) => {
+                      acc[item.value] = false;
+                      return acc;
+                    }, {});
+                    setEventPlaceCodes({
+                      ...eventPlaceCodes,
+                      ...exhPlaceCodes,
+                    });
+                  }
+                }}
+              >
+                전체선택
+              </Checkbox>
+              <div>{createMeetingRoomCheckbox(exhibitionType)}</div>
             </Flex>
           </Flex>
         </Form.Item>
@@ -897,6 +840,7 @@ const PostForm = ({ data }) => {
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
+    exhibitionType,
     meetiongRoomData,
     noPeriod,
     startDate,

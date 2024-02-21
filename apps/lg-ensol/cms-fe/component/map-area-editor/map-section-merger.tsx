@@ -194,8 +194,8 @@ export default function MapSectionMerger({ map }: ComponentProps) {
             <Flex gap="small">
               <Button onClick={onClickMerge}>구역 병합</Button>
               <Button onClick={onClickSplit}>구역 나누기</Button>
-              <Button onClick={onClickDisable}>구역 사용 안함</Button>
-              <Button onClick={onClickEnable}>구역 사용</Button>
+              {/* <Button onClick={onClickDisable}>구역 사용 안함</Button>
+              <Button onClick={onClickEnable}>구역 사용</Button> */}
             </Flex>
           )}
           {mode !== 'normal' && (

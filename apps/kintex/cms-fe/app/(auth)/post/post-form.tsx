@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
 import { getWings } from '../../../api/building-info';
+import TextArea from 'antd/es/input/TextArea';
 
 const { RangePicker } = DatePicker;
 
@@ -871,22 +872,18 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item>
         <Form.Item label="게시물명" rules={[{ required: true }]}>
-          <Input
-            value={name}
+          <TextArea value={name}
             style={{ width: 300 }}
             onChange={(e) => {
               setName(e.target.value);
-            }}
-          />
+            }} />
         </Form.Item>
         <Form.Item label="게시물명(영문)" rules={[{ required: true }]}>
-          <Input
-            value={nameEn}
+        <TextArea value={nameEn}
             style={{ width: 300 }}
             onChange={(e) => {
               setNameEn(e.target.value);
-            }}
-          />
+            }}/>
         </Form.Item>
 
         {postType === PostType.Exhibition

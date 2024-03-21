@@ -35,8 +35,10 @@ export default function ScheduleList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
-  const fetchData = useCallback(async ({ keyword, page, count }) => {
+  const fetchData = useCallback(async ({ keyword, page }) => {
     const posts = await getSchedules({ keyword, page, count });
+    setKeyword(keyword);
+    setPage(page)
     setData(posts.data.data);
     setTotal(posts.data.total);
   }, []);
@@ -52,12 +54,13 @@ export default function ScheduleList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    setPage(1);
-    void fetchData({ keyword, page, count });
-  }, [count, fetchData, getSchedulePermissions, keyword, page, ready, router]);
+    const prevKeyword = localStorage.getItem('cms_schedule_search_keyword');
+    void fetchData({ keyword : prevKeyword || '', page:1 });
+  }, [count, fetchData, getSchedulePermissions, ready, router]);
 
   const onSearch = useCallback((value) => {
-    setKeyword(value);
+    localStorage.setItem('cms_schedule_search_keyword', value);
+    fetchData({ keyword : value, page:1 });
   }, []);
 
   const columns = useMemo(() => {
@@ -104,7 +107,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await incrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, count });
+                    await fetchData({ keyword, page });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -117,7 +120,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await decrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, count });
+                    await fetchData({ keyword, page });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -169,7 +172,7 @@ export default function ScheduleList() {
       content: '선택된 스케쥴을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
-        void fetchData({ keyword, page, count });
+        void fetchData({ keyword, page });
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });
@@ -186,7 +189,7 @@ export default function ScheduleList() {
   // }, []);
 
   const onChangePage = useCallback((p) => {
-    setPage(p.current);
+    fetchData({keyword, page:p.current})
   }, []);
 
   return (
@@ -223,8 +226,13 @@ export default function ScheduleList() {
         <Flex>
           <Search
             placeholder="검색어를 입력해주세요."
+            value={keyword}
             onSearch={onSearch}
+            onChange={(e)=>{
+              setKeyword(e.target.value)
+            }}
             style={{ width: 300 }}
+            allowClear
           />
         </Flex>
       </Flex>

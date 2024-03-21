@@ -33,7 +33,7 @@ export default function FacilityList() {
   const router = useRouter();
 
   const fetchData = useCallback(
-    async ({ keyword, page, count, floor, wing }) => {
+    async ({ keyword, page, floor, wing }) => {
       const facilities = await getFacilities({
         keyword,
         page,
@@ -41,6 +41,8 @@ export default function FacilityList() {
         floor,
         wing,
       });
+      setKeyword(keyword);
+      setPage(page);
       setData(facilities.data.data);
       setTotal(facilities.data.total);
     },
@@ -58,14 +60,13 @@ export default function FacilityList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    void fetchData({ keyword, page, count, floor, wing });
+    const prevKeyword = localStorage.getItem('cms_facility_search_keyword');
+    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
   }, [
     count,
     fetchData,
     floor,
     getFacilityPermissions,
-    keyword,
-    page,
     ready,
     router,
     wing,
@@ -143,7 +144,8 @@ export default function FacilityList() {
   }, [count, page, updatable]);
 
   const onSearch = useCallback((value) => {
-    setKeyword(value);
+    localStorage.setItem('cms_facility_search_keyword', value);
+    fetchData({ keyword : value, page:1, floor, wing });
   }, []);
 
   const onClickDelete = useCallback(() => {
@@ -154,7 +156,7 @@ export default function FacilityList() {
       content: '선택된 시설을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteFacility(row.id)));
-        void fetchData({ keyword, page, count, floor, wing });
+        void fetchData({ keyword, page, floor, wing });
         void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
@@ -176,7 +178,7 @@ export default function FacilityList() {
   }, []);
 
   const onChangePage = useCallback((p) => {
-    setPage(p.current);
+    fetchData({keyword, page:p.current, floor, wing})
   }, []);
 
   return (
@@ -233,8 +235,13 @@ export default function FacilityList() {
         <Flex>
           <Search
             placeholder="검색어를 입력해주세요."
+            value={keyword}
             onSearch={onSearch}
+            onChange={(e)=>{
+              setKeyword(e.target.value)
+            }}
             style={{ width: 300 }}
+            allowClear
           />
         </Flex>
       </Flex>

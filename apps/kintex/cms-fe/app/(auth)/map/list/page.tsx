@@ -43,8 +43,10 @@ export default function MapList() {
   const [isMaster] = useState(params.get('isMaster') === 'true');
 
   const fetchData = useCallback(
-    async ({ keyword, page, count, floor, wing }) => {
+    async ({ keyword, page, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
+      setKeyword(keyword);
+      setPage(page)
       setData(maps.data.data);
       setTotal(maps.data.total);
     },
@@ -71,14 +73,13 @@ export default function MapList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    void fetchData({ keyword, page, count, floor, wing });
+    const prevKeyword = localStorage.getItem('cms_map_search_keyword');
+    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
   }, [
     count,
     fetchData,
     floor,
     getMapPermissions,
-    keyword,
-    page,
     ready,
     router,
     wing,
@@ -181,8 +182,9 @@ export default function MapList() {
   }, [count, page, updatable]);
 
   const onSearch = useCallback((value) => {
-    setKeyword(value);
-  }, []);
+    localStorage.setItem('cms_map_search_keyword', value);
+    fetchData({ keyword : value, page:1, floor, wing });
+  }, [floor, wing]);
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -192,7 +194,7 @@ export default function MapList() {
       content: '선택된 지도를 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteMap(row.id)));
-        void fetchData({ keyword, page, count, floor, wing });
+        void fetchData({ keyword, page, floor, wing });
         void message.success('선택된 지도가 삭제됐습니다.');
       },
     });
@@ -224,7 +226,7 @@ export default function MapList() {
   }, []);
 
   const onChangePage = useCallback((p) => {
-    setPage(p.current);
+    fetchData({keyword, page:p.current, floor, wing })
   }, []);
 
   return (
@@ -284,8 +286,13 @@ export default function MapList() {
           <Flex>
             <Search
               placeholder="검색어를 입력해주세요."
+              value={keyword}
               onSearch={onSearch}
+              onChange={(e)=>{
+                setKeyword(e.target.value)
+              }}
               style={{ width: 300 }}
+              allowClear
             />
           </Flex>
         </Flex>

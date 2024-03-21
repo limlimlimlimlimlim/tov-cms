@@ -68,6 +68,9 @@ export default function AppSider({ collapsed }) {
         items={items}
         defaultSelectedKeys={[pathname.split('/')[1]]}
         defaultOpenKeys={[/*'account-management',*/ 'map-management']}
+        onSelect={(e)=>{
+          localStorage.removeItem(`cms_${e.key}_search_keyword`)
+        }}
       />
     </Sider>
   );

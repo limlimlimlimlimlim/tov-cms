@@ -34,8 +34,10 @@ export default function PostList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
 
-  const fetchData = useCallback(async ({ keyword, page, count }) => {
+  const fetchData = useCallback(async ({ keyword, page }) => {
     const posts = await getPosts({ keyword, page, count });
+    setKeyword(keyword);
+    setPage(page)
     setData(posts.data.data);
     setTotal(posts.data.total);
   }, []);
@@ -51,9 +53,9 @@ export default function PostList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    setPage(1);
-    void fetchData({ keyword, page, count });
-  }, [count, fetchData, getPostPermissions, keyword, page, ready, router]);
+    const prevKeyword = localStorage.getItem('cms_post_search_keyword');
+    void fetchData({ keyword : prevKeyword || '', page:1 });
+  }, [count, fetchData, getPostPermissions, ready, router]);
 
   const columns = useMemo(() => {
     return [
@@ -108,7 +110,7 @@ export default function PostList() {
                 onClick={async () => {
                   try {
                     await incrementPostOrder(data.id);
-                    await fetchData({ keyword, page, count });
+                    await fetchData({ keyword, page });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -121,7 +123,7 @@ export default function PostList() {
                 onClick={async () => {
                   try {
                     await decrementPostOrder(data.id);
-                    await fetchData({ keyword, page, count });
+                    await fetchData({ keyword, page });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -166,7 +168,8 @@ export default function PostList() {
   }, [count, fetchData, keyword, page, updatable]);
 
   const onSearch = useCallback((value) => {
-    setKeyword(value);
+    localStorage.setItem('cms_post_search_keyword', value);
+    fetchData({ keyword : value, page:1 });
   }, []);
 
   const onClickDelete = useCallback(() => {
@@ -177,7 +180,7 @@ export default function PostList() {
       content: '선택된 게시물을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deletePost(row.id)));
-        void fetchData({ keyword, page, count });
+        void fetchData({ keyword, page });
         void message.success('선택된 게시물이 삭제됐습니다.');
       },
     });
@@ -190,7 +193,7 @@ export default function PostList() {
   };
 
   const onChangePage = useCallback((p) => {
-    setPage(p.current);
+    fetchData({keyword, page:p.current})
   }, []);
 
   return (
@@ -218,8 +221,13 @@ export default function PostList() {
         <Flex>
           <Search
             placeholder="검색어를 입력해주세요."
+            value={keyword}
             onSearch={onSearch}
+            onChange={(e)=>{
+              setKeyword(e.target.value)
+            }}
             style={{ width: 300 }}
+            allowClear
           />
         </Flex>
       </Flex>

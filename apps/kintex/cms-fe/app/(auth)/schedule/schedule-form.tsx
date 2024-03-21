@@ -260,10 +260,10 @@ const ScheduleForm = ({ data }) => {
         <Divider />
         <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            <Link href="/post/list">
+            <Link href="/schedule/list">
               <Button>취소</Button>
             </Link>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit"> 
               등록
             </Button>
           </Flex>

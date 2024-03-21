@@ -30,8 +30,10 @@ export default function MapInfoList() {
   const router = useRouter();
 
   const fetchData = useCallback(
-    async ({ keyword, page, count, floor, wing }) => {
+    async ({ keyword, page, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
+      setKeyword(keyword);
+      setPage(page)
       setData(maps.data.data);
       setTotal(maps.data.total);
     },
@@ -47,14 +49,13 @@ export default function MapInfoList() {
       return;
     }
     setUpdatable(result.update);
-    void fetchData({ keyword, page, count, floor, wing });
+    const prevKeyword = localStorage.getItem('cms_map-info_search_keyword');
+    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
   }, [
     count,
     fetchData,
     floor,
     getMapInfoPermissions,
-    keyword,
-    page,
     ready,
     router,
     wing,
@@ -147,8 +148,9 @@ export default function MapInfoList() {
   }, [count, page, updatable]);
 
   const onSearch = useCallback((value) => {
-    setKeyword(value);
-  }, []);
+    localStorage.setItem('cms_map-info_search_keyword', value);
+    fetchData({ keyword : value, page:1, floor, wing });
+  }, [floor, wing]);
 
   const onChangeFloor = useCallback((f: any) => {
     setFloor(f);
@@ -183,8 +185,13 @@ export default function MapInfoList() {
         <span>Total : {count}</span>
         <Search
           placeholder="검색어를 입력해주세요."
+          value={keyword}
           onSearch={onSearch}
+          onChange={(e)=>{
+            setKeyword(e.target.value)
+          }}
           style={{ width: 300 }}
+          allowClear
         />
       </Flex>
       <Table

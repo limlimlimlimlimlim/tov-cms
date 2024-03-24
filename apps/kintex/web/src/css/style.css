@@ -262,12 +262,12 @@ h1 {
 .wrap.exhi {
   height: 100vh;
   background: url(../images/bg-exhibition.jpg) no-repeat;
-  background-size: 100%;
+  background-size: 2048px 1024px;
   background-position: center top;
 }
 .wrap.exhi .slide-wrap {
-  margin: 190px auto 0;
-  width: 1590px;
+  margin: 180px auto 0;
+  width: 1690px;
   overflow: hidden;
 }
 .wrap.exhi .slide-wrap:after {
@@ -276,17 +276,33 @@ h1 {
   clear: both;
 }
 .wrap.exhi .slide-wrap li {
+  position: relative;
   float: left;
-  margin-right: 135px;
-  width: 437px;
+  margin-right: 150px;
+  width: 463px;
   text-align: center;
 }
 .wrap.exhi .slide-wrap li:last-child {
   margin-right: 0;
 }
+.wrap.exhi .slide-wrap .place {
+  position: absolute;
+  z-index: 100;
+  top: 10px;
+  left: 0;
+  width: 100%;
+}
+.wrap.exhi .slide-wrap .place span {
+  display: inline-block;
+  padding: 7px 30px 2px;
+  font-size: 3.3rem;
+  line-height: 1.2;
+  color: #fff;
+  border-radius: 30px;
+}
 .wrap.exhi .slide-wrap .img-box {
   position: relative;
-  height: 545px;
+  height: 520px;
   overflow: hidden;
   background: #eee;
 }
@@ -310,13 +326,14 @@ h1 {
   transform: translate(-50%, -50%);
 }
 .wrap.exhi .slide-wrap .txt-box {
-  padding: 0 15px 15px;
+  padding-bottom: 15px;
   height: 230px;
   font-size: 3.3rem;
   font-weight: 700;
   background-color: #fff;
 }
 .wrap.exhi .slide-wrap .txt-box p {
+  padding: 0 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -325,26 +342,36 @@ h1 {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-.wrap.exhi .slide-wrap .place {
-  display: inline-block;
+.wrap.exhi .slide-wrap .area {
+  display: block;
   margin-bottom: 20px;
-  padding: 13px 50px 7px;
-  font-size: 3.5rem;
+  padding: 10px 20px 7px;
+  height: 60px;
   font-weight: 400;
   color: #fff;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+}
+.wrap.exhi .slide-wrap .area span {
+  display: inline-block;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+.wrap.exhi .slide-wrap .marquee {
+  width: 100%;
+  vertical-align: -webkit-baseline-middle;
+  overflow: hidden;
 }
 .wrap.exhi .slide-wrap li.p1 {
   color: #0947ba;
 }
-.wrap.exhi .slide-wrap li.p1 .place {
+.wrap.exhi .slide-wrap li.p1 .place span,
+.wrap.exhi .slide-wrap li.p1 .area {
   background-color: #0947ba;
 }
 .wrap.exhi .slide-wrap li.p2 {
   color: #ff6000;
 }
-.wrap.exhi .slide-wrap li.p2 .place {
+.wrap.exhi .slide-wrap li.p2 .place span,
+.wrap.exhi .slide-wrap li.p2 .area {
   background-color: #ff6000;
 }
 

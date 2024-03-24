@@ -1,0 +1,19 @@
+@charset "utf-8";
+$img-path: "../images" !default;
+$font-path: "../css/fonts" !default;
+// $font-type: 'Noto Sans KR', 'Malgun Gothic', 'sans-serif', 'Arial';
+$font-type: 'GmarketSans', 'Malgun Gothic', 'sans-serif', 'Arial';
+
+@import "common/base";
+@import "common/typo";
+// @import "common/animation";
+@import "common/common";
+
+h1 {
+    text-indent: -9999px;
+    width: 0;
+    height: 0;
+}
+
+@import "exhibition";
+@import "meeting";

@@ -1,7 +1,6 @@
 'use client';
 import { Button, Divider, Flex, Form, Input, Select, message } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import WingSelect from '../../../component/wing-select/wing-select';
@@ -31,7 +30,6 @@ const validateMessages = {
 };
 
 const FacilityForm = ({ data }) => {
-  const router = useRouter();
   const [map, setMap] = useState<any>();
   const [mapSections, setMapSections] = useState<any>([]);
   const [originMapSections, setOriginMapSections] = useState<any>([]);

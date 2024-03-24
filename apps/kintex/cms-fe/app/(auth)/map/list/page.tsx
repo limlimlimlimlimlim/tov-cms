@@ -181,7 +181,7 @@ export default function MapList() {
         },
       },
     ];
-  }, [count, page, updatable]);
+  }, [count, page, replace, updatable]);
 
   const onSearch = useCallback(
     (value) => {

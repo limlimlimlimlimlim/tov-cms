@@ -2,22 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { getPermissionDetail } from '../../../api/permission';
 
 const usePermission = () => {
   const [ready, setReady] = useState(true);
-  const [permission, setPermission] = useState<any>({});
+  // const [permission, setPermission] = useState<any>({});
   const router = useRouter();
 
-  const fetchPermission = useCallback(async () => {
+  const fetchPermission = useCallback(() => {
     console.log('fetchPermission');
     const permissionId = localStorage.getItem('cms-user-permission-id');
     if (!permissionId) {
       router.replace('/login');
       return;
     }
-    const result = await getPermissionDetail(permissionId);
-    setPermission(result.data);
+    // const result = await getPermissionDetail(permissionId);
+    // setPermission(result.data);
     setReady(true);
   }, [router]);
 

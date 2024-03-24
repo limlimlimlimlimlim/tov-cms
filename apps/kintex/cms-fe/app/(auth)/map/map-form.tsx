@@ -11,7 +11,6 @@ import {
   message,
 } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import FloorSelect from '../../../component/floor-select/floor-select';
@@ -36,7 +35,6 @@ const validateMessages = {
 };
 
 export default function MapForm({ data }) {
-  const router = useRouter();
   const [floorId, setFloorId] = useState('');
   const [wingId, setWingId] = useState('');
   const [name, setName] = useState('');

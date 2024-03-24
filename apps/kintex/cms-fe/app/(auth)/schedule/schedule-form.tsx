@@ -14,7 +14,6 @@ import {
   message,
 } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
@@ -38,7 +37,6 @@ const validateMessages = {
 };
 
 const ScheduleForm = ({ data }) => {
-  const router = useRouter();
   const [name, setName] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [imageContents, setImageContents] = useState('');

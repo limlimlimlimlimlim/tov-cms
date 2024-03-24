@@ -13,13 +13,11 @@ import {
   message,
 } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
-import { getWings } from '../../../api/building-info';
 import useLink from '../hooks/use-link';
 
 const { RangePicker } = DatePicker;
@@ -64,7 +62,6 @@ enum ExhibitionType {
 }
 
 const PostForm = ({ data }) => {
-  const router = useRouter();
   const [name, setName] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [isEdit, setIsEdit] = useState(false);
@@ -85,8 +82,8 @@ const PostForm = ({ data }) => {
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [useIntro, setUseIntro] = useState(false);
-  const [isDisabledIntro, setIsDisabledIntro] = useState(false);
-  const [wings, setWings] = useState([]);
+  // const [isDisabledIntro, setIsDisabledIntro] = useState(false);
+  // const [wings, setWings] = useState([]);
   const [organizer, setOrganizer] = useState('');
   const [organizerEn, setOrganizerEn] = useState('');
   const [viewingTime, setViewingTime] = useState('');
@@ -103,8 +100,8 @@ const PostForm = ({ data }) => {
   const { replace } = useLink();
 
   const fetchData = async () => {
-    const result = await getWings();
-    setWings(result.data);
+    // const result = await getWings();
+    // setWings(result.data);
   };
 
   useEffect(() => {
@@ -235,11 +232,11 @@ const PostForm = ({ data }) => {
   );
 
   useEffect(() => {
-    setIsDisabledIntro(
-      contentsType === ContentType.Text ||
-        contentsType === ContentType.ImageText ||
-        contentsType === ContentType.VideoText,
-    );
+    // setIsDisabledIntro(
+    //   contentsType === ContentType.Text ||
+    //     contentsType === ContentType.ImageText ||
+    //     contentsType === ContentType.VideoText,
+    // );
   }, [contentsType]);
 
   useEffect(() => {

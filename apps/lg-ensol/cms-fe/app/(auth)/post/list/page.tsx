@@ -36,7 +36,7 @@ export default function PostList() {
 
   const fetchData = useCallback(async ({ keyword, page, count }) => {
     const posts = await getPosts({ keyword, page, count });
-    setData(posts.data.data);
+    setData(posts.data.data || []);
     setTotal(posts.data.total);
   }, []);
 

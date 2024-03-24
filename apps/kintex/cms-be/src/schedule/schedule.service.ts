@@ -173,7 +173,7 @@ export class ScheduleService {
         wingId,
       },
       orderBy: {
-        order: 'desc',
+        order: 'asc',
       },
     });
 

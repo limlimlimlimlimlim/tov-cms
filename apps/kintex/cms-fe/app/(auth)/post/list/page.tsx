@@ -38,7 +38,7 @@ export default function PostList() {
     const posts = await getPosts({ keyword, page, count });
     setKeyword(keyword);
     setPage(page)
-    setData(posts.data.data);
+    setData(posts.data.data || []);
     setTotal(posts.data.total);
   }, []);
 

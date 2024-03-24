@@ -38,8 +38,7 @@ export default function ScheduleList() {
   const fetchData = useCallback(async ({ keyword, page }) => {
     const posts = await getSchedules({ keyword, page, count });
     setKeyword(keyword);
-    setPage(page)
-    setData(posts.data.data);
+    setData(posts.data.data || []);
     setTotal(posts.data.total);
   }, []);
 

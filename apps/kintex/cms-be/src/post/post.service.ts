@@ -148,7 +148,7 @@ export class PostService {
 
     const reorderTargets = await this.prisma.post.findMany({
       orderBy: {
-        order: 'desc',
+        order: 'asc',
       },
     });
 

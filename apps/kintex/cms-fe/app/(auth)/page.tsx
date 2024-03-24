@@ -1,14 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import useLink from './hooks/use-link';
 
 const AuthPage = () => {
-  const router = useRouter();
+  const { replace } = useLink();
 
   useEffect(() => {
-    router.replace('/home');
-  }, [router]);
+    replace('/home');
+  }, [replace]);
 
   return <>loading</>;
 };

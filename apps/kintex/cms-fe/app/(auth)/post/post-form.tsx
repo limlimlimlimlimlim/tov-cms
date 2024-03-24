@@ -16,10 +16,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
+import TextArea from 'antd/es/input/TextArea';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
 import { getWings } from '../../../api/building-info';
-import TextArea from 'antd/es/input/TextArea';
+import useLink from '../hooks/use-link';
 
 const { RangePicker } = DatePicker;
 
@@ -99,6 +100,7 @@ const PostForm = ({ data }) => {
     [ExhibitionType.Exh1]: false,
     [ExhibitionType.Exh2]: false,
   });
+  const { replace } = useLink();
 
   const fetchData = async () => {
     const result = await getWings();
@@ -407,7 +409,7 @@ const PostForm = ({ data }) => {
         }
         void message.success('게시물이 생성됐습니다.');
       }
-      router.push('/post/list');
+      replace('/post/list');
     } catch (e) {
       void message.error(e.message);
     }
@@ -415,7 +417,7 @@ const PostForm = ({ data }) => {
     cast,
     castEn,
     contentsType,
-    data,
+    data?.id,
     endDate,
     eventEndDate,
     eventPlaceCodes,
@@ -433,7 +435,7 @@ const PostForm = ({ data }) => {
     organizer,
     organizerEn,
     postType,
-    router,
+    replace,
     startDate,
     status,
     textContents,
@@ -872,18 +874,22 @@ const PostForm = ({ data }) => {
           </Radio.Group>
         </Form.Item>
         <Form.Item label="게시물명" rules={[{ required: true }]}>
-          <TextArea value={name}
+          <TextArea
+            value={name}
             style={{ width: 300 }}
             onChange={(e) => {
               setName(e.target.value);
-            }} />
+            }}
+          />
         </Form.Item>
         <Form.Item label="게시물명(영문)" rules={[{ required: true }]}>
-        <TextArea value={nameEn}
+          <TextArea
+            value={nameEn}
             style={{ width: 300 }}
             onChange={(e) => {
               setNameEn(e.target.value);
-            }}/>
+            }}
+          />
         </Form.Item>
 
         {postType === PostType.Exhibition
@@ -900,7 +906,13 @@ const PostForm = ({ data }) => {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            <Link href="/post/list">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/post/list');
+              }}
+            >
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">

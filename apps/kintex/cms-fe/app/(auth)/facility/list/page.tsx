@@ -12,6 +12,7 @@ import CategoryManagementManagementModal from '../../../../component/category-ma
 import type { FacilityItem } from '../../../../interface/facility';
 import usePermission from '../../hooks/use-permission';
 import useSocket from '../../hooks/use-socket';
+import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -33,6 +34,7 @@ export default function FacilityList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
   const { emit } = useSocket();
+  const { replace } = useLink();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
@@ -124,7 +126,13 @@ export default function FacilityList() {
           return (
             <>
               {updatable && (
-                <Link href={`/facility/edit/${(value as any).id}`}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    replace(`/facility/edit/${(value as any).id}`);
+                  }}
+                >
                   <Button size="small" type="text">
                     <EditOutlined />
                   </Button>
@@ -135,7 +143,7 @@ export default function FacilityList() {
         },
       },
     ];
-  }, [count, page, updatable]);
+  }, [count, page, updatable, replace]);
 
   const onSearch = useCallback(
     (value) => {
@@ -225,7 +233,13 @@ export default function FacilityList() {
           )}
 
           {writable && (
-            <Link href="/facility/register">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/facility/register');
+              }}
+            >
               <Button type="primary">등록</Button>
             </Link>
           )}

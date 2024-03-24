@@ -13,6 +13,7 @@ import FacilityPositionManagementModal from '../../../component/facility-positio
 import CategorySelect from '../../../component/category-select/category-select';
 import SubCategorySelect from '../../../component/sub-category-select/sub-category-select';
 import { updateSectionPaintOptionById } from '../../../api/section';
+import useLink from '../hooks/use-link';
 
 const layout = {
   labelCol: { span: 4 },
@@ -63,6 +64,7 @@ const FacilityForm = ({ data }) => {
       right: 0,
     },
   });
+  const { replace } = useLink();
 
   const getMap = useCallback(
     async (wing, floor) => {
@@ -215,8 +217,8 @@ const FacilityForm = ({ data }) => {
       void message.success('시설이 생성됐습니다.');
     }
 
-    router.push('/facility/list');
-  }, [isEdit, router, facility, wingId, floorId]);
+    replace('/facility/list');
+  }, [isEdit, replace, facility, wingId, floorId]);
 
   return (
     <Flex vertical gap="middle">
@@ -407,7 +409,13 @@ const FacilityForm = ({ data }) => {
         <Divider />
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
           <Flex gap="small" justify="end">
-            <Link href="/facility/list">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/facility/list');
+              }}
+            >
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">

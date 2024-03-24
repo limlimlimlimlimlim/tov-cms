@@ -17,6 +17,7 @@ import ContentsUploader from '../../../component/contents-uploader/contentes-upl
 import FloorSelect from '../../../component/floor-select/floor-select';
 import WingSelect from '../../../component/wing-select/wing-select';
 import { createMap, deleteMap, updateMap } from '../../../api/map';
+import useLink from '../hooks/use-link';
 
 const { confirm } = Modal;
 const { Text } = Typography;
@@ -43,6 +44,7 @@ export default function MapForm({ data }) {
   const [image, setImage] = useState('');
   const [isUse, setIsUse] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const { replace } = useLink();
 
   useEffect(() => {
     if (data) {
@@ -80,11 +82,11 @@ export default function MapForm({ data }) {
         void message.success('지도가 생성됐습니다.');
       }
 
-      router.push('/map/list');
+      replace('/map/list');
     } catch (e) {
       void message.error(e.message);
     }
-  }, [isEdit, router, data, floorId, wingId, name, nameEn, isUse, image]);
+  }, [isEdit, replace, data?.id, floorId, wingId, name, nameEn, isUse, image]);
 
   const onChangeFloor = useCallback((floor) => {
     setFloorId(floor);
@@ -120,10 +122,10 @@ export default function MapForm({ data }) {
       async onOk() {
         await deleteMap(data.id);
         void message.success('지도가 삭제됐습니다.');
-        router.push('/map/list');
+        replace('/map/list');
       },
     });
-  }, [router, data]);
+  }, [data?.id, replace]);
 
   return (
     <Flex vertical gap="middle">
@@ -195,7 +197,13 @@ export default function MapForm({ data }) {
               </Button>
             ) : null}
 
-            <Link href="/map/list">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/map/list');
+              }}
+            >
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">

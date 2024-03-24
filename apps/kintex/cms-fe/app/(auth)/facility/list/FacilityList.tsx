@@ -1,37 +1,31 @@
 'use client';
-import { Button, Flex, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Form, Table, message } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import type { PostItem } from '../../../../interface/post';
-import {
-  decrementScheduleOrder,
-  deleteSchedule,
-  getSchedules,
-  incrementScheduleOrder,
-} from '../../../../api/schedule';
+import FloorSelect from '../../../../component/floor-select/floor-select';
+import WingSelect from '../../../../component/wing-select/wing-select';
+import { deleteFacility, getFacilities } from '../../../../api/facility';
+import CategoryManagementManagementModal from '../../../../component/category-management/category-management-modal';
+import type { FacilityItem } from '../../../../interface/facility';
 import usePermission from '../../hooks/use-permission';
 import useSocket from '../../hooks/use-socket';
 import useLink from '../../hooks/use-link';
 
-const { Search } = Input;
-const { confirm } = Modal;
-
-export default function ScheduleList() {
+export default function FacilityList() {
   const [total, setTotal] = useState(0);
-  const [data, setData] = useState<PostItem[]>([]);
+  const [data, setData] = useState<FacilityItem[]>([]);
   const [keyword, setKeyword] = useState('');
-  // const [wing, setWing] = useState('');
+  const [floor, setFloor] = useState('');
+  const [wing, setWing] = useState('');
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
-  const [selectedData, setSelectedData] = useState<PostItem[]>([]);
-  const { ready, getSchedulePermissions }: any = usePermission();
+  const [selectedData, setSelectedData] = useState<FacilityItem[]>([]);
+  const [isOpenCategoryManagementModal, setIsOpenCategoryManagementModal] =
+    useState(false);
+  const { ready, getFacilityPermissions }: any = usePermission();
   const [writable, setWritable] = useState(false);
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
@@ -40,19 +34,25 @@ export default function ScheduleList() {
   const { replace } = useLink();
 
   const fetchData = useCallback(
-    async ({ keyword, page }) => {
-      const posts = await getSchedules({ keyword, page, count });
+    async ({ keyword, page, floor, wing }) => {
+      const facilities = await getFacilities({
+        keyword,
+        page,
+        count,
+        floor,
+        wing,
+      });
       setKeyword(keyword);
-      setData(posts.data.data || []);
-      setTotal(posts.data.total);
       setPage(page);
+      setData(facilities.data.data);
+      setTotal(facilities.data.total);
     },
     [count],
   );
 
   useEffect(() => {
     if (!ready) return;
-    const result = getSchedulePermissions();
+    const result = getFacilityPermissions();
 
     if (!result.read) {
       router.replace('/error/403');
@@ -61,17 +61,9 @@ export default function ScheduleList() {
     setWritable(result.write);
     setDeletable(result.delete);
     setUpdatable(result.update);
-    const prevKeyword = localStorage.getItem('cms_schedule_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1 });
-  }, [count, fetchData, getSchedulePermissions, ready, router]);
-
-  const onSearch = useCallback(
-    (value) => {
-      localStorage.setItem('cms_schedule_search_keyword', value);
-      fetchData({ keyword: value, page: 1 });
-    },
-    [fetchData],
-  );
+    const prevKeyword = localStorage.getItem('cms_facility_search_keyword');
+    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
+  }, [count, fetchData, floor, getFacilityPermissions, ready, router, wing]);
 
   const columns = useMemo(() => {
     return [
@@ -82,65 +74,35 @@ export default function ScheduleList() {
           return index + 1 + (page - 1) * count;
         },
       },
-      // {
-      //   title: '건물명',
-      //   width: 100,
-      //   render: (row) => row.wing.name,
-      // },
       {
-        title: '스케쥴명',
+        title: '건물명',
+        width: 100,
+        render: (row) => row.wing.name,
+      },
+      {
+        title: '층',
+        width: 100,
+        render: (row) => row.floor?.name,
+      },
+      {
+        title: '구분',
+        width: 150,
+        render: (row) => row.category?.name,
+      },
+      {
+        title: '구분상세',
+        width: 150,
+        render: (row) => row.subCategory?.name,
+      },
+      {
+        title: '시설명',
         width: 150,
         dataIndex: 'name',
       },
       {
-        title: '상태',
+        title: '위치설정',
         width: 150,
         dataIndex: 'status',
-        render(type) {
-          switch (type) {
-            case 'enabled':
-              return '활성';
-            case 'disabled':
-              return '비활성';
-          }
-          return '';
-        },
-      },
-      {
-        title: '순서변경',
-        width: 150,
-        render(data) {
-          return (
-            <Flex gap="small">
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await incrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretUpOutlined />
-              </Button>
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await decrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretDownOutlined />
-              </Button>
-            </Flex>
-          );
-        },
       },
       {
         title: '등록일',
@@ -165,7 +127,7 @@ export default function ScheduleList() {
                   href="/"
                   onClick={(e) => {
                     e.preventDefault();
-                    replace(`/schedule/edit/${(value as any).id}`);
+                    replace(`/facility/edit/${(value as any).id}`);
                   }}
                 >
                   <Button size="small" type="text">
@@ -178,50 +140,83 @@ export default function ScheduleList() {
         },
       },
     ];
-  }, [count, fetchData, keyword, page, updatable]);
+  }, [count, page, updatable]);
+
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_facility_search_keyword', value);
+      fetchData({ keyword: value, page: 1, floor, wing });
+    },
+    [fetchData, floor, wing],
+  );
 
   const onClickDelete = useCallback(() => {
     confirm({
-      title: '스케쥴 삭제 확인',
+      title: '시설 삭제 확인',
       okText: '확인',
       cancelText: '취소',
-      content: '선택된 스케쥴을 삭제하시겠습니까?',
+      content: '선택된 시설을 삭제하시겠습니까?',
       async onOk() {
-        await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
-        void fetchData({ keyword, page });
-        void message.success('선택된 스케쥴이 삭제됐습니다.');
+        await Promise.all(selectedData.map((row) => deleteFacility(row.id)));
+        void fetchData({ keyword, page, floor, wing });
+        void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
-  }, [fetchData, keyword, page, selectedData]);
+  }, [fetchData, floor, keyword, page, selectedData, wing]);
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: FacilityItem[]) => {
       setSelectedData(selectedRows);
     },
   };
 
-  // const onChangeWing = useCallback((w) => {
-  //   setWing(w);
-  // }, []);
+  const onChangeWing = useCallback((w) => {
+    setWing(w);
+    setFloor('');
+  }, []);
+
+  const onChangeFloor = useCallback((f: any) => {
+    setFloor(f);
+  }, []);
 
   const onChangePage = useCallback(
     (p) => {
-      fetchData({ keyword, page: p.current });
+      fetchData({ keyword, page: p.current, floor, wing });
     },
-    [fetchData, keyword],
+    [fetchData, floor, keyword, wing],
   );
 
   return (
     <Flex vertical gap="middle">
-      {/* <Flex gap="large">
-        <Form.Item label="전시홀 선택">
-          <WingSelect
-            wingId={wing}
-            style={{ width: 200 }}
-            onChange={onChangeWing}
-          />
-        </Form.Item>
-      </Flex> */}
+      <Flex justify="space-between">
+        <Flex gap="large">
+          <Form.Item label="전시홀 선택">
+            <WingSelect
+              wingId={wing}
+              style={{ width: 200 }}
+              onChange={onChangeWing}
+              useAll
+            />
+          </Form.Item>
+          <Form.Item label="층 선택">
+            <FloorSelect
+              wingId={wing}
+              floorId={floor}
+              style={{ width: 200 }}
+              onChange={onChangeFloor}
+              useAll
+            />
+          </Form.Item>
+        </Flex>
+        <Button
+          onClick={() => {
+            setIsOpenCategoryManagementModal(true);
+          }}
+        >
+          카테고리 관리
+        </Button>
+      </Flex>
+
       <Flex justify="space-between">
         <Flex gap="small" align="center">
           {deletable && (
@@ -239,7 +234,7 @@ export default function ScheduleList() {
               href="/"
               onClick={(e) => {
                 e.preventDefault();
-                replace('/schedule/register');
+                replace('/facility/register');
               }}
             >
               <Button type="primary">등록</Button>
@@ -261,7 +256,7 @@ export default function ScheduleList() {
           />
           <Button
             onClick={() => {
-              emit('schedule');
+              emit('facility');
             }}
           >
             동기화
@@ -279,6 +274,12 @@ export default function ScheduleList() {
           ...rowSelection,
         }}
         onChange={onChangePage}
+      />
+      <CategoryManagementManagementModal
+        open={isOpenCategoryManagementModal}
+        onCancel={() => {
+          setIsOpenCategoryManagementModal(false);
+        }}
       />
     </Flex>
   );

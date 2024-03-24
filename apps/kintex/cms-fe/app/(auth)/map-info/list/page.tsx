@@ -13,6 +13,7 @@ import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
 import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
 import useSocket from '../../hooks/use-socket';
+import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 
@@ -30,6 +31,7 @@ export default function MapInfoList() {
   const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
   const { emit } = useSocket();
+  const { replace } = useLink();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
@@ -128,7 +130,13 @@ export default function MapInfoList() {
           return (
             <>
               {updatable && (
-                <Link href={`/map-info/edit/${(value as any).id}`}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    replace(`/map-info/edit/${(value as any).id}`);
+                  }}
+                >
                   <Button size="small" type="text">
                     <EditOutlined />
                   </Button>
@@ -139,7 +147,7 @@ export default function MapInfoList() {
         },
       },
     ];
-  }, [count, page, updatable]);
+  }, [count, page, replace, updatable]);
 
   const onSearch = useCallback(
     (value) => {

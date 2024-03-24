@@ -15,6 +15,7 @@ import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
 import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
 import useSocket from '../../hooks/use-socket';
+import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -43,6 +44,7 @@ export default function MapList() {
   const params = useSearchParams();
   const [isMaster] = useState(params.get('isMaster') === 'true');
   const { emit } = useSocket();
+  const { replace } = useLink();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
@@ -162,7 +164,13 @@ export default function MapList() {
           return (
             <>
               {updatable && (
-                <Link href={`/map/edit/${(value as any).id}`}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    replace(`/map/edit/${(value as any).id}`);
+                  }}
+                >
                   <Button size="small" type="text">
                     <EditOutlined />
                   </Button>
@@ -276,7 +284,13 @@ export default function MapList() {
             )}
 
             {writable && (
-              <Link href="/map/register">
+              <Link
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  replace('/map/register');
+                }}
+              >
                 <Button type="primary">등록</Button>
               </Link>
             )}

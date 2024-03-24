@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ContentsUploader from '../../../../../component/contents-uploader/contentes-uploader';
+import useLink from '../../../hooks/use-link';
 
 const layout = {
   labelCol: { span: 3 },
@@ -35,6 +36,7 @@ const validateMessages = {
 
 export default function EventEdit() {
   const router = useRouter();
+  const { replace } = useLink();
 
   const onFinish = useCallback(() => {
     void message.success('이벤트가 수정됐습니다.');
@@ -94,7 +96,13 @@ export default function EventEdit() {
             <Button danger onClick={onClickDeleteEvent}>
               삭제
             </Button>
-            <Link href="/schedule/list">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/schedule/list');
+              }}
+            >
               <Button>취소</Button>
             </Link>
             <Button type="primary" htmlType="submit">

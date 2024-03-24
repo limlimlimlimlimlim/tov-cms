@@ -18,6 +18,7 @@ import {
 } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
 import useSocket from '../../hooks/use-socket';
+import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -35,6 +36,7 @@ export default function PostList() {
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
   const { emit } = useSocket();
+  const { replace } = useLink();
 
   const fetchData = useCallback(
     async ({ keyword, page }) => {
@@ -159,7 +161,13 @@ export default function PostList() {
           return (
             <>
               {updatable && (
-                <Link href={`/post/edit/${(value as any).id}`}>
+                <Link
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    replace(`/post/edit/${(value as any).id}`);
+                  }}
+                >
                   <Button size="small" type="text">
                     <EditOutlined />
                   </Button>
@@ -222,7 +230,13 @@ export default function PostList() {
           )}
 
           {writable && (
-            <Link href="/post/register">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/post/register');
+              }}
+            >
               <Button type="primary">등록</Button>
             </Link>
           )}

@@ -19,6 +19,7 @@ import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createSchedule, updateSchedule } from '../../../api/schedule';
+import useLink from '../hooks/use-link';
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
@@ -49,6 +50,7 @@ const ScheduleForm = ({ data }) => {
   const [status, setStatus] = useState('enabled');
   const [noPeriod, setNoPeriod] = useState(false);
   const [layout, setLayout] = useState('landscape');
+  const { replace } = useLink();
 
   const items = [
     {
@@ -146,13 +148,13 @@ const ScheduleForm = ({ data }) => {
         });
         void message.success('스케쥴이 생성됐습니다.');
       }
-      router.push('/schedule/list');
+      replace('/schedule/list');
     } catch (e) {
       void message.error(e.message);
     }
   }, [
     contentsType,
-    data,
+    data?.id,
     description,
     endDate,
     imageContents,
@@ -160,7 +162,7 @@ const ScheduleForm = ({ data }) => {
     layout,
     name,
     noPeriod,
-    router,
+    replace,
     startDate,
     status,
     videoContents,
@@ -260,10 +262,16 @@ const ScheduleForm = ({ data }) => {
         <Divider />
         <Form.Item wrapperCol={{ ...formLayout.wrapperCol, offset: 6 }}>
           <Flex gap="small" justify="end">
-            <Link href="/schedule/list">
+            <Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                replace('/schedule/list');
+              }}
+            >
               <Button>취소</Button>
             </Link>
-            <Button type="primary" htmlType="submit"> 
+            <Button type="primary" htmlType="submit">
               등록
             </Button>
           </Flex>

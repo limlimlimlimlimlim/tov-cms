@@ -14,6 +14,7 @@ import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
 import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -41,16 +42,17 @@ export default function MapList() {
   const router = useRouter();
   const params = useSearchParams();
   const [isMaster] = useState(params.get('isMaster') === 'true');
+  const { emit } = useSocket();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
       setKeyword(keyword);
-      setPage(page)
+      setPage(page);
       setData(maps.data.data);
       setTotal(maps.data.total);
     },
-    [],
+    [count],
   );
 
   // useEffect(() => {
@@ -74,16 +76,8 @@ export default function MapList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_map_search_keyword');
-    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
-  }, [
-    count,
-    fetchData,
-    floor,
-    getMapPermissions,
-    ready,
-    router,
-    wing,
-  ]);
+    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
+  }, [count, fetchData, floor, getMapPermissions, ready, router, wing]);
 
   const columns: ColumnsType<MapItem> = useMemo(() => {
     return [
@@ -181,10 +175,13 @@ export default function MapList() {
     ];
   }, [count, page, updatable]);
 
-  const onSearch = useCallback((value) => {
-    localStorage.setItem('cms_map_search_keyword', value);
-    fetchData({ keyword : value, page:1, floor, wing });
-  }, [floor, wing]);
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_map_search_keyword', value);
+      fetchData({ keyword: value, page: 1, floor, wing });
+    },
+    [fetchData, floor, wing],
+  );
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -198,7 +195,7 @@ export default function MapList() {
         void message.success('선택된 지도가 삭제됐습니다.');
       },
     });
-  }, [selectedData, fetchData, keyword, page, count, floor, wing]);
+  }, [selectedData, fetchData, keyword, page, floor, wing]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
@@ -225,9 +222,12 @@ export default function MapList() {
     setFloor('');
   }, []);
 
-  const onChangePage = useCallback((p) => {
-    fetchData({keyword, page:p.current, floor, wing })
-  }, []);
+  const onChangePage = useCallback(
+    (p) => {
+      fetchData({ keyword, page: p.current, floor, wing });
+    },
+    [fetchData, floor, keyword, wing],
+  );
 
   return (
     <>
@@ -283,17 +283,24 @@ export default function MapList() {
 
             <span>Total : {total}</span>
           </Flex>
-          <Flex>
+          <Flex gap="small">
             <Search
               placeholder="검색어를 입력해주세요."
               value={keyword}
               onSearch={onSearch}
-              onChange={(e)=>{
-                setKeyword(e.target.value)
+              onChange={(e) => {
+                setKeyword(e.target.value);
               }}
               style={{ width: 300 }}
               allowClear
             />
+            <Button
+              onClick={() => {
+                emit('map');
+              }}
+            >
+              동기화
+            </Button>
           </Flex>
         </Flex>
         <Table

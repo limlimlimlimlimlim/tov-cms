@@ -17,6 +17,7 @@ import {
   incrementPostOrder,
 } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -33,14 +34,18 @@ export default function PostList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
+  const { emit } = useSocket();
 
-  const fetchData = useCallback(async ({ keyword, page }) => {
-    const posts = await getPosts({ keyword, page, count });
-    setKeyword(keyword);
-    setPage(page)
-    setData(posts.data.data || []);
-    setTotal(posts.data.total);
-  }, []);
+  const fetchData = useCallback(
+    async ({ keyword, page }) => {
+      const posts = await getPosts({ keyword, page, count });
+      setKeyword(keyword);
+      setPage(page);
+      setData(posts.data.data || []);
+      setTotal(posts.data.total);
+    },
+    [count],
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -54,7 +59,7 @@ export default function PostList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_post_search_keyword');
-    void fetchData({ keyword : prevKeyword || '', page:1 });
+    void fetchData({ keyword: prevKeyword || '', page: 1 });
   }, [count, fetchData, getPostPermissions, ready, router]);
 
   const columns = useMemo(() => {
@@ -167,10 +172,13 @@ export default function PostList() {
     ];
   }, [count, fetchData, keyword, page, updatable]);
 
-  const onSearch = useCallback((value) => {
-    localStorage.setItem('cms_post_search_keyword', value);
-    fetchData({ keyword : value, page:1 });
-  }, []);
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_post_search_keyword', value);
+      fetchData({ keyword: value, page: 1 });
+    },
+    [fetchData],
+  );
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -184,7 +192,7 @@ export default function PostList() {
         void message.success('선택된 게시물이 삭제됐습니다.');
       },
     });
-  }, [count, fetchData, keyword, page, selectedData]);
+  }, [fetchData, keyword, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -192,9 +200,12 @@ export default function PostList() {
     },
   };
 
-  const onChangePage = useCallback((p) => {
-    fetchData({keyword, page:p.current})
-  }, []);
+  const onChangePage = useCallback(
+    (p) => {
+      fetchData({ keyword, page: p.current });
+    },
+    [fetchData, keyword],
+  );
 
   return (
     <Flex vertical gap="middle">
@@ -218,17 +229,24 @@ export default function PostList() {
 
           <span>Total : {total}</span>
         </Flex>
-        <Flex>
+        <Flex gap="small">
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}
             onSearch={onSearch}
-            onChange={(e)=>{
-              setKeyword(e.target.value)
+            onChange={(e) => {
+              setKeyword(e.target.value);
             }}
             style={{ width: 300 }}
             allowClear
           />
+          <Button
+            onClick={() => {
+              emit('post');
+            }}
+          >
+            동기화
+          </Button>
         </Flex>
       </Flex>
       <Table

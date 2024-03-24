@@ -17,6 +17,7 @@ import {
   incrementScheduleOrder,
 } from '../../../../api/schedule';
 import usePermission from '../../hooks/use-permission';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -34,13 +35,18 @@ export default function ScheduleList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
+  const { emit } = useSocket();
 
-  const fetchData = useCallback(async ({ keyword, page }) => {
-    const posts = await getSchedules({ keyword, page, count });
-    setKeyword(keyword);
-    setData(posts.data.data || []);
-    setTotal(posts.data.total);
-  }, []);
+  const fetchData = useCallback(
+    async ({ keyword, page }) => {
+      const posts = await getSchedules({ keyword, page, count });
+      setKeyword(keyword);
+      setData(posts.data.data || []);
+      setTotal(posts.data.total);
+      setPage(page);
+    },
+    [count],
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -54,13 +60,16 @@ export default function ScheduleList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_schedule_search_keyword');
-    void fetchData({ keyword : prevKeyword || '', page:1 });
+    void fetchData({ keyword: prevKeyword || '', page: 1 });
   }, [count, fetchData, getSchedulePermissions, ready, router]);
 
-  const onSearch = useCallback((value) => {
-    localStorage.setItem('cms_schedule_search_keyword', value);
-    fetchData({ keyword : value, page:1 });
-  }, []);
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_schedule_search_keyword', value);
+      fetchData({ keyword: value, page: 1 });
+    },
+    [fetchData],
+  );
 
   const columns = useMemo(() => {
     return [
@@ -175,7 +184,7 @@ export default function ScheduleList() {
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });
-  }, [count, fetchData, keyword, page, selectedData]);
+  }, [fetchData, keyword, page, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -187,9 +196,12 @@ export default function ScheduleList() {
   //   setWing(w);
   // }, []);
 
-  const onChangePage = useCallback((p) => {
-    fetchData({keyword, page:p.current})
-  }, []);
+  const onChangePage = useCallback(
+    (p) => {
+      fetchData({ keyword, page: p.current });
+    },
+    [fetchData, keyword],
+  );
 
   return (
     <Flex vertical gap="middle">
@@ -222,17 +234,24 @@ export default function ScheduleList() {
 
           <span>Total : {total}</span>
         </Flex>
-        <Flex>
+        <Flex gap="small">
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}
             onSearch={onSearch}
-            onChange={(e)=>{
-              setKeyword(e.target.value)
+            onChange={(e) => {
+              setKeyword(e.target.value);
             }}
             style={{ width: 300 }}
             allowClear
           />
+          <Button
+            onClick={() => {
+              emit('schedule');
+            }}
+          >
+            동기화
+          </Button>
         </Flex>
       </Flex>
       <Table

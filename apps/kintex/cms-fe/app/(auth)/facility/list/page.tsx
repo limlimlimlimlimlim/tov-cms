@@ -11,6 +11,7 @@ import { deleteFacility, getFacilities } from '../../../../api/facility';
 import CategoryManagementManagementModal from '../../../../component/category-management/category-management-modal';
 import type { FacilityItem } from '../../../../interface/facility';
 import usePermission from '../../hooks/use-permission';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -31,6 +32,7 @@ export default function FacilityList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
+  const { emit } = useSocket();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
@@ -46,7 +48,7 @@ export default function FacilityList() {
       setData(facilities.data.data);
       setTotal(facilities.data.total);
     },
-    [],
+    [count],
   );
 
   useEffect(() => {
@@ -61,16 +63,8 @@ export default function FacilityList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_facility_search_keyword');
-    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
-  }, [
-    count,
-    fetchData,
-    floor,
-    getFacilityPermissions,
-    ready,
-    router,
-    wing,
-  ]);
+    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
+  }, [count, fetchData, floor, getFacilityPermissions, ready, router, wing]);
 
   const columns = useMemo(() => {
     return [
@@ -143,10 +137,13 @@ export default function FacilityList() {
     ];
   }, [count, page, updatable]);
 
-  const onSearch = useCallback((value) => {
-    localStorage.setItem('cms_facility_search_keyword', value);
-    fetchData({ keyword : value, page:1, floor, wing });
-  }, []);
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_facility_search_keyword', value);
+      fetchData({ keyword: value, page: 1, floor, wing });
+    },
+    [fetchData, floor, wing],
+  );
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -160,7 +157,7 @@ export default function FacilityList() {
         void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
-  }, [count, fetchData, floor, keyword, page, selectedData, wing]);
+  }, [fetchData, floor, keyword, page, selectedData, wing]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: FacilityItem[]) => {
@@ -177,9 +174,12 @@ export default function FacilityList() {
     setFloor(f);
   }, []);
 
-  const onChangePage = useCallback((p) => {
-    fetchData({keyword, page:p.current, floor, wing})
-  }, []);
+  const onChangePage = useCallback(
+    (p) => {
+      fetchData({ keyword, page: p.current, floor, wing });
+    },
+    [fetchData, floor, keyword, wing],
+  );
 
   return (
     <Flex vertical gap="middle">
@@ -232,17 +232,24 @@ export default function FacilityList() {
 
           <span>Total : {total}</span>
         </Flex>
-        <Flex>
+        <Flex gap="small">
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}
             onSearch={onSearch}
-            onChange={(e)=>{
-              setKeyword(e.target.value)
+            onChange={(e) => {
+              setKeyword(e.target.value);
             }}
             style={{ width: 300 }}
             allowClear
           />
+          <Button
+            onClick={() => {
+              emit('facility');
+            }}
+          >
+            동기화
+          </Button>
         </Flex>
       </Flex>
       <Table

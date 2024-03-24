@@ -12,6 +12,7 @@ import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
 import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 
@@ -28,16 +29,17 @@ export default function MapInfoList() {
   const [openPreview, setOpenPreview] = useState(false);
   const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
+  const { emit } = useSocket();
 
   const fetchData = useCallback(
     async ({ keyword, page, floor, wing }) => {
       const maps = await getMaps({ keyword, page, count, floor, wing });
       setKeyword(keyword);
-      setPage(page)
+      setPage(page);
       setData(maps.data.data);
       setTotal(maps.data.total);
     },
-    [],
+    [count],
   );
 
   useEffect(() => {
@@ -50,16 +52,8 @@ export default function MapInfoList() {
     }
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_map-info_search_keyword');
-    void fetchData({ keyword : prevKeyword || '', page:1, floor, wing });
-  }, [
-    count,
-    fetchData,
-    floor,
-    getMapInfoPermissions,
-    ready,
-    router,
-    wing,
-  ]);
+    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
+  }, [count, fetchData, floor, getMapInfoPermissions, ready, router, wing]);
 
   const columns: ColumnsType<MapInfoItem> = useMemo(() => {
     return [
@@ -147,10 +141,13 @@ export default function MapInfoList() {
     ];
   }, [count, page, updatable]);
 
-  const onSearch = useCallback((value) => {
-    localStorage.setItem('cms_map-info_search_keyword', value);
-    fetchData({ keyword : value, page:1, floor, wing });
-  }, [floor, wing]);
+  const onSearch = useCallback(
+    (value) => {
+      localStorage.setItem('cms_map-info_search_keyword', value);
+      fetchData({ keyword: value, page: 1, floor, wing });
+    },
+    [fetchData, floor, wing],
+  );
 
   const onChangeFloor = useCallback((f: any) => {
     setFloor(f);
@@ -183,17 +180,27 @@ export default function MapInfoList() {
 
       <Flex justify="space-between" align="center">
         <span>Total : {count}</span>
-        <Search
-          placeholder="검색어를 입력해주세요."
-          value={keyword}
-          onSearch={onSearch}
-          onChange={(e)=>{
-            setKeyword(e.target.value)
-          }}
-          style={{ width: 300 }}
-          allowClear
-        />
+        <Flex gap="small">
+          <Search
+            placeholder="검색어를 입력해주세요."
+            value={keyword}
+            onSearch={onSearch}
+            onChange={(e) => {
+              setKeyword(e.target.value);
+            }}
+            style={{ width: 300 }}
+            allowClear
+          />
+          <Button
+            onClick={() => {
+              emit('map-info');
+            }}
+          >
+            동기화
+          </Button>
+        </Flex>
       </Flex>
+
       <Table
         columns={columns}
         dataSource={data}

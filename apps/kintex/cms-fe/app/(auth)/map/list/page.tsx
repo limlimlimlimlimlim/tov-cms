@@ -310,7 +310,7 @@ export default function MapList() {
             />
             <Button
               onClick={() => {
-                emit('map');
+                emit('sync', 'map');
               }}
             >
               동기화

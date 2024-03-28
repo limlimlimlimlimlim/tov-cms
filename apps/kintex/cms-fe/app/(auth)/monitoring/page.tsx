@@ -3,11 +3,13 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Flex, Table, Typography } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
+import useSocket from '../hooks/use-socket';
 
 const { Text } = Typography;
 
 export default function Monitoring() {
   const [dataSource, setDataSource] = useState<any[]>([]);
+  const { emit } = useSocket();
 
   const columns = useMemo(() => {
     return [

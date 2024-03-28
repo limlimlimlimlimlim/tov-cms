@@ -256,7 +256,7 @@ export default function PostList() {
           />
           <Button
             onClick={() => {
-              emit('post');
+              emit('sync', 'post');
             }}
           >
             동기화

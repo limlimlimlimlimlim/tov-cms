@@ -261,7 +261,7 @@ export default function ScheduleList() {
           />
           <Button
             onClick={() => {
-              emit('schedule');
+              emit('sync', 'schedule');
             }}
           >
             동기화

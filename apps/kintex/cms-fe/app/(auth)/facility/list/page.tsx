@@ -259,7 +259,7 @@ export default function FacilityList() {
           />
           <Button
             onClick={() => {
-              emit('facility');
+              emit('sync', 'facility');
             }}
           >
             동기화

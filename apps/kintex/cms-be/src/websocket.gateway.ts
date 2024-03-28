@@ -21,8 +21,14 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('sync')
-  handleMessage(@MessageBody() message: string): void {
-    console.log(message);
+  handleSyncMessage(@MessageBody() message: string): void {
+    console.log('sync : ', message);
     this.server.emit('sync', message);
+  }
+
+  @SubscribeMessage('monitoring')
+  handleMonitoringMessage(@MessageBody() message: string): void {
+    console.log('monitoring : ', message);
+    this.server.emit('monitoring', message);
   }
 }

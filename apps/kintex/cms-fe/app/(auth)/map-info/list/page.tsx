@@ -201,7 +201,7 @@ export default function MapInfoList() {
           />
           <Button
             onClick={() => {
-              emit('map-info');
+              emit('sync', 'map-info');
             }}
           >
             동기화

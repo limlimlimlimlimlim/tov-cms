@@ -27,14 +27,22 @@ const useSocket = () => {
   }, []);
 
   const emit = useCallback(
-    (message) => {
-      socket.emit('sync', message);
+    (event, message) => {
+      socket.emit(event, message);
+    },
+    [socket],
+  );
+
+  const on = useCallback(
+    (event, callback) => {
+      socket.on(event, callback);
     },
     [socket],
   );
 
   return {
     emit,
+    on,
   };
 };
 

@@ -294,7 +294,7 @@ h1 {
 }
 .wrap.exhi .slide-wrap .place span {
   display: inline-block;
-  padding: 7px 30px 2px;
+  padding: 10px 30px 5px;
   font-size: 3.3rem;
   line-height: 1.2;
   color: #fff;
@@ -339,12 +339,11 @@ h1 {
   text-overflow: ellipsis;
   white-space: normal;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 .wrap.exhi .slide-wrap .area {
   display: block;
-  margin-bottom: 20px;
   padding: 10px 20px 7px;
   height: 60px;
   font-weight: 400;
@@ -354,6 +353,14 @@ h1 {
   display: inline-block;
   vertical-align: baseline;
   white-space: nowrap;
+}
+.wrap.exhi .slide-wrap .date {
+  display: block;
+  margin-bottom: 20px;
+  padding: 18px 20px 12px;
+  height: 60px;
+  font-size: 2.5rem;
+  font-weight: 400;
 }
 .wrap.exhi .slide-wrap .marquee {
   width: 100%;
@@ -367,12 +374,29 @@ h1 {
 .wrap.exhi .slide-wrap li.p1 .area {
   background-color: #0947ba;
 }
+.wrap.exhi .slide-wrap li.p1 .date {
+  background-color: rgba(9, 71, 186, 0.2);
+}
 .wrap.exhi .slide-wrap li.p2 {
   color: #ff6000;
 }
 .wrap.exhi .slide-wrap li.p2 .place span,
 .wrap.exhi .slide-wrap li.p2 .area {
   background-color: #ff6000;
+}
+.wrap.exhi .slide-wrap li.p2 .date {
+  background-color: rgba(255, 96, 0, 0.2);
+}
+.wrap.exhi .slide-wrap li.pBoth {
+  color: #1d8700;
+}
+.wrap.exhi .slide-wrap li.pBoth .place span,
+.wrap.exhi .slide-wrap li.pBoth .area {
+  background-color: #219a00;
+}
+.wrap.exhi .slide-wrap li.pBoth .date {
+  color: #219a00;
+  background-color: rgba(33, 154, 0, 0.2);
 }
 
 /* meeting 회의일정 style */
@@ -384,7 +408,7 @@ h1 {
 }
 .wrap.meet .slide-tbl {
   margin: 210px auto 0; /* 240205 수정 */
-  width: 1950px; /* 240205 수정 */
+  width: 1960px; /* 240221 수정 */
 }
 .wrap.meet .slide-tbl:after {
   content: "";
@@ -395,7 +419,6 @@ h1 {
   float: left;
 }
 .wrap.meet .slide-tbl table {
-  padding: 0 10px;
   width: 100%;
   table-layout: fixed;
 }
@@ -408,7 +431,7 @@ h1 {
   color: #fff;
 }
 .wrap.meet td:nth-child(1) {
-  padding: 0 80px;
+  padding: 0 5px; /* 240221 수정 */
   width: 46%;
   width: 850px;
   font-size: 4.5rem;

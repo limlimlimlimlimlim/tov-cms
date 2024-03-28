@@ -2,6 +2,7 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import {
   CalendarOutlined,
+  DesktopOutlined,
   EnvironmentOutlined,
   FormOutlined,
   ShopOutlined,
@@ -106,6 +107,19 @@ export default function AppSider({ collapsed }) {
         </Link>,
         'facility',
         <ShopOutlined />,
+      ),
+      getItem(
+        <Link
+          href=""
+          onClick={(e) => {
+            e.preventDefault();
+            replace('/monitoring');
+          }}
+        >
+          모니터링
+        </Link>,
+        'monitoring',
+        <DesktopOutlined />,
       ),
       // getItem(
       //   <Link href="/kiosk">키오스크 관리</Link>,

@@ -43,7 +43,7 @@ export default function MapList() {
   const router = useRouter();
   const params = useSearchParams();
   const [isMaster] = useState(params.get('isMaster') === 'true');
-  const { emit } = useSocket();
+  const { socket } = useSocket();
   const { replace } = useLink();
 
   const fetchData = useCallback(
@@ -310,7 +310,9 @@ export default function MapList() {
             />
             <Button
               onClick={() => {
-                emit('sync', 'map');
+                if (socket) {
+                  socket.emit('sync', 'map');
+                }
               }}
             >
               동기화

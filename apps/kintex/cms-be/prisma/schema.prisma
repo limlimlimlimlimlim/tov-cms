@@ -260,3 +260,12 @@ model Schedule{
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
+
+model Monitoring {
+  id              Int       @default(autoincrement()) @id
+  code            String    @unique()
+  kioskName       String
+  checkTime       DateTime?
+  network         Boolean       @default(false)
+  data            String?     @db.LongText
+}

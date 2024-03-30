@@ -35,7 +35,7 @@ export default function PostList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
-  const { emit } = useSocket();
+  const { socket } = useSocket();
   const { replace } = useLink();
 
   const fetchData = useCallback(
@@ -256,7 +256,9 @@ export default function PostList() {
           />
           <Button
             onClick={() => {
-              emit('sync', 'post');
+              if (socket) {
+                socket.emit('sync', 'post');
+              }
             }}
           >
             동기화

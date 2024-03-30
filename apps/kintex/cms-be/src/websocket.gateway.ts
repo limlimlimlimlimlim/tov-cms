@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -7,10 +8,13 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { MonitoringService } from './monitoring/monitoring.service';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: true, maxHttpBufferSize: 100000000 })
 export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
+
+  constructor(private readonly monitoringService: MonitoringService) {} // UserService 주입
 
   handleConnection(client: any) {
     console.log(`Client connected: ${client.id}`);
@@ -27,8 +31,17 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('monitoring')
-  handleMonitoringMessage(@MessageBody() message: string): void {
-    console.log('monitoring : ', message);
-    this.server.emit('monitoring', message);
+  handleMonitoringMessage(): void {
+    console.log('event : ', 'monitoring');
+    this.server.emit('monitoring');
+  }
+
+  @SubscribeMessage('screenshot')
+  async handleScreenshotMessage(
+    @MessageBody() message: { code: string; data: string },
+  ) {
+    console.log('evnet : screenshot, message : ', message.code);
+    await this.monitoringService.updateKiosk(message.code, message.data);
+    this.server.emit('monitoring-response');
   }
 }

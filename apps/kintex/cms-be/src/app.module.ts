@@ -27,6 +27,8 @@ import { FacilityCategoryModule } from './facility-category/facility-category.mo
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
 import { WSGateway } from './websocket.gateway';
+import { MonitoringModule } from './monitoring/monitoring.module';
+import { MonitoringService } from './monitoring/monitoring.service';
 
 @Module({
   imports: [
@@ -49,7 +51,7 @@ import { WSGateway } from './websocket.gateway';
       serveRoot: '/files',
     }),
     JwtModule.register({
-      secret: 'lgcms',
+      secret: 'kintexcms',
       signOptions: { expiresIn: '12h' },
     }),
     UserModule,
@@ -62,6 +64,7 @@ import { WSGateway } from './websocket.gateway';
     PostModule,
     ScheduleModule,
     FacilityCategoryModule,
+    MonitoringModule,
   ],
   controllers: [AppController, AuthController, FileUploadController],
   providers: [
@@ -70,6 +73,7 @@ import { WSGateway } from './websocket.gateway';
     UserService,
     AuthService,
     WSGateway,
+    MonitoringService,
     { provide: APP_FILTER, useClass: CustomExceptionFilter },
   ],
 })

@@ -36,7 +36,7 @@ export default function ScheduleList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
-  const { emit } = useSocket();
+  const { socket } = useSocket();
   const { replace } = useLink();
 
   const fetchData = useCallback(
@@ -261,7 +261,9 @@ export default function ScheduleList() {
           />
           <Button
             onClick={() => {
-              emit('sync', 'schedule');
+              if (socket) {
+                socket.emit('sync', 'schedule');
+              }
             }}
           >
             동기화

@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { useEffect, useRef } from 'react';
+import io, { Socket } from 'socket.io-client';
 
 const useSocket = () => {
-  const [socket, setSocket] = useState<any>();
+  const socket = useRef<Socket>();
 
   useEffect(() => {
+    if (socket.current) return;
     const socketIO = io(
       `${window.location.protocol}//${window.location.hostname}:4001`,
     );
@@ -19,30 +20,15 @@ const useSocket = () => {
     //   console.log('Received message from server:', data);
     // });
 
-    setSocket(socketIO);
+    socket.current = socketIO;
 
     return () => {
       socketIO.disconnect();
     };
   }, []);
 
-  const emit = useCallback(
-    (event, message) => {
-      socket.emit(event, message);
-    },
-    [socket],
-  );
-
-  const on = useCallback(
-    (event, callback) => {
-      socket.on(event, callback);
-    },
-    [socket],
-  );
-
   return {
-    emit,
-    on,
+    socket: socket.current,
   };
 };
 

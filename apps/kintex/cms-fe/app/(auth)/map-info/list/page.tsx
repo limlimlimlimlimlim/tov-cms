@@ -30,7 +30,7 @@ export default function MapInfoList() {
   const [openPreview, setOpenPreview] = useState(false);
   const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
-  const { emit } = useSocket();
+  const { socket } = useSocket();
   const { replace } = useLink();
 
   const fetchData = useCallback(
@@ -201,7 +201,9 @@ export default function MapInfoList() {
           />
           <Button
             onClick={() => {
-              emit('sync', 'map-info');
+              if (socket) {
+                socket.emit('sync', 'map-info');
+              }
             }}
           >
             동기화

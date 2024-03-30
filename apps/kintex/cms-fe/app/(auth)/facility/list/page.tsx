@@ -33,7 +33,7 @@ export default function FacilityList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
-  const { emit } = useSocket();
+  const { socket } = useSocket();
   const { replace } = useLink();
 
   const fetchData = useCallback(
@@ -259,7 +259,9 @@ export default function FacilityList() {
           />
           <Button
             onClick={() => {
-              emit('sync', 'facility');
+              if (socket) {
+                socket.emit('sync', 'facility');
+              }
             }}
           >
             동기화

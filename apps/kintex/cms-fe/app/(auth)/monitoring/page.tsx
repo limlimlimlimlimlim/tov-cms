@@ -14,6 +14,7 @@ export default function Monitoring() {
   const { socket } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentKiosk, setCurrentKiosk] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchData = useCallback(async () => {
     const result = await getKiosks();
@@ -92,7 +93,11 @@ export default function Monitoring() {
 
   const refresh = useCallback(() => {
     if (socket) {
+      setLoading(true);
       socket.emit('monitoring');
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   }, [socket]);
 
@@ -107,7 +112,7 @@ export default function Monitoring() {
               갱신은 새로고침 버튼을 눌러주세요.
             </Text>
           </div>
-          <Button type="primary" onClick={refresh}>
+          <Button type="primary" onClick={refresh} loading={loading}>
             새로고침
           </Button>
         </Flex>

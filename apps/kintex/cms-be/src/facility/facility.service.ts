@@ -114,15 +114,28 @@ export class FacilityService {
       });
     }
 
+    const orderBy = {};
+    const sortFileds = sortField.split(',');
+    if (sortFileds.length > 1) {
+      sortFileds.reduce((acc, key, index) => {
+        if (index === sortFileds.length - 1) {
+          acc[key] = sortOrder === 'descend' ? 'desc' : 'asc';
+        } else {
+          acc[key] = {};
+        }
+        return acc[key];
+      }, orderBy);
+    } else {
+      orderBy[sortField] = sortOrder === 'descend' ? 'desc' : 'asc';
+    }
+
     const total = await this.prisma.facility.count({ where });
     const data = await this.prisma.facility.findMany({
       select: select,
       where: where,
       skip: (+page - 1) * +count,
       take: +count,
-      orderBy: {
-        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
-      },
+      orderBy,
     });
     return { total, data, page, count };
   }

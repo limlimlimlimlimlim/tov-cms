@@ -126,25 +126,25 @@ export default function FacilityList() {
       {
         title: '건물명',
         width: 100,
-        render: (row) => row.wing.name,
+        dataIndex: ['wing', 'name'],
         sorter: true,
       },
       {
         title: '층',
         width: 100,
-        render: (row) => row.floor?.name,
+        dataIndex: ['floor', 'name'],
         sorter: true,
       },
       {
         title: '구분',
         width: 150,
-        render: (row) => row.category?.name,
+        dataIndex: ['category', 'name'],
         sorter: true,
       },
       {
         title: '구분상세',
         width: 150,
-        render: (row) => row.subCategory?.name,
+        dataIndex: ['subCategory', 'name'],
         sorter: true,
       },
       {

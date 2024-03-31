@@ -101,6 +101,20 @@ export class MapService {
     }
 
     const total = await this.prisma.map.count({ where });
+    const orderBy = {};
+    const sortFileds = sortField.split(',');
+    if (sortFileds.length > 1) {
+      sortFileds.reduce((acc, key, index) => {
+        if (index === sortFileds.length - 1) {
+          acc[key] = sortOrder === 'descend' ? 'desc' : 'asc';
+        } else {
+          acc[key] = {};
+        }
+        return acc[key];
+      }, orderBy);
+    } else {
+      orderBy[sortField] = sortOrder === 'descend' ? 'desc' : 'asc';
+    }
 
     const data = await this.prisma.map.findMany({
       select: {
@@ -148,9 +162,7 @@ export class MapService {
       where: where,
       skip: (+page - 1) * +count,
       take: +count,
-      orderBy: {
-        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
-      },
+      orderBy,
     });
 
     return { total, data, page, count };

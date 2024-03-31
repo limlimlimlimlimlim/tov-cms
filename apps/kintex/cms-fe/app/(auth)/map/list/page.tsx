@@ -146,13 +146,13 @@ export default function MapList() {
         title: '층',
         width: 100,
         sorter: true,
-        render: (row) => row.floor.name,
+        dataIndex: ['floor', 'name'],
       },
       {
         title: '건물',
         width: 100,
         sorter: true,
-        render: (row) => row.wing.name,
+        dataIndex: ['wing', 'name'],
       },
       {
         title: '지도명',

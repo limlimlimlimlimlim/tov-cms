@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Facility` ADD COLUMN `paddingBottom` INTEGER NULL DEFAULT 0,
+    ADD COLUMN `paddingLeft` INTEGER NULL DEFAULT 0,
+    ADD COLUMN `paddingRight` INTEGER NULL DEFAULT 0,
+    ADD COLUMN `paddingTop` INTEGER NULL DEFAULT 0;

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Kiosk` ADD COLUMN `x` INTEGER NULL,
+    ADD COLUMN `y` INTEGER NULL;

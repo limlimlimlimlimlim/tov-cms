@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>전시 안내</title>
+
+    <!-- css -->
+    <link href="/css/style.css" rel="stylesheet" />
+
+    <!-- js -->
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/jquery.marquee.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/dayjs.min.js"></script>
+  </head>
+  <body>
+    <div class="wrap exhi">
+      <h1>전시 안내</h1>
+
+      <section class="content">
+        <ul class="slide-wrap mq-wrap">
+          <!-- 
+          <li class="silde p1">
+            <div class="img-box">
+              <div><img src="/images/exhibition03.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제1전시장</span>
+              <p>2024 캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람</p>
+            </div>
+          </li>
+          <li class="silde p2">
+            <div class="img-box">
+              <div><img src="/images/exhibition02.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제2전시장</span>
+              <p>제46회 맘앤베이비엑스포 ㈜유아림</p>
+            </div>
+          </li>
+          <li class="silde p1">
+            <div class="img-box">
+              <div><img src="/images/exhibition01.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제1전시장</span>
+              <p>
+                2024 캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람 2024
+                캠프닉페어(캠핑&피크닉페어) / 주식회사 가족사랑전람
+              </p>
+            </div>
+          </li>
+          <li class="silde p2">
+            <div class="img-box">
+              <div><img src="/images/exhibition01.jpg" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <span class="place">제2전시장</span>
+              <p>제46회 맘앤베이비엑스포 ㈜유아림</p>
+            </div>
+          </li> -->
+        </ul>
+      </section>
+    </div>
+
+    <script>
+      const placeCodeList = [
+        { exh: 1, name: "전시홀1", num: "1", value: "EXH1_H1" },
+        { exh: 1, name: "전시홀2", num: "2", value: "EXH1_H2" },
+        { exh: 1, name: "전시홀3", num: "3", value: "EXH1_H3" },
+        { exh: 1, name: "전시홀4", num: "4", value: "EXH1_H4" },
+        { exh: 1, name: "전시홀5A", num: "5A", value: "EXH1_H5A" },
+        { exh: 1, name: "전시홀5B", num: "5B", value: "EXH1_H5B" },
+
+        { exh: 2, name: "전시홀6", num: "6", value: "EXH2_H6" },
+        { exh: 2, name: "전시홀7", num: "7", value: "EXH2_H7" },
+        { exh: 2, name: "전시홀8", num: "8", value: "EXH2_H8" },
+        { exh: 2, name: "전시홀9", num: "9", value: "EXH2_H9" },
+        { exh: 2, name: "전시홀10", num: "10", value: "EXH2_H10" },
+      ];
+
+      const port = 4001;
+      loadData();
+
+      function loadData() {
+        axios
+          .get(
+            "http://" +
+              window.location.hostname +
+              ":" +
+              port +
+              "/post/type/exhibition"
+          )
+          .then(function (res) {
+            const items = createItems(res.data);
+            $(".slide-wrap").html(items);
+            startSlide();
+            startMarquee();
+          });
+      }
+
+      function createItems(data) {
+        const items = data.map((item) => {
+          const { eventPlaceCodes } = item;
+          const exh = getExhibition(eventPlaceCodes)[0];
+          const halls = eventPlaceCodes.split(",").map((value) => {
+            const sameCodeItem = placeCodeList.find((p) => p.value === value);
+            if (sameCodeItem) {
+              return sameCodeItem.num;
+            }
+            return;
+          });
+          const domain = `${window.location.protocol}//${window.location.hostname}:4001`;
+          console.log(item);
+          return `
+          <li class="silde p${exh}">
+            <div class="place">
+              <span>제${exh}전시장</span>
+            </div>
+            <div class="img-box">
+              <div><img src="${domain}/files/upload/${item.imageContents}" alt="" /></div>
+            </div>
+            <div class="txt-box">
+              <b class="area"><span>${halls.join(", ")} 홀</span></b>
+              <b class="date">${dayjs(item.eventStartDate).format("YYYY-MM-DD")} ~ ${dayjs(item.eventEndDate).format("YYYY-MM-DD")}</b>
+              <p>
+                ${item.name}
+              </p>
+            </div>
+          </li>`;
+        });
+        return items;
+      }
+
+      function getExhibition(codes) {
+        const codesArr = codes.split(",").sort();
+
+        return [
+          ...new Set(
+            codesArr.map((code) => {
+              const result = placeCodeList.find((c) => c.value === code);
+              if (result) {
+                return result.exh;
+              }
+              return "";
+            })
+          ),
+        ];
+      }
+
+      function startSlide() {
+        $(".slide-wrap").slick({
+          // slide: '.slide-wrap > .slide',
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: true,
+          autoplay: true,
+          autoplaySpeed: 5000,
+          speed: 1000,
+          variableWidth: true,
+          dots: false,
+          prevArrow: false,
+          nextArrow: false,
+        });
+      }
+
+      function startMarquee() {
+        console.log($(".slide-wrap.mq-wrap .area span"));
+        // 글자수 넘침 감지
+        $(".slide-wrap.mq-wrap .area span").each(function () {
+          if ($(this).width() > $(this).parents(".area").width()) {
+            $(this).addClass("marquee");
+          }
+        });
+
+        // 글자수 넘치면 슬라이딩
+        // 전시 구역
+        $(".area .marquee").marquee({
+          duration: 19000,
+          gap: 100,
+          delayBeforeStart: 500,
+          direction: "left",
+          duplicated: true,
+          startVisible: true,
+        });
+      }
+    </script>
+  </body>
+</html>

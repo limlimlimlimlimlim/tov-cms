@@ -56,7 +56,7 @@ module.exports = {
     "no-console": "off",
     "eslint-comments/require-description": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
-    eqeqeq: "off",
+    "prefer-promise-reject-errors": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "react/jsx-sort-props": "off",
@@ -67,6 +67,8 @@ module.exports = {
     "jsx-a11y/anchor-is-valid": "off",
     "react/jsx-no-leaked-render": "off",
     "@typescript-eslint/no-dynamic-delete": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off",
+    "@typescript-eslint/no-floating-promises": "off",
     "react/function-component-definition": [
       2,
       { namedComponents: ["arrow-function", "function-declaration"] },

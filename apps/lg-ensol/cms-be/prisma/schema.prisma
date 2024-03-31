@@ -1,0 +1,252 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int      @default(autoincrement()) @id
+  userId                String   @unique
+  password              String
+  name                  String
+  phone                 String?
+  description           String? @db.Text
+  permissionId          Int
+  permission            Permission @relation(fields: [permissionId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+}
+
+model Permission {
+  id                Int     @default(autoincrement()) @id
+  name              String
+  description       String
+  readAccount       Boolean @default(false)
+  writeAccount      Boolean @default(false)
+  editAccount       Boolean @default(false)
+  deleteAccount     Boolean @default(false)
+  readPermission    Boolean @default(false)
+  writePermission   Boolean @default(false)
+  editPermission    Boolean @default(false)
+  deletePermission  Boolean @default(false)
+  readSchedule      Boolean @default(false)
+  writeSchedule     Boolean @default(false)
+  editSchedule      Boolean @default(false)
+  deleteSchedule    Boolean @default(false)
+  readPost          Boolean @default(false)
+  writePost         Boolean @default(false)
+  editPost          Boolean @default(false)
+  deletePost        Boolean @default(false)
+  readMap           Boolean @default(false)
+  writeMap          Boolean @default(false)
+  editMap           Boolean @default(false)
+  deleteMap         Boolean @default(false)
+  readMapInfo       Boolean @default(false)
+  writeMapInfo      Boolean @default(false)
+  editMapInfo       Boolean @default(false)
+  deleteMapInfo     Boolean @default(false)
+  readFacility      Boolean @default(false)
+  writeFacility     Boolean @default(false)
+  editFacility      Boolean @default(false)
+  deleteFacility    Boolean @default(false)
+  readKiosk         Boolean @default(false)
+  writeKiosk        Boolean @default(false)
+  editKiosk         Boolean @default(false)
+  deleteKiosk       Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User[]
+}
+
+model Region{
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique()
+  nameEn      String?   @unique()
+  disabled    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  wing        Wing[]
+}
+
+model Wing{
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique()
+  nameEn      String?   @unique()
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  regionId    Int?       
+  region      Region?    @relation(fields: [regionId], references: [id])
+  map         Map[]
+  kiosks      Kiosk[]
+  facilities  Facility[]
+  schedule    Schedule[]
+  floors      Floor[]
+}
+model Floor {
+  id        Int       @default(autoincrement()) @id
+  name      String    
+  nameEn    String?   
+  order     Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  wingId    Int?       
+  wing      Wing?  @relation(fields: [wingId], references: [id])
+  mapss     Map[]
+  kiosks    Kiosk[]
+  facilities  Facility[]
+}
+
+model FacilityCategory {
+  id            Int      @default(autoincrement()) @id
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  facilties     Facility[]
+  subCategories FacilitySubCategory[]
+}
+
+model FacilitySubCategory {
+  id          Int      @default(autoincrement()) @id
+  name        String
+  categoryId  Int
+  category    FacilityCategory  @relation(fields: [categoryId], references: [id])  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  facilties   Facility[]
+}
+
+model Facility {
+  id              Int      @default(autoincrement()) @id
+  name            String?
+  wingId          Int?
+  wing            Wing? @relation(fields: [wingId], references: [id])
+  floorId         Int?
+  floor           Floor? @relation(fields: [floorId], references: [id])
+  sectionId       Int?
+  section         Section? @relation(fields: [sectionId], references: [id])
+  phone           String?
+  address         String?
+  description     String? @db.Text
+  alwaysVisible   Boolean?
+  iconType        String?
+  status          String?
+  x               Int?
+  y               Int?
+  tags            String? @db.Text
+  iconColor       String? @default("#D91700")
+  tooltipColor    String? @default("#000000")
+  fontSize        Int? @default(18)
+  paddingTop      Int? @default(0)
+  paddingBottom   Int? @default(0)
+  paddingLeft     Int? @default(0)
+  paddingRight    Int? @default(0)
+  categoryId      Int?
+  category        FacilityCategory? @relation(fields: [categoryId], references: [id])
+  subCategoryId   Int?
+  subCategory     FacilitySubCategory? @relation(fields: [subCategoryId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  schedule        Schedule[]
+}
+
+model Map {
+  id            Int      @default(autoincrement()) @id
+  floorId       Int
+  floor         Floor  @relation(fields: [floorId], references: [id] )
+  wingId        Int
+  wing          Wing  @relation(fields: [wingId], references: [id] )
+  name          String
+  image         String
+  isUse         Boolean 
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sectionBase64 Json?
+  sections      Section[]
+  sectionCount  Int?
+}
+
+model Section {
+  id            Int           @default(autoincrement()) @id
+  mapId         Int       
+  map           Map           @relation(fields: [mapId], references: [id])
+  groupId       Int?
+  group         SectionGroup? @relation(fields: [groupId], references: [id])
+  path          String        @db.Text
+  color         String?       @default("#D2C60C")
+  strokeColor   String?       @default("#D2C60C")
+  strokeWidth   Int?          @default(5)
+  alpha         Int?          @default(30)
+  strokeAlpha   Int?          @default(30)
+  disabled      Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  facilities    Facility[]
+}
+
+model SectionGroup {
+  id        Int      @default(autoincrement()) @id
+  sections  Section[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Kiosk {
+  id              Int       @default(autoincrement()) @id
+  floorId         Int
+  floor           Floor     @relation(fields: [floorId], references: [id])
+  wingId          Int
+  wing            Wing      @relation(fields: [wingId], references: [id])
+  code            String    @unique
+  name            String
+  description     String
+  layout          String  @default("landscape")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Post{
+  id              Int       @default(autoincrement()) @id
+  name            String
+  imageContents   String?
+  videoContents   String?
+  textContents    String?     @db.Text
+  type            String
+  contentsType    String
+  startDate       DateTime?
+  endDate         DateTime?
+  status          String
+  noPeriod        Boolean
+  useIntro        Boolean
+  order           Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Schedule{
+  id              Int       @default(autoincrement()) @id
+  wingCodes       String?   @db.Text
+  wingId          Int?
+  wing            Wing?      @relation(fields: [wingId], references: [id])
+  facilityId      Int?
+  facility        Facility?   @relation(fields: [facilityId], references: [id])
+  name            String
+  imageContents   String?
+  videoContents   String?
+  contentsType    String
+  description     String?     @db.Text
+  startDate       DateTime?
+  endDate         DateTime?
+  status          String
+  noPeriod        Boolean
+  order           Int
+  layout          String  @default("landscape")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

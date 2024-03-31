@@ -12,6 +12,10 @@ export const getSchedules = async (param: {
   );
 };
 
+export const getScheduleByOrder = async (order) => {
+  return axiosClient.get(`/schedule/order/${order}`);
+};
+
 export const getScheduleDetail = async (id) => {
   return axiosClient.get(`/schedule/${id}`);
 };
@@ -22,6 +26,10 @@ export const createSchedule = async (data) => {
 
 export const updateSchedule = async (id, data) => {
   return axiosClient.patch(`/schedule/${id}`, data);
+};
+
+export const updateScheduleOrder = async (id, data) => {
+  return axiosClient.patch(`/schedule/${id}/order`, data);
 };
 
 export const deleteSchedule = async (id) => {

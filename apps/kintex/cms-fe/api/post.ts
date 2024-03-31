@@ -12,6 +12,10 @@ export const getPosts = async (param: {
   );
 };
 
+export const getPostByOrder = async (order) => {
+  return axiosClient.get(`/post/order/${order}`);
+};
+
 export const getPostDetail = async (id) => {
   return axiosClient.get(`/post/${id}`);
 };
@@ -22,6 +26,10 @@ export const createPost = async (data) => {
 
 export const updatePost = async (id, data) => {
   return axiosClient.patch(`/post/${id}`, data);
+};
+
+export const updatePostOrder = async (id, data) => {
+  return axiosClient.patch(`/post/${id}/order`, data);
 };
 
 export const deletePost = async (id) => {

@@ -110,6 +110,7 @@ export class ScheduleService {
         noPeriod: true,
         endDate: true,
         status: true,
+        order: true,
         wing: {
           select: {
             id: true,
@@ -138,6 +139,12 @@ export class ScheduleService {
   async getScheduleById(id: number) {
     return await this.prisma.schedule.findUnique({
       where: { id },
+    });
+  }
+
+  async getScheduleByOrder(order: number) {
+    return await this.prisma.schedule.findFirst({
+      where: { order },
     });
   }
 

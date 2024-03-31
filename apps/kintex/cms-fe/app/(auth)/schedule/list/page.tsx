@@ -3,22 +3,19 @@ import { Button, Flex, Input, Modal, Table, message, DatePicker } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
 import {
-  decrementScheduleOrder,
   deleteSchedule,
+  getScheduleByOrder,
   getSchedules,
-  incrementScheduleOrder,
+  updateScheduleOrder,
 } from '../../../../api/schedule';
 import usePermission from '../../hooks/use-permission';
 import useSocket from '../../hooks/use-socket';
 import useLink from '../../hooks/use-link';
+import Order from '../../../../component/order/order';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -43,7 +40,7 @@ export default function ScheduleList() {
 
   const fetchData = useCallback(
     async ({ keyword, page, period }) => {
-      const posts = await getSchedules({
+      const schedules = await getSchedules({
         keyword,
         page,
         count,
@@ -51,8 +48,8 @@ export default function ScheduleList() {
         endDate: period[1],
       });
       setKeyword(keyword);
-      setData(posts.data.data || []);
-      setTotal(posts.data.total);
+      setData(schedules.data.data || []);
+      setTotal(schedules.data.total);
       setPage(page);
     },
     [count],
@@ -127,34 +124,63 @@ export default function ScheduleList() {
         width: 150,
         render(data) {
           return (
-            <Flex gap="small">
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await incrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, period });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretUpOutlined />
-              </Button>
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await decrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page, period });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretDownOutlined />
-              </Button>
-            </Flex>
+            <Order
+              value={data.order}
+              onValidate={async (value) => {
+                const sameOrderShedule = await getScheduleByOrder(value);
+                if (sameOrderShedule.data) {
+                  const result = await new Promise<boolean>((res) => {
+                    confirm({
+                      title: '게시물 순서 중복',
+                      okText: '확인',
+                      cancelText: '취소',
+                      content: `"${sameOrderShedule.data.name}"과 순서가 중복됩니다. 순서를 변경하시겠습니까?`,
+                      onOk() {
+                        res(true);
+                      },
+                      onCancel() {
+                        res(false);
+                      },
+                    });
+                  });
+                  return result;
+                }
+                return true;
+              }}
+              onChange={async (order) => {
+                await updateScheduleOrder(data.id, { order });
+                await message.success('스케쥴 순서가 변경됐습니다.');
+                await fetchData({ keyword, page, period });
+              }}
+            />
+            // <Flex gap="small">
+            //   <Button
+            //     size="small"
+            //     onClick={async () => {
+            //       try {
+            //         await incrementScheduleOrder(data.id);
+            //         await fetchData({ keyword, page, period });
+            //       } catch (e) {
+            //         void message.warning('순서를 변경할 수 없습니다.');
+            //       }
+            //     }}
+            //   >
+            //     <CaretUpOutlined />
+            //   </Button>
+            //   <Button
+            //     size="small"
+            //     onClick={async () => {
+            //       try {
+            //         await decrementScheduleOrder(data.id);
+            //         await fetchData({ keyword, page, period });
+            //       } catch (e) {
+            //         void message.warning('순서를 변경할 수 없습니다.');
+            //       }
+            //     }}
+            //   >
+            //     <CaretDownOutlined />
+            //   </Button>
+            // </Flex>
           );
         },
       },
@@ -194,7 +220,7 @@ export default function ScheduleList() {
         },
       },
     ];
-  }, [count, fetchData, keyword, page, replace, updatable]);
+  }, [count, fetchData, keyword, page, period, replace, updatable]);
 
   const onClickDelete = useCallback(() => {
     confirm({
@@ -204,7 +230,7 @@ export default function ScheduleList() {
       content: '선택된 스케쥴을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
-        void fetchData({ keyword, page, period });
+        await fetchData({ keyword, page, period });
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });

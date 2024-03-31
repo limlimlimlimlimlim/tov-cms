@@ -13,12 +13,15 @@ import type { PostItem } from '../../../../interface/post';
 import {
   decrementPostOrder,
   deletePost,
+  getPostByOrder,
   getPosts,
   incrementPostOrder,
+  updatePostOrder,
 } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
 import useSocket from '../../hooks/use-socket';
 import useLink from '../../hooks/use-link';
+import Order from '../../../../component/order/order';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -119,34 +122,35 @@ export default function PostList() {
         width: 150,
         render(data) {
           return (
-            <Flex gap="small">
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await incrementPostOrder(data.id);
-                    await fetchData({ keyword, page, period });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretUpOutlined />
-              </Button>
-              <Button
-                size="small"
-                onClick={async () => {
-                  try {
-                    await decrementPostOrder(data.id);
-                    await fetchData({ keyword, page, period });
-                  } catch (e) {
-                    void message.warning('순서를 변경할 수 없습니다.');
-                  }
-                }}
-              >
-                <CaretDownOutlined />
-              </Button>
-            </Flex>
+            <Order
+              value={data.order}
+              onValidate={async (value) => {
+                const sameOrderShedule = await getPostByOrder(value);
+                if (sameOrderShedule.data) {
+                  const result = await new Promise<boolean>((res) => {
+                    confirm({
+                      title: '게시물 순서 중복',
+                      okText: '확인',
+                      cancelText: '취소',
+                      content: `"${sameOrderShedule.data.name}"과 순서가 중복됩니다. 순서를 변경하시겠습니까?`,
+                      onOk() {
+                        res(true);
+                      },
+                      onCancel() {
+                        res(false);
+                      },
+                    });
+                  });
+                  return result;
+                }
+                return true;
+              }}
+              onChange={async (order) => {
+                await updatePostOrder(data.id, { order });
+                await message.success('스케쥴 순서가 변경됐습니다.');
+                await fetchData({ keyword, page, period });
+              }}
+            />
           );
         },
       },

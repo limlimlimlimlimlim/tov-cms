@@ -129,6 +129,12 @@ export class PostService {
     });
   }
 
+  async getPostByOrder(order: number) {
+    return await this.prisma.post.findFirst({
+      where: { order },
+    });
+  }
+
   async updatePost(id: number, data: Prisma.PostUpdateInput) {
     const post = await this.prisma.post.findUnique({
       where: { id },

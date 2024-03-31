@@ -93,8 +93,32 @@ export class ScheduleController {
     return this.scheduleService.deleteSchedule(+id);
   }
 
+  @Get('/order/:order')
+  async getScheduleByOrder(@Param('order') order: string) {
+    return this.scheduleService.getScheduleByOrder(+order);
+  }
+
+  @Patch(':id/order')
+  async upateScheduleOrder(
+    @Param('id') id: string,
+    @Body('order') order: string,
+  ) {
+    const sameOrderSchedule = await this.getScheduleByOrder(order);
+
+    if (sameOrderSchedule) {
+      const currentSchedule = await this.scheduleService.getScheduleById(+id);
+      await this.scheduleService.updateSchedule(sameOrderSchedule.id, {
+        order: currentSchedule.order,
+      });
+    }
+    return this.scheduleService.updateSchedule(+id, { order: +order });
+  }
+
   @Patch('/order/swap/:id1/:id2')
-  async swapSchedule(@Param('id1') id1: string, @Param('id2') id2: string) {
+  async swapScheduleOrder(
+    @Param('id1') id1: string,
+    @Param('id2') id2: string,
+  ) {
     return this.scheduleService.swapScheduleOrder(+id1, +id2);
   }
 

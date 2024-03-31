@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 
 const select = {
   id: true,
@@ -79,7 +80,15 @@ export class FacilityService {
     return this.prisma.facility.create({ data });
   }
 
-  async getFacilities({ keyword, page, count, floorId, wingId }) {
+  async getFacilities({
+    keyword,
+    page,
+    count,
+    floorId,
+    wingId,
+    startDate,
+    endDate,
+  }) {
     const where = {
       AND: [],
     };
@@ -91,6 +100,16 @@ export class FacilityService {
     }
     if (wingId) {
       where.AND.push({ wingId: +wingId });
+    }
+    if (startDate && endDate) {
+      const start = dayjs(startDate).startOf('day').add(9, 'h');
+      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      where.AND.push({
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      });
     }
 
     const total = await this.prisma.facility.count({ where });

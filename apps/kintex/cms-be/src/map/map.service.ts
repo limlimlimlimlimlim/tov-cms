@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class MapService {
@@ -65,7 +66,7 @@ export class MapService {
     });
   }
 
-  async getMaps({ keyword, page, count, floorId, wingId }) {
+  async getMaps({ keyword, page, count, floorId, wingId, startDate, endDate }) {
     const where = {
       AND: [],
     };
@@ -77,6 +78,16 @@ export class MapService {
     }
     if (wingId) {
       where.AND.push({ wingId: +wingId });
+    }
+    if (startDate && endDate) {
+      const start = dayjs(startDate).startOf('day').add(9, 'h');
+      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      where.AND.push({
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      });
     }
 
     const total = await this.prisma.map.count({ where });

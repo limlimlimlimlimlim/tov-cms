@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma/prisma.service';
-
 @Injectable()
 export class ScheduleService {
   constructor(private prisma: PrismaService) {}
@@ -78,7 +78,15 @@ export class ScheduleService {
     return await this.swapScheduleOrder(schedule1.id, schedule2.id);
   }
 
-  async getSchedules({ keyword, page, count, floorId, wingId }) {
+  async getSchedules({
+    keyword,
+    page,
+    count,
+    floorId,
+    wingId,
+    startDate,
+    endDate,
+  }) {
     const where = {
       AND: [],
     };
@@ -90,6 +98,16 @@ export class ScheduleService {
     }
     if (wingId) {
       where.AND.push({ wingId: +wingId });
+    }
+    if (startDate && endDate) {
+      const start = dayjs(startDate).startOf('day').add(9, 'h');
+      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      where.AND.push({
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      });
     }
 
     const total = await this.prisma.schedule.count({ where });

@@ -26,11 +26,15 @@ export class PostController {
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
   ) {
     return await this.postService.getPosts({
       keyword,
       page,
       count,
+      startDate,
+      endDate,
     });
   }
 

@@ -28,6 +28,8 @@ export class MapController {
     @Query('count') count: string = '50',
     @Query('floor') floorId: string,
     @Query('wing') wingId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
   ) {
     return await this.mapService.getMaps({
       keyword,
@@ -35,6 +37,8 @@ export class MapController {
       count,
       floorId,
       wingId,
+      startDate,
+      endDate,
     });
   }
 

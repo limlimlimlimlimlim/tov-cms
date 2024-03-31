@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -79,12 +80,22 @@ export class PostService {
     return await this.swapPostOrder(post1.id, post2.id);
   }
 
-  async getPosts({ keyword, page, count }) {
+  async getPosts({ keyword, page, count, startDate, endDate }) {
     const where = {
       AND: [],
     };
     if (keyword) {
       where.AND.push({ name: { contains: keyword } });
+    }
+    if (startDate && endDate) {
+      const start = dayjs(startDate).startOf('day').add(9, 'h');
+      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      where.AND.push({
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      });
     }
 
     const total = await this.prisma.post.count({ where });

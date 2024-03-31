@@ -29,6 +29,8 @@ export class FacilityController {
     @Query('count') count: string = '50',
     @Query('floorId') floorId: string,
     @Query('wingId') wingId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
   ) {
     return this.facilityService.getFacilities({
       keyword,
@@ -36,6 +38,8 @@ export class FacilityController {
       count,
       floorId,
       wingId,
+      startDate,
+      endDate,
     });
   }
 

@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';

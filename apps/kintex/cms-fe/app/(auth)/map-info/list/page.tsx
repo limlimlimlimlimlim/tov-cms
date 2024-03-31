@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Form, Input, Table } from 'antd';
+import { Button, Flex, Form, Input, Table, DatePicker } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
@@ -16,6 +16,7 @@ import useSocket from '../../hooks/use-socket';
 import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 export default function MapInfoList() {
   const [total, setTotal] = useState(0);
@@ -32,10 +33,19 @@ export default function MapInfoList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
+  const [period, setPeriod] = useState<string[]>([]);
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing }) => {
-      const maps = await getMaps({ keyword, page, count, floor, wing });
+    async ({ keyword, page, floor, wing, period }) => {
+      const maps = await getMaps({
+        keyword,
+        page,
+        count,
+        floor,
+        wing,
+        startDate: period[0],
+        endDate: period[1],
+      });
       setKeyword(keyword);
       setPage(page);
       setData(maps.data.data);
@@ -54,8 +64,23 @@ export default function MapInfoList() {
     }
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_map-info_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
-  }, [count, fetchData, floor, getMapInfoPermissions, ready, router, wing]);
+    void fetchData({
+      keyword: prevKeyword || '',
+      page: 1,
+      floor,
+      wing,
+      period,
+    });
+  }, [
+    count,
+    fetchData,
+    floor,
+    getMapInfoPermissions,
+    period,
+    ready,
+    router,
+    wing,
+  ]);
 
   const columns: ColumnsType<MapInfoItem> = useMemo(() => {
     return [
@@ -152,9 +177,9 @@ export default function MapInfoList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_map-info_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing });
+      fetchData({ keyword: value, page: 1, floor, wing, period });
     },
-    [fetchData, floor, wing],
+    [fetchData, floor, period, wing],
   );
 
   const onChangeFloor = useCallback((f: any) => {
@@ -189,6 +214,11 @@ export default function MapInfoList() {
       <Flex justify="space-between" align="center">
         <span>Total : {count}</span>
         <Flex gap="small">
+          <RangePicker
+            onChange={(_, p) => {
+              setPeriod(p);
+            }}
+          />
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}

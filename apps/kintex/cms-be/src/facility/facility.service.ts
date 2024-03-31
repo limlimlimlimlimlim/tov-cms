@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 const select = {
   id: true,
@@ -102,8 +102,8 @@ export class FacilityService {
       where.AND.push({ wingId: +wingId });
     }
     if (startDate && endDate) {
-      const start = dayjs(startDate).startOf('day').add(9, 'h');
-      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      const start = dayjs(startDate).add(9, 'h').startOf('day');
+      const end = dayjs(endDate).add(9, 'h').endOf('day');
       where.AND.push({
         createdAt: {
           gte: start,

@@ -6,9 +6,11 @@ export const getFacilities = async (param: {
   count;
   floor;
   wing;
+  startDate;
+  endDate;
 }) => {
   return axiosClient.get(
-    `/facility?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floorId=${param.floor}&wingId=${param.wing}`,
+    `/facility?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floorId=${param.floor}&wingId=${param.wing}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
   );
 };
 

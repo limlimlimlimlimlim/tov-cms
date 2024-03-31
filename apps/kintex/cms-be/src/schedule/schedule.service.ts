@@ -78,30 +78,16 @@ export class ScheduleService {
     return await this.swapScheduleOrder(schedule1.id, schedule2.id);
   }
 
-  async getSchedules({
-    keyword,
-    page,
-    count,
-    floorId,
-    wingId,
-    startDate,
-    endDate,
-  }) {
+  async getSchedules({ keyword, page, count, startDate, endDate }) {
     const where = {
       AND: [],
     };
     if (keyword) {
       where.AND.push({ name: { contains: keyword } });
     }
-    if (floorId) {
-      where.AND.push({ floorId: +floorId });
-    }
-    if (wingId) {
-      where.AND.push({ wingId: +wingId });
-    }
     if (startDate && endDate) {
-      const start = dayjs(startDate).startOf('day').add(9, 'h');
-      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      const start = dayjs(startDate).add(9, 'h').startOf('day');
+      const end = dayjs(endDate).add(9, 'h').endOf('day');
       where.AND.push({
         createdAt: {
           gte: start,

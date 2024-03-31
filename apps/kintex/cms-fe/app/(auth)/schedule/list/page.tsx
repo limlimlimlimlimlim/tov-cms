@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Input, Modal, Table, message, DatePicker } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
+const { RangePicker } = DatePicker;
 
 export default function ScheduleList() {
   const [total, setTotal] = useState(0);
@@ -38,10 +39,17 @@ export default function ScheduleList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
+  const [period, setPeriod] = useState<string[]>([]);
 
   const fetchData = useCallback(
-    async ({ keyword, page }) => {
-      const posts = await getSchedules({ keyword, page, count });
+    async ({ keyword, page, period }) => {
+      const posts = await getSchedules({
+        keyword,
+        page,
+        count,
+        startDate: period[0],
+        endDate: period[1],
+      });
       setKeyword(keyword);
       setData(posts.data.data || []);
       setTotal(posts.data.total);
@@ -62,15 +70,23 @@ export default function ScheduleList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_schedule_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1 });
-  }, [count, fetchData, getSchedulePermissions, ready, router]);
+    void fetchData({
+      keyword: prevKeyword || '',
+      page: 1,
+      period,
+    });
+  }, [count, fetchData, getSchedulePermissions, period, ready, router]);
 
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_schedule_search_keyword', value);
-      fetchData({ keyword: value, page: 1 });
+      fetchData({
+        keyword: value,
+        page: 1,
+        period,
+      });
     },
-    [fetchData],
+    [fetchData, period],
   );
 
   const columns = useMemo(() => {
@@ -117,7 +133,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await incrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page });
+                    await fetchData({ keyword, page, period });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -130,7 +146,7 @@ export default function ScheduleList() {
                 onClick={async () => {
                   try {
                     await decrementScheduleOrder(data.id);
-                    await fetchData({ keyword, page });
+                    await fetchData({ keyword, page, period });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -188,11 +204,11 @@ export default function ScheduleList() {
       content: '선택된 스케쥴을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteSchedule(row.id)));
-        void fetchData({ keyword, page });
+        void fetchData({ keyword, page, period });
         void message.success('선택된 스케쥴이 삭제됐습니다.');
       },
     });
-  }, [fetchData, keyword, page, selectedData]);
+  }, [fetchData, keyword, page, period, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -206,9 +222,9 @@ export default function ScheduleList() {
 
   const onChangePage = useCallback(
     (p) => {
-      fetchData({ keyword, page: p.current });
+      fetchData({ keyword, page: p.current, period });
     },
-    [fetchData, keyword],
+    [fetchData, keyword, period],
   );
 
   return (
@@ -249,6 +265,11 @@ export default function ScheduleList() {
           <span>Total : {total}</span>
         </Flex>
         <Flex gap="small">
+          <RangePicker
+            onChange={(_, p) => {
+              setPeriod(p);
+            }}
+          />
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}

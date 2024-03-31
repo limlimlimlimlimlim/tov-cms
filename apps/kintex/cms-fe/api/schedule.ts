@@ -1,8 +1,14 @@
 import axiosClient from '../util/axios-client';
 
-export const getSchedules = async (param: { keyword; page; count }) => {
+export const getSchedules = async (param: {
+  keyword;
+  page;
+  count;
+  startDate;
+  endDate;
+}) => {
   return axiosClient.get(
-    `/schedule?keyword=${param.keyword}&page=${param.page}&count=${param.count}`,
+    `/schedule?keyword=${param.keyword}&page=${param.page}&count=${param.count}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
   );
 };
 

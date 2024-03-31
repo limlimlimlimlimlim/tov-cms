@@ -15,7 +15,7 @@ import {
 } from 'antd';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createSchedule, updateSchedule } from '../../../api/schedule';
 import useLink from '../hooks/use-link';

@@ -1,8 +1,16 @@
 import axiosClient from '../util/axios-client';
 
-export const getMaps = async (param: { keyword; page; count; floor; wing }) => {
+export const getMaps = async (param: {
+  keyword;
+  page;
+  count;
+  floor;
+  wing;
+  startDate;
+  endDate;
+}) => {
   return axiosClient.get(
-    `/maps?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floor=${param.floor}&wing=${param.wing}`,
+    `/maps?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floor=${param.floor}&wing=${param.wing}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
   );
 };
 

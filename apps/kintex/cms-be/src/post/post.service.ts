@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -88,8 +88,8 @@ export class PostService {
       where.AND.push({ name: { contains: keyword } });
     }
     if (startDate && endDate) {
-      const start = dayjs(startDate).startOf('day').add(9, 'h');
-      const end = dayjs(endDate).endOf('day').add(9, 'h');
+      const start = dayjs(startDate).add(9, 'h').startOf('day');
+      const end = dayjs(endDate).add(9, 'h').endOf('day');
       where.AND.push({
         createdAt: {
           gte: start,

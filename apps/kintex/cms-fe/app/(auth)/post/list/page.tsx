@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Input, Modal, Table, message } from 'antd';
+import { Button, Flex, Input, Modal, Table, message, DatePicker } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
+const { RangePicker } = DatePicker;
 
 export default function PostList() {
   const [total, setTotal] = useState(0);
@@ -37,10 +38,17 @@ export default function PostList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
+  const [period, setPeriod] = useState<string[]>([]);
 
   const fetchData = useCallback(
-    async ({ keyword, page }) => {
-      const posts = await getPosts({ keyword, page, count });
+    async ({ keyword, page, period }) => {
+      const posts = await getPosts({
+        keyword,
+        page,
+        count,
+        startDate: period[0],
+        endDate: period[1],
+      });
       setKeyword(keyword);
       setPage(page);
       setData(posts.data.data || []);
@@ -61,8 +69,8 @@ export default function PostList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_post_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1 });
-  }, [count, fetchData, getPostPermissions, ready, router]);
+    void fetchData({ keyword: prevKeyword || '', page: 1, period });
+  }, [count, fetchData, getPostPermissions, period, ready, router]);
 
   const columns = useMemo(() => {
     return [
@@ -117,7 +125,7 @@ export default function PostList() {
                 onClick={async () => {
                   try {
                     await incrementPostOrder(data.id);
-                    await fetchData({ keyword, page });
+                    await fetchData({ keyword, page, period });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -130,7 +138,7 @@ export default function PostList() {
                 onClick={async () => {
                   try {
                     await decrementPostOrder(data.id);
-                    await fetchData({ keyword, page });
+                    await fetchData({ keyword, page, period });
                   } catch (e) {
                     void message.warning('순서를 변경할 수 없습니다.');
                   }
@@ -178,14 +186,14 @@ export default function PostList() {
         },
       },
     ];
-  }, [count, fetchData, keyword, page, replace, updatable]);
+  }, [count, fetchData, keyword, page, period, replace, updatable]);
 
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_post_search_keyword', value);
-      fetchData({ keyword: value, page: 1 });
+      fetchData({ keyword: value, page: 1, period });
     },
-    [fetchData],
+    [fetchData, period],
   );
 
   const onClickDelete = useCallback(() => {
@@ -196,11 +204,11 @@ export default function PostList() {
       content: '선택된 게시물을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deletePost(row.id)));
-        void fetchData({ keyword, page });
+        void fetchData({ keyword, page, period });
         void message.success('선택된 게시물이 삭제됐습니다.');
       },
     });
-  }, [fetchData, keyword, page, selectedData]);
+  }, [fetchData, keyword, page, period, selectedData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -210,9 +218,9 @@ export default function PostList() {
 
   const onChangePage = useCallback(
     (p) => {
-      fetchData({ keyword, page: p.current });
+      fetchData({ keyword, page: p.current, period });
     },
-    [fetchData, keyword],
+    [fetchData, keyword, period],
   );
 
   return (
@@ -244,6 +252,11 @@ export default function PostList() {
           <span>Total : {total}</span>
         </Flex>
         <Flex gap="small">
+          <RangePicker
+            onChange={(_, p) => {
+              setPeriod(p);
+            }}
+          />
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}

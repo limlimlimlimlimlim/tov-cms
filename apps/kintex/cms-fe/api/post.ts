@@ -1,8 +1,14 @@
 import axiosClient from '../util/axios-client';
 
-export const getPosts = async (param: { keyword; page; count }) => {
+export const getPosts = async (param: {
+  keyword;
+  page;
+  count;
+  startDate;
+  endDate;
+}) => {
   return axiosClient.get(
-    `/post?keyword=${param.keyword}&page=${param.page}&count=${param.count}`,
+    `/post?keyword=${param.keyword}&page=${param.page}&count=${param.count}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
   );
 };
 

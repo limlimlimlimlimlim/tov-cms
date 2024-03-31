@@ -1,5 +1,14 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Table,
+  message,
+  DatePicker,
+} from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -16,6 +25,7 @@ import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
+const { RangePicker } = DatePicker;
 
 export default function FacilityList() {
   const [total, setTotal] = useState(0);
@@ -35,15 +45,18 @@ export default function FacilityList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
+  const [period, setPeriod] = useState<string[]>([]);
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing }) => {
+    async ({ keyword, page, floor, wing, period }) => {
       const facilities = await getFacilities({
         keyword,
         page,
         count,
         floor,
         wing,
+        startDate: period[0],
+        endDate: period[1],
       });
       setKeyword(keyword);
       setPage(page);
@@ -65,8 +78,23 @@ export default function FacilityList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_facility_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
-  }, [count, fetchData, floor, getFacilityPermissions, ready, router, wing]);
+    void fetchData({
+      keyword: prevKeyword || '',
+      page: 1,
+      floor,
+      wing,
+      period,
+    });
+  }, [
+    count,
+    fetchData,
+    floor,
+    getFacilityPermissions,
+    period,
+    ready,
+    router,
+    wing,
+  ]);
 
   const columns = useMemo(() => {
     return [
@@ -148,9 +176,9 @@ export default function FacilityList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_facility_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing });
+      fetchData({ keyword: value, page: 1, floor, wing, period });
     },
-    [fetchData, floor, wing],
+    [fetchData, floor, period, wing],
   );
 
   const onClickDelete = useCallback(() => {
@@ -161,11 +189,11 @@ export default function FacilityList() {
       content: '선택된 시설을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteFacility(row.id)));
-        void fetchData({ keyword, page, floor, wing });
+        void fetchData({ keyword, page, floor, wing, period });
         void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
-  }, [fetchData, floor, keyword, page, selectedData, wing]);
+  }, [fetchData, floor, keyword, page, period, selectedData, wing]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: FacilityItem[]) => {
@@ -184,9 +212,9 @@ export default function FacilityList() {
 
   const onChangePage = useCallback(
     (p) => {
-      fetchData({ keyword, page: p.current, floor, wing });
+      fetchData({ keyword, page: p.current, floor, wing, period });
     },
-    [fetchData, floor, keyword, wing],
+    [fetchData, floor, keyword, period, wing],
   );
 
   return (
@@ -247,6 +275,11 @@ export default function FacilityList() {
           <span>Total : {total}</span>
         </Flex>
         <Flex gap="small">
+          <RangePicker
+            onChange={(_, p) => {
+              setPeriod(p);
+            }}
+          />
           <Search
             placeholder="검색어를 입력해주세요."
             value={keyword}

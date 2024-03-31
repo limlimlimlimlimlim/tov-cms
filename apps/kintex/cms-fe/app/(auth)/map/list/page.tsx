@@ -1,5 +1,14 @@
 'use client';
-import { Button, Flex, Form, Input, Modal, Table, message } from 'antd';
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Table,
+  message,
+  DatePicker,
+} from 'antd';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import type { ColumnsType } from 'antd/es/table';
@@ -19,6 +28,7 @@ import useLink from '../../hooks/use-link';
 
 const { Search } = Input;
 const { confirm } = Modal;
+const { RangePicker } = DatePicker;
 
 export default function MapList() {
   const [total, setTotal] = useState(0);
@@ -45,10 +55,19 @@ export default function MapList() {
   const [isMaster] = useState(params.get('isMaster') === 'true');
   const { socket } = useSocket();
   const { replace } = useLink();
+  const [period, setPeriod] = useState<string[]>([]);
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing }) => {
-      const maps = await getMaps({ keyword, page, count, floor, wing });
+    async ({ keyword, page, floor, wing, period }) => {
+      const maps = await getMaps({
+        keyword,
+        page,
+        count,
+        floor,
+        wing,
+        startDate: period[0],
+        endDate: period[1],
+      });
       setKeyword(keyword);
       setPage(page);
       setData(maps.data.data);
@@ -78,8 +97,14 @@ export default function MapList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_map_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1, floor, wing });
-  }, [count, fetchData, floor, getMapPermissions, ready, router, wing]);
+    void fetchData({
+      keyword: prevKeyword || '',
+      page: 1,
+      floor,
+      wing,
+      period,
+    });
+  }, [count, fetchData, floor, getMapPermissions, period, ready, router, wing]);
 
   const columns: ColumnsType<MapItem> = useMemo(() => {
     return [
@@ -186,9 +211,9 @@ export default function MapList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_map_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing });
+      fetchData({ keyword: value, page: 1, floor, wing, period });
     },
-    [fetchData, floor, wing],
+    [fetchData, floor, period, wing],
   );
 
   const onClickDelete = useCallback(() => {
@@ -199,11 +224,11 @@ export default function MapList() {
       content: '선택된 지도를 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteMap(row.id)));
-        void fetchData({ keyword, page, floor, wing });
+        void fetchData({ keyword, page, floor, wing, period });
         void message.success('선택된 지도가 삭제됐습니다.');
       },
     });
-  }, [selectedData, fetchData, keyword, page, floor, wing]);
+  }, [selectedData, fetchData, keyword, page, floor, wing, period]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
@@ -232,9 +257,9 @@ export default function MapList() {
 
   const onChangePage = useCallback(
     (p) => {
-      fetchData({ keyword, page: p.current, floor, wing });
+      fetchData({ keyword, page: p.current, floor, wing, period });
     },
-    [fetchData, floor, keyword, wing],
+    [fetchData, floor, keyword, period, wing],
   );
 
   return (
@@ -298,6 +323,11 @@ export default function MapList() {
             <span>Total : {total}</span>
           </Flex>
           <Flex gap="small">
+            <RangePicker
+              onChange={(_, p) => {
+                setPeriod(p);
+              }}
+            />
             <Search
               placeholder="검색어를 입력해주세요."
               value={keyword}

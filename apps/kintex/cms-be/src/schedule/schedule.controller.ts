@@ -26,8 +26,6 @@ export class ScheduleController {
     @Query('keyword') keyword: string,
     @Query('page') page: string = '1',
     @Query('count') count: string = '50',
-    @Query('floorId') floorId: string,
-    @Query('wingId') wingId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
@@ -35,8 +33,6 @@ export class ScheduleController {
       keyword,
       page,
       count,
-      floorId,
-      wingId,
       startDate,
       endDate,
     });

@@ -66,7 +66,17 @@ export class MapService {
     });
   }
 
-  async getMaps({ keyword, page, count, floorId, wingId, startDate, endDate }) {
+  async getMaps({
+    keyword,
+    page,
+    count,
+    floorId,
+    wingId,
+    startDate,
+    endDate,
+    sortField = 'createdAt',
+    sortOrder = 'asc',
+  }) {
     const where = {
       AND: [],
     };
@@ -82,8 +92,6 @@ export class MapService {
     if (startDate && endDate) {
       const start = dayjs(startDate).add(9, 'h').startOf('day');
       const end = dayjs(endDate).add(9, 'h').endOf('day');
-      console.log(start);
-      console.log(end);
       where.AND.push({
         createdAt: {
           gte: start,
@@ -141,7 +149,7 @@ export class MapService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        id: 'desc',
+        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
       },
     });
 

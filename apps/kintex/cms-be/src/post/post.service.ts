@@ -80,7 +80,15 @@ export class PostService {
     return await this.swapPostOrder(post1.id, post2.id);
   }
 
-  async getPosts({ keyword, page, count, startDate, endDate }) {
+  async getPosts({
+    keyword,
+    page,
+    count,
+    startDate,
+    endDate,
+    sortField = 'createdAt',
+    sortOrder = 'asc',
+  }) {
     const where = {
       AND: [],
     };
@@ -104,9 +112,10 @@ export class PostService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        order: 'desc',
+        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
       },
     });
+
     return { total, data, page, count };
   }
 

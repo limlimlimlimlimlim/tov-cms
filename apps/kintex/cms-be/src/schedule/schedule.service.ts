@@ -78,7 +78,15 @@ export class ScheduleService {
     return await this.swapScheduleOrder(schedule1.id, schedule2.id);
   }
 
-  async getSchedules({ keyword, page, count, startDate, endDate }) {
+  async getSchedules({
+    keyword,
+    page,
+    count,
+    startDate,
+    endDate,
+    sortField = 'createdAt',
+    sortOrder = 'asc',
+  }) {
     const where = {
       AND: [],
     };
@@ -130,9 +138,10 @@ export class ScheduleService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        order: 'desc',
+        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
       },
     });
+
     return { total, data, page, count };
   }
 

@@ -35,16 +35,28 @@ export default function PostList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
-  const [period, setPeriod] = useState<string[]>([]);
+  const [period, setPeriod] = useState<string[]>(['', '']);
+  const [sortInfo, setSortInfo] = useState({
+    field: 'createdAt',
+    order: 'descend',
+  });
 
   const fetchData = useCallback(
-    async ({ keyword, page, period }) => {
+    async ({
+      keyword,
+      page,
+      period = ['', ''],
+      sortFiled = 'createdAt',
+      sortOrder = 'descend',
+    }) => {
       const posts = await getPosts({
         keyword,
         page,
         count,
         startDate: period[0],
         endDate: period[1],
+        sortFiled,
+        sortOrder,
       });
       setKeyword(keyword);
       setPage(page);
@@ -66,8 +78,23 @@ export default function PostList() {
     setDeletable(result.delete);
     setUpdatable(result.update);
     const prevKeyword = localStorage.getItem('cms_post_search_keyword');
-    void fetchData({ keyword: prevKeyword || '', page: 1, period });
-  }, [count, fetchData, getPostPermissions, period, ready, router]);
+    void fetchData({
+      keyword: prevKeyword || '',
+      page: 1,
+      period,
+      sortFiled: sortInfo.field,
+      sortOrder: sortInfo.order,
+    });
+  }, [
+    count,
+    fetchData,
+    getPostPermissions,
+    period,
+    ready,
+    router,
+    sortInfo.field,
+    sortInfo.order,
+  ]);
 
   const columns = useMemo(() => {
     return [
@@ -82,11 +109,13 @@ export default function PostList() {
         title: '게시물명',
         width: 150,
         dataIndex: 'name',
+        sorter: true,
       },
       {
         title: '유형',
         width: 150,
         dataIndex: 'postType',
+        sorter: true,
         render(type) {
           switch (type) {
             case 'exhibition':
@@ -101,6 +130,7 @@ export default function PostList() {
         title: '상태',
         width: 150,
         dataIndex: 'status',
+        sorter: true,
         render(type) {
           switch (type) {
             case 'enabled':
@@ -114,10 +144,12 @@ export default function PostList() {
       {
         title: '순서변경',
         width: 150,
-        render(data) {
+        sorter: true,
+        dataIndex: 'order',
+        render(value, row) {
           return (
             <Order
-              value={data.order}
+              value={value}
               onValidate={async (value) => {
                 const sameOrderShedule = await getPostByOrder(value);
                 if (sameOrderShedule.data) {
@@ -140,9 +172,15 @@ export default function PostList() {
                 return true;
               }}
               onChange={async (order) => {
-                await updatePostOrder(data.id, { order });
+                await updatePostOrder(row.id, { order });
                 await message.success('스케쥴 순서가 변경됐습니다.');
-                await fetchData({ keyword, page, period });
+                await fetchData({
+                  keyword,
+                  page,
+                  period,
+                  sortFiled: sortInfo.field,
+                  sortOrder: sortInfo.order,
+                });
               }}
             />
           );
@@ -152,12 +190,14 @@ export default function PostList() {
         title: '등록일',
         dataIndex: 'createdAt',
         width: 180,
+        sorter: true,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
       {
         title: '최종 수정일',
         dataIndex: 'updatedAt',
         width: 180,
+        sorter: true,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
       {
@@ -184,14 +224,30 @@ export default function PostList() {
         },
       },
     ];
-  }, [count, fetchData, keyword, page, period, replace, updatable]);
+  }, [
+    count,
+    fetchData,
+    keyword,
+    page,
+    period,
+    replace,
+    sortInfo.field,
+    sortInfo.order,
+    updatable,
+  ]);
 
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_post_search_keyword', value);
-      fetchData({ keyword: value, page: 1, period });
+      fetchData({
+        keyword: value,
+        page: 1,
+        period,
+        sortFiled: sortInfo.field,
+        sortOrder: sortInfo.order,
+      });
     },
-    [fetchData, period],
+    [fetchData, period, sortInfo.field, sortInfo.order],
   );
 
   const onClickDelete = useCallback(() => {
@@ -202,11 +258,25 @@ export default function PostList() {
       content: '선택된 게시물을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deletePost(row.id)));
-        void fetchData({ keyword, page, period });
+        void fetchData({
+          keyword,
+          page,
+          period,
+          sortFiled: sortInfo.field,
+          sortOrder: sortInfo.order,
+        });
         void message.success('선택된 게시물이 삭제됐습니다.');
       },
     });
-  }, [fetchData, keyword, page, period, selectedData]);
+  }, [
+    fetchData,
+    keyword,
+    page,
+    period,
+    selectedData,
+    sortInfo.field,
+    sortInfo.order,
+  ]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: PostItem[]) => {
@@ -214,9 +284,16 @@ export default function PostList() {
     },
   };
 
-  const onChangePage = useCallback(
-    (p) => {
-      fetchData({ keyword, page: p.current, period });
+  const onChange = useCallback(
+    (p, f, s) => {
+      fetchData({
+        keyword,
+        page: p.current,
+        period,
+        sortFiled: s.field,
+        sortOrder: s.order,
+      });
+      setSortInfo(s);
     },
     [fetchData, keyword, period],
   );
@@ -286,7 +363,7 @@ export default function PostList() {
           type: 'checkbox',
           ...rowSelection,
         }}
-        onChange={onChangePage}
+        onChange={onChange}
       />
     </Flex>
   );

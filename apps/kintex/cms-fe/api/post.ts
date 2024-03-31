@@ -6,10 +6,11 @@ export const getPosts = async (param: {
   count;
   startDate;
   endDate;
+  sortFiled;
+  sortOrder;
 }) => {
-  return axiosClient.get(
-    `/post?keyword=${param.keyword}&page=${param.page}&count=${param.count}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
-  );
+  const query = new URLSearchParams(param);
+  return axiosClient.get(`/post?${query}`);
 };
 
 export const getPostByOrder = async (order) => {

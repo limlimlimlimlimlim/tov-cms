@@ -30,6 +30,8 @@ export class MapController {
     @Query('wing') wingId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('sortFiled') sortField: string,
+    @Query('sortOrder') sortOrder: string,
   ) {
     return await this.mapService.getMaps({
       keyword,
@@ -39,6 +41,8 @@ export class MapController {
       wingId,
       startDate,
       endDate,
+      sortField,
+      sortOrder,
     });
   }
 

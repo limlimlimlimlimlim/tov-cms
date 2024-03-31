@@ -8,10 +8,11 @@ export const getFacilities = async (param: {
   wing;
   startDate;
   endDate;
+  sortFiled;
+  sortOrder;
 }) => {
-  return axiosClient.get(
-    `/facility?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floorId=${param.floor}&wingId=${param.wing}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
-  );
+  const query = new URLSearchParams(param);
+  return axiosClient.get(`/facility?${query}`);
 };
 
 export const getFacilityAll = async () => {

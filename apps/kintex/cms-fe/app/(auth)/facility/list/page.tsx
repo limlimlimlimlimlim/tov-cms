@@ -45,10 +45,22 @@ export default function FacilityList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
-  const [period, setPeriod] = useState<string[]>([]);
+  const [period, setPeriod] = useState<string[]>(['', '']);
+  const [sortInfo, setSortInfo] = useState({
+    field: 'createdAt',
+    order: 'descend',
+  });
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing, period }) => {
+    async ({
+      keyword,
+      page,
+      floor,
+      wing,
+      period = ['', ''],
+      sortFiled = 'createdAt',
+      sortOrder = 'descend',
+    }) => {
       const facilities = await getFacilities({
         keyword,
         page,
@@ -57,6 +69,8 @@ export default function FacilityList() {
         wing,
         startDate: period[0],
         endDate: period[1],
+        sortFiled,
+        sortOrder,
       });
       setKeyword(keyword);
       setPage(page);
@@ -84,6 +98,8 @@ export default function FacilityList() {
       floor,
       wing,
       period,
+      sortFiled: sortInfo.field,
+      sortOrder: sortInfo.order,
     });
   }, [
     count,
@@ -93,6 +109,8 @@ export default function FacilityList() {
     period,
     ready,
     router,
+    sortInfo.field,
+    sortInfo.order,
     wing,
   ]);
 
@@ -109,41 +127,49 @@ export default function FacilityList() {
         title: '건물명',
         width: 100,
         render: (row) => row.wing.name,
+        sorter: true,
       },
       {
         title: '층',
         width: 100,
         render: (row) => row.floor?.name,
+        sorter: true,
       },
       {
         title: '구분',
         width: 150,
         render: (row) => row.category?.name,
+        sorter: true,
       },
       {
         title: '구분상세',
         width: 150,
         render: (row) => row.subCategory?.name,
+        sorter: true,
       },
       {
         title: '시설명',
         width: 150,
         dataIndex: 'name',
+        sorter: true,
       },
       {
         title: '위치설정',
         width: 150,
         dataIndex: 'status',
+        sorter: true,
       },
       {
         title: '등록일',
         dataIndex: 'createdAt',
+        sorter: true,
         width: 180,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
       {
         title: '최종 수정일',
         dataIndex: 'updatedAt',
+        sorter: true,
         width: 180,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
@@ -176,9 +202,17 @@ export default function FacilityList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_facility_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing, period });
+      fetchData({
+        keyword: value,
+        page: 1,
+        floor,
+        wing,
+        period,
+        sortFiled: sortInfo.field,
+        sortOrder: sortInfo.order,
+      });
     },
-    [fetchData, floor, period, wing],
+    [fetchData, floor, period, sortInfo.field, sortInfo.order, wing],
   );
 
   const onClickDelete = useCallback(() => {
@@ -189,11 +223,29 @@ export default function FacilityList() {
       content: '선택된 시설을 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteFacility(row.id)));
-        void fetchData({ keyword, page, floor, wing, period });
+        void fetchData({
+          keyword,
+          page,
+          floor,
+          wing,
+          period,
+          sortFiled: sortInfo.field,
+          sortOrder: sortInfo.order,
+        });
         void message.success('선택된 시설이 삭제됐습니다.');
       },
     });
-  }, [fetchData, floor, keyword, page, period, selectedData, wing]);
+  }, [
+    fetchData,
+    floor,
+    keyword,
+    page,
+    period,
+    selectedData,
+    sortInfo.field,
+    sortInfo.order,
+    wing,
+  ]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: FacilityItem[]) => {
@@ -210,9 +262,18 @@ export default function FacilityList() {
     setFloor(f);
   }, []);
 
-  const onChangePage = useCallback(
-    (p) => {
-      fetchData({ keyword, page: p.current, floor, wing, period });
+  const onChange = useCallback(
+    (p, f, s) => {
+      fetchData({
+        keyword,
+        page: p.current,
+        floor,
+        wing,
+        period,
+        sortFiled: s.field,
+        sortOrder: s.order,
+      });
+      setSortInfo(s);
     },
     [fetchData, floor, keyword, period, wing],
   );
@@ -311,7 +372,7 @@ export default function FacilityList() {
           type: 'checkbox',
           ...rowSelection,
         }}
-        onChange={onChangePage}
+        onChange={onChange}
       />
       <CategoryManagementManagementModal
         open={isOpenCategoryManagementModal}

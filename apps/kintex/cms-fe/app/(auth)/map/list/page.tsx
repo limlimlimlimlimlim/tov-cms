@@ -55,10 +55,22 @@ export default function MapList() {
   const [isMaster] = useState(params.get('isMaster') === 'true');
   const { socket } = useSocket();
   const { replace } = useLink();
-  const [period, setPeriod] = useState<string[]>([]);
+  const [period, setPeriod] = useState<string[]>(['', '']);
+  const [sortInfo, setSortInfo] = useState({
+    field: 'createdAt',
+    order: 'descend',
+  });
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing, period }) => {
+    async ({
+      keyword,
+      page,
+      floor,
+      wing,
+      period = ['', ''],
+      sortFiled = 'createdAt',
+      sortOrder = 'descend',
+    }) => {
       const maps = await getMaps({
         keyword,
         page,
@@ -67,6 +79,8 @@ export default function MapList() {
         wing,
         startDate: period[0],
         endDate: period[1],
+        sortFiled,
+        sortOrder,
       });
       setKeyword(keyword);
       setPage(page);
@@ -103,8 +117,21 @@ export default function MapList() {
       floor,
       wing,
       period,
+      sortFiled: sortInfo.field,
+      sortOrder: sortInfo.order,
     });
-  }, [count, fetchData, floor, getMapPermissions, period, ready, router, wing]);
+  }, [
+    count,
+    fetchData,
+    floor,
+    getMapPermissions,
+    period,
+    ready,
+    router,
+    sortInfo.field,
+    sortInfo.order,
+    wing,
+  ]);
 
   const columns: ColumnsType<MapItem> = useMemo(() => {
     return [
@@ -118,22 +145,26 @@ export default function MapList() {
       {
         title: '층',
         width: 100,
+        sorter: true,
         render: (row) => row.floor.name,
       },
       {
         title: '건물',
         width: 100,
+        sorter: true,
         render: (row) => row.wing.name,
       },
       {
         title: '지도명',
         width: 150,
+        sorter: true,
         dataIndex: 'name',
       },
       {
         title: '상태',
         dataIndex: 'isUse',
         width: 100,
+        sorter: true,
         render: (isUse) => (isUse ? '사용' : '미사용'),
       },
       {
@@ -155,12 +186,14 @@ export default function MapList() {
         title: '등록일',
         dataIndex: 'createdAt',
         width: 180,
+        sorter: true,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
       {
         title: '최종 수정일',
         dataIndex: 'updatedAt',
         width: 180,
+        sorter: true,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
       {
@@ -211,9 +244,17 @@ export default function MapList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_map_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing, period });
+      fetchData({
+        keyword: value,
+        page: 1,
+        floor,
+        wing,
+        period,
+        sortFiled: sortInfo.field,
+        sortOrder: sortInfo.order,
+      });
     },
-    [fetchData, floor, period, wing],
+    [fetchData, floor, period, sortInfo.field, sortInfo.order, wing],
   );
 
   const onClickDelete = useCallback(() => {
@@ -224,11 +265,29 @@ export default function MapList() {
       content: '선택된 지도를 삭제하시겠습니까?',
       async onOk() {
         await Promise.all(selectedData.map((row) => deleteMap(row.id)));
-        void fetchData({ keyword, page, floor, wing, period });
+        void fetchData({
+          keyword,
+          page,
+          floor,
+          wing,
+          period,
+          sortFiled: sortInfo.field,
+          sortOrder: sortInfo.order,
+        });
         void message.success('선택된 지도가 삭제됐습니다.');
       },
     });
-  }, [selectedData, fetchData, keyword, page, floor, wing, period]);
+  }, [
+    selectedData,
+    fetchData,
+    keyword,
+    page,
+    floor,
+    wing,
+    period,
+    sortInfo.field,
+    sortInfo.order,
+  ]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: MapItem[]) => {
@@ -255,9 +314,19 @@ export default function MapList() {
     setFloor('');
   }, []);
 
-  const onChangePage = useCallback(
-    (p) => {
-      fetchData({ keyword, page: p.current, floor, wing, period });
+  const onChange = useCallback(
+    (p, f, s) => {
+      console.log(s);
+      fetchData({
+        keyword,
+        page: p.current,
+        floor,
+        wing,
+        period,
+        sortFiled: s.field,
+        sortOrder: s.order,
+      });
+      setSortInfo(s);
     },
     [fetchData, floor, keyword, period, wing],
   );
@@ -359,7 +428,7 @@ export default function MapList() {
             type: 'checkbox',
             ...rowSelection,
           }}
-          onChange={onChangePage}
+          onChange={onChange}
         />
       </Flex>
       <BuldingInfoManagementModal

@@ -8,10 +8,11 @@ export const getMaps = async (param: {
   wing;
   startDate;
   endDate;
+  sortFiled;
+  sortOrder;
 }) => {
-  return axiosClient.get(
-    `/maps?keyword=${param.keyword}&page=${param.page}&count=${param.count}&floor=${param.floor}&wing=${param.wing}&startDate=${param.startDate || ''}&endDate=${param.endDate || ''}`,
-  );
+  const query = new URLSearchParams(param);
+  return axiosClient.get(`/maps?${query}`);
 };
 
 export const getMapByWingAndFloor = async (param: { floor; wing }) => {

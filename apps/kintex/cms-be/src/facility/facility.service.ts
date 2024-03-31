@@ -88,6 +88,8 @@ export class FacilityService {
     wingId,
     startDate,
     endDate,
+    sortField = 'createdAt',
+    sortOrder = 'asc',
   }) {
     const where = {
       AND: [],
@@ -119,7 +121,7 @@ export class FacilityService {
       skip: (+page - 1) * +count,
       take: +count,
       orderBy: {
-        id: 'desc',
+        [sortField]: sortOrder === 'descend' ? 'desc' : 'asc',
       },
     });
     return { total, data, page, count };

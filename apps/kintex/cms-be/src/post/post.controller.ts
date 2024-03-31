@@ -28,6 +28,8 @@ export class PostController {
     @Query('count') count: string = '50',
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('sortFiled') sortField: string,
+    @Query('sortOrder') sortOrder: string,
   ) {
     return await this.postService.getPosts({
       keyword,
@@ -35,6 +37,8 @@ export class PostController {
       count,
       startDate,
       endDate,
+      sortField,
+      sortOrder,
     });
   }
 

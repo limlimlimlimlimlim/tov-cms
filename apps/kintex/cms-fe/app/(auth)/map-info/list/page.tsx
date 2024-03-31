@@ -33,10 +33,22 @@ export default function MapInfoList() {
   const router = useRouter();
   const { socket } = useSocket();
   const { replace } = useLink();
-  const [period, setPeriod] = useState<string[]>([]);
+  const [period, setPeriod] = useState<string[]>(['', '']);
+  const [sortInfo, setSortInfo] = useState({
+    field: 'createdAt',
+    order: 'descend',
+  });
 
   const fetchData = useCallback(
-    async ({ keyword, page, floor, wing, period }) => {
+    async ({
+      keyword,
+      page,
+      floor,
+      wing,
+      period = ['', ''],
+      sortFiled = 'createdAt',
+      sortOrder = 'descend',
+    }) => {
       const maps = await getMaps({
         keyword,
         page,
@@ -45,6 +57,8 @@ export default function MapInfoList() {
         wing,
         startDate: period[0],
         endDate: period[1],
+        sortFiled,
+        sortOrder,
       });
       setKeyword(keyword);
       setPage(page);
@@ -70,6 +84,8 @@ export default function MapInfoList() {
       floor,
       wing,
       period,
+      sortFiled: sortInfo.field,
+      sortOrder: sortInfo.order,
     });
   }, [
     count,
@@ -79,6 +95,8 @@ export default function MapInfoList() {
     period,
     ready,
     router,
+    sortInfo.field,
+    sortInfo.order,
     wing,
   ]);
 
@@ -95,21 +113,25 @@ export default function MapInfoList() {
         title: '층',
         width: 100,
         render: (row) => row.floor.name,
+        sorter: true,
       },
       {
         title: '건물',
         width: 100,
         render: (row) => row.wing.name,
+        sorter: true,
       },
       {
         title: '지도명',
         width: 150,
         dataIndex: 'name',
+        sorter: true,
       },
       {
         title: '구역 수',
         width: 100,
         render: (row) => row.sections.length,
+        sorter: true,
       },
       {
         title: '설정 시설 수',
@@ -120,6 +142,7 @@ export default function MapInfoList() {
           }).length;
           return count;
         },
+        sorter: true,
       },
       {
         title: '미리보기',
@@ -141,12 +164,14 @@ export default function MapInfoList() {
         dataIndex: 'createdAt',
         width: 180,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+        sorter: true,
       },
       {
         title: '최종 수정일',
         dataIndex: 'updatedAt',
         width: 180,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+        sorter: true,
       },
       {
         title: '',
@@ -177,9 +202,17 @@ export default function MapInfoList() {
   const onSearch = useCallback(
     (value) => {
       localStorage.setItem('cms_map-info_search_keyword', value);
-      fetchData({ keyword: value, page: 1, floor, wing, period });
+      fetchData({
+        keyword: value,
+        page: 1,
+        floor,
+        wing,
+        period,
+        sortFiled: sortInfo.field,
+        sortOrder: sortInfo.order,
+      });
     },
-    [fetchData, floor, period, wing],
+    [fetchData, floor, period, sortInfo.field, sortInfo.order, wing],
   );
 
   const onChangeFloor = useCallback((f: any) => {
@@ -191,9 +224,21 @@ export default function MapInfoList() {
     setFloor('');
   }, []);
 
-  const onChangePage = useCallback((p) => {
-    setPage(p.current);
-  }, []);
+  const onChange = useCallback(
+    (p, f, s) => {
+      fetchData({
+        keyword,
+        page: p.current,
+        floor,
+        wing,
+        period,
+        sortFiled: s.field,
+        sortOrder: s.order,
+      });
+      setSortInfo(s);
+    },
+    [fetchData, floor, keyword, period, wing],
+  );
 
   return (
     <Flex vertical gap="middle">
@@ -247,7 +292,7 @@ export default function MapInfoList() {
         pagination={{ pageSize: count, current: page, total }}
         scroll={{ y: 750 }}
         rowKey="id"
-        onChange={onChangePage}
+        onChange={onChange}
       />
       <MapPreviewerModal
         open={openPreview}

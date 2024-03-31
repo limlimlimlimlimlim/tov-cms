@@ -28,6 +28,8 @@ export class ScheduleController {
     @Query('count') count: string = '50',
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('sortFiled') sortField: string,
+    @Query('sortOrder') sortOrder: string,
   ) {
     return await this.scheduleService.getSchedules({
       keyword,
@@ -35,6 +37,8 @@ export class ScheduleController {
       count,
       startDate,
       endDate,
+      sortField,
+      sortOrder,
     });
   }
 

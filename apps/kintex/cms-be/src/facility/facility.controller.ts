@@ -31,6 +31,8 @@ export class FacilityController {
     @Query('wingId') wingId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('sortFiled') sortField: string,
+    @Query('sortOrder') sortOrder: string,
   ) {
     return this.facilityService.getFacilities({
       keyword,
@@ -40,6 +42,8 @@ export class FacilityController {
       wingId,
       startDate,
       endDate,
+      sortField,
+      sortOrder,
     });
   }
 

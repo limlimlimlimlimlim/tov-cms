@@ -33,6 +33,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('monitoring')
   handleMonitoringMessage(): void {
     console.log('event : ', 'monitoring');
+    this.monitoringService.updateAllKioskCheckTime();
     this.server.emit('monitoring');
   }
 
@@ -41,6 +42,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() message: { code: string; data: string },
   ) {
     console.log('evnet : screenshot, message : ', message.code);
+
     await this.monitoringService.updateKiosk(message.code, message.data);
     this.server.emit('monitoring-response');
   }

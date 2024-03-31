@@ -97,9 +97,10 @@ export default function Monitoring() {
       socket.emit('monitoring');
       setTimeout(() => {
         setLoading(false);
+        fetchData();
       }, 3000);
     }
-  }, [socket]);
+  }, [fetchData, socket]);
 
   return (
     <div>

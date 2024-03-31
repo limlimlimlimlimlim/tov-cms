@@ -13,6 +13,14 @@ export class MonitoringService {
     });
   }
 
+  async updateAllKioskCheckTime() {
+    return this.prisma.monitoring.updateMany({
+      data: {
+        checkTime: new Date(),
+      },
+    });
+  }
+
   async updateKiosk(code: string, image: string) {
     return this.prisma.monitoring.update({
       where: {

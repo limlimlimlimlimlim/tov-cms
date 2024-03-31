@@ -3,19 +3,13 @@ import { Button, Flex, Input, Modal, Table, message, DatePicker } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import type { PostItem } from '../../../../interface/post';
 import {
-  decrementPostOrder,
   deletePost,
   getPostByOrder,
   getPosts,
-  incrementPostOrder,
   updatePostOrder,
 } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';

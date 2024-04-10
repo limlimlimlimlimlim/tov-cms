@@ -105,7 +105,7 @@
       function createItems(data) {
         const items = data.map((item) => {
           const { eventPlaceCodes } = item;
-          const exh = getExhibition(eventPlaceCodes)[0];
+          const exh = getExhibition(eventPlaceCodes);
           const halls = eventPlaceCodes.split(",").map((value) => {
             const sameCodeItem = placeCodeList.find((p) => p.value === value);
             if (sameCodeItem) {
@@ -114,11 +114,10 @@
             return;
           });
           const domain = `${window.location.protocol}//${window.location.hostname}:4001`;
-          console.log(item);
           return `
-          <li class="silde p${exh}">
+          <li class="silde p${exh.class}">
             <div class="place">
-              <span>제${exh}전시장</span>
+              <span>제${exh.name}전시장</span>
             </div>
             <div class="img-box">
               <div><img src="${domain}/files/upload/${item.imageContents}" alt="" /></div>
@@ -136,19 +135,18 @@
       }
 
       function getExhibition(codes) {
-        const codesArr = codes.split(",").sort();
+        const hasExh1 = codes.includes("EXH1_");
+        const hasExh2 = codes.includes("EXH2_");
 
-        return [
-          ...new Set(
-            codesArr.map((code) => {
-              const result = placeCodeList.find((c) => c.value === code);
-              if (result) {
-                return result.exh;
-              }
-              return "";
-            })
-          ),
-        ];
+        if (hasExh1 && hasExh2) {
+          return { name: "1,2", class: "Both" };
+        }
+        if (hasExh1) {
+          return { name: "1", class: "1" };
+        }
+        if (hasExh2) {
+          return { name: "2", class: "2" };
+        }
       }
 
       function startSlide() {

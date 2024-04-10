@@ -175,6 +175,8 @@ const PostForm = ({ data }) => {
         { name: '209', value: 'EXH1_M209' },
         { name: '210', value: 'EXH1_M210' },
         { name: '211', value: 'EXH1_M211' },
+        { name: '212', value: 'EXH1_M212' },
+        { name: '213', value: 'EXH1_M213' },
         { name: '301', value: 'EXH1_M301' },
         { name: '302', value: 'EXH1_M302' },
         { name: '303', value: 'EXH1_M303' },
@@ -183,8 +185,10 @@ const PostForm = ({ data }) => {
         { name: '306', value: 'EXH1_M306' },
         { name: '307', value: 'EXH1_M307' },
         { name: '308', value: 'EXH1_M308' },
-        { name: '309', value: 'EXH1_M309' },
+        { name: '309A', value: 'EXH1_M309A' },
+        { name: '309B', value: 'EXH1_M309B' },
         { name: '그랜드볼룸', value: 'MGRD' },
+        { name: '전체', value: 'EXH1_TOTAL' },
       ],
       [ExhibitionType.Exh2]: [
         { name: '301', value: 'EXH2_M301' },
@@ -203,6 +207,7 @@ const PostForm = ({ data }) => {
         { name: '406', value: 'EXH2_M406' },
         { name: '407', value: 'EXH2_M407' },
         { name: '408', value: 'EXH2_M408' },
+        { name: '전체', value: 'EXH2_TOTAL' },
       ],
     };
   }, []);

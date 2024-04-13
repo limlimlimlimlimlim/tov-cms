@@ -185,7 +185,10 @@ export default function PostList() {
             <Order
               value={value}
               onValidate={async (value) => {
-                const sameOrderShedule = await getPostByOrder(value);
+                const sameOrderShedule = await getPostByOrder(
+                  row.postType,
+                  value,
+                );
                 if (sameOrderShedule.data) {
                   const result = await new Promise<boolean>((res) => {
                     confirm({
@@ -207,7 +210,6 @@ export default function PostList() {
               }}
               onChange={async (order) => {
                 await updatePostOrder(row.id, { order });
-                await message.success('스케쥴 순서가 변경됐습니다.');
                 await fetchData({
                   keyword,
                   page,
@@ -216,6 +218,7 @@ export default function PostList() {
                   sortFiled: sortInfo.field,
                   sortOrder: sortInfo.order,
                 });
+                message.success('스케쥴 순서가 변경됐습니다.');
               }}
             />
           );

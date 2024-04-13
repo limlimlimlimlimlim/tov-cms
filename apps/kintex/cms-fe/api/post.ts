@@ -14,8 +14,8 @@ export const getPosts = async (param: {
   return axiosClient.get(`/post?${query}`);
 };
 
-export const getPostByOrder = async (order) => {
-  return axiosClient.get(`/post/order/${order}`);
+export const getPostByOrder = async (postType, order) => {
+  return axiosClient.get(`/post/${postType}/order/${order}`);
 };
 
 export const getPostDetail = async (id) => {

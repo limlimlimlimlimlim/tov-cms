@@ -12,7 +12,11 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
 
   async createPost(data: Prisma.PostUncheckedCreateInput) {
-    const count = await this.prisma.post.count();
+    const count = await this.prisma.post.count({
+      where: {
+        postType: data.postType,
+      },
+    });
     data.order = count + 1;
     return this.prisma.post.create({
       data,
@@ -143,9 +147,9 @@ export class PostService {
     });
   }
 
-  async getPostByOrder(order: number) {
+  async getPostByOrder(postType: string, order: number) {
     return await this.prisma.post.findFirst({
-      where: { order },
+      where: { postType, order },
     });
   }
 
@@ -178,6 +182,9 @@ export class PostService {
     });
 
     const reorderTargets = await this.prisma.post.findMany({
+      where: {
+        postType: post.postType,
+      },
       orderBy: {
         order: 'asc',
       },

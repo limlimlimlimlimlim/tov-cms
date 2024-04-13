@@ -79,19 +79,22 @@ export class PostController {
     return this.postService.updatePost(+id, data);
   }
 
-  @Get('/order/:order')
-  async getPostByOrder(@Param('order') order: string) {
-    return this.postService.getPostByOrder(+order);
+  @Get(':postType/order/:order')
+  async getPostByOrder(
+    @Param('postType') postType: string,
+    @Param('order') order: string,
+  ) {
+    return this.postService.getPostByOrder(postType, +order);
   }
 
   @Patch(':id/order')
   async upatePostOrder(@Param('id') id: string, @Body('order') order: string) {
-    const sameOrderSchedule = await this.getPostByOrder(order);
+    const post = await this.getPostById(id);
+    const sameOrderSchedule = await this.getPostByOrder(post.postType, order);
 
     if (sameOrderSchedule) {
-      const currentSchedule = await this.postService.getPostById(+id);
       await this.postService.updatePost(sameOrderSchedule.id, {
-        order: currentSchedule.order,
+        order: post.order,
       });
     }
     return this.postService.updatePost(+id, { order: +order });

@@ -4,6 +4,7 @@ export const getPosts = async (param: {
   keyword;
   page;
   count;
+  postType;
   startDate;
   endDate;
   sortFiled;

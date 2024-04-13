@@ -84,6 +84,7 @@ export class PostService {
     keyword,
     page,
     count,
+    postType,
     startDate,
     endDate,
     sortField = 'createdAt',
@@ -92,9 +93,13 @@ export class PostService {
     const where = {
       AND: [],
     };
+
+    where.AND.push({ postType });
+
     if (keyword) {
       where.AND.push({ name: { contains: keyword } });
     }
+
     if (startDate && endDate) {
       const start = dayjs(startDate).add(9, 'h').startOf('day');
       const end = dayjs(endDate).add(9, 'h').endOf('day');

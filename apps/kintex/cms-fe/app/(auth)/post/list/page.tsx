@@ -1,5 +1,14 @@
 'use client';
-import { Button, Flex, Input, Modal, Table, message, DatePicker } from 'antd';
+import {
+  Button,
+  Flex,
+  Input,
+  Modal,
+  Table,
+  message,
+  DatePicker,
+  Radio,
+} from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -40,11 +49,13 @@ export default function PostList() {
     field: 'startDate',
     order: 'descend',
   });
+  const [postType, setPostType] = useState('exhibition');
 
   const fetchData = useCallback(
     async ({
       keyword,
       page,
+      postType,
       period = ['', ''],
       sortFiled = 'createdAt',
       sortOrder = 'descend',
@@ -52,6 +63,7 @@ export default function PostList() {
       const posts = await getPosts({
         keyword,
         page,
+        postType,
         count,
         startDate: period[0],
         endDate: period[1],
@@ -81,6 +93,7 @@ export default function PostList() {
     void fetchData({
       keyword: prevKeyword || '',
       page: 1,
+      postType,
       period,
       sortFiled: sortInfo.field,
       sortOrder: sortInfo.order,
@@ -90,6 +103,7 @@ export default function PostList() {
     fetchData,
     getPostPermissions,
     period,
+    postType,
     ready,
     router,
     sortInfo.field,
@@ -198,6 +212,7 @@ export default function PostList() {
                   keyword,
                   page,
                   period,
+                  postType,
                   sortFiled: sortInfo.field,
                   sortOrder: sortInfo.order,
                 });
@@ -243,6 +258,7 @@ export default function PostList() {
     keyword,
     page,
     period,
+    postType,
     replace,
     sortInfo.field,
     sortInfo.order,
@@ -256,11 +272,12 @@ export default function PostList() {
         keyword: value,
         page: 1,
         period,
+        postType,
         sortFiled: sortInfo.field,
         sortOrder: sortInfo.order,
       });
     },
-    [fetchData, period, sortInfo.field, sortInfo.order],
+    [fetchData, period, postType, sortInfo.field, sortInfo.order],
   );
 
   const onClickDelete = useCallback(() => {
@@ -275,6 +292,7 @@ export default function PostList() {
           keyword,
           page,
           period,
+          postType,
           sortFiled: sortInfo.field,
           sortOrder: sortInfo.order,
         });
@@ -286,6 +304,7 @@ export default function PostList() {
     keyword,
     page,
     period,
+    postType,
     selectedData,
     sortInfo.field,
     sortInfo.order,
@@ -303,12 +322,13 @@ export default function PostList() {
         keyword,
         page: p.current,
         period,
+        postType,
         sortFiled: s.field,
         sortOrder: s.order,
       });
       setSortInfo(s);
     },
-    [fetchData, keyword, period],
+    [fetchData, keyword, period, postType],
   );
 
   return (
@@ -366,6 +386,25 @@ export default function PostList() {
           </Button>
         </Flex>
       </Flex>
+      <div>
+        <Radio.Group
+          defaultValue={postType}
+          onChange={({ target }) => {
+            fetchData({
+              keyword,
+              page,
+              period,
+              postType: target.value,
+              sortFiled: sortInfo.field,
+              sortOrder: sortInfo.order,
+            });
+            setPostType(target.value);
+          }}
+        >
+          <Radio value="exhibition">전시안내</Radio>
+          <Radio value="conference">회의안내</Radio>
+        </Radio.Group>
+      </div>
       <Table
         columns={columns}
         dataSource={data}

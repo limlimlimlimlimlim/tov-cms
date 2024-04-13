@@ -4,7 +4,7 @@ import { Button, Flex, Modal, Table, Typography } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import useSocket from '../hooks/use-socket';
-import { getKiosks } from '../../../api/monitoring';
+import { getKiosks, resetMonitoring } from '../../../api/monitoring';
 // import sampleData from './sample';
 
 const { Text } = Typography;
@@ -94,6 +94,7 @@ export default function Monitoring() {
   const refresh = useCallback(() => {
     if (socket) {
       setLoading(true);
+      resetMonitoring();
       socket.emit('monitoring');
       setTimeout(() => {
         setLoading(false);

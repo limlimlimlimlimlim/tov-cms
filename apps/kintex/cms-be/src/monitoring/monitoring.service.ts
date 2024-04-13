@@ -33,4 +33,14 @@ export class MonitoringService {
       },
     });
   }
+
+  async reset() {
+    return this.prisma.monitoring.updateMany({
+      data: {
+        data: '',
+        checkTime: new Date(),
+        network: false,
+      },
+    });
+  }
 }

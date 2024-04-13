@@ -37,7 +37,7 @@ export default function PostList() {
   const { replace } = useLink();
   const [period, setPeriod] = useState<string[]>(['', '']);
   const [sortInfo, setSortInfo] = useState({
-    field: 'createdAt',
+    field: 'startDate',
     order: 'descend',
   });
 
@@ -187,15 +187,8 @@ export default function PostList() {
         },
       },
       {
-        title: '등록일',
-        dataIndex: 'createdAt',
-        width: 180,
-        sorter: true,
-        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
-      },
-      {
-        title: '최종 수정일',
-        dataIndex: 'updatedAt',
+        title: '행사 시작일',
+        dataIndex: 'startDate',
         width: 180,
         sorter: true,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),

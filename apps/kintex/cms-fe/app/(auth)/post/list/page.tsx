@@ -49,7 +49,9 @@ export default function PostList() {
     field: 'startDate',
     order: 'descend',
   });
-  const [postType, setPostType] = useState('exhibition');
+  const [postType, setPostType] = useState(
+    localStorage.getItem('cms_post_post_type') || 'exhibition',
+  );
 
   const fetchData = useCallback(
     async ({
@@ -402,6 +404,7 @@ export default function PostList() {
               sortOrder: sortInfo.order,
             });
             setPostType(target.value);
+            localStorage.setItem('cms_post_post_type', target.value);
           }}
         >
           <Radio value="exhibition">전시안내</Radio>

@@ -126,19 +126,39 @@ export default function PostList() {
           return '';
         },
       },
+      // {
+      //   title: '상태',
+      //   width: 150,
+      //   dataIndex: 'status',
+      //   sorter: true,
+      //   render(type) {
+      //     switch (type) {
+      //       case 'enabled':
+      //         return '활성';
+      //       case 'disabled':
+      //         return '비활성';
+      //     }
+      //     return '';
+      //   },
+      // },
       {
         title: '상태',
         width: 150,
-        dataIndex: 'status',
         sorter: true,
-        render(type) {
-          switch (type) {
-            case 'enabled':
-              return '활성';
-            case 'disabled':
-              return '비활성';
+        render(row) {
+          const now = Date.now();
+          const start = new Date(row.startDate).getTime();
+          const end = new Date(row.endDate).getTime();
+
+          if (now >= start && now <= end) {
+            return '진행';
           }
-          return '';
+          if (now < start) {
+            return '예정';
+          }
+          if (now >= end) {
+            return '종료';
+          }
         },
       },
       {

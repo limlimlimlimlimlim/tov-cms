@@ -90,7 +90,6 @@ const PostForm = ({ data }) => {
   const [feeEn, setFeeEn] = useState('');
   const [cast, setCast] = useState('');
   const [castEn, setCastEn] = useState('');
-  const [exhibitionType, setExhibitionType] = useState(ExhibitionType.Exh1);
   const { replace } = useLink();
 
   useEffect(() => {
@@ -176,7 +175,6 @@ const PostForm = ({ data }) => {
         { name: '309A', value: 'EXH1_M309A' },
         { name: '309B', value: 'EXH1_M309B' },
         { name: '그랜드볼룸', value: 'MGRD' },
-        { name: '전체', value: 'EXH1_TOTAL' },
       ],
       [ExhibitionType.Exh2]: [
         { name: '301', value: 'EXH2_M301' },
@@ -195,7 +193,6 @@ const PostForm = ({ data }) => {
         { name: '406', value: 'EXH2_M406' },
         { name: '407', value: 'EXH2_M407' },
         { name: '408', value: 'EXH2_M408' },
-        { name: '전체', value: 'EXH2_TOTAL' },
       ],
     };
   }, []);
@@ -254,7 +251,6 @@ const PostForm = ({ data }) => {
       setFeeEn(data.feeEn);
       setCast(data.cast);
       setCastEn(data.castEn);
-      setExhibitionType(data.exhibitionType);
     }
   }, [data]);
 
@@ -291,7 +287,6 @@ const PostForm = ({ data }) => {
             feeEn,
             cast,
             castEn,
-            exhibitionType,
           });
         } else if (postType === PostType.Conference) {
           await updatePost(data.id, {
@@ -320,7 +315,6 @@ const PostForm = ({ data }) => {
             feeEn,
             cast,
             castEn,
-            exhibitionType,
           });
         }
 
@@ -356,7 +350,6 @@ const PostForm = ({ data }) => {
             feeEn,
             cast,
             castEn,
-            exhibitionType,
           });
         } else if (postType === PostType.Conference) {
           await createPost({
@@ -386,7 +379,6 @@ const PostForm = ({ data }) => {
             feeEn,
             cast,
             castEn,
-            exhibitionType,
           });
         }
         void message.success('게시물이 생성됐습니다.');
@@ -406,7 +398,6 @@ const PostForm = ({ data }) => {
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
-    exhibitionType,
     fee,
     feeEn,
     imageContents,
@@ -429,23 +420,123 @@ const PostForm = ({ data }) => {
     viewingTimeEn,
   ]);
 
-  const isExhibitionSelectAll = useCallback(() => {
-    const checkAll = Object.values(exhibitionData[exhibitionType]).every(
-      (value) => {
-        return eventPlaceCodes[value.value];
-      },
-    );
-    return checkAll;
-  }, [eventPlaceCodes, exhibitionData, exhibitionType]);
+  const isExhibitionSelectAll = useCallback(
+    (exhibitionType) => {
+      const checkAll = Object.values(exhibitionData[exhibitionType]).every(
+        (value: any) => {
+          return eventPlaceCodes[value.value];
+        },
+      );
+      return checkAll;
+    },
+    [eventPlaceCodes, exhibitionData],
+  );
 
-  const isMeetingRoomSelectAll = useCallback(() => {
-    const checkAll = Object.values(meetingRoomData[exhibitionType]).every(
-      (value) => {
-        return eventPlaceCodes[value.value];
-      },
-    );
-    return checkAll;
-  }, [eventPlaceCodes, exhibitionType, meetingRoomData]);
+  const isMeetingRoomSelectAll = useCallback(
+    (exhibitionType) => {
+      const checkAll = Object.values(meetingRoomData[exhibitionType]).every(
+        (value: any) => {
+          return eventPlaceCodes[value.value];
+        },
+      );
+      return checkAll;
+    },
+    [eventPlaceCodes, meetingRoomData],
+  );
+
+  const createEventPlaceCheckboxForm = useCallback(
+    (exhibitionType: ExhibitionType) => {
+      return (
+        <>
+          <Checkbox
+            checked={isExhibitionSelectAll(exhibitionType)}
+            onChange={(e: any) => {
+              const checked = e.target.checked;
+              if (checked) {
+                const exhPlaceCodes = Object.values(
+                  exhibitionData[exhibitionType],
+                ).reduce((acc, item) => {
+                  acc[item.value] = true;
+                  return acc;
+                }, {});
+                setEventPlaceCodes({
+                  ...eventPlaceCodes,
+                  ...exhPlaceCodes,
+                });
+              } else {
+                const exhPlaceCodes = Object.values(
+                  exhibitionData[exhibitionType],
+                ).reduce((acc, item) => {
+                  acc[item.value] = false;
+                  return acc;
+                }, {});
+                setEventPlaceCodes({
+                  ...eventPlaceCodes,
+                  ...exhPlaceCodes,
+                });
+              }
+            }}
+          >
+            전체선택
+          </Checkbox>
+          <div>{createEventPlaceCheckbox(exhibitionType)}</div>
+        </>
+      );
+    },
+    [
+      createEventPlaceCheckbox,
+      eventPlaceCodes,
+      exhibitionData,
+      isExhibitionSelectAll,
+    ],
+  );
+
+  const createMeetingRoomCheckboxForm = useCallback(
+    (exhibitionType: ExhibitionType) => {
+      return (
+        <>
+          <Checkbox
+            checked={isMeetingRoomSelectAll(exhibitionType)}
+            onChange={(e: any) => {
+              const checked = e.target.checked;
+              if (checked) {
+                const exhPlaceCodes = Object.values(
+                  meetingRoomData[exhibitionType],
+                ).reduce((acc, item) => {
+                  acc[item.value] = true;
+                  return acc;
+                }, {});
+                setEventPlaceCodes({
+                  ...eventPlaceCodes,
+                  ...exhPlaceCodes,
+                });
+              } else {
+                const exhPlaceCodes = Object.values(
+                  meetingRoomData[exhibitionType],
+                ).reduce((acc, item) => {
+                  acc[item.value] = false;
+                  return acc;
+                }, {});
+                setEventPlaceCodes({
+                  ...eventPlaceCodes,
+                  ...exhPlaceCodes,
+                });
+              }
+            }}
+          >
+            전체선택
+          </Checkbox>
+          <div>{createMeetingRoomCheckbox(exhibitionType)}</div>
+        </>
+      );
+    },
+    [
+      createMeetingRoomCheckbox,
+      eventPlaceCodes,
+      isMeetingRoomSelectAll,
+      meetingRoomData,
+    ],
+  );
 
   const createExhibitionForm = useCallback(() => {
     const items = [
@@ -539,50 +630,23 @@ const PostForm = ({ data }) => {
 
         <Form.Item label="행사 장소">
           <Flex vertical gap="small">
-            <Radio.Group
-              onChange={(e) => {
-                setExhibitionType(e.target.value);
-                // setEventPlaceCodes({});
-              }}
-              value={exhibitionType}
-            >
-              <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
-              <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
-            </Radio.Group>
-
             <Flex gap="small" wrap="wrap" style={{ width: 600 }} vertical>
-              <Checkbox
-                checked={isExhibitionSelectAll()}
-                onChange={(e: any) => {
-                  const checked = e.target.checked;
-                  if (checked) {
-                    const exhPlaceCodes = Object.values(
-                      exhibitionData[exhibitionType],
-                    ).reduce((acc, item) => {
-                      acc[item.value] = true;
-                      return acc;
-                    }, {});
-                    setEventPlaceCodes({
-                      ...eventPlaceCodes,
-                      ...exhPlaceCodes,
-                    });
-                  } else {
-                    const exhPlaceCodes = Object.values(
-                      exhibitionData[exhibitionType],
-                    ).reduce((acc, item) => {
-                      acc[item.value] = false;
-                      return acc;
-                    }, {});
-                    setEventPlaceCodes({
-                      ...eventPlaceCodes,
-                      ...exhPlaceCodes,
-                    });
-                  }
-                }}
-              >
-                전체선택
-              </Checkbox>
-              <div>{createEventPlaceCheckbox(exhibitionType)}</div>
+              <div>
+                <div
+                  style={{ paddingTop: 5, paddingLeft: 3, paddingBottom: 10 }}
+                >
+                  제1 전시장
+                </div>
+                {createEventPlaceCheckboxForm(ExhibitionType.Exh1)}
+              </div>
+              <div>
+                <div
+                  style={{ paddingTop: 5, paddingLeft: 3, paddingBottom: 10 }}
+                >
+                  제2 전시장
+                </div>
+                {createEventPlaceCheckboxForm(ExhibitionType.Exh2)}
+              </div>
             </Flex>
           </Flex>
         </Form.Item>
@@ -633,16 +697,12 @@ const PostForm = ({ data }) => {
     feeEn,
     cast,
     castEn,
-    exhibitionType,
-    isExhibitionSelectAll,
-    createEventPlaceCheckbox,
+    createEventPlaceCheckboxForm,
     eventStartDate,
     eventEndDate,
     startDate,
     endDate,
     noPeriod,
-    exhibitionData,
-    eventPlaceCodes,
   ]);
 
   const createConferenceForm = useCallback(() => {
@@ -668,49 +728,23 @@ const PostForm = ({ data }) => {
         </Form.Item>
         <Form.Item label="회의 장소">
           <Flex vertical gap="small">
-            <Radio.Group
-              onChange={(e) => {
-                setExhibitionType(e.target.value);
-                setEventPlaceCodes({});
-              }}
-              value={exhibitionType}
-            >
-              <Radio value={ExhibitionType.Exh1}>제1 전시장</Radio>
-              <Radio value={ExhibitionType.Exh2}>제2 전시장</Radio>
-            </Radio.Group>
             <Flex gap="small" wrap="wrap" style={{ width: 600 }} vertical>
-              <Checkbox
-                checked={isMeetingRoomSelectAll()}
-                onChange={(e: any) => {
-                  const checked = e.target.checked;
-                  if (checked) {
-                    const exhPlaceCodes = Object.values(
-                      meetingRoomData[exhibitionType],
-                    ).reduce((acc, item) => {
-                      acc[item.value] = true;
-                      return acc;
-                    }, {});
-                    setEventPlaceCodes({
-                      ...eventPlaceCodes,
-                      ...exhPlaceCodes,
-                    });
-                  } else {
-                    const exhPlaceCodes = Object.values(
-                      meetingRoomData[exhibitionType],
-                    ).reduce((acc, item) => {
-                      acc[item.value] = false;
-                      return acc;
-                    }, {});
-                    setEventPlaceCodes({
-                      ...eventPlaceCodes,
-                      ...exhPlaceCodes,
-                    });
-                  }
-                }}
-              >
-                전체선택
-              </Checkbox>
-              <div>{createMeetingRoomCheckbox(exhibitionType)}</div>
+              <div>
+                <div
+                  style={{ paddingTop: 5, paddingLeft: 3, paddingBottom: 10 }}
+                >
+                  제1 전시장
+                </div>
+                {createMeetingRoomCheckboxForm(ExhibitionType.Exh1)}
+              </div>
+              <div>
+                <div
+                  style={{ paddingTop: 5, paddingLeft: 3, paddingBottom: 10 }}
+                >
+                  제2 전시장
+                </div>
+                {createMeetingRoomCheckboxForm(ExhibitionType.Exh2)}
+              </div>
             </Flex>
           </Flex>
         </Form.Item>
@@ -755,7 +789,6 @@ const PostForm = ({ data }) => {
     eventPlaceText,
     eventPlaceTextEn,
     eventStartDate,
-    exhibitionType,
     isMeetingRoomSelectAll,
     meetingRoomData,
     noPeriod,

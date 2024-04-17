@@ -485,4 +485,13 @@ h1 {
 }
 .wrap.meet tr.p2 i {
   background-color: #fb7178;
+}
+.wrap.meet tr.pBoth td:nth-child(2) {
+  color: #fff;
+}
+.wrap.meet tr.pBoth i {
+  background-color: #0085ff;
+}
+.wrap.meet tr.pBoth i + i {
+  background-color: #fb7178;
 }/*# sourceMappingURL=style.css.map */

@@ -102,12 +102,13 @@
 
         function createItems(data) {
           const items = data.map((item) => {
-            const exh = getExhibition(item.eventPlaceCodes)[0];
+            const { eventPlaceCodes } = item;
+            const exh = getExhibition(eventPlaceCodes);
             return `
-                <tr class="p${exh}">
+                <tr class="p${exh.class}">
                   <td><span class="tit">${item.name}</span></td>
-                  <td><span class="place">${getPlace(item.eventPlaceCodes)}</span></td>
-                  <td>제<i>${exh}</i>전시장</td>
+                  <td><span class="place">${getPlace(eventPlaceCodes)}</span></td>
+                  <td>${exh.name.split(",").map((value) => `<i>${value}</i>`)}전시장</td>
                   <td>${toStringDate(new Date(item.eventStartDate))} ~ ${toStringDate(new Date(item.eventEndDate))}</td>
                 </tr>`;
           });
@@ -130,19 +131,18 @@
       }
 
       function getExhibition(codes) {
-        const codesArr = codes.split(",").sort();
+        const hasExh1 = codes.includes("EXH1_");
+        const hasExh2 = codes.includes("EXH2_");
 
-        return [
-          ...new Set(
-            codesArr.map((code) => {
-              const result = placeCodeList.find((c) => c.value === code);
-              if (result) {
-                return result.exh;
-              }
-              return "";
-            })
-          ),
-        ];
+        if (hasExh1 && hasExh2) {
+          return { name: "1,2", class: "Both" };
+        }
+        if (hasExh1) {
+          return { name: "1", class: "1" };
+        }
+        if (hasExh2) {
+          return { name: "2", class: "2" };
+        }
       }
 
       function toStringDate(source, delimiter = "-") {

@@ -231,7 +231,7 @@ export default function PostList() {
         dataIndex: 'startDate',
         width: 180,
         sorter: true,
-        render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
+        render: (date: string) => format(new Date(date), 'yyyy-MM-dd'),
       },
       {
         title: '',

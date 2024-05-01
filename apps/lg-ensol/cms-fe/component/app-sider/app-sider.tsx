@@ -2,7 +2,6 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import {
   CalendarOutlined,
-  DesktopOutlined,
   EnvironmentOutlined,
   FormOutlined,
   IdcardOutlined,

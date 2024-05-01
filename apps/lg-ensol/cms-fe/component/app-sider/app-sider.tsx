@@ -46,6 +46,7 @@ const items: MenuItem[] = [
   getItem('지도 관리', 'map-management', <EnvironmentOutlined />, [
     getItem(<Link href="/map">층별 지도</Link>, 'map'),
     getItem(<Link href="/map-info">지도 정보</Link>, 'map-info'),
+    getItem(<Link href="/section">구역 관리</Link>, 'section'),
   ]),
   getItem(
     <Link href="/facility">시설 관리</Link>,

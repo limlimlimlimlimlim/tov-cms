@@ -1,14 +1,15 @@
 'use client';
 
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import { getMapDetail } from '../../../../../api/map';
-import usePermission from '../../../hooks/use-permission';
-import SectionForm from './section-form';
+import { getMapDetail } from '../../../../api/map';
+import usePermission from '../../hooks/use-permission';
 
-export default function SectionEdit() {
+export const SectionContext = createContext({});
+
+export const SectionProvider = ({ children }) => {
   const { id } = useParams();
-  const [mapData, setMapData] = useState();
+  const [mapData, setMapData] = useState<any>();
   const { ready, getMapInfoPermissions }: any = usePermission();
   const router = useRouter();
 
@@ -26,5 +27,9 @@ export default function SectionEdit() {
     void fetchData();
   }, [fetchData, getMapInfoPermissions, ready, router]);
 
-  return <SectionForm data={mapData} />;
-}
+  return (
+    <SectionContext.Provider value={{ mapData }}>
+      {children}
+    </SectionContext.Provider>
+  );
+};

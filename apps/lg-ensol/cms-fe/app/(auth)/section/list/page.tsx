@@ -132,7 +132,7 @@ export default function MapInfoList() {
           return (
             <>
               {updatable && (
-                <Link href={`/section/edit/${(value as any).id}`}>
+                <Link href={`/section/${(value as any).id}/view`}>
                   <Button size="small">설정</Button>
                 </Link>
               )}

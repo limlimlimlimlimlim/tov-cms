@@ -1,8 +1,8 @@
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
+import { Button, Flex } from 'antd';
 import { getBaseUrl } from '../../util/axios-client';
 import useSectionManager from './hooks/useSectionManager';
-import { Button, Flex } from 'antd';
 
 declare const window;
 

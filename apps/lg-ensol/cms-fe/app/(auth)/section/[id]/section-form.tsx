@@ -45,7 +45,7 @@ export default function SectionForm({ children }) {
         </Flex>
       </Header>
       <Content style={contentStyle}>
-        <SectionManagement />
+        <SectionManagement mapData={mapData} />
       </Content>
     </Layout>
   );

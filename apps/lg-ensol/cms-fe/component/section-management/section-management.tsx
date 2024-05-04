@@ -1,12 +1,13 @@
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
+import { getBaseUrl } from '../../util/axios-client';
 import useSectionManager from './hooks/useSectionManager';
 
 declare const window;
 
-const SectionManagement = () => {
+const SectionManagement = ({ mapData }: any) => {
   const canvasRef = useRef(null);
-  const { canvas, createCanvas } = useSectionManager();
+  const { canvas, createCanvas, setMapImage } = useSectionManager();
 
   const onLoadScript = () => {
     console.log(canvasRef.current, window.fabric);
@@ -17,8 +18,10 @@ const SectionManagement = () => {
 
   useEffect(() => {
     if (!canvas) return;
-    console.log(canvas);
-  }, [canvas]);
+    if (!mapData) return;
+    console.log(`${getBaseUrl()}/files/upload/${mapData.image}`);
+    setMapImage(`${getBaseUrl()}/files/upload/${mapData.image}`);
+  }, [canvas, mapData, setMapImage]);
   return (
     <>
       <Script src="https://cdn.jsdelivr.net/npm/fabric" onLoad={onLoadScript} />

@@ -14,7 +14,7 @@ import MapPreviewerModal from '../../../../component/map-previwer-modal/map-prev
 
 const { Search } = Input;
 
-export default function MapInfoList() {
+export default function SectionList() {
   const [total, setTotal] = useState(0);
   const [data, setData] = useState<MapInfoItem[]>([]);
   const [keyword, setKeyword] = useState('');

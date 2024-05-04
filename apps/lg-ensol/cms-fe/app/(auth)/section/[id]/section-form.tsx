@@ -1,9 +1,8 @@
 'use client';
 
-import { Button, Divider, Flex, Layout, Typography } from 'antd';
-import Link from 'next/link';
-import MapSectionMerger from '../../../../component/map-area-editor/map-section-merger';
+import { Flex, Layout, Typography } from 'antd';
 import { useContext } from 'react';
+import SectionManagement from '../../../../component/section-management/section-management';
 import { SectionContext } from './section-context';
 
 const { Header, Content } = Layout;
@@ -31,7 +30,6 @@ const layoutStyle = {
 
 export default function SectionForm({ children }) {
   const { mapData }: any = useContext(SectionContext);
-  console.log(mapData);
   return (
     <Layout style={layoutStyle}>
       <Header style={headerStyle}>
@@ -46,7 +44,9 @@ export default function SectionForm({ children }) {
           )}
         </Flex>
       </Header>
-      <Content style={contentStyle}>content</Content>
+      <Content style={contentStyle}>
+        <SectionManagement />
+      </Content>
     </Layout>
   );
 }

@@ -2,6 +2,7 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 import { getBaseUrl } from '../../util/axios-client';
 import useSectionManager from './hooks/useSectionManager';
+import { Button, Flex } from 'antd';
 
 declare const window;
 
@@ -22,10 +23,33 @@ const SectionManagement = ({ mapData }: any) => {
     console.log(`${getBaseUrl()}/files/upload/${mapData.image}`);
     setMapImage(`${getBaseUrl()}/files/upload/${mapData.image}`);
   }, [canvas, mapData, setMapImage]);
+
+  const zoomIn = () => {
+    const zoom = canvas.getZoom();
+    if (zoom > 2) return;
+    canvas.setZoom(zoom + 0.1);
+  };
+  const zoomOut = () => {
+    const zoom = canvas.getZoom();
+    if (zoom < 0.2) return;
+    canvas.setZoom(zoom - 0.1);
+  };
   return (
     <>
       <Script src="https://cdn.jsdelivr.net/npm/fabric" onLoad={onLoadScript} />
-      <canvas ref={canvasRef} />
+      <div>
+        <Flex justify="center">
+          <canvas ref={canvasRef} />
+        </Flex>
+        <Flex gap="small" style={{ position: 'absolute', top: 100 }}>
+          <Button size="small" onClick={zoomIn}>
+            +
+          </Button>
+          <Button size="small" onClick={zoomOut}>
+            -
+          </Button>
+        </Flex>
+      </div>
     </>
   );
 };

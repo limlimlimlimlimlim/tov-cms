@@ -47,7 +47,7 @@ const useSectionManager = () => {
     if (!canvas) return;
     fabric.Image.fromURL(url, (image) => {
       image.selectable = false;
-      console.log(image);
+      image.evented = false;
       canvas.add(image);
     });
   };

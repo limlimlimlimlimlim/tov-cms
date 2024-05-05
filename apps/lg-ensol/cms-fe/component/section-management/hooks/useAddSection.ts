@@ -25,7 +25,6 @@ const useAddSection = () => {
     const firstPoint: any = getFirstPoint();
     lastLine.set('x2', firstPoint.left);
     lastLine.set('y2', firstPoint.top);
-    console.log(currentPolygonPoints);
     // TODO: 도형 등록
   };
 
@@ -39,7 +38,6 @@ const useAddSection = () => {
 
   const onMouseDown = (e) => {
     if (!canvas.current) return;
-    console.log('mouse:down');
     if (e.target === currentPolygonPoints.current[0]) {
       addPolygon();
     }
@@ -68,15 +66,54 @@ const useAddSection = () => {
       strokeWidth: 2,
       selectable: false,
     });
+    line.set('x1', x);
+    line.set('y1', y);
+    line.set('x2', x);
+    line.set('y2', y);
     currentPolygonLines.current.push(line);
     canvas.current.add(line);
 
     canvas.current.on('mouse:up', onMouseMove);
   };
 
-  const onMouseMove = () => {};
+  const onMouseMove = (e) => {
+    const lastLine = getLastLine();
 
-  const onMouseUp = () => {};
+    if (!lastLine) return;
+    if (!e.absolutePointer) return;
+    if (e.e.shiftKey) {
+      const { x1, y1 } = lastLine;
+      const radian =
+        Math.round(
+          Math.atan2(e.absolutePointer.y - y1, e.absolutePointer.x - x1) * 10,
+        ) / 10;
+
+      const degree = (radian * 180) / Math.PI;
+      const roundDgreeToNearest10 = roundToNearest(degree);
+      const roundRadianToNearest10 = (roundDgreeToNearest10 * Math.PI) / 180;
+      const radius = Math.sqrt(
+        Math.pow(e.absolutePointer.y - y1, 2) +
+          Math.pow(e.absolutePointer.x - x1, 2),
+      );
+
+      const x2 = x1 + radius * Math.cos(roundRadianToNearest10);
+      const y2 = y1 + radius * Math.sin(roundRadianToNearest10);
+      lastLine.set('x2', x2);
+      lastLine.set('y2', y2);
+    } else {
+      lastLine.set('x2', e.absolutePointer.x);
+      lastLine.set('y2', e.absolutePointer.y);
+    }
+    canvas.current.requestRenderAll();
+  };
+
+  const roundToNearest = (value: number, nearest = 10) => {
+    const remainder = value % nearest;
+    if (remainder < nearest / 2) {
+      return value - remainder;
+    }
+    return value + (nearest - remainder);
+  };
 
   const destory = () => {};
 

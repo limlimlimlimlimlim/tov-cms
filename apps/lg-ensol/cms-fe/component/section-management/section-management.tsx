@@ -2,13 +2,19 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 import { Button, Flex } from 'antd';
 import { getBaseUrl } from '../../util/axios-client';
+import { SectionManagementStatus } from '../../interface/section';
 import useSectionManager from './hooks/useSectionManager';
 
 declare const window;
 
-const SectionManagement = ({ mapData }: any) => {
+interface Pros {
+  mapData: any;
+  status: SectionManagementStatus;
+}
+
+const SectionManagement = ({ mapData, status }: Pros) => {
   const canvasRef = useRef(null);
-  const { canvas, createCanvas, setMapImage } = useSectionManager();
+  const { canvas, createCanvas, setMapImage, initAdd } = useSectionManager();
 
   const onLoadScript = () => {
     console.log(canvasRef.current, window.fabric);
@@ -20,9 +26,19 @@ const SectionManagement = ({ mapData }: any) => {
   useEffect(() => {
     if (!canvas) return;
     if (!mapData) return;
-    console.log(`${getBaseUrl()}/files/upload/${mapData.image}`);
     setMapImage(`${getBaseUrl()}/files/upload/${mapData.image}`);
   }, [canvas, mapData, setMapImage]);
+
+  useEffect(() => {
+    if (!canvas) return;
+    switch (status) {
+      case SectionManagementStatus.View:
+        break;
+      case SectionManagementStatus.Add:
+        initAdd(canvas);
+        break;
+    }
+  }, [canvas, initAdd, status]);
 
   const zoomIn = () => {
     const zoom = canvas.getZoom();

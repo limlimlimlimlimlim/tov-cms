@@ -1,12 +1,17 @@
 'use client';
 
 import { Button } from 'antd';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { SectionContext } from '../section-context';
+import { SectionManagementStatus } from '../../../../../interface/section';
 
 const SectionEditStatePage = () => {
-  const { mapData } = useContext<any>(SectionContext);
+  const { mapData, setStatus } = useContext<any>(SectionContext);
+
+  useEffect(() => {
+    setStatus(SectionManagementStatus.Add);
+  }, [setStatus]);
   return (
     <>
       <Button size="small">저장</Button>

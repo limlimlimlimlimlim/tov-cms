@@ -1,14 +1,16 @@
 import { useRef, useState } from 'react';
+import useAddSection from './useAddSection';
 
-declare const window;
+declare const fabric: any;
 
 const useSectionManager = () => {
   const [canvas, setCanvas] = useState<any>();
   const isDragging = useRef(false);
   const lastDragPosition = useRef({ x: 0, y: 0 });
+  const { init: initAdd } = useAddSection();
 
   const createCanvas = (canvas, options?) => {
-    const c = new window.fabric.Canvas(canvas, options);
+    const c = new fabric.Canvas(canvas, options);
     setCanvas(c);
     initCanvasMouseEvent(c);
   };
@@ -43,7 +45,7 @@ const useSectionManager = () => {
 
   const setMapImage = (url) => {
     if (!canvas) return;
-    window.fabric.Image.fromURL(url, (image) => {
+    fabric.Image.fromURL(url, (image) => {
       image.selectable = false;
       console.log(image);
       canvas.add(image);
@@ -54,6 +56,7 @@ const useSectionManager = () => {
     canvas,
     createCanvas,
     setMapImage,
+    initAdd,
   };
 };
 

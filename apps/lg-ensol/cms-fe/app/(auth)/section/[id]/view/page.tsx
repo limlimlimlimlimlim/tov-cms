@@ -10,6 +10,9 @@ const SectionViewStatePage = () => {
   return (
     <>
       <Button size="small">
+        <Link href={`/section/${mapData.id}/add`}>구역 추가</Link>
+      </Button>
+      <Button size="small">
         <Link href={`/section/${mapData.id}/edit`}>구역 수정</Link>
       </Button>
       <Button size="small">구역 삭제</Button>

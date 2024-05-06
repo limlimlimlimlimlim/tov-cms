@@ -64,7 +64,15 @@ const useAddSection = () => {
     }
     if (e.target) return;
     canvas.current.selection = false;
-    const { x, y } = e.absolutePointer;
+    let x, y;
+    if (e.e.shiftKey && currentPolygonPoints.current.length > 0) {
+      x = guideLine.current.get('x2');
+      y = guideLine.current.get('y2');
+    } else {
+      x = e.absolutePointer.x;
+      y = e.absolutePointer.y;
+    }
+
     currentPolygonPoints.current.push({ x, y });
     canvas.current.add(guideLine.current);
     guideLine.current.set('x1', x);
@@ -136,6 +144,8 @@ const useAddSection = () => {
 
     if (!lastPoint) return;
     if (!e.absolutePointer) return;
+    guideLine.current.set('x1', lastPoint.x);
+    guideLine.current.set('y1', lastPoint.y);
     if (e.e.shiftKey) {
       const { x, y } = lastPoint;
       const radian =

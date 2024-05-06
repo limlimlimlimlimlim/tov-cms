@@ -4,10 +4,11 @@ declare const fabric: any;
 
 const useAddSection = () => {
   const canvas = useRef<any>();
-  const currentPolygonPoints = useRef<any[]>([]);
-  const currentPolygonCircles = useRef<any[]>([]);
-  const currentPolygonLines = useRef<any[]>([]);
+  const guidePolygonPoints = useRef<any[]>([]);
+  const guidePolygonCircles = useRef<any[]>([]);
+  const guidePolygonLines = useRef<any[]>([]);
   const guideLine = useRef<any>();
+  const targetPolygons = useRef<{ x: number; y: number }[][]>([]);
 
   const init = (c) => {
     canvas.current = c;
@@ -35,37 +36,26 @@ const useAddSection = () => {
   const addPolygon = () => {
     if (!canvas.current) return;
     canvas.current.selection = true;
-    const lastLine: any = getLastLine();
-    const firstPoint: any = getFirstPoint();
-    lastLine.set('x2', firstPoint.left);
-    lastLine.set('y2', firstPoint.top);
-    // TODO: 도형 등록
-  };
-
-  const getFirstPoint = () => {
-    return currentPolygonPoints.current[0];
+    canvas.current.remove(guideLine.current);
+    targetPolygons.current.push(guidePolygonPoints.current);
+    guidePolygonPoints.current = [];
   };
 
   const getLastPoint = () => {
-    return currentPolygonPoints.current[
-      currentPolygonPoints.current.length - 1
-    ];
-  };
-
-  const getLastLine = () => {
-    return currentPolygonLines.current[currentPolygonLines.current.length - 1];
+    return guidePolygonPoints.current[guidePolygonPoints.current.length - 1];
   };
 
   const onMouseDown = (e) => {
     if (!canvas.current) return;
     if (e.e.altKey) return;
-    if (e.target === currentPolygonPoints.current[0]) {
+    if (e.target === guidePolygonCircles.current[0]) {
+      guidePolygonPoints.current.push(guidePolygonPoints.current[0]);
       addPolygon();
     }
     if (e.target) return;
     canvas.current.selection = false;
     let x, y;
-    if (e.e.shiftKey && currentPolygonPoints.current.length > 0) {
+    if (e.e.shiftKey && guidePolygonPoints.current.length > 0) {
       x = guideLine.current.get('x2');
       y = guideLine.current.get('y2');
     } else {
@@ -73,40 +63,51 @@ const useAddSection = () => {
       y = e.absolutePointer.y;
     }
 
-    currentPolygonPoints.current.push({ x, y });
+    guidePolygonPoints.current.push({ x, y });
     canvas.current.add(guideLine.current);
     guideLine.current.set('x1', x);
     guideLine.current.set('y1', y);
     guideLine.current.set('x2', x);
     guideLine.current.set('y2', y);
-    forceUpdatePolygon();
+    forceUpdateGuidePolygons();
   };
 
-  const forceUpdatePolygon = () => {
-    removePolygon();
-    createPolygon();
+  const forceUpdateGuidePolygons = () => {
+    removeGuidePolygons();
+    createGuidePolygon();
     canvas.current.renderAll();
   };
 
-  const createPolygon = () => {
-    currentPolygonPoints.current.forEach(({ x, y }, index: number) => {
+  const createLine = (x1, y1, x2, y2) => {
+    const line = new fabric.Line([], {
+      stroke: 'blue',
+      strokeWidth: 2,
+      selectable: false,
+    });
+    line.set('x1', x1);
+    line.set('y1', y1);
+    line.set('x2', x2);
+    line.set('y2', y2);
+
+    return line;
+  };
+
+  const createLines = (points: { x: number; y: number }[]) => {
+    const lines: any[] = [];
+    points.forEach(({ x, y }, index: number) => {
       if (index > 0) {
-        const prevPoint = currentPolygonPoints.current[index - 1];
-        const line = new fabric.Line([], {
-          stroke: 'blue',
-          strokeWidth: 2,
-          selectable: false,
-        });
-        line.set('x1', prevPoint.x);
-        line.set('y1', prevPoint.y);
-        line.set('x2', x);
-        line.set('y2', y);
+        const prevPoint = points[index - 1];
+        const line = createLine(prevPoint.x, prevPoint.y, x, y);
         canvas.current.add(line);
-        currentPolygonLines.current.push(line);
+        lines.push(line);
       }
     });
+    return lines;
+  };
 
-    currentPolygonPoints.current.forEach(({ x, y }, index) => {
+  const createControlPoints = (points: { x: number; y: number }[]) => {
+    const controls: any[] = [];
+    points.forEach(({ x, y }) => {
       const circle = new fabric.Circle({
         radius: 10,
         fill: 'yellow',
@@ -119,24 +120,34 @@ const useAddSection = () => {
         selectable: false,
       });
       canvas.current.add(circle);
-      currentPolygonCircles.current.push(circle);
+      controls.push(circle);
+    });
+    return controls;
+  };
 
-      circle.on('mousedblclick', () => {
-        currentPolygonPoints.current.splice(index, 1);
-        forceUpdatePolygon();
+  const createGuidePolygon = () => {
+    const lines = createLines(guidePolygonPoints.current);
+    guidePolygonLines.current = lines;
+
+    const controlPoints = createControlPoints(guidePolygonPoints.current);
+    guidePolygonCircles.current = controlPoints;
+    controlPoints.forEach((p, index) => {
+      p.on('mousedblclick', () => {
+        guidePolygonPoints.current.splice(index, 1);
+        forceUpdateGuidePolygons();
       });
     });
   };
 
-  const removePolygon = () => {
-    currentPolygonCircles.current.forEach((c) => {
+  const removeGuidePolygons = () => {
+    guidePolygonCircles.current.forEach((c) => {
       canvas.current.remove(c);
     });
-    currentPolygonLines.current.forEach((l) => {
+    guidePolygonLines.current.forEach((l) => {
       canvas.current.remove(l);
     });
-    currentPolygonCircles.current = [];
-    currentPolygonLines.current = [];
+    guidePolygonCircles.current = [];
+    guidePolygonLines.current = [];
   };
 
   const onMouseMove = (e) => {

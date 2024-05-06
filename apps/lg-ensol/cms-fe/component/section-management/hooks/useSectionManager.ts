@@ -17,7 +17,6 @@ const useSectionManager = () => {
 
   const setMapImage = (url) => {
     if (!canvas) return;
-    console.log(url);
     fabric.Image.fromURL(url, (image) => {
       image.selectable = false;
       image.evented = false;

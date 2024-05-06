@@ -49,7 +49,7 @@ const useAddSection = () => {
 
     const circle = new fabric.Circle({
       radius: 10,
-      fill: '',
+      fill: 'yellow',
       stroke: 'green',
       strokeWidth: 3,
       left: x,
@@ -58,6 +58,12 @@ const useAddSection = () => {
       originY: 'center',
       selectable: false,
     });
+
+    circle.on('mousedblclick', () => {
+      canvas.current.remove(circle);
+      canvas.current.renderAll();
+    });
+
     currentPolygonPoints.current.push(circle);
     canvas.current.add(circle);
 

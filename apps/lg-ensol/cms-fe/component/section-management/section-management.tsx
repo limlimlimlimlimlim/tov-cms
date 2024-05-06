@@ -14,10 +14,10 @@ interface Pros {
 
 const SectionManagement = ({ mapData, status }: Pros) => {
   const canvasRef = useRef(null);
-  const { canvas, createCanvas, setMapImage, initAdd } = useSectionManager();
+  const { canvas, createCanvas, setMapImage, startAdd, zoomIn, zoomOut } =
+    useSectionManager();
 
   const onLoadScript = () => {
-    console.log(canvasRef.current, window.fabric);
     if (!canvasRef.current) return;
     if (!window.fabric) return;
     createCanvas(canvasRef.current, { width: 800, height: 600 });
@@ -35,21 +35,11 @@ const SectionManagement = ({ mapData, status }: Pros) => {
       case SectionManagementStatus.View:
         break;
       case SectionManagementStatus.Add:
-        initAdd(canvas);
+        startAdd(canvas);
         break;
     }
-  }, [canvas, initAdd, status]);
+  }, [canvas, startAdd, status]);
 
-  const zoomIn = () => {
-    const zoom = canvas.getZoom();
-    if (zoom > 2) return;
-    canvas.setZoom(zoom + 0.1);
-  };
-  const zoomOut = () => {
-    const zoom = canvas.getZoom();
-    if (zoom < 0.2) return;
-    canvas.setZoom(zoom - 0.1);
-  };
   return (
     <>
       <Script src="https://cdn.jsdelivr.net/npm/fabric" onLoad={onLoadScript} />

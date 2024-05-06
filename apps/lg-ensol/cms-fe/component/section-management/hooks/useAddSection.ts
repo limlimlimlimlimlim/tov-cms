@@ -10,7 +10,7 @@ const useAddSection = () => {
   const guideLine = useRef<any>();
   const targetPolygons = useRef<{ x: number; y: number }[][]>([]);
 
-  const init = (c) => {
+  const start = (c) => {
     canvas.current = c;
     const guide = new fabric.Line([], {
       stroke: 'blue',
@@ -191,11 +191,11 @@ const useAddSection = () => {
     return value + (nearest - remainder);
   };
 
-  const destory = () => {};
+  const end = () => {};
 
   return {
-    init,
-    destory,
+    start,
+    end,
   };
 };
 

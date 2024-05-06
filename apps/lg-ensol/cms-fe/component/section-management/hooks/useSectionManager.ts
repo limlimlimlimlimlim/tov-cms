@@ -1,50 +1,23 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import useAddSection from './useAddSection';
+import useCanvasControl from './useCanvasControl';
 
 declare const fabric: any;
 
 const useSectionManager = () => {
   const [canvas, setCanvas] = useState<any>();
-  const isDragging = useRef(false);
-  const lastDragPosition = useRef({ x: 0, y: 0 });
-  const { init: initAdd } = useAddSection();
+  const { init: initCanvasControl, zoomIn, zoomOut } = useCanvasControl();
+  const { start: startAdd } = useAddSection();
 
   const createCanvas = (canvas, options?) => {
     const c = new fabric.Canvas(canvas, options);
     setCanvas(c);
-    initCanvasMouseEvent(c);
-  };
-
-  const initCanvasMouseEvent = (canvas) => {
-    canvas.on('mouse:down', ({ e }) => {
-      if (e.altKey) {
-        isDragging.current = true;
-        lastDragPosition.current = { x: e.clientX, y: e.clientY };
-        canvas.selection = false;
-      }
-    });
-
-    canvas.on('mouse:move', ({ e }) => {
-      if (isDragging.current) {
-        const vpt = canvas.viewportTransform;
-        vpt[4] += e.clientX - lastDragPosition.current.x;
-        vpt[5] += e.clientY - lastDragPosition.current.y;
-        canvas.requestRenderAll();
-        lastDragPosition.current = { x: e.clientX, y: e.clientY };
-      }
-    });
-
-    canvas.on('mouse:up', () => {
-      if (isDragging.current) {
-        canvas.setViewportTransform(canvas.viewportTransform);
-        canvas.selection = true;
-        isDragging.current = false;
-      }
-    });
+    initCanvasControl(c);
   };
 
   const setMapImage = (url) => {
     if (!canvas) return;
+    console.log(url);
     fabric.Image.fromURL(url, (image) => {
       image.selectable = false;
       image.evented = false;
@@ -56,7 +29,9 @@ const useSectionManager = () => {
     canvas,
     createCanvas,
     setMapImage,
-    initAdd,
+    zoomIn,
+    zoomOut,
+    startAdd,
   };
 };
 

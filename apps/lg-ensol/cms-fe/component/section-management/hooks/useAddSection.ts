@@ -2,20 +2,21 @@ import { useEffect, useRef } from 'react';
 import useGuideSectionPolygon from './useGuideSectionPolygon';
 import useTargetSectionPolygon from './useTargetSectionPolygon';
 
-declare const fabric: any;
-
 const useAddSection = () => {
   const canvas = useRef<any>();
   const { init: initGuide, targetSections } = useGuideSectionPolygon();
-  const { render: renderTargetSectionPolygons } = useTargetSectionPolygon();
+  const { init: initTarget, render: renderTargetSectionPolygons } =
+    useTargetSectionPolygon();
 
   useEffect(() => {
+    if (!canvas.current) return;
     renderTargetSectionPolygons(targetSections);
   }, [renderTargetSectionPolygons, targetSections]);
 
   const start = (c) => {
     canvas.current = c;
     initGuide(c);
+    initTarget(c);
   };
 
   const end = () => {};

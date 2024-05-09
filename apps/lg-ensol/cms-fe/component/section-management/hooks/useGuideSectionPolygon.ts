@@ -36,7 +36,6 @@ const useGuideSectionPolygon = () => {
   };
   const end = useCallback(() => {
     if (!canvas.current) return;
-    console.log(guidePolygonPoints.current);
     setTargetSections([...targetSections, [...guidePolygonPoints.current]]);
     guidePolygonPoints.current = [];
     canvas.current.selection = true;

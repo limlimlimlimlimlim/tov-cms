@@ -128,7 +128,6 @@ const useGuideSectionPolygon = (addSectionCallback) => {
         end();
         return;
       }
-      if (e.target) return;
       canvas.selection = false;
       let x, y;
       if (e.e.shiftKey && guidePolygonPoints.current.length > 0) {

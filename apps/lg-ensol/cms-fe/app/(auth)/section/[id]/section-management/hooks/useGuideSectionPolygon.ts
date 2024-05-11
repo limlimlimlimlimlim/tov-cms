@@ -232,7 +232,6 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   useEffect(() => {
     return () => {
       if (!canvas) return;
-      console.log('######', guideLine.current);
       canvas.off('mouse:down', onMouseDown);
       canvas.off('mouse:move', onMouseMove);
       removeGuidePolygons();

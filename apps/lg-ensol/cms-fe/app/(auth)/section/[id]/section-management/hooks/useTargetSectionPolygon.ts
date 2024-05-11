@@ -1,33 +1,34 @@
 import { useRef } from 'react';
+import type { Section } from '../../../../../../interface/section';
 
 declare const fabric: any;
 
 const useTargetSectionPolygon = () => {
   const canvas = useRef<any>();
-  const sections = useRef<any[]>([]);
+  const sectionsObject = useRef<any[]>([]);
 
   const init = (c) => {
     canvas.current = c;
   };
 
-  const render = (polygons) => {
+  const render = (sections: Section[]) => {
     removeSectionsAll();
     setTimeout(() => {
-      renderSections(polygons);
+      renderSections(sections);
       canvas.current.renderAll();
     }, 1);
   };
 
   const removeSectionsAll = () => {
-    sections.current.forEach((s) => {
+    sectionsObject.current.forEach((s) => {
       canvas.current.remove(s);
     });
-    sections.current = [];
+    sectionsObject.current = [];
   };
 
-  const renderSections = (points: { x: number; y: number }[][]) => {
-    points.forEach((p) => {
-      const section = new fabric.Polygon(p, {
+  const renderSections = (sections: Section[]) => {
+    sections.forEach((s) => {
+      const section = new fabric.Polygon(s.path, {
         fill: '#D81B60',
         strokeWidth: 4,
         stroke: 'green',
@@ -37,7 +38,7 @@ const useTargetSectionPolygon = () => {
         selectable: false,
       });
       canvas.current.add(section);
-      sections.current.push(section);
+      sectionsObject.current.push(section);
     });
   };
 

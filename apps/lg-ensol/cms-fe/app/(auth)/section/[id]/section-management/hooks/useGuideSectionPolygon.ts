@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
+import { SectionContext } from '../../section-context';
 
 declare const fabric: any;
 
@@ -8,9 +9,7 @@ const useGuideSectionPolygon = () => {
   const guidePolygonCircles = useRef<any[]>([]);
   const guidePolygonLines = useRef<any[]>([]);
   const guideLine = useRef<any>();
-  const [targetSections, setTargetSections] = useState<
-    { x: number; y: number }[][]
-  >([]);
+  const { addNewSection } = useContext<any>(SectionContext);
 
   useEffect(() => {
     return () => {
@@ -36,16 +35,15 @@ const useGuideSectionPolygon = () => {
   };
   const end = useCallback(() => {
     if (!canvas.current) return;
-    setTargetSections([...targetSections, [...guidePolygonPoints.current]]);
+    addNewSection({ path: guidePolygonPoints.current });
     guidePolygonPoints.current = [];
     canvas.current.selection = true;
     canvas.current.remove(guideLine.current);
     removeGuidePolygons();
-  }, [targetSections]);
+  }, [addNewSection]);
 
   const initEvents = (c) => {
     if (!c) return;
-    console.log('initEvents');
     c.on('mouse:down', onMouseDown);
     c.on('mouse:move', onMouseMove);
   };
@@ -219,7 +217,6 @@ const useGuideSectionPolygon = () => {
   };
 
   return {
-    targetSections,
     init,
   };
 };

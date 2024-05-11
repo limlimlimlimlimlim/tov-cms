@@ -12,9 +12,13 @@ const SectionEditStatePage = () => {
   useEffect(() => {
     setStatus(SectionManagementStatus.Add);
   }, [setStatus]);
+
+  const onClickSave = () => {};
   return (
     <>
-      <Button size="small">저장</Button>
+      <Button size="small" onClick={onClickSave}>
+        저장
+      </Button>
       <Button size="small">
         <Link href={`/section/${mapData.id}/view`}>취소</Link>
       </Button>

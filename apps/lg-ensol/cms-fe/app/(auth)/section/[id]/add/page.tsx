@@ -3,17 +3,32 @@
 import { Button } from 'antd';
 import { useContext, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
+import { addSection } from '../../../../../api/section';
 
-const SectionEditStatePage = () => {
-  const { mapData, setStatus } = useContext<any>(SectionContext);
-
+const SectionAddStatePage = () => {
+  const { mapData, setStatus, newSections } = useContext<any>(SectionContext);
+  const router = useRouter();
   useEffect(() => {
     setStatus(SectionManagementStatus.Add);
   }, [setStatus]);
 
-  const onClickSave = () => {};
+  const onClickSave = async () => {
+    const requests = newSections.map((s) =>
+      addSection(
+        mapData.id,
+        s.path
+          .map((p) => [p.x, p.y])
+          .flat()
+          .join(),
+      ),
+    );
+
+    await Promise.all(requests);
+    router.replace(`/section/${mapData.id}/view`);
+  };
   return (
     <>
       <Button size="small" onClick={onClickSave}>
@@ -26,4 +41,4 @@ const SectionEditStatePage = () => {
   );
 };
 
-export default SectionEditStatePage;
+export default SectionAddStatePage;

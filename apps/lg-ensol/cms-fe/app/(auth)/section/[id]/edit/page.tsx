@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import Link from 'next/link';
 import { SectionContext } from '../section-context';
 
-const SectionAddStatePage = () => {
+const SectionEditStatePage = () => {
   const { mapData } = useContext<any>(SectionContext);
   return (
     <>
@@ -17,4 +17,4 @@ const SectionAddStatePage = () => {
   );
 };
 
-export default SectionAddStatePage;
+export default SectionEditStatePage;

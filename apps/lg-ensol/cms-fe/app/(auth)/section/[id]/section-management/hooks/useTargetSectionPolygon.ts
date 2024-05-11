@@ -24,16 +24,23 @@ const useTargetSectionPolygon = () => {
   const renderSections = (sections: Section[]) => {
     sections.forEach((s) => {
       const section = new fabric.Polygon(s.path, {
-        fill: '#D81B60',
-        strokeWidth: 4,
-        stroke: 'green',
-        objectCaching: false,
-        transparentCorners: false,
-        cornerColor: 'blue',
+        fill: '#D2C60C',
+        opacity: 0.3,
+      });
+
+      const sectionBorder = new fabric.Polygon(s.path, {
+        strokeWidth: 5,
+        stroke: '#D2C60C',
+        opacity: 0.3,
+        fill: '',
+        strokeLineCap: 'round',
+        strokeLineJoin: 'bevel',
+      });
+      const g = new fabric.Group([section, sectionBorder], {
         selectable: false,
       });
-      canvas.add(section);
-      sectionsObject.current.push(section);
+      canvas.add(g);
+      sectionsObject.current.push(g);
     });
   };
 

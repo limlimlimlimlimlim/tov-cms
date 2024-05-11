@@ -1,31 +1,24 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SectionContext } from '../../section-context';
 import useGuideSectionPolygon from './useGuideSectionPolygon';
 import useTargetSectionPolygon from './useTargetSectionPolygon';
+import type { Section } from '../../../../../../interface/section';
 
 const useAddSection = () => {
-  const canvas = useRef<any>();
-  const { newSections } = useContext<any>(SectionContext);
-  const { init: initGuide } = useGuideSectionPolygon();
-  const { init: initTarget, render: renderTargetSectionPolygons } =
-    useTargetSectionPolygon();
+  const { canvas } = useContext<any>(SectionContext);
+  const [newSections, setNewSections] = useState<Section[]>([]);
+  useGuideSectionPolygon((newSection) => {
+    setNewSections([...newSections, newSection]);
+  });
+  const { render: renderTargetSectionPolygons } = useTargetSectionPolygon();
 
   useEffect(() => {
-    if (!canvas.current) return;
+    if (!canvas) return;
     renderTargetSectionPolygons(newSections);
-  }, [newSections, renderTargetSectionPolygons]);
-
-  const start = (c) => {
-    canvas.current = c;
-    initGuide(c);
-    initTarget(c);
-  };
-
-  const end = () => {};
+  }, [canvas, newSections, renderTargetSectionPolygons]);
 
   return {
-    start,
-    end,
+    newSections,
   };
 };
 

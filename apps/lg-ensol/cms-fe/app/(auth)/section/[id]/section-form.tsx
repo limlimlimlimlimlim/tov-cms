@@ -29,7 +29,7 @@ const layoutStyle = {
 };
 
 export default function SectionForm({ children }) {
-  const { mapData, status }: any = useContext(SectionContext);
+  const { mapData }: any = useContext(SectionContext);
 
   return (
     <Layout style={layoutStyle}>
@@ -46,7 +46,7 @@ export default function SectionForm({ children }) {
         </Flex>
       </Header>
       <Content style={contentStyle}>
-        <SectionManagement mapData={mapData} status={status} />
+        <SectionManagement mapData={mapData} />
       </Content>
     </Layout>
   );

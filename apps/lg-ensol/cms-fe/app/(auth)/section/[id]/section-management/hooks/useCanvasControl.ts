@@ -1,24 +1,25 @@
-import { useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { SectionContext } from '../../section-context';
 
 const useCanvasControl = () => {
-  const canvas = useRef<any>();
+  const { canvas } = useContext<any>(SectionContext);
   const isDragging = useRef(false);
   const lastDragPosition = useRef({ x: 0, y: 0 });
 
-  const init = (c) => {
-    canvas.current = c;
-    initCanvasMouseEvent(c);
-  };
+  useEffect(() => {
+    if (!canvas) return;
+    initCanvasMouseEvent(canvas);
+  }, [canvas]);
 
   const zoomIn = () => {
-    const zoom = canvas.current.getZoom();
+    const zoom = canvas.getZoom();
     if (zoom > 2) return;
-    canvas.current.setZoom(zoom + 0.1);
+    canvas.setZoom(zoom + 0.1);
   };
   const zoomOut = () => {
-    const zoom = canvas.current.getZoom();
+    const zoom = canvas.getZoom();
     if (zoom < 0.2) return;
-    canvas.current.setZoom(zoom - 0.1);
+    canvas.setZoom(zoom - 0.1);
   };
 
   const initCanvasMouseEvent = (canvas) => {
@@ -50,7 +51,6 @@ const useCanvasControl = () => {
   };
 
   return {
-    init,
     zoomIn,
     zoomOut,
   };

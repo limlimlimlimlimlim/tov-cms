@@ -1,44 +1,46 @@
 import Script from 'next/script';
-import { useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Button, Flex } from 'antd';
-import { SectionManagementStatus } from '../../../../../interface/section';
+import type { SectionManagementStatus } from '../../../../../interface/section';
 import { getBaseUrl } from '../../../../../util/axios-client';
-import useSectionManager from './hooks/useSectionManager';
+import { SectionContext } from '../section-context';
+import useCanvasControl from './hooks/useCanvasControl';
 
-declare const window;
-
+declare const fabric;
 interface Pros {
   mapData: any;
   status: SectionManagementStatus;
 }
 
-const SectionManagement = ({ mapData, status }: Pros) => {
+const SectionManagement = ({ mapData }: Pros) => {
+  const { canvas, setCanvas } = useContext<any>(SectionContext);
   const canvasRef = useRef(null);
-  const { canvas, createCanvas, setMapImage, startAdd, zoomIn, zoomOut } =
-    useSectionManager();
+  const { zoomIn, zoomOut } = useCanvasControl();
 
   const onLoadScript = () => {
     if (!canvasRef.current) return;
-    if (!window.fabric) return;
-    createCanvas(canvasRef.current, { width: 800, height: 600 });
+    if (!fabric) return;
+    const c = new fabric.Canvas(canvasRef.current, { width: 800, height: 600 });
+    setCanvas(c);
   };
+
+  const setMapImage = useCallback(
+    (url) => {
+      if (!canvas) return;
+      fabric.Image.fromURL(url, (image) => {
+        image.selectable = false;
+        image.evented = false;
+        canvas.add(image);
+      });
+    },
+    [canvas],
+  );
 
   useEffect(() => {
     if (!canvas) return;
     if (!mapData) return;
     setMapImage(`${getBaseUrl()}/files/upload/${mapData.image}`);
   }, [canvas, mapData, setMapImage]);
-
-  useEffect(() => {
-    if (!canvas) return;
-    switch (status) {
-      case SectionManagementStatus.View:
-        break;
-      case SectionManagementStatus.Add:
-        startAdd(canvas);
-        break;
-    }
-  }, [canvas, startAdd, status]);
 
   return (
     <>

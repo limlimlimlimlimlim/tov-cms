@@ -13,6 +13,7 @@ const SectionAddStatePage = () => {
   const { mapData, setStatus } = useContext<any>(SectionContext);
   const { newSections } = useAddSection();
   const router = useRouter();
+
   useEffect(() => {
     setStatus(SectionManagementStatus.Add);
   }, [setStatus]);

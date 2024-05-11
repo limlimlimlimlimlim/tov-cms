@@ -140,6 +140,7 @@ const useGuideSectionPolygon = (addSectionCallback) => {
       }
 
       guidePolygonPoints.current.push({ x, y });
+      canvas.remove(guideLine.current);
       canvas.add(guideLine.current);
       guideLine.current.set('x1', x);
       guideLine.current.set('y1', y);
@@ -188,6 +189,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
 
   const initEvents = useCallback(() => {
     if (!canvas) return;
+    canvas.off('mouse:down', onMouseDown);
+    canvas.off('mouse:move', onMouseMove);
     canvas.on('mouse:down', onMouseDown);
     canvas.on('mouse:move', onMouseMove);
   }, [canvas, onMouseDown, onMouseMove]);
@@ -202,8 +205,11 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     guide.set('y1', 0);
     guide.set('x2', 0);
     guide.set('y2', 0);
+    if (guideLine.current) {
+      canvas.remove(guideLine.current);
+    }
     guideLine.current = guide;
-  }, []);
+  }, [canvas]);
 
   const getLastPoint = () => {
     return guidePolygonPoints.current[guidePolygonPoints.current.length - 1];
@@ -226,10 +232,16 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   useEffect(() => {
     return () => {
       if (!canvas) return;
+      console.log('######', guideLine.current);
       canvas.off('mouse:down', onMouseDown);
       canvas.off('mouse:move', onMouseMove);
+      removeGuidePolygons();
+      canvas.remove(guideLine.current);
+      guideLine.current = null;
+      guidePolygonPoints.current = [];
+      canvas.selection = true;
     };
-  }, [canvas, onMouseDown, onMouseMove]);
+  }, [canvas, onMouseDown, onMouseMove, removeGuidePolygons]);
 };
 
 export default useGuideSectionPolygon;

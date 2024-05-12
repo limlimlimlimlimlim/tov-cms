@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
-import { SectionContext } from '../../section-context';
+import { SectionContext } from '../section-context';
 
 const useCanvasControl = () => {
   const { canvas } = useContext<any>(SectionContext);

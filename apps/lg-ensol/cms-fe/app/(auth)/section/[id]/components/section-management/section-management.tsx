@@ -1,15 +1,13 @@
 import Script from 'next/script';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Button, Flex } from 'antd';
-import type { SectionManagementStatus } from '../../../../../interface/section';
-import { getBaseUrl } from '../../../../../util/axios-client';
-import { SectionContext } from '../section-context';
-import useCanvasControl from './hooks/useCanvasControl';
+import { getBaseUrl } from '../../../../../../util/axios-client';
+import { SectionContext } from '../../section-context';
+import useCanvasControl from '../../hooks/useCanvasControl';
 
 declare const fabric;
 interface Pros {
   mapData: any;
-  status: SectionManagementStatus;
 }
 
 const SectionManagement = ({ mapData }: Pros) => {

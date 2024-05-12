@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { SectionContext } from '../../section-context';
+import { SectionContext } from '../section-context';
 
 declare const fabric: any;
 

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
-import useAddSection from '../section-management/hooks/useAddSection';
+import useAddSection from '../hooks/useAddSection';
 
 const SectionAddStatePage = () => {
   const { mapData, setStatus } = useContext<any>(SectionContext);

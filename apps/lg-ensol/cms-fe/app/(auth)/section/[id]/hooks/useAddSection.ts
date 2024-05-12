@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { SectionContext } from '../../section-context';
+import { SectionContext } from '../section-context';
+import type { Section } from '../../../../../interface/section';
 import useGuideSectionPolygon from './useGuideSectionPolygon';
 import useTargetSectionPolygon from './useTargetSectionPolygon';
-import type { Section } from '../../../../../../interface/section';
 
 const useAddSection = () => {
   const { canvas } = useContext<any>(SectionContext);

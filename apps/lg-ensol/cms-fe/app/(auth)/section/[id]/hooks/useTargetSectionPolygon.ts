@@ -1,6 +1,6 @@
-import { useContext, useRef } from 'react';
-import type { Section } from '../../../../../../interface/section';
-import { SectionContext } from '../../section-context';
+import { useCallback, useContext, useEffect, useRef } from 'react';
+import type { Section } from '../../../../../interface/section';
+import { SectionContext } from '../section-context';
 
 declare const fabric: any;
 
@@ -14,12 +14,12 @@ const useTargetSectionPolygon = () => {
     canvas.renderAll();
   };
 
-  const removeSectionsAll = () => {
+  const removeSectionsAll = useCallback(() => {
     sectionsObject.current.forEach((s) => {
       canvas.remove(s);
     });
     sectionsObject.current = [];
-  };
+  }, [canvas]);
 
   const renderSections = (sections: Section[]) => {
     sections.forEach((s) => {
@@ -43,6 +43,12 @@ const useTargetSectionPolygon = () => {
       sectionsObject.current.push(g);
     });
   };
+
+  useEffect(() => {
+    return () => {
+      removeSectionsAll();
+    };
+  }, [removeSectionsAll]);
 
   return {
     render,

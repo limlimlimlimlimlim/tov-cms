@@ -3,7 +3,7 @@
 import { Flex, Layout, Typography } from 'antd';
 import { useContext } from 'react';
 import { SectionContext } from './section-context';
-import SectionManagement from './section-management/section-management';
+import SectionManagement from './components/section-management/section-management';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;

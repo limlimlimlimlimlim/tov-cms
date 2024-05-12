@@ -47,10 +47,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
       const controls: any[] = [];
       points.forEach(({ x, y }) => {
         const circle = new fabric.Circle({
-          radius: 10,
-          fill: 'yellow',
-          stroke: 'green',
-          strokeWidth: 3,
+          radius: 4,
+          fill: '#FF2233',
           left: x,
           top: y,
           originX: 'center',
@@ -67,8 +65,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
 
   const createLine = (x1, y1, x2, y2) => {
     const line = new fabric.Line([], {
-      stroke: 'blue',
-      strokeWidth: 2,
+      stroke: '#FF2233',
+      strokeWidth: 1,
       selectable: false,
     });
     line.set('x1', x1);
@@ -122,6 +120,7 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   const onMouseDown = useCallback(
     (e) => {
       if (!canvas) return;
+      if (e.target.editable) return;
       if (e.e.altKey) return;
       if (e.target === guidePolygonCircles.current[0]) {
         guidePolygonPoints.current.push(guidePolygonPoints.current[0]);
@@ -196,8 +195,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
 
   const init = useCallback(() => {
     const guide = new fabric.Line([], {
-      stroke: 'blue',
-      strokeWidth: 2,
+      stroke: '#FF2233',
+      strokeWidth: 1,
       selectable: false,
     });
     guide.set('x1', 0);

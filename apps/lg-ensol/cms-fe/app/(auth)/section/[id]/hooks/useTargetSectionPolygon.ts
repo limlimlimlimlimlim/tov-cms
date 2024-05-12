@@ -23,22 +23,7 @@ const useTargetSectionPolygon = () => {
 
   const renderSections = (sections: Section[]) => {
     sections.forEach((s) => {
-      const section = new fabric.Polygon(s.path, {
-        fill: '#B6E3FF',
-        opacity: 0.5,
-      });
-
-      const sectionBorder = new fabric.Polygon(s.path, {
-        strokeWidth: 1,
-        stroke: '#54AEFF',
-        opacity: 1,
-        fill: '',
-        strokeLineCap: 'round',
-        strokeLineJoin: 'bevel',
-      });
-      const g = new fabric.Group([section, sectionBorder], {
-        selectable: false,
-      });
+      const g = editablePolygon(s.path);
       canvas.add(g);
       sectionsObject.current.push(g);
     });
@@ -56,3 +41,38 @@ const useTargetSectionPolygon = () => {
 };
 
 export default useTargetSectionPolygon;
+
+const editablePolygon = (path) => {
+  const section = new fabric.Polygon(path, {
+    fill: '#B6E3FF',
+    opacity: 0.5,
+  });
+
+  const sectionBorder = new fabric.Polygon(path, {
+    strokeWidth: 1,
+    stroke: '#54AEFF',
+    opacity: 1,
+    fill: '',
+    strokeLineCap: 'round',
+    strokeLineJoin: 'bevel',
+  });
+
+  const controls = path.map((p) => {
+    return new fabric.Circle({
+      radius: 4,
+      fill: '#54AEFF',
+      left: p.x,
+      top: p.y,
+      originX: 'center',
+      originY: 'center',
+    });
+  });
+
+  const g = new fabric.Group([section, sectionBorder, ...controls], {
+    selectable: false,
+  });
+
+  g.editable = true;
+
+  return g;
+};

@@ -17,6 +17,7 @@ export const SectionProvider = ({ children }) => {
     SectionManagementStatus.View,
   );
   const [canvas, setCanvas] = useState<any>(null);
+  const [stage, setStage] = useState<any>(null);
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -42,10 +43,12 @@ export const SectionProvider = ({ children }) => {
     <SectionContext.Provider
       value={{
         canvas,
+        stage,
         mapData,
         status,
         setStatus,
         setCanvas,
+        setStage,
         clearCanvas,
       }}
     >

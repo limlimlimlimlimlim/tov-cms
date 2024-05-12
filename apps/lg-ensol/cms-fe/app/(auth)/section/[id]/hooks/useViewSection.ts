@@ -8,6 +8,7 @@ const useViewSection = () => {
 
   const render = useCallback(
     (sections) => {
+      if (!canvas) return;
       sections.forEach((s) => {
         const sec = createSectionObject(pathStringToArray(s.path));
         canvas.add(sec);

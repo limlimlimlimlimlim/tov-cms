@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { SectionContext } from '../section-context';
 import type { Section } from '../../../../../interface/section';
-import useGuideSectionPolygon from './useGuideSectionPolygon';
-import useTargetSectionPolygon from './useTargetSectionPolygon';
+import useGuideSectionPolygon from './use-guide-section-polygon';
+import useTargetSectionPolygon from './use-rarget-section-polygon';
 
 const useAddSection = () => {
-  const { canvas } = useContext<any>(SectionContext);
+  const { stage } = useContext<any>(SectionContext);
   const [newSections, setNewSections] = useState<Section[]>([]);
   useGuideSectionPolygon((newSection) => {
     setNewSections([...newSections, newSection]);
@@ -13,9 +13,9 @@ const useAddSection = () => {
   const { render: renderTargetSectionPolygons } = useTargetSectionPolygon();
 
   useEffect(() => {
-    if (!canvas) return;
+    if (!stage) return;
     renderTargetSectionPolygons(newSections);
-  }, [canvas, newSections, renderTargetSectionPolygons]);
+  }, [stage, newSections, renderTargetSectionPolygons]);
 
   return {
     newSections,

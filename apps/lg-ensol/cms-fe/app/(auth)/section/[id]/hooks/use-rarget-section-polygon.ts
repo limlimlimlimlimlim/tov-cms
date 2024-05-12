@@ -9,6 +9,7 @@ const useTargetSectionPolygon = () => {
   const sectionsObject = useRef<any[]>([]);
 
   const render = (sections: Section[]) => {
+    if (!canvas) return;
     removeSectionsAll();
     renderSections(sections);
     canvas.renderAll();

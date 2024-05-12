@@ -7,13 +7,13 @@ import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
-import useAddSection from '../hooks/useAddSection';
+import useAddSection from '../hooks/use-add-section';
 import useViewSection from '../hooks/use-view-section';
 
 const SectionAddStatePage = () => {
   const { mapData, setStatus, clearCanvas } = useContext<any>(SectionContext);
   const { newSections } = useAddSection();
-  const { fetchSection } = useViewSection();
+  const { complete, fetchSection } = useViewSection();
   const router = useRouter();
 
   const onClickSave = async () => {

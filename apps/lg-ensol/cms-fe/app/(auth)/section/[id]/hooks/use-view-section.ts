@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { SectionContext } from '../section-context';
 import { createSectionObject } from '../utils/utils';
 import { getSectionsByMapId } from '../../../../../api/section';

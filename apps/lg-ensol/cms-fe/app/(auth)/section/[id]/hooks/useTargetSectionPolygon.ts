@@ -24,14 +24,14 @@ const useTargetSectionPolygon = () => {
   const renderSections = (sections: Section[]) => {
     sections.forEach((s) => {
       const section = new fabric.Polygon(s.path, {
-        fill: '#D2C60C',
-        opacity: 0.3,
+        fill: '#B6E3FF',
+        opacity: 0.5,
       });
 
       const sectionBorder = new fabric.Polygon(s.path, {
-        strokeWidth: 5,
-        stroke: '#D2C60C',
-        opacity: 0.3,
+        strokeWidth: 1,
+        stroke: '#54AEFF',
+        opacity: 1,
         fill: '',
         strokeLineCap: 'round',
         strokeLineJoin: 'bevel',

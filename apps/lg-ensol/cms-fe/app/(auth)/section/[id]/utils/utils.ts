@@ -24,9 +24,9 @@ export const createSectionObject = (
   options: SectionObjectOptions = {
     fill: '#D2C60C',
     opacity: 0.3,
-    strokeWidth: 5,
+    strokeWidth: 1,
     stroke: '#D2C60C',
-    strokeOpacity: 0.3,
+    strokeOpacity: 1,
   },
 ) => {
   const section = new fabric.Polygon(path, {

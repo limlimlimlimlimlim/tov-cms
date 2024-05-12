@@ -8,15 +8,13 @@ import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
 import useAddSection from '../hooks/useAddSection';
+import useViewSection from '../hooks/useViewSection';
 
 const SectionAddStatePage = () => {
-  const { mapData, setStatus } = useContext<any>(SectionContext);
+  const { mapData, setStatus, clearCanvas } = useContext<any>(SectionContext);
   const { newSections } = useAddSection();
+  const { fetchSection } = useViewSection();
   const router = useRouter();
-
-  useEffect(() => {
-    setStatus(SectionManagementStatus.Add);
-  }, [setStatus]);
 
   const onClickSave = async () => {
     const requests = newSections.map((s) => {
@@ -32,6 +30,20 @@ const SectionAddStatePage = () => {
     message.success('구역이 추가 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };
+
+  useEffect(() => {
+    setStatus(SectionManagementStatus.Add);
+  }, [setStatus]);
+
+  useEffect(() => {
+    fetchSection(mapData.id);
+  }, [clearCanvas, fetchSection, mapData.id]);
+
+  useEffect(() => {
+    return () => {
+      clearCanvas();
+    };
+  }, [clearCanvas]);
   return (
     <>
       <Button size="small" onClick={onClickSave}>

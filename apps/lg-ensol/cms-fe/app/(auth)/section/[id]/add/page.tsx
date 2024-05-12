@@ -8,7 +8,7 @@ import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
 import useAddSection from '../hooks/useAddSection';
-import useViewSection from '../hooks/useViewSection';
+import useViewSection from '../hooks/use-view-section';
 
 const SectionAddStatePage = () => {
   const { mapData, setStatus, clearCanvas } = useContext<any>(SectionContext);

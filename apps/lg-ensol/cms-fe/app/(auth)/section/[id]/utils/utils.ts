@@ -1,5 +1,4 @@
-declare const fabric: any;
-
+declare const Konva: any;
 interface SectionObjectOptions {
   fill: string;
   opacity: number;
@@ -7,17 +6,6 @@ interface SectionObjectOptions {
   stroke: string;
   strokeOpacity: number;
 }
-
-export const pathStringToArray = (path) => {
-  const arr: string[] = path.split(',');
-  const result: { x: number; y: number }[] = [];
-
-  for (let i = 0; i < arr.length; i += 2) {
-    result.push({ x: Number(arr[i]), y: Number(arr[i + 1]) });
-  }
-
-  return result;
-};
 
 export const createSectionObject = (
   path,
@@ -29,19 +17,23 @@ export const createSectionObject = (
     strokeOpacity: 1,
   },
 ) => {
-  const section = new fabric.Polygon(path, {
+  const group = new Konva.Group();
+  const poly = new Konva.Line({
+    points: path,
     fill: options.fill,
     opacity: options.opacity,
+    closed: true,
   });
 
-  const stroke = new fabric.Polygon(path, {
-    strokeWidth: options.strokeWidth,
-    stroke: options.stroke,
-    opacity: options.strokeOpacity,
+  const stroke = new Konva.Line({
+    points: path,
     fill: '',
-    strokeLineCap: 'round',
-    strokeLineJoin: 'bevel',
+    stroke: options.stroke,
+    strokeWidth: options.strokeWidth,
+    opacity: options.strokeOpacity,
+    closed: true,
   });
-  const g = new fabric.Group([section, stroke], { selectable: false });
-  return g;
+
+  group.add(poly, stroke);
+  return group;
 };

@@ -12,7 +12,7 @@ interface Pros {
 
 const SectionManagement = ({ mapData }: Pros) => {
   const { canvas, setCanvas } = useContext<any>(SectionContext);
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<any>(null);
   const { zoomIn, zoomOut } = useCanvasControl();
 
   const onLoadScript = () => {
@@ -26,9 +26,7 @@ const SectionManagement = ({ mapData }: Pros) => {
     (url) => {
       if (!canvas) return;
       fabric.Image.fromURL(url, (image) => {
-        image.selectable = false;
-        image.evented = false;
-        canvas.add(image);
+        canvas.setBackgroundImage(image);
       });
     },
     [canvas],

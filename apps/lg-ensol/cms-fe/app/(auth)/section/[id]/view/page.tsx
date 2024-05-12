@@ -2,11 +2,19 @@
 
 import { Button } from 'antd';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { SectionContext } from '../section-context';
+import useViewSection from '../hooks/useViewSection';
 
 const SectionViewStatePage = () => {
   const { mapData } = useContext<any>(SectionContext);
+  const { fetch } = useViewSection();
+
+  useEffect(() => {
+    if (!mapData) return;
+    fetch(mapData.id);
+  }, [fetch, mapData]);
+
   return (
     <>
       <Button size="small">

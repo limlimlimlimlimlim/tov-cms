@@ -12,9 +12,7 @@ const Login = () => {
   const [verified, setVerified] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
-  }, []);
+  setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
 
   const onClickLogin = useCallback(async () => {
     try {

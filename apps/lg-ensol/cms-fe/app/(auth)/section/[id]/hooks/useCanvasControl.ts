@@ -27,7 +27,6 @@ const useCanvasControl = () => {
       if (e.altKey) {
         isDragging.current = true;
         lastDragPosition.current = { x: e.clientX, y: e.clientY };
-        canvas.selection = false;
       }
     });
 
@@ -44,7 +43,6 @@ const useCanvasControl = () => {
     canvas.on('mouse:up', () => {
       if (isDragging.current) {
         canvas.setViewportTransform(canvas.viewportTransform);
-        canvas.selection = true;
         isDragging.current = false;
       }
     });

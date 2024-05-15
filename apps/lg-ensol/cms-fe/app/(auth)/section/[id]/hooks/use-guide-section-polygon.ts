@@ -1,24 +1,25 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { SectionContext } from '../section-context';
 
 declare const fabric: any;
 declare const Konva: any;
 
 const useGuideSectionPolygon = (addSectionCallback) => {
-  const { stage, canvas } = useContext<any>(SectionContext);
-  const guidePolygonPoints = useRef<any[]>([]);
-  const guidePolygonCircles = useRef<any[]>([]);
-  const guidePolygonLines = useRef<any[]>([]);
+  const { stage, canvas, size } = useContext<any>(SectionContext);
+  const guidePoints = useRef<any[]>([]);
+  const guideCircles = useRef<any[]>([]);
+  const guideLines = useRef<any[]>([]);
 
-  const layer = useMemo(() => {
-    return new Konva.Layer();
+  const guidelayer = useMemo(() => {
+    const layer = new Konva.Layer();
+    layer.setAttr('id', 'selectionLayer');
+    return layer;
+  }, []);
+
+  const eventlayer = useMemo(() => {
+    const layer = new Konva.Layer();
+    layer.setAttr('id', 'eventLayer');
+    return layer;
   }, []);
 
   const guideLine = useMemo(() => {
@@ -32,19 +33,19 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   }, []);
 
   const removeGuidePolygons = useCallback(() => {
-    guidePolygonCircles.current.forEach((c) => {
+    guideCircles.current.forEach((c) => {
       canvas.remove(c);
     });
-    guidePolygonLines.current.forEach((l) => {
+    guideLines.current.forEach((l) => {
       canvas.remove(l);
     });
-    guidePolygonCircles.current = [];
-    guidePolygonLines.current = [];
+    guideCircles.current = [];
+    guideLines.current = [];
   }, [canvas]);
 
   const onDbClickControlPoint = useCallback(
     (index) => {
-      guidePolygonPoints.current.splice(index, 1);
+      guidePoints.current.splice(index, 1);
       removeGuidePolygons();
       canvas.renderAll();
     },
@@ -114,11 +115,11 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   );
 
   const createGuidePolygon = useCallback(() => {
-    const lines = createLines(guidePolygonPoints.current);
-    guidePolygonLines.current = lines;
+    const lines = createLines(guidePoints.current);
+    guideLines.current = lines;
 
-    const controlPoints = createControlPoints(guidePolygonPoints.current);
-    guidePolygonCircles.current = controlPoints;
+    const controlPoints = createControlPoints(guidePoints.current);
+    guideCircles.current = controlPoints;
     addControlPointEvent(controlPoints);
   }, [addControlPointEvent, createControlPoints, createLines]);
 
@@ -130,109 +131,134 @@ const useGuideSectionPolygon = (addSectionCallback) => {
 
   const end = useCallback(() => {
     if (!canvas) return;
-    addSectionCallback({ path: guidePolygonPoints.current });
-    guidePolygonPoints.current = [];
+    addSectionCallback({ path: guidePoints.current });
+    guidePoints.current = [];
     canvas.selection = true;
     canvas.remove(guideLine.current);
     removeGuidePolygons();
   }, [addSectionCallback, canvas, guideLine, removeGuidePolygons]);
 
-  const updateGuideLine = useCallback(
-    (points) => {
-      guideLine.points(points);
-    },
-    [guideLine],
-  );
+  const updateGuide = useCallback(() => {
+    guideLine.points([...guidePoints.current.map((p) => p.toArray())].flat());
+    const num = guidePoints.current.length - guideCircles.current.length;
 
-  const onMouseMove = useCallback(
-    (e) => {
-      const { layerX, layerY, shiftKey } = e.evt;
-      // const lastPoint = getLastPoint();
-      // if (!lastPoint) return;
-      // if (!e.absolutePointer) return;
-      // guideLine.current.set('x1', lastPoint.x);
-      // guideLine.current.set('y1', lastPoint.y);
-      if (guidePolygonPoints.current.length === 0) return;
-      if (shiftKey) {
-        const x =
-          guidePolygonPoints.current[guidePolygonPoints.current.length - 4];
-        const y =
-          guidePolygonPoints.current[guidePolygonPoints.current.length - 3];
-        const radian = Math.round(Math.atan2(layerY - y, layerX - x) * 10) / 10;
+    for (let i = 0; i < num; i += 1) {
+      const c = new Konva.Circle({
+        x: 0,
+        y: 0,
+        radius: 6,
+        fill: 'yellow',
+        stroke: 'black',
+      });
+      guidelayer.add(c);
+      guideCircles.current.push(c);
+    }
+    guideCircles.current.forEach((p, index) => {
+      const { x, y } = guidePoints.current[index];
+      p.x(x);
+      p.y(y);
+    });
+  }, [guideLine, guidelayer]);
 
-        const degree = (radian * 180) / Math.PI;
-        const roundDgreeToNearest10 = roundToNearest(degree);
-        const roundRadianToNearest10 = (roundDgreeToNearest10 * Math.PI) / 180;
-        const radius = Math.sqrt(
-          Math.pow(layerY - y, 2) + Math.pow(layerX - x, 2),
-        );
-        const x2 = x + radius * Math.cos(roundRadianToNearest10);
-        const y2 = y + radius * Math.sin(roundRadianToNearest10);
+  // TODO: 마우스 좌표 보정 필요함!!
+  // circle 생성 필요
+  // 런타임 오류들 확인
+  // bg 로드 후 실행
 
-        guidePolygonPoints.current[guidePolygonPoints.current.length - 2] = x2;
-        guidePolygonPoints.current[guidePolygonPoints.current.length - 1] = y2;
-      } else {
-        guidePolygonPoints.current[guidePolygonPoints.current.length - 2] =
-          layerX;
-        guidePolygonPoints.current[guidePolygonPoints.current.length - 1] =
-          layerY;
-      }
-      updateGuideLine(guidePolygonPoints.current);
-    },
-    [updateGuideLine],
-  );
+  const startPoint = (x, y) => {
+    const p = point(x, y);
+    const guidePoint = point(x, y);
+    guidePoints.current.push(p, guidePoint);
+  };
+
+  const addPoint = (x, y) => {
+    guidePoints.current.push(point(x, y));
+  };
+
+  const removePoint = (index) => {
+    guidePoints.current.splice(index, 1);
+  };
+
+  const updatePoint = (index, x, y) => {
+    guidePoints.current[index] = point(x, y);
+  };
+
+  const lastPoint = () => {
+    return guidePoints.current[guidePoints.current.length - 1];
+  };
 
   const onMouseDown = useCallback(
     (e) => {
       if (!stage) return;
       const { layerX, layerY } = e.evt;
-      // guidePolygonPoints.current.push(...[layerX, layerY, layerX, layerY]);
+      const last = lastPoint();
 
-      // guideLine.current.points(guidePolygonPoints.current);
-
-      // guidePolygonPoints.current.push(...[])
-      // if (e.target === guidePolygonCircles.current[0]) {
-      //   guidePolygonPoints.current.push(guidePolygonPoints.current[0]);
-      //   end();
-      //   return;
-      // }
-
-      let x, y;
-      if (e.evt.shiftKey && guidePolygonPoints.current.length > 0) {
-        x = guidePolygonPoints.current[guidePolygonPoints.current.length - 2];
-        y = guidePolygonPoints.current[guidePolygonPoints.current.length - 1];
+      if (last) {
+        updatePoint(guidePoints.current.length - 1, last.x, last.y);
+        addPoint(last.x, last.y);
       } else {
-        x = layerX;
-        y = layerY;
+        startPoint(layerX, layerY);
       }
-      guidePolygonPoints.current.pop();
-      guidePolygonPoints.current.pop();
-      guidePolygonPoints.current.push(...[x, y, x, y]);
-      // guidePolygonPoints.current.push({ x, y });
-      // canvas.remove(guideLine.current);
-      // canvas.add(guideLine.current);
-      // guideLine.current.set('x1', x);
-      // guideLine.current.set('y1', y);
-      // guideLine.current.set('x2', x);
-      // guideLine.current.set('y2', y);
-      // forceUpdateGuidePolygons();
-      updateGuideLine(guidePolygonPoints.current);
+      updateGuide();
     },
-    [stage, updateGuideLine],
+    [stage, updateGuide],
   );
+
+  const onMouseMove = useCallback(
+    (e) => {
+      const { layerX, layerY, shiftKey } = e.evt;
+      const last = lastPoint();
+      if (!last) return;
+      let newX = 0;
+      let newY = 0;
+      if (guidePoints.current.length === 0) return;
+      if (shiftKey) {
+        const { x, y } = guidePoints.current[guidePoints.current.length - 2];
+        const radian = Math.round(Math.atan2(layerY - y, layerX - x) * 10) / 10;
+
+        const degree = (radian * 180) / Math.PI;
+        const roundDgreeToNearest10 = roundToNearest(degree, 30);
+        const roundRadianToNearest10 = (roundDgreeToNearest10 * Math.PI) / 180;
+        const radius = Math.sqrt(
+          Math.pow(layerY - y, 2) + Math.pow(layerX - x, 2),
+        );
+        newX = x + radius * Math.cos(roundRadianToNearest10);
+        newY = y + radius * Math.sin(roundRadianToNearest10);
+      } else {
+        newX = layerX;
+        newY = layerY;
+      }
+      updatePoint(guidePoints.current.length - 1, newX, newY);
+      updateGuide();
+    },
+    [updateGuide],
+  );
+
+  const initLayers = useCallback(() => {
+    if (!stage) return;
+    stage.add(guidelayer);
+    stage.add(eventlayer);
+    const eventArea = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      fill: 'green',
+      opacity: 0.3,
+    });
+    eventlayer.add(eventArea);
+    eventlayer.moveToTop();
+  }, [eventlayer, guidelayer, stage]);
 
   const initEvents = useCallback(() => {
     if (!stage) return;
-    stage.add(layer);
-    stage.on('mousedown', onMouseDown);
-    stage.on('mousemove', onMouseMove);
-  }, [layer, onMouseDown, onMouseMove, stage]);
+    eventlayer.on('mousedown', onMouseDown);
+    eventlayer.on('mousemove', onMouseMove);
+  }, [eventlayer, onMouseDown, onMouseMove, stage]);
 
   const init = useCallback(() => {
-    setTimeout(() => {
-      stage.add(layer);
-      layer.add(guideLine);
-    }, 1000);
+    stage.add(guidelayer);
+    guidelayer.add(guideLine);
 
     // const guide = new fabric.Line([], {
     //   stroke: '#FF2233',
@@ -246,10 +272,10 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     // if (guideLine.current) {
     //   canvas.remove(guideLine.current);
     // }
-  }, [guideLine, layer, stage]);
+  }, [guideLine, guidelayer, stage]);
 
   const getLastPoint = () => {
-    return guidePolygonPoints.current[guidePolygonPoints.current.length - 1];
+    return guidePoints.current[guidePoints.current.length - 1];
   };
 
   const roundToNearest = (value: number, nearest = 10) => {
@@ -263,18 +289,44 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   useEffect(() => {
     if (!stage) return;
     init();
+    initLayers();
     initEvents();
     return () => {
-      layer.remove();
-      console.log('destroy!!!');
-      stage.off('mousedown');
-      stage.off('mousemove');
+      guidelayer.remove();
+      eventlayer.off('mousedown');
+      eventlayer.off('mousemove');
       removeGuidePolygons();
       guideLine.remove();
-      guidePolygonPoints.current = [];
+      guidePoints.current = [];
       canvas.selection = true;
     };
-  }, [canvas, guideLine, init, initEvents, layer, removeGuidePolygons, stage]);
+  }, [
+    canvas,
+    guideLine,
+    init,
+    initEvents,
+    guidelayer,
+    removeGuidePolygons,
+    stage,
+    initLayers,
+    eventlayer,
+  ]);
+
+  useEffect(() => {
+    if (size.width === 0 || size.height === 0) return;
+    eventlayer.children[0].width(size.width);
+    eventlayer.children[0].height(size.width);
+  }, [eventlayer, eventlayer.children, size]);
 };
 
 export default useGuideSectionPolygon;
+
+const point = (x, y) => {
+  return {
+    x,
+    y,
+    toArray() {
+      return [x, y];
+    },
+  };
+};

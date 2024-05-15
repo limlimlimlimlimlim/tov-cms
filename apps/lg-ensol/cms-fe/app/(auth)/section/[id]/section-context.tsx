@@ -18,6 +18,7 @@ export const SectionProvider = ({ children }) => {
   );
   const [canvas, setCanvas] = useState<any>(null);
   const [stage, setStage] = useState<any>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -46,10 +47,12 @@ export const SectionProvider = ({ children }) => {
         stage,
         mapData,
         status,
+        size,
         setStatus,
         setCanvas,
         setStage,
         clearCanvas,
+        setSize,
       }}
     >
       {children}

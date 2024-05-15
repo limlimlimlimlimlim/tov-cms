@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { SectionContext } from '../section-context';
 import { createSectionObject } from '../utils/utils';
 import { getSectionsByMapId } from '../../../../../api/section';
@@ -7,17 +7,21 @@ declare const Konva: any;
 
 const useViewSection = () => {
   const { stage } = useContext<any>(SectionContext);
-  const layer = useRef<any>();
+  const layer: any = useMemo(() => {
+    const layer = new Konva.Layer();
+    layer.setAttr('id', 'sectionLayer');
+    return layer;
+  }, []);
 
   const render = useCallback(
     (sections) => {
       if (!stage) return;
       sections.forEach((s) => {
         const sec = createSectionObject(s.path.split(','));
-        layer.current.add(sec);
+        layer.add(sec);
       });
     },
-    [stage],
+    [layer, stage],
   );
 
   const fetchSection = useCallback(
@@ -30,16 +34,12 @@ const useViewSection = () => {
 
   useEffect(() => {
     if (!stage) return;
-    if (layer.current) {
-      layer.current.remove();
-    }
-    layer.current = new Konva.Layer();
-    stage.add(layer.current);
+    stage.add(layer);
 
     return () => {
-      layer.current.remove();
+      layer.remove();
     };
-  }, [stage]);
+  }, [layer, stage]);
 
   return {
     fetchSection,

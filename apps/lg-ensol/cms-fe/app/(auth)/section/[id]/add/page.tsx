@@ -12,8 +12,8 @@ import useViewSection from '../hooks/use-view-section';
 
 const SectionAddStatePage = () => {
   const { mapData, setStatus, clearCanvas } = useContext<any>(SectionContext);
-  const { newSections } = useAddSection();
   const { complete, fetchSection } = useViewSection();
+  const { newSections } = useAddSection();
   const router = useRouter();
 
   const onClickSave = async () => {

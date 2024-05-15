@@ -7,6 +7,7 @@ import useTargetSectionPolygon from './use-rarget-section-polygon';
 const useAddSection = () => {
   const { stage } = useContext<any>(SectionContext);
   const [newSections, setNewSections] = useState<Section[]>([]);
+
   useGuideSectionPolygon((newSection) => {
     setNewSections([...newSections, newSection]);
   });

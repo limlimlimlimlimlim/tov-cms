@@ -1,16 +1,16 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import type { Section } from '../../../../../interface/section';
 import { SectionContext } from '../section-context';
+import useEditableSection from './use-editable-section';
 
 declare const Konva: any;
 
-// TODO: target 렌더링
 const useTargetSectionPolygon = () => {
   const { stage } = useContext<any>(SectionContext);
   const sectionsObject = useRef<any[]>([]);
+  const { createEditableSection } = useEditableSection();
 
   const layer = useMemo(() => {
-    console.log('use Memo');
     return new Konva.Layer();
   }, []);
 
@@ -29,17 +29,14 @@ const useTargetSectionPolygon = () => {
 
   const renderSections = (sections: Section[]) => {
     sections.forEach((s) => {
-      const g = editablePolygon(s.path);
+      const g = createEditableSection(s.path);
       layer.add(g);
-      console.log(g);
-      // canvas.add(g);
       sectionsObject.current.push(g);
     });
   };
 
   useEffect(() => {
     if (!stage) return;
-    console.log(layer);
     stage.add(layer);
 
     return () => {
@@ -54,19 +51,3 @@ const useTargetSectionPolygon = () => {
 };
 
 export default useTargetSectionPolygon;
-
-const editablePolygon = (path) => {
-  const group = new Konva.Group();
-
-  const section = new Konva.Line({
-    points: path.map((p) => p.toArray()).flat(),
-    fill: '#ff9900',
-    stroke: '#FF2233',
-    strokeWidth: 1,
-    opacity: 0.5,
-    closed: true,
-  });
-
-  group.add(section);
-  return group;
-};

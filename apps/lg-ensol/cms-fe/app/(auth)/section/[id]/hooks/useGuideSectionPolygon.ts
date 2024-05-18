@@ -1,24 +1,16 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { SectionContext } from '../section-context';
 
-declare const fabric: any;
 declare const Konva: any;
 
 const useGuideSectionPolygon = (addSectionCallback) => {
-  const { stage, canvas, size } = useContext<any>(SectionContext);
+  const { stage } = useContext<any>(SectionContext);
   const guidePoints = useRef<any[]>([]);
   const guideCircles = useRef<any[]>([]);
-  const guideLines = useRef<any[]>([]);
 
   const guidelayer = useMemo(() => {
     const layer = new Konva.Layer();
     layer.setAttr('id', 'selectionLayer');
-    return layer;
-  }, []);
-
-  const eventlayer = useMemo(() => {
-    const layer = new Konva.Layer();
-    layer.setAttr('id', 'eventLayer');
     return layer;
   }, []);
 
@@ -33,19 +25,24 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   }, []);
 
   const removeGuidePolygons = useCallback(() => {
+    guideLine.points([]);
+
     guideCircles.current.forEach((c) => {
       c.remove();
     });
-    guideLines.current.forEach((l) => {
-      l.remove();
-    });
     guideCircles.current = [];
-    guideLines.current = [];
-  }, []);
+  }, [guideLine]);
+
+  const end = useCallback(() => {
+    addSectionCallback({ path: guidePoints.current });
+    guidePoints.current = [];
+
+    removeGuidePolygons();
+  }, [addSectionCallback, removeGuidePolygons]);
 
   const updateGuide = useCallback(() => {
     guideLine.points([...guidePoints.current.map((p) => p.toArray())].flat());
-    const num = guidePoints.current.length - guideCircles.current.length;
+    const num = guidePoints.current.length - guideCircles.current.length - 1;
 
     for (let i = 0; i < num; i += 1) {
       const c = new Konva.Circle({
@@ -55,102 +52,23 @@ const useGuideSectionPolygon = (addSectionCallback) => {
         fill: 'yellow',
         stroke: 'black',
       });
+      c.setAttr('controlPoint', true);
       guidelayer.add(c);
       guideCircles.current.push(c);
+
+      c.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        if (e.target === firstCircle()) {
+          end();
+        }
+      });
     }
     guideCircles.current.forEach((p, index) => {
       const { x, y } = guidePoints.current[index];
       p.x(x);
       p.y(y);
     });
-  }, [guideLine, guidelayer]);
-
-  const onDbClickControlPoint = useCallback(
-    (index) => {
-      removePoint(index);
-      updateGuide();
-    },
-    [updateGuide],
-  );
-
-  const addControlPointEvent = useCallback(
-    (controlPoints) => {
-      controlPoints.forEach((p, index) => {
-        p.on('mousedblclick', () => {
-          onDbClickControlPoint(index);
-        });
-      });
-    },
-    [onDbClickControlPoint],
-  );
-
-  const createControlPoints = useCallback(
-    (points: { x: number; y: number }[]) => {
-      const controls: any[] = [];
-      points.forEach(({ x, y }) => {
-        const circle = new fabric.Circle({
-          radius: 4,
-          fill: '#FF2233',
-          left: x,
-          top: y,
-          originX: 'center',
-          originY: 'center',
-          selectable: false,
-        });
-        canvas.add(circle);
-        controls.push(circle);
-      });
-      return controls;
-    },
-    [canvas],
-  );
-
-  const createLine = (x1, y1, x2, y2) => {
-    const line = new fabric.Line([], {
-      stroke: '#FF2233',
-      strokeWidth: 1,
-      selectable: false,
-    });
-    line.set('x1', x1);
-    line.set('y1', y1);
-    line.set('x2', x2);
-    line.set('y2', y2);
-
-    return line;
-  };
-
-  const createLines = useCallback(
-    (points: { x: number; y: number }[]) => {
-      const lines: any[] = [];
-      points.forEach(({ x, y }, index: number) => {
-        if (index > 0) {
-          const prevPoint = points[index - 1];
-          const line = createLine(prevPoint.x, prevPoint.y, x, y);
-          canvas.add(line);
-          lines.push(line);
-        }
-      });
-      return lines;
-    },
-    [canvas],
-  );
-
-  const createGuidePolygon = useCallback(() => {
-    const lines = createLines(guidePoints.current);
-    guideLines.current = lines;
-
-    const controlPoints = createControlPoints(guidePoints.current);
-    guideCircles.current = controlPoints;
-    addControlPointEvent(controlPoints);
-  }, [addControlPointEvent, createControlPoints, createLines]);
-
-  const end = useCallback(() => {
-    if (!canvas) return;
-    addSectionCallback({ path: guidePoints.current });
-    guidePoints.current = [];
-    canvas.remove(guideLine.current);
-    removeGuidePolygons();
-  }, [addSectionCallback, canvas, guideLine, removeGuidePolygons]);
+  }, [end, guideLine, guidelayer]);
 
   // TODO:
   // 마우스 좌표 보정 v
@@ -158,6 +76,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   // circle 삭제
   // 런타임 오류들 확인
   // bg 로드 후 실행 v
+  // 도형 형성
+  // 불필요 코드 삭제
 
   const startPoint = (x, y) => {
     const p = point(x, y);
@@ -177,7 +97,11 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     guidePoints.current[index] = point(x, y);
   };
 
-  const lastPoint = () => {
+  const firstCircle = () => {
+    return guideCircles.current[0];
+  };
+
+  const lastPointCoord = () => {
     return guidePoints.current[guidePoints.current.length - 1];
   };
 
@@ -185,26 +109,26 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     (e) => {
       if (!stage) return;
       if (e.evt.altKey) return;
-      const { x, y } = eventlayer.getRelativePointerPosition();
-      const last = lastPoint();
+      const { x, y } = stage.getRelativePointerPosition();
+      const lastCoord = lastPointCoord();
 
-      if (last) {
-        updatePoint(guidePoints.current.length - 1, last.x, last.y);
-        addPoint(last.x, last.y);
+      if (lastCoord) {
+        updatePoint(guidePoints.current.length - 1, lastCoord.x, lastCoord.y);
+        addPoint(lastCoord.x, lastCoord.y);
       } else {
         startPoint(x, y);
       }
       updateGuide();
     },
-    [eventlayer, stage, updateGuide],
+    [stage, updateGuide],
   );
 
   const onMouseMove = useCallback(
     (e) => {
       const { shiftKey } = e.evt;
-      const { x: relX, y: relY } = eventlayer.getRelativePointerPosition();
-      const last = lastPoint();
-      if (!last) return;
+      const { x: relX, y: relY } = stage.getRelativePointerPosition();
+      const lastCoord = lastPointCoord();
+      if (!lastCoord) return;
       let newX = 0;
       let newY = 0;
       if (guidePoints.current.length === 0) return;
@@ -225,30 +149,19 @@ const useGuideSectionPolygon = (addSectionCallback) => {
       updatePoint(guidePoints.current.length - 1, newX, newY);
       updateGuide();
     },
-    [eventlayer, updateGuide],
+    [stage, updateGuide],
   );
 
   const initLayers = useCallback(() => {
     if (!stage) return;
     stage.add(guidelayer);
-    stage.add(eventlayer);
-    const eventArea = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      fill: 'green',
-      opacity: 0.3,
-    });
-    eventlayer.add(eventArea);
-    eventlayer.moveToTop();
-  }, [eventlayer, guidelayer, stage]);
+  }, [guidelayer, stage]);
 
   const initEvents = useCallback(() => {
     if (!stage) return;
-    eventlayer.on('mousedown', onMouseDown);
-    eventlayer.on('mousemove', onMouseMove);
-  }, [eventlayer, onMouseDown, onMouseMove, stage]);
+    stage.on('mousedown', onMouseDown);
+    stage.on('mousemove', onMouseMove);
+  }, [onMouseDown, onMouseMove, stage]);
 
   const init = useCallback(() => {
     stage.add(guidelayer);
@@ -270,14 +183,13 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     initEvents();
     return () => {
       guidelayer.remove();
-      eventlayer.off('mousedown');
-      eventlayer.off('mousemove');
+      stage.off('mousedown');
+      stage.off('mousemove');
       removeGuidePolygons();
       guideLine.remove();
       guidePoints.current = [];
     };
   }, [
-    canvas,
     guideLine,
     init,
     initEvents,
@@ -285,14 +197,7 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     removeGuidePolygons,
     stage,
     initLayers,
-    eventlayer,
   ]);
-
-  useEffect(() => {
-    if (size.width === 0 || size.height === 0) return;
-    eventlayer.children[0].width(size.width);
-    eventlayer.children[0].height(size.width);
-  }, [eventlayer, eventlayer.children, size]);
 };
 
 export default useGuideSectionPolygon;

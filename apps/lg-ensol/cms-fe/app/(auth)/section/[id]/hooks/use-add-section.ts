@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { SectionContext } from '../section-context';
 import type { Section } from '../../../../../interface/section';
-import useGuideSectionPolygon from './use-guide-section-polygon';
-import useTargetSectionPolygon from './use-rarget-section-polygon';
+import useGuideSectionPolygon from './useGuideSectionPolygon';
+import useTargetSectionPolygon from './useTargetSectionPolygon';
 
 const useAddSection = () => {
   const { stage } = useContext<any>(SectionContext);
@@ -10,6 +10,7 @@ const useAddSection = () => {
 
   useGuideSectionPolygon((newSection) => {
     setNewSections([...newSections, newSection]);
+    console.log([...newSections, newSection]); // 포지선 컨버팅
   });
   const { render: renderTargetSectionPolygons } = useTargetSectionPolygon();
 

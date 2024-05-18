@@ -9,28 +9,23 @@ interface Pros {
 }
 
 const SectionManagement = ({ mapData }: Pros) => {
-  const { stage, setStage, setSize } = useContext<any>(SectionContext);
+  const { stage, setStage } = useContext<any>(SectionContext);
   const stageContainer = useRef<any>(null);
 
-  const setBackgroundImage = useCallback(
-    (stage, url) => {
-      const bgLayer = new Konva.Layer();
-      stage.add(bgLayer);
-      const imageObj = new Image();
-      imageObj.onload = () => {
-        const bg = new Konva.Image({
-          image: imageObj,
-          width: imageObj.width,
-          height: imageObj.height,
-        });
-        bgLayer.add(bg);
-        setSize({ width: bg.width(), heigh: bg.height() });
-        console.log(stage.width);
-      };
-      imageObj.src = url;
-    },
-    [setSize],
-  );
+  const setBackgroundImage = useCallback((stage, url) => {
+    const bgLayer = new Konva.Layer();
+    stage.add(bgLayer);
+    const imageObj = new Image();
+    imageObj.onload = () => {
+      const bg = new Konva.Image({
+        image: imageObj,
+        width: imageObj.width,
+        height: imageObj.height,
+      });
+      bgLayer.add(bg);
+    };
+    imageObj.src = url;
+  }, []);
 
   const zoomIn = () => {
     const { x } = stage.scale();

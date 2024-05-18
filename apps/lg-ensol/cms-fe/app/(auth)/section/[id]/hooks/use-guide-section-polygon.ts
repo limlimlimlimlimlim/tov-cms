@@ -183,8 +183,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     initEvents();
     return () => {
       guidelayer.remove();
-      stage.off('mousedown');
-      stage.off('mousemove');
+      stage.off('mousedown', onMouseDown);
+      stage.off('mousemove', onMouseMove);
       removeGuidePolygons();
       guideLine.remove();
       guidePoints.current = [];
@@ -197,6 +197,8 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     removeGuidePolygons,
     stage,
     initLayers,
+    onMouseDown,
+    onMouseMove,
   ]);
 };
 

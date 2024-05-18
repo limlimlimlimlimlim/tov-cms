@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { SectionContext } from '../section-context';
 import type { Section } from '../../../../../interface/section';
-import useGuideSectionPolygon from './useGuideSectionPolygon';
-import useTargetSectionPolygon from './useTargetSectionPolygon';
+import useGuideSectionPolygon from './use-guide-section-polygon';
+import useTargetSectionPolygon from './use-target-section-polygon';
 
 const useAddSection = () => {
   const { stage } = useContext<any>(SectionContext);

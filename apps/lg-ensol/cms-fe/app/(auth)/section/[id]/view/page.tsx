@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import Link from 'next/link';
 import { useContext, useEffect } from 'react';
 import { SectionContext } from '../section-context';
-import useViewSection from '../hooks/use-view-section';
+import useViewSection from '../hooks/useViewSection';
 
 const SectionViewStatePage = () => {
   const { mapData, clearCanvas } = useContext<any>(SectionContext);

@@ -10,7 +10,6 @@ const useAddSection = () => {
 
   useGuideSectionPolygon((newSection) => {
     setNewSections([...newSections, newSection]);
-    console.log([...newSections, newSection]); // 포지선 컨버팅
   });
   const { render: renderTargetSectionPolygons } = useTargetSectionPolygon();
 

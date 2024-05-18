@@ -44,7 +44,6 @@ const SectionManagement = ({ mapData }: Pros) => {
   const initDragStage = (stage) => {
     stage.on('mousedown', (e) => {
       if (e.evt.altKey) {
-        console.log(e);
         stage.draggable(true);
       }
 

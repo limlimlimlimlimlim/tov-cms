@@ -41,7 +41,7 @@ export const createSectionObject = (
 export const shiftMove = (x, y, relX, relY) => {
   const radian = Math.round(Math.atan2(relY - y, relX - x) * 10) / 10;
   const degree = (radian * 180) / Math.PI;
-  const roundDgreeToNearest10 = roundToNearest(degree, 30);
+  const roundDgreeToNearest10 = roundToNearest(degree, 10);
   const roundRadianToNearest10 = (roundDgreeToNearest10 * Math.PI) / 180;
   const radius = Math.sqrt(Math.pow(relY - y, 2) + Math.pow(relX - x, 2));
   const newX = x + radius * Math.cos(roundRadianToNearest10);

@@ -59,8 +59,8 @@ const SectionManagement = ({ mapData }: Pros) => {
     if (!mapData) return;
     const stage = new Konva.Stage({
       container: stageContainer.current,
-      width: 800,
-      height: 600,
+      width: 1400,
+      height: 750,
     });
     setStage(stage);
     initDragStage(stage);

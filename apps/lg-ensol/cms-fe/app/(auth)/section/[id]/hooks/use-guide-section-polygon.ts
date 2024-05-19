@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { SectionContext } from '../section-context';
 import { createSectionPoint, flatPath } from '../../../../../util/section';
 import { addNewSection } from '../../../../../store/slice/add-section-slice';
+import { shiftMove } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -128,14 +129,9 @@ const useGuideSectionPolygon = () => {
       if (guidePoints.current.length === 0) return;
       if (shiftKey) {
         const { x, y } = guidePoints.current[guidePoints.current.length - 2];
-        const radian = Math.round(Math.atan2(relY - y, relX - x) * 10) / 10;
-
-        const degree = (radian * 180) / Math.PI;
-        const roundDgreeToNearest10 = roundToNearest(degree, 30);
-        const roundRadianToNearest10 = (roundDgreeToNearest10 * Math.PI) / 180;
-        const radius = Math.sqrt(Math.pow(relY - y, 2) + Math.pow(relX - x, 2));
-        newX = x + radius * Math.cos(roundRadianToNearest10);
-        newY = y + radius * Math.sin(roundRadianToNearest10);
+        const shiftPosition = shiftMove(x, y, relX, relY);
+        newX = shiftPosition.x;
+        newY = shiftPosition.y;
       } else {
         newX = relX;
         newY = relY;
@@ -172,14 +168,6 @@ const useGuideSectionPolygon = () => {
     stage.add(guidelayer);
     guidelayer.add(guideLine);
   }, [guideLine, guidelayer, stage]);
-
-  const roundToNearest = (value: number, nearest = 10) => {
-    const remainder = value % nearest;
-    if (remainder < nearest / 2) {
-      return value - remainder;
-    }
-    return value + (nearest - remainder);
-  };
 
   useEffect(() => {
     if (!stage) return;

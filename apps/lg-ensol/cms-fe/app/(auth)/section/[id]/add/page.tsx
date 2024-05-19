@@ -4,17 +4,25 @@ import { Button, message } from 'antd';
 import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
 import { SectionContext } from '../section-context';
 import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
-import useAddSection from '../hooks/use-add-section';
 import useViewSection from '../hooks/use-view-section';
+import type { RootState } from '../../../../../store/store';
+import useGuideSectionPolygon from '../hooks/use-guide-section-polygon';
+import useTargetSectionPolygon from '../hooks/use-target-section-polygon';
+import { clearNewSections } from '../../../../../store/slice/add-section-slice';
 
 const SectionAddStatePage = () => {
-  const { mapData, setStatus, clearCanvas } = useContext<any>(SectionContext);
-  const { complete, fetchSection } = useViewSection();
-  const { newSections } = useAddSection();
   const router = useRouter();
+  const { mapData, setStatus } = useContext<any>(SectionContext);
+  const { fetchSection } = useViewSection();
+  const { newSections } = useSelector((state: RootState) => state.addSection);
+  const dispatch = useDispatch();
+
+  useGuideSectionPolygon();
+  useTargetSectionPolygon();
 
   const onClickSave = async () => {
     const requests = newSections.map((s) => {
@@ -37,13 +45,14 @@ const SectionAddStatePage = () => {
 
   useEffect(() => {
     fetchSection(mapData.id);
-  }, [clearCanvas, fetchSection, mapData.id]);
+  }, [fetchSection, mapData.id]);
 
   useEffect(() => {
     return () => {
-      clearCanvas();
+      dispatch(clearNewSections());
     };
-  }, [clearCanvas]);
+  }, [dispatch]);
+
   return (
     <>
       <Button size="small" onClick={onClickSave}>

@@ -1,12 +1,16 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { SectionContext } from '../section-context';
+import { createSectionPoint, flatPath } from '../../../../../util/section';
+import { addNewSection } from '../../../../../store/slice/add-section-slice';
 
 declare const Konva: any;
 
-const useGuideSectionPolygon = (addSectionCallback) => {
+const useGuideSectionPolygon = () => {
   const { stage } = useContext<any>(SectionContext);
   const guidePoints = useRef<any[]>([]);
   const guideCircles = useRef<any[]>([]);
+  const dispatch = useDispatch();
 
   const guidelayer = useMemo(() => {
     const layer = new Konva.Layer();
@@ -34,25 +38,24 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   }, [guideLine]);
 
   const end = useCallback(() => {
-    addSectionCallback({ path: guidePoints.current });
+    guidePoints.current.pop();
+    dispatch(addNewSection({ path: guidePoints.current }));
     guidePoints.current = [];
 
     removeGuidePolygons();
-  }, [addSectionCallback, removeGuidePolygons]);
+  }, [dispatch, removeGuidePolygons]);
 
   const updateGuide = useCallback(() => {
-    guideLine.points([...guidePoints.current.map((p) => p.toArray())].flat());
+    guideLine.points(flatPath(guidePoints.current));
     const num = guidePoints.current.length - guideCircles.current.length - 1;
-
     for (let i = 0; i < num; i += 1) {
       const c = new Konva.Circle({
         x: 0,
         y: 0,
         radius: 6,
-        fill: 'yellow',
+        fill: guideCircles.current.length === 0 ? 'red' : 'yellow',
         stroke: 'black',
       });
-      c.setAttr('controlPoint', true);
       guidelayer.add(c);
       guideCircles.current.push(c);
 
@@ -70,23 +73,14 @@ const useGuideSectionPolygon = (addSectionCallback) => {
     });
   }, [end, guideLine, guidelayer]);
 
-  // TODO:
-  // 마우스 좌표 보정 v
-  // circle 생성 v
-  // circle 삭제
-  // 런타임 오류들 확인
-  // bg 로드 후 실행 v
-  // 도형 형성
-  // 불필요 코드 삭제
-
   const startPoint = (x, y) => {
-    const p = point(x, y);
-    const guidePoint = point(x, y);
+    const p = createSectionPoint(x, y);
+    const guidePoint = createSectionPoint(x, y);
     guidePoints.current.push(p, guidePoint);
   };
 
   const addPoint = (x, y) => {
-    guidePoints.current.push(point(x, y));
+    guidePoints.current.push(createSectionPoint(x, y));
   };
 
   const removePoint = (index) => {
@@ -94,7 +88,7 @@ const useGuideSectionPolygon = (addSectionCallback) => {
   };
 
   const updatePoint = (index, x, y) => {
-    guidePoints.current[index] = point(x, y);
+    guidePoints.current[index] = createSectionPoint(x, y);
   };
 
   const firstCircle = () => {
@@ -203,13 +197,3 @@ const useGuideSectionPolygon = (addSectionCallback) => {
 };
 
 export default useGuideSectionPolygon;
-
-const point = (x, y) => {
-  return {
-    x,
-    y,
-    toArray() {
-      return [x, y];
-    },
-  };
-};

@@ -1,39 +1,41 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import type { Section } from '../../../../../interface/section';
+import { useSelector } from 'react-redux';
 import { SectionContext } from '../section-context';
+import { flatPath } from '../../../../../util/section';
+import type { RootState } from '../../../../../store/store';
 import useEditableSection from './use-editable-section';
 
 declare const Konva: any;
 
 const useTargetSectionPolygon = () => {
   const { stage } = useContext<any>(SectionContext);
+  const { newSections } = useSelector((state: RootState) => state.addSection);
   const sectionsObject = useRef<any[]>([]);
-  const { createEditableSection } = useEditableSection();
+  const { create } = useEditableSection();
 
   const layer = useMemo(() => {
     return new Konva.Layer();
   }, []);
 
-  const render = (sections: Section[]) => {
-    if (!stage) return;
-    removeSectionsAll();
-    renderSections(sections);
-  };
-
   const removeSectionsAll = useCallback(() => {
     sectionsObject.current.forEach((s) => {
-      s.remove();
+      s.group.remove();
     });
     sectionsObject.current = [];
   }, []);
 
-  const renderSections = (sections: Section[]) => {
-    sections.forEach((s) => {
-      const g = createEditableSection(s.path);
-      layer.add(g);
-      sectionsObject.current.push(g);
+  const renderSections = useCallback(() => {
+    newSections.forEach((s, index) => {
+      if (sectionsObject.current[index]) {
+        const { section } = sectionsObject.current[index];
+        section.points(flatPath(s.path));
+      } else {
+        const section = create(index);
+        layer.add(section.group);
+        sectionsObject.current.push(section);
+      }
     });
-  };
+  }, [create, layer, newSections]);
 
   useEffect(() => {
     if (!stage) return;
@@ -45,9 +47,9 @@ const useTargetSectionPolygon = () => {
     };
   }, [layer, removeSectionsAll, stage]);
 
-  return {
-    render,
-  };
+  useEffect(() => {
+    renderSections();
+  }, [newSections, renderSections]);
 };
 
 export default useTargetSectionPolygon;

@@ -1,9 +1,11 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
+import { Provider } from 'react-redux';
 import AppContainer from '../../component/app-container/app-container';
 import { verifyToken } from '../../api/auth';
 import { setBaseUrl } from '../../util/axios-client';
+import { store } from '../../store/store';
 
 const AuthLayout = ({ children }) => {
   const router = useRouter();
@@ -27,7 +29,11 @@ const AuthLayout = ({ children }) => {
     void verifyAccessToken();
   }, [pathName, verifyAccessToken]);
 
-  return <AppContainer>{children}</AppContainer>;
+  return (
+    <Provider store={store}>
+      <AppContainer>{children}</AppContainer>
+    </Provider>
+  );
 };
 
 export default AuthLayout;

@@ -7,19 +7,13 @@ import { SectionContext } from '../section-context';
 import useViewSection from '../hooks/use-view-section';
 
 const SectionViewStatePage = () => {
-  const { mapData, clearCanvas } = useContext<any>(SectionContext);
+  const { mapData } = useContext<any>(SectionContext);
   const { fetchSection } = useViewSection();
 
   useEffect(() => {
     if (!mapData) return;
     fetchSection(mapData.id);
   }, [fetchSection, mapData]);
-
-  useEffect(() => {
-    return () => {
-      clearCanvas();
-    };
-  }, [clearCanvas]);
 
   return (
     <>

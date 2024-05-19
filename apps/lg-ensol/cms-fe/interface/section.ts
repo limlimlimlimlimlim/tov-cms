@@ -5,5 +5,10 @@ export enum SectionManagementStatus {
 
 export interface Section {
   // id: string;
-  path: { x: number; y: number }[][];
+  path: Position[][];
+}
+
+export interface Position {
+  x: number;
+  y: number;
 }

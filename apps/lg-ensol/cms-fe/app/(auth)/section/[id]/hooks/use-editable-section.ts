@@ -61,43 +61,43 @@ const useEditableSection = () => {
         strokeWidth: 1,
         opacity: 0.5,
         closed: true,
-        // draggable: true,
+        draggable: true,
       });
 
-      //   section.on('mousedown', (e) => {
-      //     e.cancelBubble = true;
-      //   });
+      section.on('mousedown', (e) => {
+        e.cancelBubble = true;
+      });
 
-      //   section.on('dragstart', () => {
-      //     controlPointsGroup.hide();
-      //   });
+      section.on('dragstart', () => {
+        controlPointsGroup.hide();
+      });
 
-      //   section.on('dragend', () => {
-      //     controlPointsGroup.show();
-      //     const x = section.x();
-      //     const y = section.y();
-      //     const newPath = path.map((p) => {
-      //       return { x: p.x + x, y: p.y + y };
-      //     });
-      //     newPath.forEach((p, pointIndex) => {
-      //       dispatch(
-      //         updateSection({
-      //           sectionIndex,
-      //           pointIndex,
-      //           point: createSectionPoint(p.x, p.y),
-      //         }),
-      //       );
-      //     });
-      //     section.x(0);
-      //     section.y(0);
-      //     section.points(flatPath(newPath));
-      //     path = newPath;
+      section.on('dragend', () => {
+        controlPointsGroup.show();
+        const x = section.x();
+        const y = section.y();
+        const newPath = controls.map((c) => {
+          return { x: c.x() + x, y: c.y() + y };
+        });
+        newPath.forEach((p, pointIndex) => {
+          dispatch(
+            updateSection({
+              sectionIndex,
+              pointIndex,
+              point: createSectionPoint(p.x, p.y),
+            }),
+          );
+        });
+        section.x(0);
+        section.y(0);
+        section.points(flatPath(newPath));
+        path = newPath;
 
-      //     controls.forEach((c, i) => {
-      //       c.x(path[i].x);
-      //       c.y(path[i].y);
-      //     });
-      //   });
+        controls.forEach((c, i) => {
+          c.x(path[i].x);
+          c.y(path[i].y);
+        });
+      });
 
       group.add(section);
       group.add(controlPointsGroup);

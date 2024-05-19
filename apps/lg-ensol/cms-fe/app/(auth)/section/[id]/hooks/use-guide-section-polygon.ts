@@ -146,6 +146,16 @@ const useGuideSectionPolygon = () => {
     [stage, updateGuide],
   );
 
+  const onEscKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        removeGuidePolygons();
+        guidePoints.current = [];
+      }
+    },
+    [removeGuidePolygons],
+  );
+
   const initLayers = useCallback(() => {
     if (!stage) return;
     stage.add(guidelayer);
@@ -155,7 +165,8 @@ const useGuideSectionPolygon = () => {
     if (!stage) return;
     stage.on('mousedown', onMouseDown);
     stage.on('mousemove', onMouseMove);
-  }, [onMouseDown, onMouseMove, stage]);
+    document.addEventListener('keydown', onEscKeyDown);
+  }, [onEscKeyDown, onMouseDown, onMouseMove, stage]);
 
   const init = useCallback(() => {
     stage.add(guidelayer);
@@ -179,8 +190,9 @@ const useGuideSectionPolygon = () => {
       guidelayer.remove();
       stage.off('mousedown', onMouseDown);
       stage.off('mousemove', onMouseMove);
-      removeGuidePolygons();
+      document.removeEventListener('keydown', onEscKeyDown);
       guideLine.remove();
+      removeGuidePolygons();
       guidePoints.current = [];
     };
   }, [
@@ -193,6 +205,7 @@ const useGuideSectionPolygon = () => {
     initLayers,
     onMouseDown,
     onMouseMove,
+    onEscKeyDown,
   ]);
 };
 

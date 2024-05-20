@@ -316,7 +316,6 @@ export default function MapList() {
 
   const onChange = useCallback(
     (p, f, s) => {
-      console.log(s);
       fetchData({
         keyword,
         page: p.current,

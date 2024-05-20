@@ -1,9 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SectionContext } from '../section-context';
 import { flatPath } from '../../../../../util/section';
 import type { RootState } from '../../../../../store/store';
+import { updateSection } from '../../../../../store/slice/add-section-slice';
 import useEditableSection from './use-editable-section';
+import { Position } from '../../../../../interface/section';
 
 declare const Konva: any;
 
@@ -12,6 +14,7 @@ const useTargetSectionPolygon = () => {
   const { newSections } = useSelector((state: RootState) => state.addSection);
   const sectionsObject = useRef<any[]>([]);
   const { create } = useEditableSection();
+  const dispatch = useDispatch();
 
   const layer = useMemo(() => {
     return new Konva.Layer();
@@ -30,12 +33,23 @@ const useTargetSectionPolygon = () => {
         const { section } = sectionsObject.current[index];
         section.points(flatPath(s.path));
       } else {
-        const section = create(index);
+        const section = create(
+          newSections[index],
+          ({ id, pointIndex, point }) => {
+            dispatch(
+              updateSection({
+                id,
+                pointIndex,
+                point,
+              }),
+            );
+          },
+        );
         layer.add(section.group);
         sectionsObject.current.push(section);
       }
     });
-  }, [create, layer, newSections]);
+  }, [create, dispatch, layer, newSections]);
 
   useEffect(() => {
     if (!stage) return;

@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { SectionContext } from '../section-context';
-import { SectionManagementStatus } from '../../../../../interface/section';
 import { addSection } from '../../../../../api/section';
 import useViewSection from '../hooks/use-view-section';
 import type { RootState } from '../../../../../store/store';
@@ -16,7 +15,7 @@ import { clearNewSections } from '../../../../../store/slice/add-section-slice';
 
 const SectionAddStatePage = () => {
   const router = useRouter();
-  const { mapData, setStatus } = useContext<any>(SectionContext);
+  const { mapData } = useContext<any>(SectionContext);
   const { fetchSection } = useViewSection();
   const { newSections } = useSelector((state: RootState) => state.addSection);
   const dispatch = useDispatch();
@@ -38,10 +37,6 @@ const SectionAddStatePage = () => {
     message.success('구역이 추가 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };
-
-  useEffect(() => {
-    setStatus(SectionManagementStatus.Add);
-  }, [setStatus]);
 
   useEffect(() => {
     fetchSection(mapData.id);

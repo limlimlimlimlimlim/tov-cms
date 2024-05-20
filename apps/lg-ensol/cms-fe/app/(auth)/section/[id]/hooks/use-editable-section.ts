@@ -9,19 +9,16 @@ import { SectionContext } from '../section-context';
 declare const Konva: any;
 
 const useEditableSection = () => {
-  const { newSections } = useSelector((state: RootState) => state.addSection);
   const { stage } = useContext<any>(SectionContext);
   const dispatch = useDispatch();
 
   const onDragMove = useCallback(
-    (e, controls, sectionIndex, pointIndex) => {
+    (e, controls, sectionData, pointIndex, updateCallback) => {
       let { newX, newY } = { newX: 0, newY: 0 };
 
       const control =
         controls[
-          pointIndex === 0
-            ? newSections[sectionIndex].path.length - 1
-            : pointIndex - 1
+          pointIndex === 0 ? sectionData.path.length - 1 : pointIndex - 1
         ];
       const x = control.x();
       const y = control.y();
@@ -36,21 +33,18 @@ const useEditableSection = () => {
       }
       e.target.x(newX);
       e.target.y(newY);
-      dispatch(
-        updateSection({
-          sectionIndex,
-          pointIndex,
-          point: createSectionPoint(newX, newY),
-        }),
-      );
+      updateCallback({
+        id: sectionData.id,
+        pointIndex,
+        point: createSectionPoint(newX, newY),
+      });
     },
-    [dispatch, newSections, stage],
+    [stage],
   );
 
   const create = useCallback(
-    (sectionIndex) => {
-      const s = newSections[sectionIndex];
-      let { path } = s;
+    (sectionData, updateCallback) => {
+      let { id, path } = sectionData;
       const group = new Konva.Group();
       const controlPointsGroup = new Konva.Group();
 
@@ -80,13 +74,18 @@ const useEditableSection = () => {
           return { x: c.x() + x, y: c.y() + y };
         });
         newPath.forEach((p, pointIndex) => {
-          dispatch(
-            updateSection({
-              sectionIndex,
-              pointIndex,
-              point: createSectionPoint(p.x, p.y),
-            }),
-          );
+          updateCallback({
+            id,
+            pointIndex,
+            point: createSectionPoint(p.x, p.y),
+          });
+          // dispatch(
+          //   updateSection({
+          //     id,
+          //     pointIndex,
+          //     point: createSectionPoint(p.x, p.y),
+          //   }),
+          // );
         });
         section.x(0);
         section.y(0);
@@ -119,7 +118,7 @@ const useEditableSection = () => {
       controls.forEach((c, index) => {
         c.on('mousedown', (e) => (e.cancelBubble = true));
         c.on('dragmove', (e) => {
-          onDragMove(e, controls, sectionIndex, index);
+          onDragMove(e, controls, sectionData, index, updateCallback);
         });
       });
 
@@ -129,7 +128,7 @@ const useEditableSection = () => {
         controls,
       };
     },
-    [newSections, onDragMove],
+    [onDragMove],
   );
 
   return {

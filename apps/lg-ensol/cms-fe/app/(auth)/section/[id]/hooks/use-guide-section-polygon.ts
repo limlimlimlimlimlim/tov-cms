@@ -40,7 +40,12 @@ const useGuideSectionPolygon = () => {
 
   const end = useCallback(() => {
     guidePoints.current.pop();
-    dispatch(addNewSection({ path: guidePoints.current }));
+    dispatch(
+      addNewSection({
+        id: Math.random().toString().split('.')[1],
+        path: guidePoints.current,
+      }),
+    );
     guidePoints.current = [];
 
     removeGuidePolygons();

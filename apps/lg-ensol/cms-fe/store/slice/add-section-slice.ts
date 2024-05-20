@@ -20,12 +20,12 @@ export const addSectionSlice = createSlice({
     updateSection: (
       state,
       action: PayloadAction<{
-        sectionIndex: number;
+        id: string;
         pointIndex: number;
         point: Position;
       }>,
     ) => {
-      state.newSections[action.payload.sectionIndex].path[
+      state.newSections.find((s) => s.id === action.payload.id).path[
         action.payload.pointIndex
       ] = action.payload.point;
     },

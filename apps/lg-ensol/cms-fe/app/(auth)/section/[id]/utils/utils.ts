@@ -17,12 +17,15 @@ export const createSectionObject = (
     strokeOpacity: 1,
   },
 ) => {
-  const group = new Konva.Group();
+  const group = new Konva.Group({
+    id: 'sectionGroup',
+  });
   const poly = new Konva.Line({
     points: path,
     fill: options.fill,
     opacity: options.opacity,
     closed: true,
+    id: 'section',
   });
 
   const stroke = new Konva.Line({
@@ -32,6 +35,7 @@ export const createSectionObject = (
     strokeWidth: options.strokeWidth,
     opacity: options.strokeOpacity,
     closed: true,
+    id: 'sectionStroke',
   });
 
   group.add(poly, stroke);

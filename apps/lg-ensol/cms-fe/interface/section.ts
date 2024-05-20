@@ -1,10 +1,5 @@
-export enum SectionManagementStatus {
-  View,
-  Add,
-}
-
 export interface Section {
-  // id: string;
+  id?: string;
   path: Position[][];
 }
 

@@ -2,18 +2,42 @@
 
 import { Button } from 'antd';
 import Link from 'next/link';
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { SectionContext } from '../section-context';
-import useViewSection from '../hooks/use-view-section';
+import { getSectionsByMapId } from '../../../../../api/section';
+import Section from '../classes/section';
+
+declare const Konva: any;
 
 const SectionViewStatePage = () => {
-  const { mapData } = useContext<any>(SectionContext);
-  const { fetchSection } = useViewSection();
+  const { mapData, stage } = useContext<any>(SectionContext);
+  const sections = useRef([]);
+  const layer = useMemo(() => {
+    return new Konva.Layer();
+  }, []);
+
+  const fetchSection = useCallback(
+    async (id) => {
+      const response = await getSectionsByMapId(id);
+      sections.current = response.data.map(
+        (data) => new Section(layer, data.path),
+      );
+    },
+    [layer],
+  );
 
   useEffect(() => {
     if (!mapData) return;
+    if (!stage) return;
+    stage.add(layer);
     fetchSection(mapData.id);
-  }, [fetchSection, mapData]);
+  }, [fetchSection, layer, mapData, stage]);
+
+  useEffect(() => {
+    return () => {
+      sections.current.forEach((s: Section) => s.destroy());
+    };
+  }, []);
 
   return (
     <>

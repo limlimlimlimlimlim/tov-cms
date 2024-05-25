@@ -1,56 +1,72 @@
 'use client';
 
 import { Button, message } from 'antd';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
 import { SectionContext } from '../section-context';
-import { addSection, getSectionsByMapId } from '../../../../../api/section';
-import type { RootState } from '../../../../../store/store';
-import useGuideSectionPolygon from '../hooks/use-guide-section-polygon';
-import useTargetSectionPolygon from '../hooks/use-target-section-polygon';
-import { clearNewSections } from '../../../../../store/slice/add-section-slice';
+import { getSectionsByMapId } from '../../../../../api/section';
+import Section from '../classes/section';
+import GuideSection from '../classes/guide-section';
+
+declare const Konva: any;
 
 const SectionAddStatePage = () => {
   const router = useRouter();
-  const { mapData } = useContext<any>(SectionContext);
-  // const { fetchSection } = useViewSection();
-  const { newSections } = useSelector((state: RootState) => state.addSection);
-  const dispatch = useDispatch();
+  const { mapData, stage } = useContext<any>(SectionContext);
+  const sections = useRef([]);
 
-  useGuideSectionPolygon();
-  useTargetSectionPolygon();
+  const guideSection = useMemo(() => {
+    if (!stage) return;
+    return new GuideSection(stage);
+  }, [stage]);
+
+  const layer = useMemo(() => {
+    return new Konva.Layer();
+  }, []);
+
+  // useGuideSectionPolygon();
+  // useTargetSectionPolygon();
 
   const onClickSave = async () => {
-    const requests = newSections.map((s) => {
-      return addSection(
-        mapData.id,
-        s.path
-          .map((p: any) => [p.x, p.y])
-          .flat()
-          .join(),
-      );
-    });
-    await Promise.all(requests);
+    // const requests = newSections.map((s) => {
+    //   return addSection(
+    //     mapData.id,
+    //     s.path
+    //       .map((p: any) => [p.x, p.y])
+    //       .flat()
+    //       .join(),
+    //   );
+    // });
+    // await Promise.all(requests);
     message.success('구역이 추가 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };
 
-  const fetchSection = useCallback(async (id) => {
-    const response = await getSectionsByMapId(id);
-    console.log(response);
-  }, []);
+  const fetchSection = useCallback(
+    async (id) => {
+      const response = await getSectionsByMapId(id);
+      sections.current = response.data.map(
+        (data) => new Section(layer, data.path),
+      );
+      guideSection?.layer.moveToTop();
+    },
+    [guideSection?.layer, layer],
+  );
 
   useEffect(() => {
+    if (!mapData) return;
+    if (!stage) return;
+    stage.add(layer);
     fetchSection(mapData.id);
-  }, [fetchSection, mapData.id]);
+  }, [fetchSection, layer, mapData, mapData.id, stage]);
 
   useEffect(() => {
     return () => {
-      dispatch(clearNewSections());
+      guideSection?.destroy();
+      sections.current.forEach((s: Section) => s.destroy());
     };
-  }, [dispatch]);
+  }, [guideSection]);
 
   return (
     <>

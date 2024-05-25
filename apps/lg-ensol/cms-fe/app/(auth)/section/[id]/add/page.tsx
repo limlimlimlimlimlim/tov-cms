@@ -8,6 +8,7 @@ import { SectionContext } from '../section-context';
 import { getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
 import GuideSection from '../classes/guide-section';
+import EditableSectionManager from '../classes/editable-section-manger';
 
 declare const Konva: any;
 
@@ -19,6 +20,11 @@ const SectionAddStatePage = () => {
   const guideSection = useMemo(() => {
     if (!stage) return;
     return new GuideSection(stage);
+  }, [stage]);
+
+  const editableSectionManager = useMemo(() => {
+    if (!stage) return;
+    return new EditableSectionManager(stage);
   }, [stage]);
 
   const layer = useMemo(() => {
@@ -45,25 +51,45 @@ const SectionAddStatePage = () => {
 
   const fetchSection = useCallback(
     async (id) => {
+      if (!guideSection) return;
+      if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
       sections.current = response.data.map(
         (data) => new Section(layer, data.path),
       );
-      guideSection?.layer.moveToTop();
+      editableSectionManager.layer.moveToTop();
+      guideSection.layer.moveToTop();
     },
-    [guideSection?.layer, layer],
+    [editableSectionManager, guideSection, layer],
   );
 
   useEffect(() => {
     if (!mapData) return;
     if (!stage) return;
+    if (!guideSection) return;
+    if (!editableSectionManager) return;
     stage.add(layer);
     fetchSection(mapData.id);
-  }, [fetchSection, layer, mapData, mapData.id, stage]);
+    guideSection.on('complete', (path) => {
+      editableSectionManager.addSection(path);
+    });
+
+    editableSectionManager.on('select', () => {
+      guideSection.clear();
+    });
+  }, [
+    editableSectionManager,
+    fetchSection,
+    guideSection,
+    layer,
+    mapData,
+    stage,
+  ]);
 
   useEffect(() => {
     return () => {
-      guideSection?.destroy();
+      if (!guideSection) return;
+      guideSection.destroy();
       sections.current.forEach((s: Section) => s.destroy());
     };
   }, [guideSection]);

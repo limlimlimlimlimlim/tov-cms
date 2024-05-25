@@ -29,17 +29,32 @@ class SectionController extends EventEmitter {
       radius: 6,
       fill: this.isEmpty() ? 'red' : 'yellow',
       stroke: 'black',
-      draggble: true,
+      draggable: false,
     });
 
     this._container.add(controller);
+    // const index = this._controllers.length;
     this._controllers.push(controller);
+
     controller.on('mousedown', (e) => {
       e.cancelBubble = true;
       if (this.isFirst(e.target)) {
         this.emit('complete');
       }
     });
+
+    // controller.on('mousemove', (e) => {
+    //   e.cancelBubble = true;
+    //   this.emit('oncontroller');
+    // });
+
+    // controller.on('dragmove', (e) => {
+    //   this.emit(
+    //     'update',
+    //     index,
+    //     this._layer.getStage().getRelativePointerPosition(),
+    //   );
+    // });
   }
 
   destroy() {

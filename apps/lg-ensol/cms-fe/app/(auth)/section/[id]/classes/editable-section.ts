@@ -6,10 +6,9 @@ import SectionController from './section-controller';
 
 declare const Konva: any;
 
-class GuideSection extends EventEmitter {
+class EditableSection extends EventEmitter {
   private _layer: any;
   private _section: Section;
-  private _path: Path = [];
   private _downHandler;
   private _moveHandler;
   private _keydownHandler;
@@ -29,11 +28,12 @@ class GuideSection extends EventEmitter {
 
   constructor(
     private _stage: any,
+    private _path: Path = [],
     private _options?: Options,
   ) {
     super();
     if (!_options) {
-      this._options = GuideSection._defaultOption;
+      this._options = EditableSection._defaultOption;
     }
     this.create();
     this.initEvents();
@@ -107,7 +107,8 @@ class GuideSection extends EventEmitter {
 
   private onEscKeyDown(e) {
     if (e.key === 'Escape' || e.key === 'Esc') {
-      this.clear();
+      this.clearPolygon();
+      this._controller.destroy();
     }
   }
 
@@ -153,11 +154,6 @@ class GuideSection extends EventEmitter {
     this._path = [];
   }
 
-  clear() {
-    this.clearPolygon();
-    this._controller.destroy();
-  }
-
   destroy() {
     this._stage.off('mousedown', this._downHandler);
     this._stage.off('mousemove', this._moveHandler);
@@ -167,4 +163,4 @@ class GuideSection extends EventEmitter {
   }
 }
 
-export default GuideSection;
+export default EditableSection;

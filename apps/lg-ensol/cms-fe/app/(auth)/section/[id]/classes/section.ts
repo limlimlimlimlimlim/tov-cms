@@ -1,3 +1,5 @@
+import EventEmitter from 'events';
+
 declare const Konva: any;
 
 export interface Point {
@@ -14,10 +16,10 @@ export interface Options {
   strokeOpacity?: number;
   selectable?: boolean;
   closed?: boolean;
+  draggable?: boolean;
 }
 
-class Section {
-  protected _id: string;
+class Section extends EventEmitter {
   protected _container: any;
   protected _polygon: any;
   protected _path: Path;
@@ -35,13 +37,21 @@ class Section {
     private _layer,
     _path: Path | string,
     private _options?: Options,
+    private _id?,
   ) {
-    this._id = Math.random().toString().split('.')[1];
+    super();
+    this._id = _id ? _id : Math.random().toString().split('.')[1];
     if (!_options) {
       this._options = Section._defaultOption;
     }
     this.create();
     this.update(_path);
+    if (_options?.selectable) {
+      this._container.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        this.emit('select');
+      });
+    }
   }
 
   private create() {

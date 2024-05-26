@@ -73,10 +73,6 @@ const SectionAddStatePage = () => {
     guideSection.on('complete', (path) => {
       editableSectionManager.addSection(path);
     });
-
-    editableSectionManager.on('select', () => {
-      guideSection.clear();
-    });
   }, [
     editableSectionManager,
     fetchSection,

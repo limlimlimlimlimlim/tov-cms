@@ -29,11 +29,11 @@ class SectionController extends EventEmitter {
       radius: 6,
       fill: this.isEmpty() ? 'red' : 'yellow',
       stroke: 'black',
-      draggable: false,
+      draggable: true,
     });
 
     this._container.add(controller);
-    // const index = this._controllers.length;
+    const index = this._controllers.length;
     this._controllers.push(controller);
 
     controller.on('mousedown', (e) => {
@@ -43,18 +43,25 @@ class SectionController extends EventEmitter {
       }
     });
 
-    // controller.on('mousemove', (e) => {
-    //   e.cancelBubble = true;
-    //   this.emit('oncontroller');
-    // });
+    controller.on('mousemove', (e) => {
+      e.cancelBubble = true;
+      this.emit('oncontroller');
+    });
 
-    // controller.on('dragmove', (e) => {
-    //   this.emit(
-    //     'update',
-    //     index,
-    //     this._layer.getStage().getRelativePointerPosition(),
-    //   );
-    // });
+    controller.on('dragmove', () => {
+      this.emit(
+        'update',
+        index,
+        this._layer.getStage().getRelativePointerPosition(),
+      );
+    });
+  }
+
+  clear() {
+    this._controllers.forEach((c) => {
+      c.destroy();
+      this._controllers = [];
+    });
   }
 
   destroy() {

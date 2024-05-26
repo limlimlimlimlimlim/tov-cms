@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-import { shiftMove } from '../utils/utils';
 import type { Options, Path, Point } from './section';
 import Section from './section';
 import SectionController from './section-controller';
@@ -8,18 +7,20 @@ declare const Konva: any;
 
 class EditableSection extends EventEmitter {
   private _layer: any;
-  private _section: Section;
-  private _downHandler;
-  private _moveHandler;
+  private _editableSection: Section;
   private _keydownHandler;
   private _mousePoint: Point | null = null;
   private _controller;
+  private _path: Path;
   private static _defaultOption: Options = {
-    selectable: false,
-    fill: '',
-    stroke: '#FF2233',
+    selectable: true,
+    fill: '#0CC6D2',
+    opacity: 0.3,
     strokeWidth: 1,
+    stroke: '#0000FF',
+    strokeOpacity: 1,
     closed: true,
+    draggable: true,
   };
 
   get layer() {
@@ -28,44 +29,63 @@ class EditableSection extends EventEmitter {
 
   constructor(
     private _stage: any,
-    private _path: Path = [],
+    private _targetSection: Section,
     private _options?: Options,
   ) {
     super();
     if (!_options) {
       this._options = EditableSection._defaultOption;
     }
+
+    this._path = [..._targetSection.path];
     this.create();
     this.initEvents();
   }
 
   private create() {
     this._layer = new Konva.Layer();
-    this._section = new Section(this._layer, this._path, this._options);
     this._stage.add(this._layer);
 
-    this._controller = new SectionController(this._layer, this._section);
+    this.createEditableSection();
+    this.createController();
   }
 
-  private initEvents() {
-    this._downHandler = (e) => {
-      this.onMouseDown(e);
-    };
+  private createEditableSection() {
+    if (this._editableSection) this._editableSection.destroy();
+    this._editableSection = new Section(this._layer, this._path, this._options);
 
-    this._moveHandler = (e) => {
-      this.onMouseMove(e);
-    };
-    this._keydownHandler = (e) => {
-      this.onEscKeyDown(e);
-    };
-    this._stage.on('mousedown', this._downHandler);
-    this._stage.on('mousemove', this._moveHandler);
-    document.addEventListener('keydown', this._keydownHandler);
+    let startPoint: Point = { x: 0, y: 0 };
+    this._editableSection.on('dragstart', (e) => {
+      this._controller.clear();
+      e.cancelBubble = true;
+      startPoint = this._stage.getRelativePointerPosition();
+    });
 
-    this._controller.on('complete', () => {
-      this.emit('complete', this._path);
-      this.clearPolygon();
-      this._controller.destroy();
+    this._editableSection.on('dragend', (e) => {
+      e.cancelBubble = true;
+      const endPoint = this._stage.getRelativePointerPosition();
+      const offset = {
+        x: endPoint.x - startPoint.x,
+        y: endPoint.y - startPoint.y,
+      };
+      this._path = this._path.map((p) => {
+        return { x: p.x + offset.x, y: p.y + offset.y };
+      });
+      this.createEditableSection();
+      this.createController();
+    });
+  }
+
+  private createController() {
+    if (this._controller) this._controller.destroy();
+
+    this._controller = new SectionController(
+      this._layer,
+      this._editableSection,
+    );
+
+    this._path.forEach((point) => {
+      this._controller.addController(point);
     });
 
     this._controller.on('oncontroller', () => {
@@ -79,45 +99,29 @@ class EditableSection extends EventEmitter {
     });
   }
 
-  private onMouseDown(e) {
-    if (e.evt.altKey) return;
-    if (this.isEmptyPath()) {
-      this._mousePoint = this._stage.getRelativePointerPosition();
-    }
-    if (this._mousePoint) {
-      this.addPoint({
-        x: this._mousePoint.x,
-        y: this._mousePoint.y,
-      });
-    }
+  private initEvents() {
+    this._keydownHandler = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        this.onEscKeyDown();
+      }
+
+      if (e.key === 'Enter') {
+        this.onEnterKeyDown();
+      }
+    };
+    document.addEventListener('keydown', this._keydownHandler);
   }
 
-  private onMouseMove(e) {
-    if (this.isEmptyPath()) return;
-    const { shiftKey } = e.evt;
-    const { x: mouseX, y: mouseY } = this._stage.getRelativePointerPosition();
-    if (shiftKey) {
-      const { x, y } = this.lastPoint();
-      this._mousePoint = shiftMove(x, y, mouseX, mouseY);
-    } else {
-      this._mousePoint = { x: mouseX, y: mouseY };
-    }
-    this.updateSection();
+  private onEscKeyDown() {
+    this.clearPolygon();
+    this._controller.clear();
+    this.emit('cancel');
   }
 
-  private onEscKeyDown(e) {
-    if (e.key === 'Escape' || e.key === 'Esc') {
-      this.clearPolygon();
-      this._controller.destroy();
-    }
-  }
-
-  private isEmptyPath() {
-    return this._path.length === 0;
-  }
-
-  private lastPoint(offset = 0) {
-    return this._path[this.lastPointIndex() - offset];
+  private onEnterKeyDown() {
+    this.emit('complete', [...this._path]);
+    this.clearPolygon();
+    this._controller.destroy();
   }
 
   private lastPointIndex() {
@@ -128,38 +132,28 @@ class EditableSection extends EventEmitter {
     this._path[index] = point;
   };
 
-  private addPoint(point: Point) {
-    this._path.push(point);
-    this._controller.addController(point);
-  }
-
-  private startPoint(point: Point) {
-    this.addPoint(point);
-    this.addPoint({ x: point.x, y: point.y });
-  }
-
   private updateSection() {
     if (this._mousePoint) {
-      this._section.update([
+      this._editableSection.update([
         ...this._path,
         { x: this._mousePoint.x, y: this._mousePoint.y },
       ]);
       return;
     }
-    this._section.update([...this._path]);
+    this._editableSection.update([...this._path]);
   }
 
   private clearPolygon() {
-    this._section.update([]);
+    this._editableSection.update([]);
     this._path = [];
   }
 
   destroy() {
-    this._stage.off('mousedown', this._downHandler);
-    this._stage.off('mousemove', this._moveHandler);
     document.removeEventListener('keydown', this._keydownHandler);
-    this._section.destroy();
+    this._editableSection.destroy();
     this._controller.destroy();
+    this._layer.destroyChildren();
+    this._layer.destroy();
   }
 }
 

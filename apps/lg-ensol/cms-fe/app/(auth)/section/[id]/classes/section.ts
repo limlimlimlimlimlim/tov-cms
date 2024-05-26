@@ -33,6 +33,10 @@ class Section extends EventEmitter {
     closed: true,
   };
 
+  get path() {
+    return this._path;
+  }
+
   constructor(
     private _layer,
     _path: Path | string,
@@ -50,6 +54,16 @@ class Section extends EventEmitter {
       this._container.on('mousedown', (e) => {
         e.cancelBubble = true;
         this.emit('select');
+      });
+    }
+
+    if (_options?.draggable) {
+      this._container.on('dragstart', (e) => {
+        this.emit('dragstart', e);
+      });
+
+      this._container.on('dragend', (e) => {
+        this.emit('dragend', e);
       });
     }
   }

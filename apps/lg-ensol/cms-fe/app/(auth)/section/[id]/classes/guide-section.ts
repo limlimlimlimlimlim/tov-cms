@@ -65,7 +65,7 @@ class GuideSection extends EventEmitter {
     this._controller.on('complete', () => {
       this.emit('complete', this._path);
       this.clearPolygon();
-      this._controller.destroy();
+      this._controller.clear();
     });
 
     this._controller.on('oncontroller', () => {
@@ -155,7 +155,7 @@ class GuideSection extends EventEmitter {
 
   clear() {
     this.clearPolygon();
-    this._controller.destroy();
+    this._controller.clear();
   }
 
   destroy() {

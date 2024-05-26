@@ -1,12 +1,15 @@
 import EventEmitter from 'events';
-import type { Options } from './section';
+import type { Options, Path } from './section';
 import Section from './section';
+import EditableSection from './editable-section';
 
 declare const Konva: any;
 
 class EditableSectionManager extends EventEmitter {
   private _layer: any;
   private _sections: Section[] = [];
+  private _editableSectoin: EditableSection;
+  private _selectedSection: Section;
   private static _defaultOption: Options = {
     selectable: true,
     fill: '#ff9900',
@@ -46,7 +49,32 @@ class EditableSectionManager extends EventEmitter {
     this._sections.push(section);
 
     section.on('select', () => {
-      this.emit('select', section);
+      this.onSelect(section);
+    });
+  }
+
+  private onSelect(section: Section) {
+    this.emit('select', section);
+    if (this._editableSectoin) {
+      this._editableSectoin.destroy();
+    }
+    if (this._selectedSection) {
+      this._selectedSection.show();
+    }
+
+    this._editableSectoin = new EditableSection(this._stage, section);
+    this._selectedSection = section;
+    this._selectedSection.hide();
+
+    this._editableSectoin.on('cancel', () => {
+      this._selectedSection.show();
+      this._editableSectoin.destroy();
+    });
+
+    this._editableSectoin.on('complete', (path: Path) => {
+      this._selectedSection.show();
+      this._selectedSection.update(path);
+      this._editableSectoin.destroy();
     });
   }
 

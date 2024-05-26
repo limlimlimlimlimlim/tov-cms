@@ -35,9 +35,12 @@ const SectionViewStatePage = () => {
 
   useEffect(() => {
     return () => {
+      if (!stage) return;
+      if (!layer) return;
       sections.current.forEach((s: Section) => s.destroy());
+      layer.destroy();
     };
-  }, []);
+  }, [layer, stage]);
 
   return (
     <>

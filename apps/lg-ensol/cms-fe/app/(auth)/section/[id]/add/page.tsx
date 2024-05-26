@@ -82,8 +82,9 @@ const SectionAddStatePage = () => {
       editableSectionManager.destroy();
       sections.current.forEach((s: Section) => s.destroy());
       layer.destroy();
+      stage.destroyChildren();
     };
-  }, [editableSectionManager, guideSection, layer]);
+  }, [editableSectionManager, guideSection, layer, stage]);
 
   return (
     <>

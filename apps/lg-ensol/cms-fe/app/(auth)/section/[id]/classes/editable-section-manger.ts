@@ -83,7 +83,10 @@ class EditableSectionManager extends EventEmitter {
   }
 
   destroy() {
-    this._editableSectoin.destroy();
+    if (this._editableSectoin) {
+      this._editableSectoin.destroy();
+    }
+
     this._sections.forEach((s) => s.destroy());
   }
 }

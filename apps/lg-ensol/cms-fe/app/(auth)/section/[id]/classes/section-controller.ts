@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
-import type Section from './section';
 import { shiftMove } from '../utils/utils';
+import type Section from './section';
 
 declare const Konva: any;
 
@@ -18,16 +18,12 @@ class SectionController extends EventEmitter {
   private create() {
     this._container = new Konva.Group();
     this._layer.add(this._container);
-    this._container.on('mousedown', (e) => {
-      console.log(e.target);
-      console.log(e.currentTarget);
-    });
   }
 
   addController(point) {
     const controller = new Konva.Circle({
       ...point,
-      radius: 6,
+      radius: 4,
       fill: this.isEmpty() ? 'red' : 'yellow',
       stroke: 'black',
       draggable: true,

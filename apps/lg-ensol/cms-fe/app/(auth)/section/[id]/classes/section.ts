@@ -49,6 +49,10 @@ class Section extends EventEmitter {
     return this._polygon;
   }
 
+  get options() {
+    return this._options;
+  }
+
   constructor(
     private _layer,
     _path: Path | string,
@@ -64,8 +68,10 @@ class Section extends EventEmitter {
     this.update(_path);
     if (_options?.selectable) {
       this._container.on('mousedown', (e) => {
-        e.cancelBubble = true;
-        this.emit('select');
+        if (!e.evt.altKey) {
+          e.cancelBubble = true;
+          this.emit('select');
+        }
       });
     }
 
@@ -89,26 +95,38 @@ class Section extends EventEmitter {
     this._layer.add(this._container);
     this._container.add(this._polygon);
   }
+
   show() {
     this._polygon.show();
   }
+
   hide() {
     this._polygon.hide();
   }
+
   update(path: Path | string) {
     this._path = this.converPath(path);
     this._polygon.points(this.flatPath());
   }
+
   updateAt(index, point) {
     this._path[index] = point;
     this._polygon.points(this.flatPath());
   }
+
   destroy() {
     this._polygon.destroy();
     this._container.destroy();
   }
+
   toArrayPath() {
     return this.flatPath();
+  }
+
+  updateOption(option): any {
+    if (!this._options) return;
+    this._options = { ...this._options, ...option };
+    this._polygon.setAttrs(option);
   }
 
   private flatPath() {

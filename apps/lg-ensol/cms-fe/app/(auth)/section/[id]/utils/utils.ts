@@ -63,3 +63,14 @@ const roundToNearest = (value: number, nearest = 10) => {
   }
   return value + (nearest - remainder);
 };
+
+export const convertToKonvaOptions = (options) => {
+  return {
+    fill: options.color,
+    opacity: options.alpha / 100,
+    strokeWidth: options.strokeWidth,
+    stroke: options.strokeColor,
+    strokeOpacity: options.strokeAlpha / 100,
+    closed: true,
+  };
+};

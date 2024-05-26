@@ -23,6 +23,10 @@ class EditableSectionManager extends EventEmitter {
     return this._layer;
   }
 
+  get sections() {
+    return this._sections;
+  }
+
   constructor(
     private _stage: any,
     private _options?: any,
@@ -79,7 +83,8 @@ class EditableSectionManager extends EventEmitter {
   }
 
   destroy() {
-    //
+    this._editableSectoin.destroy();
+    this._sections.forEach((s) => s.destroy());
   }
 }
 

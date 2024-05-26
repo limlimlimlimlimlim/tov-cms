@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
-import { getSectionsByMapId } from '../../../../../api/section';
+import { addSection, getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
 import GuideSection from '../classes/guide-section';
 import EditableSectionManager from '../classes/editable-section-manger';
@@ -31,20 +31,12 @@ const SectionAddStatePage = () => {
     return new Konva.Layer();
   }, []);
 
-  // useGuideSectionPolygon();
-  // useTargetSectionPolygon();
-
   const onClickSave = async () => {
-    // const requests = newSections.map((s) => {
-    //   return addSection(
-    //     mapData.id,
-    //     s.path
-    //       .map((p: any) => [p.x, p.y])
-    //       .flat()
-    //       .join(),
-    //   );
-    // });
-    // await Promise.all(requests);
+    if (!editableSectionManager) return;
+    const requests = editableSectionManager.sections.map((s) => {
+      return addSection(mapData.id, s.toArrayPath().join());
+    });
+    await Promise.all(requests);
     message.success('구역이 추가 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };
@@ -85,10 +77,13 @@ const SectionAddStatePage = () => {
   useEffect(() => {
     return () => {
       if (!guideSection) return;
+      if (!editableSectionManager) return;
       guideSection.destroy();
+      editableSectionManager.destroy();
       sections.current.forEach((s: Section) => s.destroy());
+      layer.destroy();
     };
-  }, [guideSection]);
+  }, [editableSectionManager, guideSection, layer]);
 
   return (
     <>

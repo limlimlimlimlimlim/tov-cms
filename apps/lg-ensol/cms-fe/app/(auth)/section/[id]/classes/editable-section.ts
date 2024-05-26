@@ -68,9 +68,8 @@ class EditableSection extends EventEmitter {
         x: endPoint.x - startPoint.x,
         y: endPoint.y - startPoint.y,
       };
-      this._path = this._path.map((p) => {
-        return { x: p.x + offset.x, y: p.y + offset.y };
-      });
+      this.movePath(offset);
+
       this.createEditableSection();
       this.createController();
     });
@@ -103,13 +102,53 @@ class EditableSection extends EventEmitter {
     this._keydownHandler = (e) => {
       if (e.key === 'Escape' || e.key === 'Esc') {
         this.onEscKeyDown();
+        return;
       }
 
       if (e.key === 'Enter') {
         this.onEnterKeyDown();
+        return;
+      }
+
+      if (e.key === 'ArrowRight') {
+        e.cancelBubble = true;
+        this.movePath({ x: e.shiftKey ? 10 : 1, y: 0 });
+        this.createEditableSection();
+        this.createController();
+        return;
+      }
+
+      if (e.key === 'ArrowLeft') {
+        e.cancelBubble = true;
+        this.movePath({ x: e.shiftKey ? -10 : -1, y: 0 });
+        this.createEditableSection();
+        this.createController();
+        return;
+      }
+
+      if (e.key === 'ArrowUp') {
+        e.cancelBubble = true;
+        this.movePath({ x: 0, y: e.shiftKey ? -10 : -1 });
+        this.createEditableSection();
+        this.createController();
+        return;
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.cancelBubble = true;
+        this.movePath({ x: 0, y: e.shiftKey ? 10 : 1 });
+        this.createEditableSection();
+        this.createController();
+        return;
       }
     };
     document.addEventListener('keydown', this._keydownHandler);
+  }
+
+  private movePath(offset) {
+    this._path = this._path.map((p) => {
+      return { x: p.x + offset.x, y: p.y + offset.y };
+    });
   }
 
   private onEscKeyDown() {
@@ -122,10 +161,6 @@ class EditableSection extends EventEmitter {
     this.emit('complete', [...this._path]);
     this.clearPolygon();
     this._controller.destroy();
-  }
-
-  private lastPointIndex() {
-    return this._path.length - 1;
   }
 
   private updatePoint = (index, point: Point) => {

@@ -41,6 +41,14 @@ class Section extends EventEmitter {
     return this._id;
   }
 
+  get container() {
+    return this._container;
+  }
+
+  get polygon() {
+    return this._polygon;
+  }
+
   constructor(
     private _layer,
     _path: Path | string,

@@ -13,10 +13,11 @@ class EditableSectionManager extends EventEmitter {
   private _selectedSection: Section;
   private static _defaultOption: Options = {
     selectable: true,
-    fill: '#ff9900',
-    stroke: '#FF2233',
+    fill: '#D2C60C',
+    opacity: 0.3,
     strokeWidth: 1,
-    opacity: 0.5,
+    stroke: '#D2C60C',
+    strokeOpacity: 1,
     closed: true,
   };
 
@@ -41,16 +42,11 @@ class EditableSectionManager extends EventEmitter {
       this._options = EditableSectionManager._defaultOption;
     }
     this.create();
-    this.initEvents();
   }
 
   private create() {
     this._layer = new Konva.Layer();
     this._stage.add(this._layer);
-  }
-
-  private initEvents() {
-    //
   }
 
   addSection(path, id?) {

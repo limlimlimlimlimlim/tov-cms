@@ -50,7 +50,9 @@ const SectionViewStatePage = () => {
       <Button size="small">
         <Link href={`/section/${mapData.id}/edit`}>구역 수정</Link>
       </Button>
-      <Button size="small">구역 삭제</Button>
+      <Button size="small">
+        <Link href={`/section/${mapData.id}/delete`}>구역 삭제</Link>
+      </Button>
       <Button size="small">
         <Link href={`/section/${mapData.id}/design`}>구역 디자인</Link>
       </Button>

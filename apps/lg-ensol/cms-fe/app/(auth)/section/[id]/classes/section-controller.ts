@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import type Section from './section';
+import { shiftMove } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -48,13 +49,37 @@ class SectionController extends EventEmitter {
       this.emit('oncontroller');
     });
 
-    controller.on('dragmove', () => {
-      this.emit(
-        'update',
-        index,
-        this._layer.getStage().getRelativePointerPosition(),
-      );
+    controller.on('dragmove', (e) => {
+      const { x: relX, y: relY } = this._layer
+        .getStage()
+        .getRelativePointerPosition();
+
+      if (e.evt.shiftKey) {
+        const prevContoller = this.prevContoller(controller);
+        const { x, y } = shiftMove(
+          prevContoller.x(),
+          prevContoller.y(),
+          relX,
+          relY,
+        );
+        this.emit('update', index, { x, y });
+        controller.x(x);
+        controller.y(y);
+      } else {
+        this.emit('update', index, { x: relX, y: relY });
+      }
     });
+  }
+
+  private prevContoller(contoller) {
+    const index = this._controllers.findIndex((c) => c === contoller);
+    let prevIndex = 0;
+    if (index === 0) {
+      prevIndex = this._controllers.length - 1;
+    } else {
+      prevIndex = index - 1;
+    }
+    return this._controllers[prevIndex];
   }
 
   clear() {

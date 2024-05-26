@@ -1,64 +1,73 @@
 'use client';
 
 import { Button, message } from 'antd';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
-import { getSectionsByMapId } from '../../../../../api/section';
-import useEditableSection from '../hooks/use-editable-section';
-import { pathToPoints } from '../../../../../util/section';
+import {
+  getSectionsByMapId,
+  updateSectionById,
+} from '../../../../../api/section';
+import EditableSectionManager from '../classes/editable-section-manger';
+import type Section from '../classes/section';
 
 declare const Konva: any;
 
 const SectionEditStatePage = () => {
-  console.log('SectionEditStatePage');
   const router = useRouter();
-  const { stage, mapData, sectionObjects } = useContext<any>(SectionContext);
-  const { create } = useEditableSection();
+  const { mapData, stage } = useContext<any>(SectionContext);
+
+  const editableSectionManager = useMemo(() => {
+    if (!stage) return;
+    return new EditableSectionManager(stage);
+  }, [stage]);
+
   const layer = useMemo(() => {
     return new Konva.Layer();
   }, []);
-  const onClickSave = () => {
-    // const requests = newSections.map((s) => {
-    //   return addSection(
-    //     mapData.id,
-    //     s.path
-    //       .map((p: any) => [p.x, p.y])
-    //       .flat()
-    //       .join(),
-    //   );
-    // });
-    // await Promise.all(requests);
+
+  const onClickSave = async () => {
+    if (!editableSectionManager) return;
+    const requests = Array.from(editableSectionManager.editSections).map(
+      ([key, value]: [number, Section]) => {
+        return updateSectionById(key, mapData.id, value.toArrayPath().join());
+      },
+    );
+
+    await Promise.all(requests);
     message.success('구역이 수정 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };
 
   const fetchSection = useCallback(
     async (id) => {
+      if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
-      response.data.forEach((s) => {
-        s.path = pathToPoints(s.path);
-        const { group } = create(s, () => {
-          //
-        });
-
-        layer.add(group);
+      response.data.forEach((d) => {
+        editableSectionManager.addSection(d.path, d.id);
       });
+      editableSectionManager.layer.moveToTop();
     },
-    [create, layer],
+    [editableSectionManager],
   );
 
   useEffect(() => {
+    if (!mapData) return;
     if (!stage) return;
-    fetchSection(mapData.id);
+    if (!editableSectionManager) return;
     stage.add(layer);
-    console.log(layer);
-  }, [fetchSection, layer, mapData.id, stage]);
+    fetchSection(mapData.id);
+  }, [editableSectionManager, fetchSection, layer, mapData, mapData.id, stage]);
 
-  //const response = await getSectionsByMapId(id);
-
-  useEffect(() => {}, [sectionObjects]);
+  useEffect(() => {
+    return () => {
+      if (!editableSectionManager) return;
+      editableSectionManager.destroy();
+      layer.destroy();
+      layer.remove();
+    };
+  }, [editableSectionManager, layer, stage]);
 
   return (
     <>

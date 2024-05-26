@@ -164,6 +164,8 @@ class GuideSection extends EventEmitter {
     document.removeEventListener('keydown', this._keydownHandler);
     this._section.destroy();
     this._controller.destroy();
+    this._layer.destroy();
+    this._layer.remove();
   }
 }
 

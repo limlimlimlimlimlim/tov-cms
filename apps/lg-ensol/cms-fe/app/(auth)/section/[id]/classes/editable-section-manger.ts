@@ -8,6 +8,7 @@ declare const Konva: any;
 class EditableSectionManager extends EventEmitter {
   private _layer: any;
   private _sections: Section[] = [];
+  private _editSections: any = new Map();
   private _editableSectoin: EditableSection;
   private _selectedSection: Section;
   private static _defaultOption: Options = {
@@ -25,6 +26,10 @@ class EditableSectionManager extends EventEmitter {
 
   get sections() {
     return this._sections;
+  }
+
+  get editSections() {
+    return this._editSections;
   }
 
   constructor(
@@ -49,7 +54,7 @@ class EditableSectionManager extends EventEmitter {
   }
 
   addSection(path, id?) {
-    const section = new Section(this._layer, path, this._options);
+    const section = new Section(this._layer, path, this._options, id);
     this._sections.push(section);
 
     section.on('select', () => {
@@ -79,6 +84,7 @@ class EditableSectionManager extends EventEmitter {
       this._selectedSection.show();
       this._selectedSection.update(path);
       this._editableSectoin.destroy();
+      this._editSections.set(this._selectedSection.id, this._selectedSection);
     });
   }
 
@@ -88,6 +94,8 @@ class EditableSectionManager extends EventEmitter {
     }
 
     this._sections.forEach((s) => s.destroy());
+    this._layer.remove();
+    this._layer.destroy();
   }
 }
 

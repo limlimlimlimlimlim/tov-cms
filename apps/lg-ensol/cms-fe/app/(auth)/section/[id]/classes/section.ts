@@ -37,6 +37,10 @@ class Section extends EventEmitter {
     return this._path;
   }
 
+  get id() {
+    return this._id;
+  }
+
   constructor(
     private _layer,
     _path: Path | string,

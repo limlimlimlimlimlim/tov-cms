@@ -11,6 +11,7 @@ import {
 } from '../../../../../api/section';
 import EditableSectionManager from '../classes/editable-section-manger';
 import type Section from '../classes/section';
+import { convertToKonvaOptions } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -45,7 +46,11 @@ const SectionEditStatePage = () => {
       if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        editableSectionManager.addSection(d.path, d.id);
+        editableSectionManager.addSection(
+          d.path,
+          d.id,
+          convertToKonvaOptions(d),
+        );
       });
       editableSectionManager.layer.moveToTop();
     },

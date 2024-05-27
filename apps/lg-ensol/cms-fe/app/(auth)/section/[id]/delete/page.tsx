@@ -10,6 +10,7 @@ import {
   getSectionsByMapId,
 } from '../../../../../api/section';
 import DeletableSectionManager from '../classes/deletable-section-manger';
+import { convertToKonvaOptions } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -44,7 +45,11 @@ const SectionDeleteStatePage = () => {
       if (!deletableSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        deletableSectionManager.addSection(d.path, d.id);
+        deletableSectionManager.addSection(
+          d.path,
+          d.id,
+          convertToKonvaOptions(d),
+        );
       });
       deletableSectionManager.layer.moveToTop();
     },

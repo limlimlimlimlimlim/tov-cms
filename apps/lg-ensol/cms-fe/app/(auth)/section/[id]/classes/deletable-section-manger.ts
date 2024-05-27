@@ -46,8 +46,13 @@ class DeletableSectionManager extends EventEmitter {
     this._stage.add(this._layer);
   }
 
-  addSection(path, id?) {
-    const section = new Section(this._layer, path, this._options, id);
+  addSection(path, id, options) {
+    const section = new Section(
+      this._layer,
+      path,
+      { ...this._options, ...options },
+      id,
+    );
     this._sections.push(section);
 
     section.on('select', () => {

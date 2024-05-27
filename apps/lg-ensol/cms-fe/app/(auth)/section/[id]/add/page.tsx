@@ -9,6 +9,7 @@ import { addSection, getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
 import GuideSection from '../classes/guide-section';
 import EditableSectionManager from '../classes/editable-section-manger';
+import { convertToKonvaOptions } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -47,7 +48,7 @@ const SectionAddStatePage = () => {
       if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
       sections.current = response.data.map(
-        (data) => new Section(layer, data.path),
+        (data) => new Section(layer, data.path, convertToKonvaOptions(data)),
       );
       editableSectionManager.layer.moveToTop();
       guideSection.layer.moveToTop();

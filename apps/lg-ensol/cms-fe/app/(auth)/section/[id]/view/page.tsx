@@ -6,6 +6,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { SectionContext } from '../section-context';
 import { getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
+import { convertToKonvaOptions } from '../utils/utils';
 
 declare const Konva: any;
 
@@ -20,7 +21,7 @@ const SectionViewStatePage = () => {
     async (id) => {
       const response = await getSectionsByMapId(id);
       sections.current = response.data.map(
-        (data) => new Section(layer, data.path),
+        (data) => new Section(layer, data.path, convertToKonvaOptions(data)),
       );
     },
     [layer],

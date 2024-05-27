@@ -20,10 +20,11 @@ export default function SectionDetailLayout({ children }) {
   return (
     <SectionProvider>
       <Flex gap="small">
-        <SectionForm>{children}</SectionForm>
-        <Button size="small" onClick={showDrawer}>
-          시설 목록
-        </Button>
+        <SectionForm>
+          {children}
+          <Button onClick={showDrawer}>시설 목록</Button>
+        </SectionForm>
+
         <FacilityContainer open={open} onClose={onClose} />
       </Flex>
     </SectionProvider>

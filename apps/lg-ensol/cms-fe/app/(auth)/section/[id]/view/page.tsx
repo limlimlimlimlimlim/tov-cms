@@ -45,19 +45,19 @@ const SectionViewStatePage = () => {
 
   return (
     <>
-      <Button size="small">
+      <Button>
         <Link href={`/section/${mapData.id}/add`}>구역 추가</Link>
       </Button>
-      <Button size="small">
+      <Button>
         <Link href={`/section/${mapData.id}/edit`}>구역 수정</Link>
       </Button>
-      <Button size="small">
+      <Button>
         <Link href={`/section/${mapData.id}/delete`}>구역 삭제</Link>
       </Button>
-      <Button size="small">
+      <Button>
         <Link href={`/section/${mapData.id}/design`}>구역 디자인</Link>
       </Button>
-      <Button size="small">
+      <Button>
         <Link href={`/section/${mapData.id}/cancel`}>위치 해제</Link>
       </Button>
     </>

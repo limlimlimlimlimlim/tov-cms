@@ -9,8 +9,8 @@ const SectionCancelStatePage = () => {
   const { mapData } = useContext<any>(SectionContext);
   return (
     <>
-      <Button size="small">저장</Button>
-      <Button size="small">
+      <Button>저장</Button>
+      <Button>
         <Link href={`/section/${mapData.id}/view`}>취소</Link>
       </Button>
     </>

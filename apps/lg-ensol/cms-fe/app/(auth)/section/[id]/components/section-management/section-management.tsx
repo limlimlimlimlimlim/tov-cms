@@ -1,7 +1,8 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { Button, Flex } from 'antd';
+import { Button, Card, Flex } from 'antd';
 import { getBaseUrl } from '../../../../../../util/axios-client';
 import { SectionContext } from '../../section-context';
+import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 
 declare const Konva: any;
 interface Pros {
@@ -69,16 +70,18 @@ const SectionManagement = ({ mapData }: Pros) => {
 
   return (
     <>
-      <Flex justify="center">
+      <Flex justify="center" style={{ backgroundColor: '#EEE' }}>
         <div ref={stageContainer} />
       </Flex>
-      <Flex gap="small" style={{ position: 'absolute', top: 100 }}>
-        <Button size="small" onClick={zoomIn}>
-          +
-        </Button>
-        <Button size="small" onClick={zoomOut}>
-          -
-        </Button>
+      <Flex gap="small" style={{ position: 'absolute', top: 110, left: 40 }}>
+        <Flex gap="small">
+          <Button onClick={zoomIn}>
+            <ZoomInOutlined />
+          </Button>
+          <Button onClick={zoomOut}>
+            <ZoomOutOutlined />
+          </Button>
+        </Flex>
       </Flex>
     </>
   );

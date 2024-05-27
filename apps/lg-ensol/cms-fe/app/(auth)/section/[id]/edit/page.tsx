@@ -76,10 +76,8 @@ const SectionEditStatePage = () => {
 
   return (
     <>
-      <Button size="small" onClick={onClickSave}>
-        저장
-      </Button>
-      <Button size="small">
+      <Button onClick={onClickSave}>저장</Button>
+      <Button>
         <Link href={`/section/${mapData.id}/view`}>취소</Link>
       </Button>
     </>

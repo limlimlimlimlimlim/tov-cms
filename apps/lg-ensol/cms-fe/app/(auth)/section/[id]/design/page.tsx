@@ -39,7 +39,6 @@ const SectionDesignStatePage = () => {
   }, []);
 
   const onClickSave = async () => {
-    console.log(paintChagedSections.current);
     if (!designSectionManager) return;
     await upatePaintOptions();
     // const requests = Array.from(designSectionManager.updatedSections).map(

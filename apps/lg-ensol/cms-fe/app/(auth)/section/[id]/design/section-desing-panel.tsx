@@ -1,4 +1,13 @@
-import { Card, ColorPicker, Flex, Form, InputNumber, Select, Tabs } from 'antd';
+import {
+  Card,
+  ColorPicker,
+  Flex,
+  Form,
+  InputNumber,
+  Select,
+  Slider,
+  Tabs,
+} from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import type Section from '../classes/section';
 import { convertColorParam, hex2rgb } from '../utils/utils';
@@ -18,6 +27,7 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
   const [opacity, setOpacity] = useState<number>();
   const [stroke, setStroke] = useState<string>();
   const [strokeOpacity, setStrokeOpacity] = useState<number>();
+  const [strokeWidth, setStrokeWidth] = useState<number>();
 
   const updateSectionFillColor = useCallback(
     ({ hex, alpha }) => {
@@ -34,7 +44,6 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
 
   const updateSectionStrokeColor = useCallback(
     ({ hex, alpha }) => {
-      console.log(section, hex, alpha);
       setStroke(hex);
       setStrokeOpacity(alpha);
       onChangePaint(section);
@@ -46,12 +55,24 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
     [onChangePaint, section],
   );
 
+  const updateSectionStrokeWidth = useCallback(
+    (value) => {
+      setStrokeWidth(value);
+      onChangePaint(section);
+      section.updateOption({
+        strokeWidth: value,
+      });
+    },
+    [onChangePaint, section],
+  );
+
   useEffect(() => {
     if (!section?.options) return;
     setFill(section.options.fill);
     setOpacity(section.options.opacity);
     setStroke(section.options.stroke);
     setStrokeOpacity(section.options.strokeOpacity);
+    setStrokeWidth(section.options.strokeWidth);
   }, [section]);
   return (
     <div style={{ position: 'absolute', right: 24, top: 60, zIndex: 1000 }}>
@@ -85,6 +106,16 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
                         updateSectionStrokeColor(
                           convertColorParam(color.metaColor),
                         );
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item label="테두리 두께">
+                    <Slider
+                      value={strokeWidth}
+                      min={1}
+                      max={30}
+                      onChange={(value) => {
+                        updateSectionStrokeWidth(value);
                       }}
                     />
                   </Form.Item>

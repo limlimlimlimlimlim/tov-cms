@@ -1,3 +1,7 @@
+import rgbHex from 'rgb-hex';
+import hexRgb from 'hex-rgb';
+import type Section from '../classes/section';
+
 declare const Konva: any;
 interface SectionObjectOptions {
   fill: string;
@@ -72,5 +76,34 @@ export const convertToKonvaOptions = (options) => {
     stroke: options.strokeColor,
     strokeOpacity: options.strokeAlpha / 100,
     closed: true,
+  };
+};
+
+export const rgb2hex = (r, g, b) => {
+  return `#${rgbHex(r, g, b)}`;
+};
+
+export const hex2rgb = (hex, a = 1) => {
+  if (!hex) return;
+  const { red, green, blue, alpha } = hexRgb(hex, { alpha: a } as any);
+  return `rgba(${red},${green},${blue},${alpha})`;
+};
+
+export const convertColorParam = ({ r, g, b, a }) => {
+  return {
+    hex: rgb2hex(r, g, b),
+    alpha: a,
+    alphaPer: a * 100,
+  };
+};
+
+export const generatePaintOptions = (section: Section) => {
+  if (!section.options) return null;
+  return {
+    color: section.options.fill,
+    alpha: section.options.opacity! * 100,
+    strokeWidth: section.options.strokeWidth,
+    strokeColor: section.options.stroke,
+    strokeAlpha: section.options.strokeOpacity! * 100,
   };
 };

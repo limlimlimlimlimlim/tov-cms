@@ -57,7 +57,7 @@ class Section extends EventEmitter {
     private _layer,
     _path: Path | string,
     private _options?: Options,
-    private _id?,
+    private _id?: string | number,
   ) {
     super();
     this._id = _id ? _id : Math.random().toString().split('.')[1];

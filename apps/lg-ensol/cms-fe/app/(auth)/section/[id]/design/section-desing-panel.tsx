@@ -1,18 +1,11 @@
-import {
-  Card,
-  ColorPicker,
-  Flex,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  Tabs,
-} from 'antd';
+import { Card, ColorPicker, Flex, Form, InputNumber, Select, Tabs } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import type Section from '../classes/section';
-import FormItem from 'antd/es/form/FormItem';
+import { convertColorParam, hex2rgb } from '../utils/utils';
 
 interface Props {
   section: Section;
+  onChangePaint: (section: Section) => void;
 }
 
 const fontSizeOptions = [
@@ -20,8 +13,46 @@ const fontSizeOptions = [
   27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 ];
 
-const SectionDesignPanel = ({ section }: Props) => {
-  console.log(section);
+const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
+  const [fill, setFill] = useState<string>();
+  const [opacity, setOpacity] = useState<number>();
+  const [stroke, setStroke] = useState<string>();
+  const [strokeOpacity, setStrokeOpacity] = useState<number>();
+
+  const updateSectionFillColor = useCallback(
+    ({ hex, alpha }) => {
+      setFill(hex);
+      setOpacity(alpha);
+      onChangePaint(section);
+      section.updateOption({
+        fill: hex,
+        opacity: alpha,
+      });
+    },
+    [onChangePaint, section],
+  );
+
+  const updateSectionStrokeColor = useCallback(
+    ({ hex, alpha }) => {
+      console.log(section, hex, alpha);
+      setStroke(hex);
+      setStrokeOpacity(alpha);
+      onChangePaint(section);
+      section.updateOption({
+        stroke: hex,
+        strokeOpacity: alpha,
+      });
+    },
+    [onChangePaint, section],
+  );
+
+  useEffect(() => {
+    if (!section?.options) return;
+    setFill(section.options.fill);
+    setOpacity(section.options.opacity);
+    setStroke(section.options.stroke);
+    setStrokeOpacity(section.options.strokeOpacity);
+  }, [section]);
   return (
     <div style={{ position: 'absolute', right: 24, top: 60, zIndex: 1000 }}>
       <Card style={{ width: 350 }}>
@@ -38,45 +69,23 @@ const SectionDesignPanel = ({ section }: Props) => {
                   <Form.Item label="채우기 색상">
                     <ColorPicker
                       format="hex"
-                      value={section.options?.fill}
-                      // onChangeComplete={(color: any) => {
-                      //   const hex = color.toHexString();
-                      //   const alpha = color.metaColor.roundA * 100;
-                      //   setCurrentSectionColor(hex);
-                      //   updateSection(currentSection, {
-                      //     color: hex.substr(0, 7),
-                      //     alpha,
-                      //     strokeColor: currentOptions.strokeColor,
-                      //     strokeAlpha: currentOptions.strokeAlpha,
-                      //     strokeWidth: currentOptions.strokeWidth,
-                      //     fontSize,
-                      //     iconColor,
-                      //     tooltipColor,
-                      //     padding,
-                      //   });
-                      // }}
+                      value={hex2rgb(fill, opacity)}
+                      onChangeComplete={(color: any) => {
+                        updateSectionFillColor(
+                          convertColorParam(color.metaColor),
+                        );
+                      }}
                     />
                   </Form.Item>
                   <Form.Item label="테두리 색상">
                     <ColorPicker
                       format="hex"
-                      value={section.options?.stroke}
-                      // onChangeComplete={(color: any) => {
-                      //   const hex = color.toHexString();
-                      //   const alpha = color.metaColor.roundA * 100;
-                      //   setCurrentSectionColor(hex);
-                      //   updateSection(currentSection, {
-                      //     color: hex.substr(0, 7),
-                      //     alpha,
-                      //     strokeColor: currentOptions.strokeColor,
-                      //     strokeAlpha: currentOptions.strokeAlpha,
-                      //     strokeWidth: currentOptions.strokeWidth,
-                      //     fontSize,
-                      //     iconColor,
-                      //     tooltipColor,
-                      //     padding,
-                      //   });
-                      // }}
+                      value={hex2rgb(stroke, strokeOpacity)}
+                      onChangeComplete={(color: any) => {
+                        updateSectionStrokeColor(
+                          convertColorParam(color.metaColor),
+                        );
+                      }}
                     />
                   </Form.Item>
                 </div>

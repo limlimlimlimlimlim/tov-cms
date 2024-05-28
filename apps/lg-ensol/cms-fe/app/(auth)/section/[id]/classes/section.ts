@@ -103,18 +103,18 @@ class Section extends EventEmitter {
       data: infoFacilityIconPath,
       fill: '#66bbff',
       stroke: 'black',
-      strokeWidth: 20,
-      scaleX: 0.03,
-      scaleY: 0.03,
+      strokeWidth: 2,
+      scaleX: 0.5,
+      scaleY: 0.5,
     });
 
     this._facilityAddPath = new Konva.Path({
       data: addFacilityIconPath,
       fill: '#88ddaa',
       stroke: 'black',
-      strokeWidth: 20,
-      scaleX: 0.03,
-      scaleY: 0.03,
+      strokeWidth: 2,
+      scaleX: 0.5,
+      scaleY: 0.5,
     });
   }
 
@@ -127,10 +127,10 @@ class Section extends EventEmitter {
     const maxY = Math.max(...posY);
     const x = minX + (maxX - minX) / 2;
     const y = minY + (maxY - minY) / 2;
-    this._facilityInfoPath.x(x - 18);
-    this._facilityInfoPath.y(y - 18);
-    this._facilityAddPath.x(x - 18);
-    this._facilityAddPath.y(y - 18);
+    this._facilityInfoPath.x(x - 15);
+    this._facilityInfoPath.y(y - 15);
+    this._facilityAddPath.x(x - 15);
+    this._facilityAddPath.y(y - 15);
   }
 
   show() {
@@ -170,11 +170,17 @@ class Section extends EventEmitter {
 
   setFacility(facility) {
     this._facility = facility;
+    this._container.add(this._facilityInfoPath);
+    this._container.add(this._facilityAddPath);
+
     if (this._facility) {
-      this._container.add(this._facilityInfoPath);
+      this._facilityInfoPath.show();
+      this._facilityAddPath.hide();
     } else {
-      this._container.add(this._facilityAddPath);
+      this._facilityInfoPath.hide();
+      this._facilityAddPath.show();
     }
+    this.updateFacilityPosition();
   }
 
   private flatPath() {

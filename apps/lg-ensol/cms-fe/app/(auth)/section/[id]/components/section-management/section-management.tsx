@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { Button, Card, Flex } from 'antd';
+import { Button, Flex } from 'antd';
+import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 import { getBaseUrl } from '../../../../../../util/axios-client';
 import { SectionContext } from '../../section-context';
-import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
 
 declare const Konva: any;
 interface Pros {

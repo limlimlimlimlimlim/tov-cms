@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, message } from 'antd';
-import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';

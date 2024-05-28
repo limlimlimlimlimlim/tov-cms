@@ -1,10 +1,11 @@
 import { Button, Drawer, Flex, Table } from 'antd';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Search from 'antd/es/input/Search';
+import { CheckOutlined } from '@ant-design/icons';
 import { getFacilities } from '../../../../api/facility';
 import { SectionContext } from './section-context';
-import { CheckOutlined } from '@ant-design/icons';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 interface Props {
   onClose: () => void;
   open: boolean;

@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type Section from '../classes/section';
 import { convertColorParam, hex2rgb } from '../utils/utils';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 interface Props {
   section: Section;
   onChangePaint: (section: Section) => void;

@@ -20,9 +20,11 @@ const SectionViewStatePage = () => {
   const fetchSection = useCallback(
     async (id) => {
       const response = await getSectionsByMapId(id);
-      sections.current = response.data.map(
-        (data) => new Section(layer, data.path, convertToKonvaOptions(data)),
-      );
+      sections.current = response.data.map((data) => {
+        const sec = new Section(layer, data.path, convertToKonvaOptions(data));
+        sec.setFacility(data.facilities[0]);
+        return sec;
+      });
     },
     [layer],
   );

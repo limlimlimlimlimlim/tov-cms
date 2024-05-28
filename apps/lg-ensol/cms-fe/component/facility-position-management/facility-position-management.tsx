@@ -52,7 +52,7 @@ export default function FacilityPositionManagement({
     x: facility.x,
     y: facility.y,
   });
-  const [alwaysVisible, setAlwaysVisible] = useState(false);
+  const [alwaysVisible] = useState(false);
   const [fontSize, setFontSize] = useState<any>();
   const [iconColor, setIconColor] = useState<any>();
   const [tooltipColor, setTooltipColor] = useState<any>();
@@ -65,7 +65,6 @@ export default function FacilityPositionManagement({
   const [currentSectionStrokeWidth, setCurrentSectionStrokeWidth] =
     useState<number>();
   const [sections, setSections] = useState<any>();
-  const [originSections, setOriginSections] = useState<any>();
   const [currentOptions, setCurrentOptions] = useState<any>({});
   const [image, setImage] = useState();
 
@@ -211,7 +210,6 @@ export default function FacilityPositionManagement({
   const fetchData = useCallback(async (mapId) => {
     const result = await getMapDetail(mapId);
     // setSections(result.data.sections);
-    setOriginSections(JSON.parse(JSON.stringify(result.data.sections)));
     setImage(result.data.image);
   }, []);
 

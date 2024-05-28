@@ -1,4 +1,6 @@
 import EventEmitter from 'events';
+import addFacilityIconPath from './add-facility-path';
+import infoFacilityIconPath from './info-facility-path';
 
 declare const Konva: any;
 
@@ -32,6 +34,9 @@ class Section extends EventEmitter {
     strokeOpacity: 1,
     closed: true,
   };
+  protected _facility: any;
+  protected _facilityInfoPath;
+  protected _facilityAddPath;
 
   get path() {
     return this._path;
@@ -94,6 +99,38 @@ class Section extends EventEmitter {
     });
     this._layer.add(this._container);
     this._container.add(this._polygon);
+    this._facilityInfoPath = new Konva.Path({
+      data: infoFacilityIconPath,
+      fill: '#66bbff',
+      stroke: 'black',
+      strokeWidth: 20,
+      scaleX: 0.03,
+      scaleY: 0.03,
+    });
+
+    this._facilityAddPath = new Konva.Path({
+      data: addFacilityIconPath,
+      fill: '#88ddaa',
+      stroke: 'black',
+      strokeWidth: 20,
+      scaleX: 0.03,
+      scaleY: 0.03,
+    });
+  }
+
+  private updateFacilityPosition() {
+    const posX = this._path.map((p) => p.x);
+    const posY = this._path.map((p) => p.y);
+    const minX = Math.min(...posX);
+    const maxX = Math.max(...posX);
+    const minY = Math.min(...posY);
+    const maxY = Math.max(...posY);
+    const x = minX + (maxX - minX) / 2;
+    const y = minY + (maxY - minY) / 2;
+    this._facilityInfoPath.x(x - 18);
+    this._facilityInfoPath.y(y - 18);
+    this._facilityAddPath.x(x - 18);
+    this._facilityAddPath.y(y - 18);
   }
 
   show() {
@@ -107,11 +144,13 @@ class Section extends EventEmitter {
   update(path: Path | string) {
     this._path = this.converPath(path);
     this._polygon.points(this.flatPath());
+    this.updateFacilityPosition();
   }
 
   updateAt(index, point) {
     this._path[index] = point;
     this._polygon.points(this.flatPath());
+    this.updateFacilityPosition();
   }
 
   destroy() {
@@ -127,6 +166,15 @@ class Section extends EventEmitter {
     if (!this._options) return;
     this._options = { ...this._options, ...option };
     this._polygon.setAttrs(option);
+  }
+
+  setFacility(facility) {
+    this._facility = facility;
+    if (this._facility) {
+      this._container.add(this._facilityInfoPath);
+    } else {
+      this._container.add(this._facilityAddPath);
+    }
   }
 
   private flatPath() {

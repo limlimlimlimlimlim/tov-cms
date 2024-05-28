@@ -10,7 +10,10 @@ import { store } from '../../store/store';
 const AuthLayout = ({ children }) => {
   const router = useRouter();
   const pathName = usePathname();
-  setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
+
+  if (typeof window !== 'undefined') {
+    setBaseUrl(`${window.location.protocol}//${window.location.hostname}:3001`);
+  }
 
   const verifyAccessToken = useCallback(async () => {
     const token = localStorage.getItem('cms-access-token');

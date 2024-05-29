@@ -35,8 +35,8 @@ class Section extends EventEmitter {
     closed: true,
   };
   protected _facility: any;
-  protected _facilityInfoPath;
-  protected _facilityAddPath;
+  protected _facilityInfoIcon;
+  protected _facilityAddIcon;
 
   get path() {
     return this._path;
@@ -71,24 +71,7 @@ class Section extends EventEmitter {
     }
     this.create();
     this.update(_path);
-    if (_options?.selectable) {
-      this._container.on('mousedown', (e) => {
-        if (!e.evt.altKey) {
-          e.cancelBubble = true;
-          this.emit('select');
-        }
-      });
-    }
-
-    if (_options?.draggable) {
-      this._container.on('dragstart', (e) => {
-        this.emit('dragstart', e);
-      });
-
-      this._container.on('dragend', (e) => {
-        this.emit('dragend', e);
-      });
-    }
+    this.initEvent();
   }
 
   private create() {
@@ -99,23 +82,60 @@ class Section extends EventEmitter {
     });
     this._layer.add(this._container);
     this._container.add(this._polygon);
-    this._facilityInfoPath = new Konva.Path({
-      data: infoFacilityIconPath,
-      fill: '#66bbff',
-      stroke: 'black',
-      strokeWidth: 2,
-      scaleX: 0.5,
-      scaleY: 0.5,
+  }
+
+  private loadIcon(url) {
+    return new Promise((res) => {
+      Konva.Image.fromURL(url, (image) => {
+        res(image);
+      });
+    });
+  }
+
+  private async createFacilityIcons() {
+    this._facilityInfoIcon = await this.loadIcon('/info.png');
+    this._facilityAddIcon = await this.loadIcon('/add.png');
+    this._facilityInfoIcon.scaleX(0.05);
+    this._facilityInfoIcon.scaleY(0.05);
+    this._facilityAddIcon.scaleX(0.05);
+    this._facilityAddIcon.scaleY(0.05);
+
+    this._facilityInfoIcon.on('mouseover', () => {
+      document.body.style.cursor = 'pointer';
     });
 
-    this._facilityAddPath = new Konva.Path({
-      data: addFacilityIconPath,
-      fill: '#88ddaa',
-      stroke: 'black',
-      strokeWidth: 2,
-      scaleX: 0.5,
-      scaleY: 0.5,
+    this._facilityInfoIcon.on('mouseout', () => {
+      document.body.style.cursor = 'default';
     });
+
+    this._facilityAddIcon.on('mouseover', () => {
+      document.body.style.cursor = 'pointer';
+    });
+
+    this._facilityAddIcon.on('mouseout', () => {
+      document.body.style.cursor = 'default';
+    });
+  }
+
+  private initEvent() {
+    if (this._options?.selectable) {
+      this._container.on('mousedown', (e) => {
+        if (!e.evt.altKey) {
+          e.cancelBubble = true;
+          this.emit('select');
+        }
+      });
+    }
+
+    if (this._options?.draggable) {
+      this._container.on('dragstart', (e) => {
+        this.emit('dragstart', e);
+      });
+
+      this._container.on('dragend', (e) => {
+        this.emit('dragend', e);
+      });
+    }
   }
 
   private updateFacilityPosition() {
@@ -127,10 +147,10 @@ class Section extends EventEmitter {
     const maxY = Math.max(...posY);
     const x = minX + (maxX - minX) / 2;
     const y = minY + (maxY - minY) / 2;
-    this._facilityInfoPath.x(x - 15);
-    this._facilityInfoPath.y(y - 15);
-    this._facilityAddPath.x(x - 15);
-    this._facilityAddPath.y(y - 15);
+    this._facilityInfoIcon.x(x - 15);
+    this._facilityInfoIcon.y(y - 15);
+    this._facilityAddIcon.x(x - 15);
+    this._facilityAddIcon.y(y - 15);
   }
 
   show() {
@@ -144,18 +164,26 @@ class Section extends EventEmitter {
   update(path: Path | string) {
     this._path = this.converPath(path);
     this._polygon.points(this.flatPath());
-    this.updateFacilityPosition();
+    if (this._facility) {
+      this.updateFacilityPosition();
+    }
   }
 
   updateAt(index, point) {
     this._path[index] = point;
     this._polygon.points(this.flatPath());
-    this.updateFacilityPosition();
+    if (this._facility) {
+      this.updateFacilityPosition();
+    }
   }
 
   destroy() {
     this._polygon.destroy();
     this._container.destroy();
+    if (this._facility) {
+      this._facilityAddIcon.destroy();
+      this._facilityInfoIcon.destroy();
+    }
   }
 
   toArrayPath() {
@@ -168,17 +196,18 @@ class Section extends EventEmitter {
     this._polygon.setAttrs(option);
   }
 
-  setFacility(facility) {
-    this._facility = facility;
-    this._container.add(this._facilityInfoPath);
-    this._container.add(this._facilityAddPath);
+  async setFacility(facility) {
+    await this.createFacilityIcons();
+    this._container.add(this._facilityInfoIcon);
+    this._container.add(this._facilityAddIcon);
 
+    this._facility = facility;
     if (this._facility) {
-      this._facilityInfoPath.show();
-      this._facilityAddPath.hide();
+      this._facilityInfoIcon.show();
+      this._facilityAddIcon.hide();
     } else {
-      this._facilityInfoPath.hide();
-      this._facilityAddPath.show();
+      this._facilityInfoIcon.hide();
+      this._facilityAddIcon.show();
     }
     this.updateFacilityPosition();
   }

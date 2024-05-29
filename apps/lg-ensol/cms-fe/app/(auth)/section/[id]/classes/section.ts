@@ -1,6 +1,4 @@
 import EventEmitter from 'events';
-import addFacilityIconPath from './add-facility-path';
-import infoFacilityIconPath from './info-facility-path';
 
 declare const Konva: any;
 
@@ -102,10 +100,12 @@ class Section extends EventEmitter {
 
     this._facilityInfoIcon.on('mouseover', () => {
       document.body.style.cursor = 'pointer';
+      this.emit('onfacility', this._facility);
     });
 
     this._facilityInfoIcon.on('mouseout', () => {
       document.body.style.cursor = 'default';
+      this.emit('outfacility', this._facility);
     });
 
     this._facilityAddIcon.on('mouseover', () => {

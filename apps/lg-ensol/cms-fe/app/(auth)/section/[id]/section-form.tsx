@@ -29,8 +29,7 @@ const layoutStyle = {
 };
 
 export default function SectionForm({ children }) {
-  const { mapData }: any = useContext(SectionContext);
-
+  const { mapData, hoverFacility }: any = useContext(SectionContext);
   return (
     <Layout style={layoutStyle}>
       <Header style={headerStyle}>
@@ -46,6 +45,27 @@ export default function SectionForm({ children }) {
         </Flex>
       </Header>
       <Content style={contentStyle}>
+        {hoverFacility && (
+          <div
+            style={{
+              position: 'absolute',
+              minWidth: 200,
+              left: '40%',
+              top: 110,
+              zIndex: 100000,
+              height: 30,
+              textAlign: 'center',
+              lineHeight: 0.6,
+              padding: 10,
+              borderRadius: 20,
+              color: '#fff',
+              background: 'rgba(10,10,10,0.5)',
+            }}
+          >
+            {hoverFacility?.name}
+          </div>
+        )}
+
         <SectionManagement mapData={mapData} />
       </Content>
     </Layout>

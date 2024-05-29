@@ -8,12 +8,13 @@ import usePermission from '../../hooks/use-permission';
 export const SectionContext = createContext({});
 
 export const SectionProvider = ({ children }) => {
+  const router = useRouter();
   const { id } = useParams();
   const [mapData, setMapData] = useState<any>();
   const { ready, getMapInfoPermissions }: any = usePermission();
-  const router = useRouter();
   const [stage, setStage] = useState<any>(null);
-  const [sectionObjects, setSectionObjects] = useState<any[]>([]);
+  const [hoverFacility, setHoverFacility] = useState();
+  const [selectedFacility, setSelectedFacility] = useState();
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -34,9 +35,11 @@ export const SectionProvider = ({ children }) => {
       value={{
         stage,
         mapData,
-        sectionObjects,
+        hoverFacility,
+        selectedFacility,
         setStage,
-        setSectionObjects,
+        setHoverFacility,
+        setSelectedFacility,
       }}
     >
       {children}

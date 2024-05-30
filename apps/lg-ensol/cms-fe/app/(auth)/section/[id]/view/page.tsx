@@ -7,6 +7,7 @@ import { SectionContext } from '../section-context';
 import { getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
 import { convertToKonvaOptions } from '../utils/utils';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
@@ -17,6 +18,8 @@ const SectionViewStatePage = () => {
   const layer = useMemo(() => {
     return new Konva.Layer();
   }, []);
+
+  const { addSection } = useFaciltyInfo();
 
   const fetchSection = useCallback(
     async (id) => {
@@ -29,23 +32,12 @@ const SectionViewStatePage = () => {
           data.id,
         );
 
-        sec.on('onfacility', (facility) => {
-          setHoverFacility(facility);
-        });
-
-        sec.on('outfacility', () => {
-          setHoverFacility(null);
-        });
-
-        sec.on('addfacility', (id) => {
-          addFacility(id);
-        });
-
         sec.setFacility(data.facilities[0]);
+        addSection(sec);
         return sec;
       });
     },
-    [addFacility, layer, setHoverFacility],
+    [addSection, layer],
   );
 
   useEffect(() => {

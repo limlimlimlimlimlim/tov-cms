@@ -4,7 +4,7 @@ import Section from './section';
 
 declare const Konva: any;
 
-class DesignSectionManager extends EventEmitter {
+class CancelableSectionManager extends EventEmitter {
   private _layer: any;
   private _sections: Section[] = [];
   private _deleteSections: any = new Map();
@@ -36,7 +36,7 @@ class DesignSectionManager extends EventEmitter {
   ) {
     super();
     if (!_options) {
-      this._options = DesignSectionManager._defaultOption;
+      this._options = CancelableSectionManager._defaultOption;
     }
     this.create();
   }
@@ -46,7 +46,7 @@ class DesignSectionManager extends EventEmitter {
     this._stage.add(this._layer);
   }
 
-  addSection(path, id?, options?, facility?) {
+  addSection(path, id, options) {
     const section = new Section(
       this._layer,
       path,
@@ -55,15 +55,19 @@ class DesignSectionManager extends EventEmitter {
     );
     this._sections.push(section);
 
-    if (facility) {
-      section.setFacility(facility);
-    }
-
     section.on('select', () => {
-      this.emit('select', section);
+      this.onSelect(section);
     });
+  }
 
-    return section;
+  private onSelect(section: Section) {
+    if (this._deleteSections.has(section.id)) {
+      this._deleteSections.delete(section.id);
+      section.polygon.fill(CancelableSectionManager._defaultOption.fill);
+    } else {
+      this._deleteSections.set(section.id, section);
+      section.polygon.fill('red');
+    }
   }
 
   destroy() {
@@ -73,4 +77,4 @@ class DesignSectionManager extends EventEmitter {
   }
 }
 
-export default DesignSectionManager;
+export default CancelableSectionManager;

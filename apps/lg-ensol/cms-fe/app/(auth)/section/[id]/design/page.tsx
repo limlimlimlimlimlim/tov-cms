@@ -20,6 +20,7 @@ import {
 import { convertToKonvaOptions, generatePaintOptions } from '../utils/utils';
 import type Section from '../classes/section';
 import SectionDesignPanel from './section-desing-panel';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
@@ -28,6 +29,7 @@ const SectionDesignStatePage = () => {
   const { mapData, stage } = useContext<any>(SectionContext);
   const [selectedSection, setSelectedSection] = useState<Section>();
   const paintChagedSections = useRef<Map<string | number, Section>>(new Map());
+  const { addSection } = useFaciltyInfo();
 
   const designSectionManager = useMemo(() => {
     if (!stage) return;
@@ -66,7 +68,13 @@ const SectionDesignStatePage = () => {
       if (!designSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        designSectionManager.addSection(d.path, d.id, convertToKonvaOptions(d));
+        const sec = designSectionManager.addSection(
+          d.path,
+          d.id,
+          convertToKonvaOptions(d),
+          d.facilities[0],
+        );
+        addSection(sec);
       });
       designSectionManager.layer.moveToTop();
     },

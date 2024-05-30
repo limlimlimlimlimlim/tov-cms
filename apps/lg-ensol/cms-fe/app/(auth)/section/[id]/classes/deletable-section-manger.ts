@@ -46,7 +46,7 @@ class DeletableSectionManager extends EventEmitter {
     this._stage.add(this._layer);
   }
 
-  addSection(path, id, options) {
+  addSection(path, id, options, facility) {
     const section = new Section(
       this._layer,
       path,
@@ -55,9 +55,15 @@ class DeletableSectionManager extends EventEmitter {
     );
     this._sections.push(section);
 
+    if (facility) {
+      section.setFacility(facility);
+    }
+
     section.on('select', () => {
       this.onSelect(section);
     });
+
+    return section;
   }
 
   private onSelect(section: Section) {

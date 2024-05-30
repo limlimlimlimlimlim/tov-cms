@@ -12,13 +12,14 @@ import {
 import EditableSectionManager from '../classes/editable-section-manger';
 import type Section from '../classes/section';
 import { convertToKonvaOptions } from '../utils/utils';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
 const SectionEditStatePage = () => {
   const router = useRouter();
   const { mapData, stage } = useContext<any>(SectionContext);
-
+  const { addSection } = useFaciltyInfo();
   const editableSectionManager = useMemo(() => {
     if (!stage) return;
     return new EditableSectionManager(stage);
@@ -46,15 +47,17 @@ const SectionEditStatePage = () => {
       if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        editableSectionManager.addSection(
+        const sec = editableSectionManager.addSection(
           d.path,
           d.id,
           convertToKonvaOptions(d),
+          d.facilities[0],
         );
+        addSection(sec);
       });
       editableSectionManager.layer.moveToTop();
     },
-    [editableSectionManager],
+    [addSection, editableSectionManager],
   );
 
   useEffect(() => {

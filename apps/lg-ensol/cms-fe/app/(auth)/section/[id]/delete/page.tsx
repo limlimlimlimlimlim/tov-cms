@@ -11,12 +11,14 @@ import {
 } from '../../../../../api/section';
 import DeletableSectionManager from '../classes/deletable-section-manger';
 import { convertToKonvaOptions } from '../utils/utils';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
 const SectionDeleteStatePage = () => {
   const router = useRouter();
   const { mapData, stage } = useContext<any>(SectionContext);
+  const { addSection } = useFaciltyInfo();
 
   const deletableSectionManager = useMemo(() => {
     if (!stage) return;
@@ -45,15 +47,18 @@ const SectionDeleteStatePage = () => {
       if (!deletableSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        deletableSectionManager.addSection(
+        const sec = deletableSectionManager.addSection(
           d.path,
           d.id,
           convertToKonvaOptions(d),
+          d.facilities[0],
         );
+
+        addSection(sec);
       });
       deletableSectionManager.layer.moveToTop();
     },
-    [deletableSectionManager],
+    [addSection, deletableSectionManager],
   );
 
   useEffect(() => {

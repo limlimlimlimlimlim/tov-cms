@@ -56,6 +56,10 @@ class Section extends EventEmitter {
     return this._options;
   }
 
+  get facility() {
+    return this._facility;
+  }
+
   constructor(
     private _layer,
     _path: Path | string,
@@ -158,11 +162,11 @@ class Section extends EventEmitter {
   }
 
   show() {
-    this._polygon.show();
+    this._container.show();
   }
 
   hide() {
-    this._polygon.hide();
+    this._container.hide();
   }
 
   update(path: Path | string) {
@@ -198,6 +202,9 @@ class Section extends EventEmitter {
     if (!this._options) return;
     this._options = { ...this._options, ...option };
     this._polygon.setAttrs(option);
+    if (this._facility) {
+      this.updateFacilityPosition();
+    }
   }
 
   async setFacility(facility) {

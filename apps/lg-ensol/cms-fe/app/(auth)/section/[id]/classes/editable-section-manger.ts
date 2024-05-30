@@ -49,7 +49,7 @@ class EditableSectionManager extends EventEmitter {
     this._stage.add(this._layer);
   }
 
-  addSection(path, id?, options?) {
+  addSection(path, id?, options?, facility?) {
     const section = new Section(
       this._layer,
       path,
@@ -61,6 +61,11 @@ class EditableSectionManager extends EventEmitter {
     section.on('select', () => {
       this.onSelect(section);
     });
+
+    if (facility) {
+      section.setFacility(facility);
+    }
+    return section;
   }
 
   private onSelect(section: Section) {

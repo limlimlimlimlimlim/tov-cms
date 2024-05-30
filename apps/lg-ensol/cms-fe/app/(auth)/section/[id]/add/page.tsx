@@ -10,6 +10,7 @@ import Section from '../classes/section';
 import GuideSection from '../classes/guide-section';
 import EditableSectionManager from '../classes/editable-section-manger';
 import { convertToKonvaOptions } from '../utils/utils';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
@@ -17,6 +18,7 @@ const SectionAddStatePage = () => {
   const router = useRouter();
   const { mapData, stage } = useContext<any>(SectionContext);
   const sections = useRef([]);
+  const { addSection: addFacilityInfoSection } = useFaciltyInfo();
 
   const guideSection = useMemo(() => {
     if (!stage) return;
@@ -47,14 +49,25 @@ const SectionAddStatePage = () => {
       if (!guideSection) return;
       if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
-      sections.current = response.data.map(
-        (data) =>
-          new Section(layer, data.path, convertToKonvaOptions(data), data.id),
-      );
+      sections.current = response.data.map((data) => {
+        const sec = new Section(
+          layer,
+          data.path,
+          convertToKonvaOptions(data),
+          data.id,
+        );
+        if (data.facilities[0]) {
+          sec.setFacility(data.facilities[0]);
+          addFacilityInfoSection(sec);
+        }
+
+        return sec;
+      });
+
       editableSectionManager.layer.moveToTop();
       guideSection.layer.moveToTop();
     },
-    [editableSectionManager, guideSection, layer],
+    [addFacilityInfoSection, editableSectionManager, guideSection, layer],
   );
 
   useEffect(() => {

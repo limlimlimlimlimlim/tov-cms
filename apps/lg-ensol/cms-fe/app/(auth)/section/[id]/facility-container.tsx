@@ -56,8 +56,7 @@ const FacilityContainer = () => {
       {
         title: '위치',
         width: 80,
-        dataIndex: 'status',
-        render: (data) => (data === 'enabled' ? <CheckOutlined /> : null),
+        render: (data) => (data.section ? <CheckOutlined /> : null),
       },
       {
         title: '수정',

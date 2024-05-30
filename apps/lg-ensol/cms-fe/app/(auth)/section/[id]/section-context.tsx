@@ -14,12 +14,29 @@ export const SectionProvider = ({ children }) => {
   const { ready, getMapInfoPermissions }: any = usePermission();
   const [stage, setStage] = useState<any>(null);
   const [hoverFacility, setHoverFacility] = useState();
-  const [selectedFacility, setSelectedFacility] = useState();
+  const [addFacilityTargetSection, setAddFacilityTargetSection] = useState();
+  const [isOpenFacilityContainer, setIsOpenFacilityContainer] = useState(false);
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
     setMapData(data.data);
   }, [id]);
+
+  const openFacilityContainer = useCallback(() => {
+    setIsOpenFacilityContainer(true);
+  }, []);
+
+  const closeFacilityContainer = useCallback(() => {
+    setIsOpenFacilityContainer(false);
+  }, []);
+
+  const addFacility = useCallback(
+    (sectionId) => {
+      setAddFacilityTargetSection(sectionId);
+      openFacilityContainer();
+    },
+    [openFacilityContainer],
+  );
 
   useEffect(() => {
     if (!ready) return;
@@ -36,10 +53,13 @@ export const SectionProvider = ({ children }) => {
         stage,
         mapData,
         hoverFacility,
-        selectedFacility,
+        addFacilityTargetSection,
+        isOpenFacilityContainer,
         setStage,
         setHoverFacility,
-        setSelectedFacility,
+        addFacility,
+        openFacilityContainer,
+        closeFacilityContainer,
       }}
     >
       {children}

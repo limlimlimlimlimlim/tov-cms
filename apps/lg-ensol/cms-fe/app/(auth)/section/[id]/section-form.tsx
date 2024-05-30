@@ -1,7 +1,7 @@
 'use client';
 
-import { Flex, Layout, Typography } from 'antd';
-import { useContext } from 'react';
+import { Button, Flex, Layout, Typography } from 'antd';
+import { useCallback, useContext } from 'react';
 import { SectionContext } from './section-context';
 import SectionManagement from './components/section-management/section-management';
 
@@ -29,7 +29,13 @@ const layoutStyle = {
 };
 
 export default function SectionForm({ children }) {
-  const { mapData, hoverFacility }: any = useContext(SectionContext);
+  const { mapData, hoverFacility, openFacilityContainer }: any =
+    useContext(SectionContext);
+
+  const onClickFacility = useCallback(() => {
+    openFacilityContainer();
+  }, [openFacilityContainer]);
+
   return (
     <Layout style={layoutStyle}>
       <Header style={headerStyle}>
@@ -39,7 +45,10 @@ export default function SectionForm({ children }) {
               <Title level={5}>
                 {mapData.wing.name} {mapData.floor.name}
               </Title>
-              <Flex gap="small">{children}</Flex>
+              <Flex gap="small">
+                {children}
+                <Button onClick={onClickFacility}>시설 목록</Button>
+              </Flex>
             </>
           )}
         </Flex>

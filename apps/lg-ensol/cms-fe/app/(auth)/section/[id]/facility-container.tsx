@@ -5,14 +5,13 @@ import { CheckOutlined } from '@ant-design/icons';
 import { getFacilities } from '../../../../api/facility';
 import { SectionContext } from './section-context';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-interface Props {
-  onClose: () => void;
-  open: boolean;
-}
-
-const FacilityContainer = ({ onClose, open }: Props) => {
-  const { mapData }: any = useContext(SectionContext);
+const FacilityContainer = () => {
+  const {
+    mapData,
+    addFacilityTargetSection,
+    isOpenFacilityContainer,
+    closeFacilityContainer,
+  }: any = useContext(SectionContext);
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -35,7 +34,7 @@ const FacilityContainer = ({ onClose, open }: Props) => {
   );
 
   const columns = useMemo(() => {
-    return [
+    const columns = [
       {
         title: '건물명',
         width: 100,
@@ -60,11 +59,52 @@ const FacilityContainer = ({ onClose, open }: Props) => {
         dataIndex: 'status',
         render: (data) => (data === 'enabled' ? <CheckOutlined /> : null),
       },
+      {
+        title: '수정',
+        width: 80,
+        render: (data) => {
+          return (
+            <Button
+              size="small"
+              onClick={() => {
+                console.log(data);
+              }}
+            >
+              수정
+            </Button>
+          );
+        },
+      },
     ];
-  }, []);
+
+    if (addFacilityTargetSection) {
+      columns.push({
+        title: '선택',
+        width: 80,
+        render: (data) => {
+          return (
+            <Button
+              size="small"
+              onClick={() => {
+                console.log(data);
+              }}
+            >
+              선택
+            </Button>
+          );
+        },
+      });
+    }
+
+    return columns;
+  }, [addFacilityTargetSection]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
+  }, []);
+
+  const onChangePage = useCallback((p) => {
+    setPage(p.current);
   }, []);
 
   useEffect(() => {
@@ -78,22 +118,18 @@ const FacilityContainer = ({ onClose, open }: Props) => {
     });
   }, [count, fetchData, keyword, mapData, page]);
 
-  const onChangePage = useCallback((p) => {
-    setPage(p.current);
-  }, []);
-
   return (
     <Drawer
       title="시설 목록"
       placement="right"
-      width={600}
-      onClose={onClose}
-      open={open}
+      width={800}
+      onClose={closeFacilityContainer}
+      open={isOpenFacilityContainer}
     >
       {mapData && (
         <Flex vertical gap="large">
           <Flex justify="space-between">
-            <Flex gap="small">
+            <Flex gap="small" style={{ lineHeight: 3 }}>
               <Flex gap="small">
                 <span>{mapData.wing.name}</span>
                 <span>{mapData.floor.name}</span>
@@ -101,7 +137,7 @@ const FacilityContainer = ({ onClose, open }: Props) => {
 
               <span>Total : {total}</span>
             </Flex>
-            <Button size="small">신규등록</Button>
+            <Button>신규등록</Button>
           </Flex>
           <Search placeholder="검색어를 입력해주세요." onSearch={onSearch} />
 

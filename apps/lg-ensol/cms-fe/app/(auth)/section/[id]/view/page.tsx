@@ -11,7 +11,8 @@ import { convertToKonvaOptions } from '../utils/utils';
 declare const Konva: any;
 
 const SectionViewStatePage = () => {
-  const { mapData, stage, setHoverFacility } = useContext<any>(SectionContext);
+  const { mapData, stage, setHoverFacility, addFacility } =
+    useContext<any>(SectionContext);
   const sections = useRef([]);
   const layer = useMemo(() => {
     return new Konva.Layer();
@@ -21,7 +22,12 @@ const SectionViewStatePage = () => {
     async (id) => {
       const response = await getSectionsByMapId(id);
       sections.current = response.data.map((data) => {
-        const sec = new Section(layer, data.path, convertToKonvaOptions(data));
+        const sec = new Section(
+          layer,
+          data.path,
+          convertToKonvaOptions(data),
+          data.id,
+        );
 
         sec.on('onfacility', (facility) => {
           setHoverFacility(facility);
@@ -31,11 +37,15 @@ const SectionViewStatePage = () => {
           setHoverFacility(null);
         });
 
+        sec.on('addfacility', (id) => {
+          addFacility(id);
+        });
+
         sec.setFacility(data.facilities[0]);
         return sec;
       });
     },
-    [layer, setHoverFacility],
+    [addFacility, layer, setHoverFacility],
   );
 
   useEffect(() => {

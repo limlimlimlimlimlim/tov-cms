@@ -48,7 +48,8 @@ const SectionAddStatePage = () => {
       if (!editableSectionManager) return;
       const response = await getSectionsByMapId(id);
       sections.current = response.data.map(
-        (data) => new Section(layer, data.path, convertToKonvaOptions(data)),
+        (data) =>
+          new Section(layer, data.path, convertToKonvaOptions(data), data.id),
       );
       editableSectionManager.layer.moveToTop();
       guideSection.layer.moveToTop();

@@ -115,6 +115,10 @@ class Section extends EventEmitter {
     this._facilityAddIcon.on('mouseout', () => {
       document.body.style.cursor = 'default';
     });
+
+    this._facilityAddIcon.on('click', () => {
+      this.emit('addfacility', this._id);
+    });
   }
 
   private initEvent() {

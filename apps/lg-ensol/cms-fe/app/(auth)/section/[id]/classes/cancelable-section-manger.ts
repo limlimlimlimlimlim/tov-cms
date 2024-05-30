@@ -7,7 +7,7 @@ declare const Konva: any;
 class CancelableSectionManager extends EventEmitter {
   private _layer: any;
   private _sections: Section[] = [];
-  private _deleteSections: any = new Map();
+  private _cancelSections: any = new Map();
   private static _defaultOption: Options = {
     selectable: true,
     fill: '#D2C60C',
@@ -26,8 +26,8 @@ class CancelableSectionManager extends EventEmitter {
     return this._sections;
   }
 
-  get deleteSections() {
-    return this._deleteSections;
+  get cancelSections() {
+    return this._cancelSections;
   }
 
   constructor(
@@ -46,7 +46,7 @@ class CancelableSectionManager extends EventEmitter {
     this._stage.add(this._layer);
   }
 
-  addSection(path, id, options) {
+  addSection(path, id, options, facility) {
     const section = new Section(
       this._layer,
       path,
@@ -55,17 +55,24 @@ class CancelableSectionManager extends EventEmitter {
     );
     this._sections.push(section);
 
+    if (facility) {
+      section.setFacility(facility);
+    }
+
     section.on('select', () => {
       this.onSelect(section);
     });
+
+    return section;
   }
 
   private onSelect(section: Section) {
-    if (this._deleteSections.has(section.id)) {
-      this._deleteSections.delete(section.id);
-      section.polygon.fill(CancelableSectionManager._defaultOption.fill);
+    if (!section.facility) return;
+    if (this._cancelSections.has(section.facility.id)) {
+      this._cancelSections.delete(section.facility.id);
+      section.polygon.fill(section.options!.fill);
     } else {
-      this._deleteSections.set(section.id, section);
+      this._cancelSections.set(section.facility.id, section);
       section.polygon.fill('red');
     }
   }

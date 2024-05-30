@@ -5,22 +5,21 @@ import { useCallback, useContext, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SectionContext } from '../section-context';
-import {
-  deleteSectionById,
-  getSectionsByMapId,
-} from '../../../../../api/section';
-import DeletableSectionManager from '../classes/deletable-section-manger';
+import { cancelFacility, getSectionsByMapId } from '../../../../../api/section';
 import { convertToKonvaOptions } from '../utils/utils';
+import CancelableSectionManager from '../classes/cancelable-section-manger';
+import useFaciltyInfo from '../hooks/use-facility-info';
 
 declare const Konva: any;
 
 const SectionCancelStatePage = () => {
   const router = useRouter();
   const { mapData, stage } = useContext<any>(SectionContext);
+  const { addSection } = useFaciltyInfo();
 
-  const deletableSectionManager = useMemo(() => {
+  const cancelableSectionManager = useMemo(() => {
     if (!stage) return;
-    return new DeletableSectionManager(stage);
+    return new CancelableSectionManager(stage);
   }, [stage]);
 
   const layer = useMemo(() => {
@@ -28,10 +27,10 @@ const SectionCancelStatePage = () => {
   }, []);
 
   const onClickSave = async () => {
-    if (!deletableSectionManager) return;
-    const requests = Array.from(deletableSectionManager.deleteSections).map(
+    if (!cancelableSectionManager) return;
+    const requests = Array.from(cancelableSectionManager.cancelSections).map(
       ([key]: [number]) => {
-        // return deleteSectionById(key);
+        return cancelFacility(key);
       },
     );
 
@@ -42,28 +41,32 @@ const SectionCancelStatePage = () => {
 
   const fetchSection = useCallback(
     async (id) => {
-      if (!deletableSectionManager) return;
+      if (!cancelableSectionManager) return;
       const response = await getSectionsByMapId(id);
       response.data.forEach((d) => {
-        deletableSectionManager.addSection(
+        const section = cancelableSectionManager.addSection(
           d.path,
           d.id,
           convertToKonvaOptions(d),
+          d.facilities[0],
         );
+
+        addSection(section);
       });
-      deletableSectionManager.layer.moveToTop();
+
+      cancelableSectionManager.layer.moveToTop();
     },
-    [deletableSectionManager],
+    [addSection, cancelableSectionManager],
   );
 
   useEffect(() => {
     if (!mapData) return;
     if (!stage) return;
-    if (!deletableSectionManager) return;
+    if (!cancelableSectionManager) return;
     stage.add(layer);
     fetchSection(mapData.id);
   }, [
-    deletableSectionManager,
+    cancelableSectionManager,
     fetchSection,
     layer,
     mapData,
@@ -73,12 +76,12 @@ const SectionCancelStatePage = () => {
 
   useEffect(() => {
     return () => {
-      if (!deletableSectionManager) return;
-      deletableSectionManager.destroy();
+      if (!cancelableSectionManager) return;
+      cancelableSectionManager.destroy();
       layer.destroy();
       layer.remove();
     };
-  }, [deletableSectionManager, layer, stage]);
+  }, [cancelableSectionManager, layer, stage]);
 
   return (
     <>

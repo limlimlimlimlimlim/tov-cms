@@ -67,4 +67,9 @@ export class SectionController {
   async deleteSections(@Param('id') id: string) {
     return this.sectionService.deleteSectionGroup(+id);
   }
+
+  @Post('/cancel/facility/:id')
+  async cancelFacility(@Param('id') id: string) {
+    return this.sectionService.cancelFacility(+id);
+  }
 }

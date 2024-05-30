@@ -70,4 +70,13 @@ export class SectionService {
   async updateSection(id: number, data: Prisma.SectionUncheckedUpdateInput) {
     return this.prisma.section.update({ where: { id }, data });
   }
+
+  async cancelFacility(id) {
+    return this.prisma.facility.update({
+      where: { id },
+      data: {
+        sectionId: null,
+      },
+    });
+  }
 }

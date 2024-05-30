@@ -35,3 +35,7 @@ export const createSectionGroup = async (sectionIds: string[]) => {
 export const deleteSectionGroup = async (groupId: string) => {
   return axiosClient.delete(`/section/group/${groupId}`);
 };
+
+export const cancelFacility = async (facilityId: string | number) => {
+  return axiosClient.post(`/section/cancel/facility/${facilityId}`);
+};

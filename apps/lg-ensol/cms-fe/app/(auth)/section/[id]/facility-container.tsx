@@ -1,8 +1,9 @@
-import { Button, Drawer, Flex, Table } from 'antd';
+import { Button, Drawer, Flex, Table, message } from 'antd';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Search from 'antd/es/input/Search';
 import { CheckOutlined } from '@ant-design/icons';
-import { getFacilities } from '../../../../api/facility';
+import { useRouter } from 'next/navigation';
+import { getFacilities, updateFacility } from '../../../../api/facility';
 import { SectionContext } from './section-context';
 
 const FacilityContainer = () => {
@@ -17,6 +18,7 @@ const FacilityContainer = () => {
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
   const count = useMemo(() => 50, []);
+  const router = useRouter();
 
   const fetchData = useCallback(
     async ({ keyword, page, count, floor, wing }) => {
@@ -31,6 +33,17 @@ const FacilityContainer = () => {
       setTotal(facilities.data.total);
     },
     [],
+  );
+
+  const addFacilityToSection = useCallback(
+    async (facilityId) => {
+      if (!addFacilityTargetSection) return;
+      await updateFacility(facilityId, { sectionId: addFacilityTargetSection });
+      closeFacilityContainer();
+      message.success('시설이 설정 됐습니다.');
+      router.replace(`/section/${mapData.id}/view?t=${Date.now()}`);
+    },
+    [addFacilityTargetSection, closeFacilityContainer, mapData, router],
   );
 
   const columns = useMemo(() => {
@@ -63,12 +76,7 @@ const FacilityContainer = () => {
         width: 80,
         render: (data) => {
           return (
-            <Button
-              size="small"
-              onClick={() => {
-                console.log(data);
-              }}
-            >
+            <Button size="small" onClick={() => {}}>
               수정
             </Button>
           );
@@ -85,7 +93,7 @@ const FacilityContainer = () => {
             <Button
               size="small"
               onClick={() => {
-                console.log(data);
+                addFacilityToSection(data.id);
               }}
             >
               선택
@@ -96,7 +104,7 @@ const FacilityContainer = () => {
     }
 
     return columns;
-  }, [addFacilityTargetSection]);
+  }, [addFacilityTargetSection, addFacilityToSection]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -116,6 +124,17 @@ const FacilityContainer = () => {
       wing: mapData.wing.id,
     });
   }, [count, fetchData, keyword, mapData, page]);
+
+  useEffect(() => {
+    if (!isOpenFacilityContainer) return;
+    fetchData({
+      keyword,
+      page,
+      count,
+      floor: mapData.floor.id,
+      wing: mapData.wing.id,
+    });
+  }, [count, fetchData, isOpenFacilityContainer, keyword, mapData, page]);
 
   return (
     <Drawer

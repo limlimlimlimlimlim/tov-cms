@@ -3,6 +3,7 @@
 import { Button } from 'antd';
 import Link from 'next/link';
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SectionContext } from '../section-context';
 import { getSectionsByMapId } from '../../../../../api/section';
 import Section from '../classes/section';
@@ -12,13 +13,13 @@ import useFaciltyInfo from '../hooks/use-facility-info';
 declare const Konva: any;
 
 const SectionViewStatePage = () => {
-  const { mapData, stage, setHoverFacility, addFacility } =
-    useContext<any>(SectionContext);
+  const { mapData, stage } = useContext<any>(SectionContext);
+  const searchParams = useSearchParams();
   const sections = useRef([]);
   const layer = useMemo(() => {
     return new Konva.Layer();
   }, []);
-
+  console.log(searchParams);
   const { addSection } = useFaciltyInfo();
 
   const fetchSection = useCallback(
@@ -55,6 +56,13 @@ const SectionViewStatePage = () => {
       layer.destroy();
     };
   }, [layer, stage]);
+
+  useEffect(() => {
+    if (searchParams.get('t')) {
+      sections.current.forEach((s: Section) => s.destroy());
+      fetchSection(mapData.id);
+    }
+  }, [fetchSection, layer, mapData.id, searchParams]);
 
   return (
     <>

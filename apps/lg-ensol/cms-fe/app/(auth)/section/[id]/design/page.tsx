@@ -25,8 +25,8 @@ import {
 import type Section from '../classes/section';
 import useFaciltyInfo from '../hooks/use-facility-info';
 import type { FacilityDesign } from '../../../../../interface/facility';
-import SectionDesignPanel from './section-desing-panel';
 import { updateFacility } from '../../../../../api/facility';
+import SectionDesignPanel from './section-desing-panel';
 
 declare const Konva: any;
 
@@ -99,9 +99,15 @@ const SectionDesignStatePage = () => {
     chagedSections.current.set(section.id as string, section);
   }, []);
 
-  const onChangeFacility = useCallback((facility: any) => {
-    chagedFacilities.current.set(facility.id as string, facility);
-  }, []);
+  const onChangeFacility = useCallback(
+    (facility: any) => {
+      chagedFacilities.current.set(facility.id as string, facility);
+      const icon = designSectionManager?.getIconById(facility.id);
+      if (!icon) return;
+      icon.fill(facility.iconColor);
+    },
+    [designSectionManager],
+  );
 
   useEffect(() => {
     if (!mapData) return;

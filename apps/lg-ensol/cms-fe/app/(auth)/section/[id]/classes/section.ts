@@ -35,6 +35,7 @@ class Section extends EventEmitter {
   protected _facility: any;
   protected _facilityInfoIcon;
   protected _facilityAddIcon;
+  protected _icon;
 
   get path() {
     return this._path;
@@ -165,6 +166,19 @@ class Section extends EventEmitter {
     this._facilityAddIcon.y(y - 15);
   }
 
+  private updateIconPosition(icon, offsetX = -15, offsetY = -15) {
+    const posX = this._path.map((p) => p.x);
+    const posY = this._path.map((p) => p.y);
+    const minX = Math.min(...posX);
+    const maxX = Math.max(...posX);
+    const minY = Math.min(...posY);
+    const maxY = Math.max(...posY);
+    const x = minX + (maxX - minX) / 2;
+    const y = minY + (maxY - minY) / 2;
+    icon.x(x - offsetX);
+    icon.y(y - offsetY);
+  }
+
   show() {
     this._container.show();
   }
@@ -177,7 +191,8 @@ class Section extends EventEmitter {
     this._path = this.converPath(path);
     this._polygon.points(this.flatPath());
     if (this._facility) {
-      this.updateFacilityPosition();
+      this.updateIconPosition(this._facilityAddIcon);
+      this.updateIconPosition(this._facilityInfoIcon);
     }
   }
 
@@ -185,7 +200,8 @@ class Section extends EventEmitter {
     this._path[index] = point;
     this._polygon.points(this.flatPath());
     if (this._facility) {
-      this.updateFacilityPosition();
+      this.updateIconPosition(this._facilityAddIcon);
+      this.updateIconPosition(this._facilityInfoIcon);
     }
   }
 
@@ -217,6 +233,12 @@ class Section extends EventEmitter {
       ...this.facility,
       ...option,
     };
+  }
+
+  addIcon(icon, offsetX = 0, offsetY = 0) {
+    this._icon = icon;
+    this._container.add(this._icon);
+    this.updateIconPosition(this._icon, offsetX, offsetY);
   }
 
   async setFacility(facility) {

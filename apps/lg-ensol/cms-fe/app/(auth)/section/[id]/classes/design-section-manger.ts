@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { Scada } from 'next/font/google';
 import type { Options } from './section';
 import Section from './section';
 
@@ -17,6 +18,7 @@ class DesignSectionManager extends EventEmitter {
     strokeOpacity: 1,
     closed: true,
   };
+  private _icons: any = new Map();
 
   get layer() {
     return this._layer;
@@ -57,6 +59,19 @@ class DesignSectionManager extends EventEmitter {
 
     if (facility) {
       section.setFacility(facility);
+      const scale = 0.7;
+      const icon = new Konva.Path({
+        x: 0,
+        y: 0,
+        data: 'M32 30.668A6.667 6.667 0 0 1 25.332 24 6.667 6.667 0 0 1 32 17.332 6.667 6.667 0 0 1 38.668 24 6.667 6.667 0 0 1 32 30.668m0-25.336c-10.309 0-18.668 8.36-18.668 18.668C13.332 38 32 58.668 32 58.668S50.668 38 50.668 24c0-10.309-8.36-18.668-18.668-18.668Zm0 0',
+        fill: facility.iconColor,
+        scaleX: scale,
+        scaleY: scale,
+      });
+      this._icons.set(facility.id, icon);
+      setTimeout(() => {
+        section.addIcon(icon, 35 * scale, 70 * scale);
+      }, 500);
     }
 
     section.on('select', () => {
@@ -64,6 +79,10 @@ class DesignSectionManager extends EventEmitter {
     });
 
     return section;
+  }
+
+  getIconById(id) {
+    return this._icons.get(id);
   }
 
   destroy() {

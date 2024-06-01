@@ -10,3 +10,13 @@ export interface FacilityItem {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface FacilityDesign {
+  fontSize: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingRight: number;
+  paddingLeft: number;
+  iconColor: string;
+  tooltipColor: string;
+}

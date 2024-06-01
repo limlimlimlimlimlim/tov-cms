@@ -211,6 +211,20 @@ class Section extends EventEmitter {
     }
   }
 
+  updateFacilityOption(option): any {
+    if (!this._facility) return;
+    console.log('-------------------------');
+    console.log(this._facility);
+    console.log({
+      ...this.facility,
+      ...option,
+    });
+    this._facility = {
+      ...this.facility,
+      ...option,
+    };
+  }
+
   async setFacility(facility) {
     await this.createFacilityIcons();
     this._container.add(this._facilityInfoIcon);

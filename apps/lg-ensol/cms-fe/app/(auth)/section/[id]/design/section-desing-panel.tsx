@@ -15,7 +15,8 @@ import { convertColorParam, hex2rgb } from '../utils/utils';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface Props {
   section: Section;
-  onChangePaint: (section: Section) => void;
+  onChangeSectionPaint: (section: Section) => void;
+  onChangeFacility: (facility: any) => void;
 }
 
 const fontSizeOptions = [
@@ -23,48 +24,60 @@ const fontSizeOptions = [
   27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 ];
 
-const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
+const SectionDesignPanel = ({
+  section,
+  onChangeSectionPaint,
+  onChangeFacility,
+}: Props) => {
   const [fill, setFill] = useState<string>();
   const [opacity, setOpacity] = useState<number>();
   const [stroke, setStroke] = useState<string>();
   const [strokeOpacity, setStrokeOpacity] = useState<number>();
   const [strokeWidth, setStrokeWidth] = useState<number>();
+  const [facility, setFacility] = useState<any>();
+  const [fontSize, setFontSize] = useState<number>(0);
+  const [paddingTop, setPaddingTop] = useState<number>(0);
+  const [paddingBottom, setPaddingBottom] = useState<number>(0);
+  const [paddingLeft, setPaddingLeft] = useState<number>(0);
+  const [paddingRight, setPaddingRight] = useState<number>(0);
+  const [iconColor, setIconColor] = useState('#000000');
+  const [tooltipColor, setTooltipColor] = useState('#000000');
 
   const updateSectionFillColor = useCallback(
     ({ hex, alpha }) => {
       setFill(hex);
       setOpacity(alpha);
-      onChangePaint(section);
+      onChangeSectionPaint(section);
       section.updateOption({
         fill: hex,
         opacity: alpha,
       });
     },
-    [onChangePaint, section],
+    [onChangeSectionPaint, section],
   );
 
   const updateSectionStrokeColor = useCallback(
     ({ hex, alpha }) => {
       setStroke(hex);
       setStrokeOpacity(alpha);
-      onChangePaint(section);
+      onChangeSectionPaint(section);
       section.updateOption({
         stroke: hex,
         strokeOpacity: alpha,
       });
     },
-    [onChangePaint, section],
+    [onChangeSectionPaint, section],
   );
 
   const updateSectionStrokeWidth = useCallback(
     (value) => {
       setStrokeWidth(value);
-      onChangePaint(section);
+      onChangeSectionPaint(section);
       section.updateOption({
         strokeWidth: value,
       });
     },
-    [onChangePaint, section],
+    [onChangeSectionPaint, section],
   );
 
   useEffect(() => {
@@ -74,6 +87,25 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
     setStroke(section.options.stroke);
     setStrokeOpacity(section.options.strokeOpacity);
     setStrokeWidth(section.options.strokeWidth);
+    setFacility(section.facility);
+    if (section.facility) {
+      const {
+        fontSize,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight,
+        iconColor,
+        tooltipColor,
+      } = section.facility;
+      setFontSize(fontSize);
+      setPaddingTop(paddingTop);
+      setPaddingBottom(paddingBottom);
+      setPaddingLeft(paddingLeft);
+      setPaddingRight(paddingRight);
+      setIconColor(iconColor);
+      setTooltipColor(tooltipColor);
+    }
   }, [section]);
   return (
     <div style={{ position: 'absolute', right: 24, top: 60, zIndex: 1000 }}>
@@ -126,10 +158,20 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
             {
               label: '텍스트',
               key: 'text',
+              disabled: !facility,
               children: (
                 <div>
                   <Form.Item label="폰트 사이즈">
-                    <Select size="small">
+                    <Select
+                      size="small"
+                      value={fontSize}
+                      onChange={(value) => {
+                        if (!facility) return;
+                        setFontSize(value);
+                        section.updateFacilityOption({ fontSize: value });
+                        onChangeFacility(section.facility);
+                      }}
+                    >
                       {fontSizeOptions.map((fontSize) => (
                         <Select.Option key={fontSize} value={fontSize}>
                           {fontSize}
@@ -140,19 +182,78 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
                   <Form.Item label="간격">
                     <Flex gap={10}>
                       <div>
-                        TOP <InputNumber size="small" style={{ width: 70 }} />
+                        TOP{' '}
+                        <InputNumber
+                          size="small"
+                          style={{ width: 70 }}
+                          value={paddingTop}
+                          min={0}
+                          onChange={(value) => {
+                            if (!facility) return;
+                            if (paddingTop === undefined) return;
+                            if (!value) return;
+                            setPaddingTop(value);
+                            section.updateFacilityOption({ paddingTop: value });
+                            onChangeFacility(section.facility);
+                          }}
+                        />
                       </div>
                       <div>
                         Bottom
-                        <InputNumber size="small" style={{ width: 70 }} />
+                        <InputNumber
+                          size="small"
+                          style={{ width: 70 }}
+                          value={paddingBottom}
+                          min={0}
+                          onChange={(value) => {
+                            if (!facility) return;
+                            if (paddingBottom === undefined) return;
+                            if (!value) return;
+                            setPaddingBottom(value);
+                            section.updateFacilityOption({
+                              paddingBottom: value,
+                            });
+                            onChangeFacility(section.facility);
+                          }}
+                        />
                       </div>
                       <div>
                         Left
-                        <InputNumber size="small" style={{ width: 70 }} />
+                        <InputNumber
+                          size="small"
+                          style={{ width: 70 }}
+                          value={paddingLeft}
+                          min={0}
+                          onChange={(value) => {
+                            if (!facility) return;
+                            if (paddingLeft === undefined) return;
+                            if (!value) return;
+                            setPaddingLeft(value);
+                            section.updateFacilityOption({
+                              paddingLeft: value,
+                            });
+                            onChangeFacility(section.facility);
+                          }}
+                        />
                       </div>
                       <div>
                         Right
-                        <InputNumber size="small" style={{ width: 70 }} />
+                        <InputNumber
+                          size="small"
+                          style={{ width: 70 }}
+                          value={paddingRight}
+                          min={0}
+                          onChange={(value) => {
+                            if (!facility) return;
+                            if (paddingRight === undefined) return;
+                            if (!value) return;
+                            setPaddingRight(value);
+                            section.updateFacilityOption({
+                              paddingRight: value,
+                            });
+                            onChangeFacility(section.facility);
+                          }}
+                        />
                       </div>
                     </Flex>
                   </Form.Item>
@@ -162,6 +263,7 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
             {
               label: '아이콘',
               key: 'icon',
+              disabled: !facility,
               children: (
                 <div>
                   <Form.Item label="아이콘 색상">
@@ -191,6 +293,7 @@ const SectionDesignPanel = ({ section, onChangePaint }: Props) => {
             {
               label: '말풍선',
               key: 'tooltip',
+              disabled: !facility,
               children: (
                 <div>
                   <Form.Item label="말풍선 색상">

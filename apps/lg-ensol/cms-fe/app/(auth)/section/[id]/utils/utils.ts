@@ -107,3 +107,13 @@ export const generatePaintOptions = (section: Section) => {
     strokeAlpha: section.options.strokeOpacity! * 100,
   };
 };
+
+export const generateFacilityOptions = (facility: any) => {
+  return {
+    fontSize: facility.fontSize,
+    paddingTop: facility.paddingTop,
+    paddingBottom: facility.paddingBottom,
+    paddingRight: facility.paddingRight,
+    paddingLeft: facility.paddingLeft,
+  };
+};

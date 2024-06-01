@@ -17,10 +17,16 @@ import {
   getSectionsByMapId,
   updateSectionPaintOptionById,
 } from '../../../../../api/section';
-import { convertToKonvaOptions, generatePaintOptions } from '../utils/utils';
+import {
+  convertToKonvaOptions,
+  generateFacilityOptions,
+  generatePaintOptions,
+} from '../utils/utils';
 import type Section from '../classes/section';
-import SectionDesignPanel from './section-desing-panel';
 import useFaciltyInfo from '../hooks/use-facility-info';
+import type { FacilityDesign } from '../../../../../interface/facility';
+import SectionDesignPanel from './section-desing-panel';
+import { updateFacility } from '../../../../../api/facility';
 
 declare const Konva: any;
 
@@ -28,7 +34,10 @@ const SectionDesignStatePage = () => {
   const router = useRouter();
   const { mapData, stage } = useContext<any>(SectionContext);
   const [selectedSection, setSelectedSection] = useState<Section>();
-  const paintChagedSections = useRef<Map<string | number, Section>>(new Map());
+  const chagedSections = useRef<Map<string | number, Section>>(new Map());
+  const chagedFacilities = useRef<Map<string | number, FacilityDesign>>(
+    new Map(),
+  );
   const { addSection } = useFaciltyInfo();
 
   const designSectionManager = useMemo(() => {
@@ -43,6 +52,7 @@ const SectionDesignStatePage = () => {
   const onClickSave = async () => {
     if (!designSectionManager) return;
     await upatePaintOptions();
+    await upateFacilityOptions();
     // const requests = Array.from(designSectionManager.updatedSections).map(
     //   ([key]: [number]) => {
     //     return updateSectionPaintOptionById(key);
@@ -54,10 +64,20 @@ const SectionDesignStatePage = () => {
   };
 
   const upatePaintOptions = async () => {
-    if (paintChagedSections.current.size === 0) return;
-    const requests = Array.from(paintChagedSections.current).map(
+    if (chagedSections.current.size === 0) return;
+    const requests = Array.from(chagedSections.current).map(
       ([key, section]: [number | string, Section]) => {
         return updateSectionPaintOptionById(key, generatePaintOptions(section));
+      },
+    );
+    return Promise.all(requests);
+  };
+
+  const upateFacilityOptions = async () => {
+    if (chagedFacilities.current.size === 0) return;
+    const requests = Array.from(chagedFacilities.current).map(
+      ([key, facility]: [number | string, any]) => {
+        return updateFacility(key, generateFacilityOptions(facility));
       },
     );
     return Promise.all(requests);
@@ -78,11 +98,15 @@ const SectionDesignStatePage = () => {
       });
       designSectionManager.layer.moveToTop();
     },
-    [designSectionManager],
+    [addSection, designSectionManager],
   );
 
-  const onChangePaint = useCallback((section: Section) => {
-    paintChagedSections.current.set(section.id as string, section);
+  const onChangeSectionsPaint = useCallback((section: Section) => {
+    chagedSections.current.set(section.id as string, section);
+  }, []);
+
+  const onChangeFacility = useCallback((facility: any) => {
+    chagedFacilities.current.set(facility.id as string, facility);
   }, []);
 
   useEffect(() => {
@@ -115,7 +139,8 @@ const SectionDesignStatePage = () => {
       {selectedSection && (
         <SectionDesignPanel
           section={selectedSection}
-          onChangePaint={onChangePaint}
+          onChangeSectionPaint={onChangeSectionsPaint}
+          onChangeFacility={onChangeFacility}
         />
       )}
     </>

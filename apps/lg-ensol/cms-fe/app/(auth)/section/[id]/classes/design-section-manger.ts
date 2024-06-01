@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-import { Scada } from 'next/font/google';
 import type { Options } from './section';
 import Section from './section';
 

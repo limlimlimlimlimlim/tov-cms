@@ -62,6 +62,8 @@ const SectionManagement = ({ mapData }: Pros) => {
       container: stageContainer.current,
       width: 1400,
       height: 750,
+      offsetX: 1400 / 2,
+      offsetY: 750 / 2,
     });
     setStage(stage);
     initDragStage(stage);

@@ -86,9 +86,9 @@ const SectionCancelStatePage = () => {
   return (
     <>
       <Button onClick={onClickSave}>저장</Button>
-      <Button>
-        <Link href={`/section/${mapData.id}/view`}>취소</Link>
-      </Button>
+      <Link href={`/section/${mapData.id}/view`} style={{ lineHeight: 0 }}>
+        <Button>취소</Button>
+      </Link>
     </>
   );
 };

@@ -269,22 +269,13 @@ const SectionDesignPanel = ({
                   <Form.Item label="아이콘 색상">
                     <ColorPicker
                       format="hex"
-                      // onChangeComplete={(color: any) => {
-                      //   const hex = color.toHexString();
-                      //   const alpha = color.metaColor.roundA * 100;
-                      //   setCurrentSectionColor(hex);
-                      //   updateSection(currentSection, {
-                      //     color: hex.substr(0, 7),
-                      //     alpha,
-                      //     strokeColor: currentOptions.strokeColor,
-                      //     strokeAlpha: currentOptions.strokeAlpha,
-                      //     strokeWidth: currentOptions.strokeWidth,
-                      //     fontSize,
-                      //     iconColor,
-                      //     tooltipColor,
-                      //     padding,
-                      //   });
-                      // }}
+                      value={iconColor}
+                      onChangeComplete={(color: any) => {
+                        const hex = color.toHexString();
+                        setIconColor(hex);
+                        section.updateFacilityOption({ iconColor: hex });
+                        onChangeFacility(section.facility);
+                      }}
                     />
                   </Form.Item>
                 </div>
@@ -299,22 +290,13 @@ const SectionDesignPanel = ({
                   <Form.Item label="말풍선 색상">
                     <ColorPicker
                       format="hex"
-                      // onChangeComplete={(color: any) => {
-                      //   const hex = color.toHexString();
-                      //   const alpha = color.metaColor.roundA * 100;
-                      //   setCurrentSectionColor(hex);
-                      //   updateSection(currentSection, {
-                      //     color: hex.substr(0, 7),
-                      //     alpha,
-                      //     strokeColor: currentOptions.strokeColor,
-                      //     strokeAlpha: currentOptions.strokeAlpha,
-                      //     strokeWidth: currentOptions.strokeWidth,
-                      //     fontSize,
-                      //     iconColor,
-                      //     tooltipColor,
-                      //     padding,
-                      //   });
-                      // }}
+                      value={tooltipColor}
+                      onChangeComplete={(color: any) => {
+                        const hex = color.toHexString();
+                        setTooltipColor(hex);
+                        section.updateFacilityOption({ tooltipColor: hex });
+                        onChangeFacility(section.facility);
+                      }}
                     />
                   </Form.Item>
                 </div>

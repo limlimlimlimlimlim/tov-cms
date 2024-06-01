@@ -115,5 +115,7 @@ export const generateFacilityOptions = (facility: any) => {
     paddingBottom: facility.paddingBottom,
     paddingRight: facility.paddingRight,
     paddingLeft: facility.paddingLeft,
+    iconColor: facility.iconColor,
+    tooltipColor: facility.tooltipColor,
   };
 };

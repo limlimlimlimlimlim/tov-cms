@@ -3,8 +3,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Search from 'antd/es/input/Search';
 import { CheckOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { getFacilities, updateFacility } from '../../../../api/facility';
-import { SectionContext } from './section-context';
+import { getFacilities, updateFacility } from '../../../../../../api/facility';
+import { SectionContext } from '../../section-context';
 
 const FacilityContainer = () => {
   const {
@@ -12,6 +12,7 @@ const FacilityContainer = () => {
     addFacilityTargetSection,
     isOpenFacilityContainer,
     closeFacilityContainer,
+    showFacilityDetail,
   }: any = useContext(SectionContext);
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
@@ -76,7 +77,13 @@ const FacilityContainer = () => {
         width: 80,
         render: (data) => {
           return (
-            <Button size="small" onClick={() => {}}>
+            <Button
+              size="small"
+              onClick={() => {
+                showFacilityDetail(data.id);
+                closeFacilityContainer();
+              }}
+            >
               수정
             </Button>
           );
@@ -104,7 +111,7 @@ const FacilityContainer = () => {
     }
 
     return columns;
-  }, [addFacilityTargetSection, addFacilityToSection]);
+  }, [addFacilityTargetSection, addFacilityToSection, showFacilityDetail]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -143,6 +150,7 @@ const FacilityContainer = () => {
       width={800}
       onClose={closeFacilityContainer}
       open={isOpenFacilityContainer}
+      zIndex={100}
     >
       {mapData && (
         <Flex vertical gap="large">

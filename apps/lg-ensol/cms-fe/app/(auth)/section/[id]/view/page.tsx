@@ -19,7 +19,7 @@ const SectionViewStatePage = () => {
   const layer = useMemo(() => {
     return new Konva.Layer();
   }, []);
-  console.log(searchParams);
+
   const { addSection } = useFaciltyInfo();
 
   const fetchSection = useCallback(

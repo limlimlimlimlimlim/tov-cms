@@ -16,6 +16,7 @@ export const SectionProvider = ({ children }) => {
   const [hoverFacility, setHoverFacility] = useState();
   const [addFacilityTargetSection, setAddFacilityTargetSection] = useState();
   const [isOpenFacilityContainer, setIsOpenFacilityContainer] = useState(false);
+  const [facilityDetailId, setFacilityDetailId] = useState<string>();
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -38,6 +39,14 @@ export const SectionProvider = ({ children }) => {
     [openFacilityContainer],
   );
 
+  const showFacilityDetail = useCallback((facilityId: string) => {
+    setFacilityDetailId(facilityId);
+  }, []);
+
+  const hideFacilityDetail = useCallback(() => {
+    setFacilityDetailId('');
+  }, []);
+
   useEffect(() => {
     if (!ready) return;
     const result = getMapInfoPermissions();
@@ -55,11 +64,14 @@ export const SectionProvider = ({ children }) => {
         hoverFacility,
         addFacilityTargetSection,
         isOpenFacilityContainer,
+        facilityDetailId,
         setStage,
         setHoverFacility,
         addFacility,
         openFacilityContainer,
         closeFacilityContainer,
+        showFacilityDetail,
+        hideFacilityDetail,
       }}
     >
       {children}

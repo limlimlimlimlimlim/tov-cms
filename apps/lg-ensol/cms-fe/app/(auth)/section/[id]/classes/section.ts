@@ -123,6 +123,10 @@ class Section extends EventEmitter {
     this._facilityAddIcon.on('click', () => {
       this.emit('addfacility', this._id);
     });
+
+    this._facilityInfoIcon.on('click', () => {
+      this.emit('facilitydetail', this._facility.id);
+    });
   }
 
   private initEvent() {

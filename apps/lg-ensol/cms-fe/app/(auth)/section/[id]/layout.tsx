@@ -3,7 +3,8 @@
 import { Flex } from 'antd';
 import SectionForm from './section-form';
 import { SectionProvider } from './section-context';
-import FacilityContainer from './facility-container';
+import FacilityContainer from './components/facility-container/facility-container';
+import FacilityModal from './components/facility-modal/facility-modal';
 
 export default function SectionDetailLayout({ children }) {
   return (
@@ -11,6 +12,7 @@ export default function SectionDetailLayout({ children }) {
       <Flex gap="small">
         <SectionForm>{children}</SectionForm>
         <FacilityContainer />
+        <FacilityModal />
       </Flex>
     </SectionProvider>
   );

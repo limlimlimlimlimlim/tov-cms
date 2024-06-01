@@ -53,12 +53,6 @@ const SectionDesignStatePage = () => {
     if (!designSectionManager) return;
     await upatePaintOptions();
     await upateFacilityOptions();
-    // const requests = Array.from(designSectionManager.updatedSections).map(
-    //   ([key]: [number]) => {
-    //     return updateSectionPaintOptionById(key);
-    //   },
-    // );
-    // await Promise.all(requests);
     message.success('구역이 수정 됐습니다.');
     router.replace(`/section/${mapData.id}/view`);
   };

@@ -270,6 +270,7 @@ const SectionDesignPanel = ({
                     <ColorPicker
                       format="hex"
                       value={iconColor}
+                      disabledAlpha
                       onChangeComplete={(color: any) => {
                         const hex = color.toHexString();
                         setIconColor(hex);
@@ -291,6 +292,7 @@ const SectionDesignPanel = ({
                     <ColorPicker
                       format="hex"
                       value={tooltipColor}
+                      disabledAlpha
                       onChangeComplete={(color: any) => {
                         const hex = color.toHexString();
                         setTooltipColor(hex);

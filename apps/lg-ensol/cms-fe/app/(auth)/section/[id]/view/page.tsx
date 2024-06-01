@@ -34,7 +34,7 @@ const SectionViewStatePage = () => {
         );
 
         sec.setFacility(data.facilities[0]);
-        addSection(sec);
+        addSection(sec, true);
         return sec;
       });
     },

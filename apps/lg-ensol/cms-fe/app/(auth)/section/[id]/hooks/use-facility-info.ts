@@ -6,7 +6,7 @@ const useFaciltyInfo = () => {
     useContext<any>(SectionContext);
 
   const addSection = useCallback(
-    (sec) => {
+    (sec, useClick = false) => {
       sec.on('onfacility', (facility) => {
         setHoverFacility(facility);
       });
@@ -19,9 +19,11 @@ const useFaciltyInfo = () => {
         addFacility(id);
       });
 
-      sec.on('facilitydetail', (facility) => {
-        showFacilityDetail(facility, 'sec');
-      });
+      if (useClick) {
+        sec.on('facilitydetail', (facility) => {
+          showFacilityDetail(facility, 'sec');
+        });
+      }
     },
     [addFacility, setHoverFacility, showFacilityDetail],
   );

@@ -17,6 +17,8 @@ export const SectionProvider = ({ children }) => {
   const [addFacilityTargetSection, setAddFacilityTargetSection] = useState();
   const [isOpenFacilityContainer, setIsOpenFacilityContainer] = useState(false);
   const [facilityDetailId, setFacilityDetailId] = useState<string>();
+  const [visibleFacilityDetail, setVisibleFacilityDetail] = useState(false);
+  const [modalFrom, setModalFrom] = useState<string>();
 
   const fetchData = useCallback(async () => {
     const data = await getMapDetail(id);
@@ -39,12 +41,19 @@ export const SectionProvider = ({ children }) => {
     [openFacilityContainer],
   );
 
-  const showFacilityDetail = useCallback((facilityId: string) => {
-    setFacilityDetailId(facilityId);
-  }, []);
+  const showFacilityDetail = useCallback(
+    (facilityId: string, from = 'section') => {
+      setFacilityDetailId(facilityId);
+      setVisibleFacilityDetail(true);
+      setModalFrom(from);
+    },
+    [],
+  );
 
   const hideFacilityDetail = useCallback(() => {
     setFacilityDetailId('');
+    setVisibleFacilityDetail(false);
+    setModalFrom('');
   }, []);
 
   useEffect(() => {
@@ -65,6 +74,8 @@ export const SectionProvider = ({ children }) => {
         addFacilityTargetSection,
         isOpenFacilityContainer,
         facilityDetailId,
+        visibleFacilityDetail,
+        modalFrom,
         setStage,
         setHoverFacility,
         addFacility,
@@ -72,6 +83,7 @@ export const SectionProvider = ({ children }) => {
         closeFacilityContainer,
         showFacilityDetail,
         hideFacilityDetail,
+        setModalFrom,
       }}
     >
       {children}

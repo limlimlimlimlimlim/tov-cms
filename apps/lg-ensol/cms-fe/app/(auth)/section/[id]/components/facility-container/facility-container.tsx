@@ -80,7 +80,7 @@ const FacilityContainer = () => {
             <Button
               size="small"
               onClick={() => {
-                showFacilityDetail(data.id);
+                showFacilityDetail(data.id, 'container');
                 closeFacilityContainer();
               }}
             >
@@ -111,7 +111,12 @@ const FacilityContainer = () => {
     }
 
     return columns;
-  }, [addFacilityTargetSection, addFacilityToSection, showFacilityDetail]);
+  }, [
+    addFacilityTargetSection,
+    addFacilityToSection,
+    closeFacilityContainer,
+    showFacilityDetail,
+  ]);
 
   const onSearch = useCallback((value) => {
     setKeyword(value);
@@ -163,7 +168,14 @@ const FacilityContainer = () => {
 
               <span>Total : {total}</span>
             </Flex>
-            <Button>신규등록</Button>
+            <Button
+              onClick={() => {
+                closeFacilityContainer();
+                showFacilityDetail('', 'container');
+              }}
+            >
+              신규등록
+            </Button>
           </Flex>
           <Search placeholder="검색어를 입력해주세요." onSearch={onSearch} />
 

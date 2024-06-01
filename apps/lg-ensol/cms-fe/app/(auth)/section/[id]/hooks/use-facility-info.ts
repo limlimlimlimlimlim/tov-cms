@@ -20,7 +20,7 @@ const useFaciltyInfo = () => {
       });
 
       sec.on('facilitydetail', (facility) => {
-        showFacilityDetail(facility);
+        showFacilityDetail(facility, 'sec');
       });
     },
     [addFacility, setHoverFacility, showFacilityDetail],

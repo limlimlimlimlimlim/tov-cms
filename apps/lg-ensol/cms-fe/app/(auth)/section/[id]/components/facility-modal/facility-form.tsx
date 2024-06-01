@@ -2,6 +2,7 @@
 import { Button, Divider, Flex, Form, Input, message } from 'antd';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import { useRouter } from 'next/navigation';
 import WingSelect from '../../../../../../component/wing-select/wing-select';
 import FloorSelect from '../../../../../../component/floor-select/floor-select';
 import { createFacility, updateFacility } from '../../../../../../api/facility';
@@ -9,7 +10,6 @@ import { updateSectionPaintOptionById } from '../../../../../../api/section';
 import CategorySelect from '../../../../../../component/category-select/category-select';
 import SubCategorySelect from '../../../../../../component/sub-category-select/sub-category-select';
 import { SectionContext } from '../../section-context';
-import { useRouter } from 'next/navigation';
 
 const layout = {
   labelCol: { span: 4 },
@@ -24,7 +24,7 @@ const validateMessages = {
   },
 };
 
-const FacilityForm = ({ data }) => {
+const FacilityForm = ({ data, onComplete }) => {
   const { hideFacilityDetail } = useContext<any>(SectionContext);
   const router = useRouter();
   const [isEdit, setIsEdit] = useState(false);
@@ -66,6 +66,32 @@ const FacilityForm = ({ data }) => {
       });
       setWingId(data.wingId);
       setFloorId(data.floorId);
+    } else {
+      setIsEdit(false);
+      setFacility({
+        wingId: '',
+        floorId: '',
+        categoryId: '',
+        subCategoryId: '',
+        name: '',
+        address: '',
+        phone: '',
+        description: '',
+        tags: '',
+        iconType: 'icon1',
+        alwaysVisible: true,
+        x: 0,
+        y: 0,
+        status: 'enabled',
+        sectionId: null,
+        section: null,
+        padding: {
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+        },
+      });
     }
   }, [data]);
 
@@ -168,8 +194,17 @@ const FacilityForm = ({ data }) => {
       void message.success('시설이 생성됐습니다.');
     }
     hideFacilityDetail();
+    onComplete();
     router.replace(`${window.location.pathname}?t=${Date.now()}`);
-  }, [isEdit, hideFacilityDetail, router, facility, wingId, floorId]);
+  }, [
+    isEdit,
+    hideFacilityDetail,
+    onComplete,
+    router,
+    facility,
+    wingId,
+    floorId,
+  ]);
 
   return (
     <Flex vertical gap="middle">
@@ -278,6 +313,7 @@ const FacilityForm = ({ data }) => {
             <Button
               onClick={() => {
                 hideFacilityDetail();
+                onComplete();
               }}
             >
               취소

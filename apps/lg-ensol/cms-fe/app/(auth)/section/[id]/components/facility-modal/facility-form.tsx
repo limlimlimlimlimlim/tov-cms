@@ -25,7 +25,7 @@ const validateMessages = {
 };
 
 const FacilityForm = ({ data, onComplete }) => {
-  const { hideFacilityDetail } = useContext<any>(SectionContext);
+  const { hideFacilityDetail, mapData } = useContext<any>(SectionContext);
   const router = useRouter();
   const [isEdit, setIsEdit] = useState(false);
   const [wingId, setWingId] = useState();
@@ -69,8 +69,8 @@ const FacilityForm = ({ data, onComplete }) => {
     } else {
       setIsEdit(false);
       setFacility({
-        wingId: '',
-        floorId: '',
+        wingId: mapData.wing.id,
+        floorId: mapData.floor.id,
         categoryId: '',
         subCategoryId: '',
         name: '',
@@ -92,8 +92,10 @@ const FacilityForm = ({ data, onComplete }) => {
           right: 0,
         },
       });
+      setWingId(mapData.wing.id);
+      setFloorId(mapData.floor.id);
     }
-  }, [data]);
+  }, [data, mapData]);
 
   const onFinish = useCallback(async () => {
     if (isEdit) {

@@ -72,6 +72,7 @@ class EditableSection extends EventEmitter {
 
       this.createEditableSection();
       this.createController();
+      this.emit('update', [...this._path]);
     });
   }
 
@@ -176,6 +177,7 @@ class EditableSection extends EventEmitter {
       return;
     }
     this._editableSection.update([...this._path]);
+    this.emit('update', [...this._path]);
   }
 
   private clearPolygon() {

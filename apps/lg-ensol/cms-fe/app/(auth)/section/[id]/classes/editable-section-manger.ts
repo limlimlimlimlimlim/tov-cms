@@ -86,6 +86,11 @@ class EditableSectionManager extends EventEmitter {
       this._editableSectoin.destroy();
     });
 
+    this._editableSectoin.on('update', (path: Path) => {
+      this._selectedSection.update(path);
+      this._editSections.set(this._selectedSection.id, this._selectedSection);
+    });
+
     this._editableSectoin.on('complete', (path: Path) => {
       this._selectedSection.show();
       this._selectedSection.update(path);

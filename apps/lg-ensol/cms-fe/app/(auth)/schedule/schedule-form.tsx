@@ -7,6 +7,7 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   Radio,
   Switch,
   Tabs,
@@ -43,6 +44,7 @@ const ScheduleForm = ({ data }) => {
   const [imageContents, setImageContents] = useState('');
   const [videoContents, setVideoContents] = useState('');
   const [contentsType, setContentsType] = useState('video');
+  const [duration, setDuration] = useState(3);
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState<any>(dayjs());
   const [endDate, setEndDate] = useState<any>(dayjs());
@@ -100,6 +102,7 @@ const ScheduleForm = ({ data }) => {
       setNoPeriod(data.noPeriod);
       setLayout(data.layout);
       setContentsType(data.contentsType);
+      setDuration(data.duration);
     }
   }, [data]);
 
@@ -122,6 +125,7 @@ const ScheduleForm = ({ data }) => {
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
           noPeriod,
+          duration,
         });
         void message.success('게시물이 수정됐습니다.');
       } else {
@@ -137,6 +141,7 @@ const ScheduleForm = ({ data }) => {
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
           noPeriod,
+          duration,
         });
         void message.success('스케쥴이 생성됐습니다.');
       }
@@ -148,6 +153,7 @@ const ScheduleForm = ({ data }) => {
     contentsType,
     data,
     description,
+    duration,
     endDate,
     imageContents,
     isEdit,
@@ -221,6 +227,18 @@ const ScheduleForm = ({ data }) => {
             <Radio value="image">이미지</Radio>
           </Radio.Group>
         </Form.Item>
+        {contentsType === 'image' && (
+          <Form.Item label="노출 시간">
+            <InputNumber
+              value={duration}
+              onChange={(value: number) => {
+                setDuration(value);
+              }}
+            />{' '}
+            초
+          </Form.Item>
+        )}
+
         <Form.Item label="콘텐츠">
           <Tabs items={items} />
         </Form.Item>

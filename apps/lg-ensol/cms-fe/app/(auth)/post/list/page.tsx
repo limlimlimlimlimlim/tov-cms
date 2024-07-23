@@ -17,6 +17,7 @@ import {
   incrementPostOrder,
 } from '../../../../api/post';
 import usePermission from '../../hooks/use-permission';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -33,6 +34,7 @@ export default function PostList() {
   const [deletable, setDeletable] = useState(false);
   const [updatable, setUpdatable] = useState(false);
   const router = useRouter();
+  const { socket } = useSocket();
 
   const fetchData = useCallback(async ({ keyword, page, count }) => {
     const posts = await getPosts({ keyword, page, count });
@@ -217,12 +219,21 @@ export default function PostList() {
 
           <span>Total : {total}</span>
         </Flex>
-        <Flex>
+        <Flex justify="end" gap={10}>
           <Search
             placeholder="검색어를 입력해주세요."
             onSearch={onSearch}
             style={{ width: 300 }}
           />
+          <Button
+            onClick={() => {
+              if (socket) {
+                socket.emit('sync', 'post');
+              }
+            }}
+          >
+            동기화
+          </Button>
         </Flex>
       </Flex>
       <Table

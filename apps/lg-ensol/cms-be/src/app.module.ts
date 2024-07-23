@@ -26,6 +26,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import { FacilityCategoryModule } from './facility-category/facility-category.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
+import { WSGateway } from './websocket.gateway';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { AuthService } from './auth/auth.service';
     PrismaService,
     UserService,
     AuthService,
+    WSGateway,
     { provide: APP_FILTER, useClass: CustomExceptionFilter },
   ],
 })

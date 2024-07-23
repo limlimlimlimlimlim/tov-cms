@@ -11,6 +11,7 @@ import FloorSelect from '../../../../component/floor-select/floor-select';
 import WingSelect from '../../../../component/wing-select/wing-select';
 import usePermission from '../../hooks/use-permission';
 import MapPreviewerModal from '../../../../component/map-previwer-modal/map-previewer-modal';
+import useSocket from '../../hooks/use-socket';
 
 const { Search } = Input;
 
@@ -27,6 +28,7 @@ export default function SectionList() {
   const [openPreview, setOpenPreview] = useState(false);
   const [previewMapId, setPreviewMapId] = useState();
   const router = useRouter();
+  const { socket } = useSocket();
 
   const fetchData = useCallback(
     async ({ keyword, page, count, floor, wing }) => {
@@ -178,11 +180,22 @@ export default function SectionList() {
 
       <Flex justify="space-between" align="center">
         <span>Total : {count}</span>
-        <Search
-          placeholder="검색어를 입력해주세요."
-          onSearch={onSearch}
-          style={{ width: 300 }}
-        />
+        <Flex justify="end" gap={10}>
+          <Search
+            placeholder="검색어를 입력해주세요."
+            onSearch={onSearch}
+            style={{ width: 300 }}
+          />
+          <Button
+            onClick={() => {
+              if (socket) {
+                socket.emit('sync', 'section');
+              }
+            }}
+          >
+            동기화
+          </Button>
+        </Flex>
       </Flex>
       <Table
         columns={columns}

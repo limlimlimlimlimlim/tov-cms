@@ -166,11 +166,17 @@ export default function SectionList() {
     <Flex vertical gap="middle">
       <Flex gap="large">
         <Form.Item label="건물 선택">
-          <WingSelect style={{ width: 200 }} onChange={onChangeWing} useAll />
+          <WingSelect
+            style={{ width: 200 }}
+            wingId={wing}
+            onChange={onChangeWing}
+            useAll
+          />
         </Form.Item>
         <Form.Item label="층 선택">
           <FloorSelect
             wingId={wing}
+            floorId={floor}
             style={{ width: 200 }}
             onChange={onChangeFloor}
             useAll

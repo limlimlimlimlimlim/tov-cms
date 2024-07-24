@@ -55,12 +55,12 @@ const FacilityContainer = () => {
         dataIndex: ['wing', 'name'],
         sorter: true,
       },
-      {
-        title: '구분상세',
-        width: 100,
-        dataIndex: ['subCategory', 'name'],
-        sorter: true,
-      },
+      // {
+      //   title: '구분상세',
+      //   width: 100,
+      //   dataIndex: ['subCategory', 'name'],
+      //   sorter: true,
+      // },
       {
         title: '시설명',
         width: 250,

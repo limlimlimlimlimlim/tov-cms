@@ -120,8 +120,6 @@ const FacilityForm = ({ data, onComplete }) => {
         paddingBottom: facility.paddingBottom,
         paddingRight: facility.paddingRight,
         paddingLeft: facility.paddingLeft,
-        categoryId: facility.categoryId,
-        subCategoryId: facility.subCategoryId,
         sectionId: facility.section?.id,
       });
 
@@ -168,8 +166,6 @@ const FacilityForm = ({ data, onComplete }) => {
         paddingBottom: facility.paddingBottom,
         paddingRight: facility.paddingRight,
         paddingLeft: facility.paddingLeft,
-        categoryId: facility.categoryId,
-        subCategoryId: facility.subCategoryId,
         sectionId: facility.section?.id,
       });
 
@@ -216,7 +212,7 @@ const FacilityForm = ({ data, onComplete }) => {
         style={{ maxWidth: 1000 }}
         validateMessages={validateMessages}
       >
-        <Form.Item label="시설구분">
+        {/* <Form.Item label="시설구분">
           <Flex gap="middle">
             <CategorySelect
               id={facility.categoryId}
@@ -234,7 +230,7 @@ const FacilityForm = ({ data, onComplete }) => {
               }}
             />
           </Flex>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item label="시설명">
           <Input

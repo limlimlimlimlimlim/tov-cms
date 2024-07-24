@@ -114,21 +114,21 @@ export default function MapList() {
         width: 100,
         render: (isUse) => (isUse ? '사용' : '미사용'),
       },
-      {
-        title: '미리보기',
-        width: 100,
-        render: (data: any) => (
-          <Button
-            size="small"
-            onClick={() => {
-              setOpenPreview(true);
-              setPreviewMapId(data.id);
-            }}
-          >
-            미리보기
-          </Button>
-        ),
-      },
+      // {
+      //   title: '미리보기',
+      //   width: 100,
+      //   render: (data: any) => (
+      //     <Button
+      //       size="small"
+      //       onClick={() => {
+      //         setOpenPreview(true);
+      //         setPreviewMapId(data.id);
+      //       }}
+      //     >
+      //       미리보기
+      //     </Button>
+      //   ),
+      // },
       {
         title: '등록일',
         dataIndex: 'createdAt',

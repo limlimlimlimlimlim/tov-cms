@@ -100,21 +100,21 @@ export default function SectionList() {
           return count;
         },
       },
-      {
-        title: '미리보기',
-        width: 80,
-        render: (data: any) => (
-          <Button
-            size="small"
-            onClick={() => {
-              setOpenPreview(true);
-              setPreviewMapId(data.id);
-            }}
-          >
-            미리보기
-          </Button>
-        ),
-      },
+      // {
+      //   title: '미리보기',
+      //   width: 80,
+      //   render: (data: any) => (
+      //     <Button
+      //       size="small"
+      //       onClick={() => {
+      //         setOpenPreview(true);
+      //         setPreviewMapId(data.id);
+      //       }}
+      //     >
+      //       미리보기
+      //     </Button>
+      //   ),
+      // },
       {
         title: '등록일',
         dataIndex: 'createdAt',

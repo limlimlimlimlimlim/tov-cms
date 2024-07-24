@@ -47,11 +47,11 @@ const items: MenuItem[] = [
     // getItem(<Link href="/map-info">지도 정보</Link>, 'map-info'),
     getItem(<Link href="/section">구역 관리</Link>, 'section'),
   ]),
-  getItem(
-    <Link href="/facility">시설 관리</Link>,
-    'facility',
-    <ShopOutlined />,
-  ),
+  // getItem(
+  //   <Link href="/facility">시설 관리</Link>,
+  //   'facility',
+  //   <ShopOutlined />,
+  // ),
   // getItem(
   //   <Link href="/kiosk">키오스크 관리</Link>,
   //   'kiosk',

@@ -141,25 +141,25 @@ export default function MapList() {
         width: 180,
         render: (date: string) => format(new Date(date), 'yyyy-MM-dd hh:mm:ss'),
       },
-      {
-        title: '구역설정',
-        width: 100,
-        render: (map) => (
-          <>
-            {updatable && (
-              <Button
-                size="small"
-                onClick={() => {
-                  setCurrentMap({ ...map });
-                  setIsOpenMapAreaModal(true);
-                }}
-              >
-                설정
-              </Button>
-            )}
-          </>
-        ),
-      },
+      // {
+      //   title: '구역설정',
+      //   width: 100,
+      //   render: (map) => (
+      //     <>
+      //       {updatable && (
+      //         <Button
+      //           size="small"
+      //           onClick={() => {
+      //             setCurrentMap({ ...map });
+      //             setIsOpenMapAreaModal(true);
+      //           }}
+      //         >
+      //           설정
+      //         </Button>
+      //       )}
+      //     </>
+      //   ),
+      // },
       {
         title: '',
         width: 80,

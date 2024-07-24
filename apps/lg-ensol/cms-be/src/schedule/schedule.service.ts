@@ -112,6 +112,7 @@ export class ScheduleService {
         endDate: true,
         status: true,
         wingCodes: true,
+        duration: true,
         wing: {
           select: {
             id: true,

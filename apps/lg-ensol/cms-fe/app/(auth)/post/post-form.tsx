@@ -15,7 +15,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import ContentsUploader from '../../../component/contents-uploader/contentes-uploader';
 import { createPost, updatePost } from '../../../api/post';
 
